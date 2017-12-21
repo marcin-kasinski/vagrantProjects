@@ -1,31 +1,94 @@
-Vagrant.configure(2) do |config|
-  config.vm.box = "ubuntu/xenial64"
-  config.vm.hostname = "vagrantgs"
-  config.vm.network "public_network", bridge: "enp3s0", type: "dhcp"
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
 
-  # Enable provisioning with a shell script. Additional provisioners such as
-  # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
-  # documentation for more information about their specific syntax and use.
-  
-  
-  
-   config.vm.provision "shell", inline: <<-SHELL
-     sudo apt -y update
-     echo I am provisioning...
-     date > /etc/vagrant_provisioned_at
-     sudo sed -i -r '/swap/ s/^(.*)$/#\1/g' /etc/fstab && \
-     sudo sed -i -r '/cdrom/ s/^(.*)$/#\1/g' /etc/apt/sources.list && \
-     sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3746C208A7317B0F && \\
-     sudo apt -y update && \
-     sudo apt install -y curl && \
-     sudo apt install -y apt-transport-https && \
-     sudo echo "deb http://apt.kubernetes.io/ kubernetes-xenial main"> /etc/apt/sources.list.d/kubernetes.list && \
-     sudo apt -y update && \
-     sudo apt install -y docker.io && \
-     sudo apt install --allow-unauthenticated -y kubelet kubeadm kubectl kubernetes-cni
-     
-     
-     
-     
-   SHELL
+
+
+Vagrant.require_version ">= 1.6.0"
+
+boxes = [
+    {
+        :name => "k8smaster",
+        :interface => "enp3s0",
+        :eth1 => "192.168.8.10",
+        :mem => "15375",
+        :cpu => "1"
+    },
+    {
+        :name => "k8sworker",
+        :interface => "enp3s0",
+        :eth1 => "192.168.8.11",
+        :mem => "15375",
+        :cpu => "2"
+    },
+]
+
+Vagrant.configure(2) do |config|
+
+  config.vm.box = "ubuntu/xenial64"
+
+  boxes.each do |opts|
+      config.vm.define opts[:name] do |config|
+        config.vm.hostname = opts[:name]
+
+        config.vm.provider "virtualbox" do |v|
+          v.customize ["modifyvm", :id, "--memory", opts[:mem]]
+          v.customize ["modifyvm", :id, "--cpus", opts[:cpu]]
+        end
+
+        config.vm.network "public_network", bridge: opts[:interface], type: "dhcp"
+      end
+  end
+
+  config.vm.define "k8smaster" do |k8smaster|
+    k8smaster.ssh.forward_agent = true
+    k8smaster.vm.provision "shell", privileged: false, inline: <<-SHELL
+      sudo set -e
+      sudo set -x
+      sudo apt-get -y update && \
+      sudo apt install -y curl && \
+      sudo apt-get install -y apt-transport-https && \
+      sudo echo "deb http://apt.kubernetes.io/ kubernetes-xenial main"> ~/kubernetes.list && \
+      sudo mv ~/kubernetes.list /etc/apt/sources.list.d
+      sudo apt-get -y update && \
+      sudo apt-get install -y docker.io && \
+      sudo apt-get install --allow-unauthenticated -y kubelet kubeadm kubectl kubernetes-cni
+
+
+      sudo apt-get install -y nfs-common
+      sudo kubeadm reset && sudo kubeadm init --pod-network-cidr 10.244.0.0/16  --token 54c315.78a320e33baaf27d 
+
+      mkdir -p $HOME/.kube
+      sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+      sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+ 
+
+      kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+      kubectl get nodes
+	
+      SHELL
+  end
+
+ config.vm.define "k8sworker" do |k8sworker|
+   k8sworker.ssh.forward_agent = true
+   k8sworker.vm.provision "shell", privileged: false, inline: <<-SHELL
+
+      sudo set -e
+      sudo set -x
+      sudo apt-get -y update && \
+      sudo apt install -y curl && \
+      sudo apt-get install -y apt-transport-https && \
+      sudo echo "deb http://apt.kubernetes.io/ kubernetes-xenial main"> ~/kubernetes.list && \
+      sudo mv ~/kubernetes.list /etc/apt/sources.list.d
+      sudo apt-get -y update && \
+      sudo apt-get install -y docker.io && \
+      sudo apt-get install --allow-unauthenticated -y kubelet kubeadm kubectl kubernetes-cni
+
+
+      sudo apt-get install -y nfs-common
+
+      sudo kubeadm join --token=54c315.78a320e33baaf27d k8smaster.local:6443 
+      sleep 120
+    SHELL
+  end
 end
