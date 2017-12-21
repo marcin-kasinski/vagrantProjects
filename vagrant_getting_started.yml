@@ -1,14 +1,31 @@
 Vagrant.configure(2) do |config|
-  config.vm.box = "ubuntu/trusty64"
+  config.vm.box = "ubuntu/xenial64"
   config.vm.hostname = "vagrantgs"
-  config.vm.network "public_network", bridge: "enp3s0"
+  config.vm.network "public_network", bridge: "enp3s0", type: "dhcp"
 
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
+  
+  
+  
    config.vm.provision "shell", inline: <<-SHELL
-     sudo apt-get update
+     sudo apt -y update
      echo I am provisioning...
      date > /etc/vagrant_provisioned_at
+     sudo sed -i -r '/swap/ s/^(.*)$/#\1/g' /etc/fstab && \
+     sudo sed -i -r '/cdrom/ s/^(.*)$/#\1/g' /etc/apt/sources.list && \
+     sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3746C208A7317B0F && \\
+     sudo apt -y update && \
+     sudo apt install -y curl && \
+     sudo apt install -y apt-transport-https && \
+     sudo echo "deb http://apt.kubernetes.io/ kubernetes-xenial main"> /etc/apt/sources.list.d/kubernetes.list && \
+     sudo apt -y update && \
+     sudo apt install -y docker.io && \
+     sudo apt install --allow-unauthenticated -y kubelet kubeadm kubectl kubernetes-cni
+     
+     
+     
+     
    SHELL
 end
