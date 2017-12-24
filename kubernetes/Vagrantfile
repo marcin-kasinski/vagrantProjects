@@ -23,10 +23,43 @@ $initscript = <<SCRIPT
       sudo apt-get update
       sudo apt-get install -y kubelet kubeadm kubectl  kubernetes-cni
 
-
+      sudo ifconfig
 
       #kubectl get nodes
       
+      echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
+
+SCRIPT
+
+$masterscript = <<SCRIPT
+      echo I am provisioning...
+      echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
+      
+      #ls | grep pattern | sed -e 's/^/prefix/' -e 's/$/suffix/'
+      
+      sudo rm -rf ~/.kube && sudo kubeadm reset && sudo kubeadm init --pod-network-cidr 10.244.0.0/16 --apiserver-advertise-address 192.168.10.10 |  grep "kubeadm join" >join_command 
+      
+      JOIN_COMMAND="$( cat join_command )"
+	  echo "sudo "$JOIN_COMMAND >join_command_sudo 
+      
+      #cat join_command | sed -e 's/^/prefix/' -e 's/$/suffix/'
+
+	  mkdir -p $HOME/.kube
+      sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+      sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+      kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+      
+      kubectl get nodes
+      echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
+
+SCRIPT
+
+$nodescript = <<SCRIPT
+      echo I am node provisioning...
+      echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
+
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
 
 SCRIPT
@@ -37,7 +70,7 @@ boxes = [
         :name => "k8smaster",
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0001",
-        :ip => "192.168.10.11",
+        :ip => "192.168.10.10",
         :mem => "15375",
         :cpu => "1"
     },
@@ -45,7 +78,7 @@ boxes = [
         :name => "k8snode1",
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0002",
-        :ip => "192.168.10.12",
+        :ip => "192.168.10.11",
         :mem => "15375",
         :cpu => "1"
     },
@@ -53,7 +86,7 @@ boxes = [
         :name => "k8snode2",
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0003",
-        :ip => "192.168.10.13",
+        :ip => "192.168.10.12",
         :mem => "15375",
         :cpu => "1"
     },
@@ -61,7 +94,7 @@ boxes = [
         :name => "k8snode3",
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0004",
-        :ip => "192.168.10.14",
+        :ip => "192.168.10.13",
         :mem => "15375",
         :cpu => "1"
     },
@@ -70,12 +103,15 @@ boxes = [
 Vagrant.configure(2) do |config|
 
   config.vm.box = "ubuntu/xenial64"
+#  config.vm.box = "ubuntu/trusty64"
+#  config.vm.box = "bento/ubuntu-16.04"
+  
   #config.vm.box_version = "20171212.0.0"
 
   boxes.each do |opts|
       config.vm.define opts[:name] do |config|
         config.vm.hostname = opts[:name]
-        config.vm.network :forwarded_port, host: 2222, guest: 22, disabled: true
+        #config.vm.network :forwarded_port, host: 2222, guest: 22
         #config.ssh.username = "ubuntu"
         #config.ssh.password = "379a8188cba8c5e64b9a429f"
 
@@ -85,11 +121,9 @@ Vagrant.configure(2) do |config|
           v.name = opts[:name]
         end
 
-        #config.vm.network "public_network", bridge: opts[:interface], type: "dhcp" , mac: opts[:mac]
-        #config.vm.network "public_network", bridge: opts[:interface], ip: opts[:ip] , mac: opts[:mac]
-        #config.vm.network "public_network", bridge: opts[:interface], ip: opts[:ip] , mac: opts[:mac]
-        
-        config.vm.network "private_network", bridge: opts[:interface], ip: opts[:ip]
+        config.vm.network "public_network", bridge: opts[:interface], type: "dhcp" , mac: opts[:mac]        
+        config.vm.network "public_network", bridge: opts[:interface] , mac: opts[:mac], ip: opts[:ip]
+        #config.vm.network "private_network" ,  bridge: opts[:interface], ip: opts[:ip]
         
       end
   end
@@ -110,26 +144,34 @@ Vagrant.configure(2) do |config|
 
 
 
-  config.vm.define "k8smaster" do |k8smaster|
-    k8smaster.ssh.forward_agent = false
-    k8smaster.vm.provision "shell", privileged: false, inline: <<-SHELL
-      echo "----------------------------- KUBERNETES MASTER -----------------------------"
 
-	  sudo echo "sudo ">join_command && rm -rf ~/.kube && sudo kubeadm reset && sudo kubeadm init --pod-network-cidr 10.244.0.0/16 --apiserver-advertise-address 192.168.10.11 | grep "kubeadm join" >>join_command
 
-	  
-      mkdir -p $HOME/.kube
-      sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-      sudo chown $(id -u):$(id -g) $HOME/.kube/config
-
-      kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-      
-      kubectl get nodes
-      SHELL
-  end
+   config.vm.define  "k8smaster" do |config|
+      config.vm.provision "shell" do |s|
+        s.inline = $masterscript
+        s.args = "192.168.10.10"
+      end
+    end
 
 
 
+   config.vm.define  "k8snode1" do |config|
+      config.vm.provision "shell" do |s|
+        s.inline = $nodescript
+      end
+    end
+
+   config.vm.define  "k8snode2" do |config|
+      config.vm.provision "shell" do |s|
+        s.inline = $nodescript
+      end
+    end
+
+   config.vm.define  "k8snode3" do |config|
+      config.vm.provision "shell" do |s|
+        s.inline = $nodescript
+      end
+    end
 
 
 end
