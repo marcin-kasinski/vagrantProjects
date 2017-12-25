@@ -43,13 +43,13 @@ $masterscript = <<SCRIPT
 	  echo "sudo "$JOIN_COMMAND >join_command_sudo 
       
 
-      echo ">>>>>>>>>>>>>>>>>>>>>>>>>>CREATING CONF "$HOME
+      echo ">>>>>>>>>>>>>>>>>>>>>>>>>>CREATING CONF "
 
-	  mkdir -p $HOME/.kube
-      sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-      sudo chown $(id -u):$(id -g) $HOME/.kube/config
+	  mkdir -p /home/ubuntu/.kube
+      sudo cp -i /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
+      sudo chown $(id -u):$(id -g) /home/ubuntu/.kube/config
 
-      echo ">>>>>>>>>>>>>>>>>>>>>>>>>>CREATING CONF"$HOME
+      echo ">>>>>>>>>>>>>>>>>>>>>>>>>>CREATING CONF"
 
       kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 	  kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
