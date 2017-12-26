@@ -81,8 +81,10 @@ $masterscript = <<SCRIPT
       curl https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/heapster.yaml | kubectl apply -f -
       curl https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/rbac/heapster-rbac.yaml | kubectl apply -f -
             
-      # moje oprawki : dashboard
+      # moje poprawki : dashboard
       curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/dashboard-service-ingress.yaml | kubectl apply -f -
+      curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/grafana-ingress.yaml | kubectl apply -f -
+      curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/ingress-service-nodeport.yaml | kubectl apply -f -
             
       kubectl get nodes
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
