@@ -13,21 +13,25 @@ $initscript = <<SCRIPT
       sudo swapoff -a  
       sudo sed -i -r '/swap/ s/^(.*)$/#\1/g' /etc/fstab
       sudo sed -i -r '/cdrom/ s/^(.*)$/#\1/g' /etc/apt/sources.list
-      sudo apt-get -y update
-      sudo apt-get -y install -y docker.io
+      sudo apt -y update
+      sudo apt -y install -y docker.io
       sudo apt install -y curl 
-      sudo apt-get -y update && sudo apt-get install -y apt-transport-https
+      sudo apt install -y apt-transport-https
       sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
       sudo echo "deb http://apt.kubernetes.io/ kubernetes-xenial main"> ~/kubernetes.list 
       sudo mv ~/kubernetes.list /etc/apt/sources.list.d/kubernetes.list
-      sudo apt-get update
-      sudo apt-get install -y kubelet kubeadm kubectl  kubernetes-cni
+      sudo apt update
+      sudo apt install -y kubelet kubeadm kubectl  kubernetes-cni
 
-      sudo ifconfig
 
       #kubectl get nodes
       
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
+
+
+      # nfs biblioteki klienckie
+      sudo apt-get install -y nfs-common
+
 
 SCRIPT
 
@@ -45,9 +49,17 @@ $masterscript = <<SCRIPT
 
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>CREATING CONF "
 
+       mkdir -p $HOME/.kube
+       sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+       sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+
+
 	  mkdir -p /home/ubuntu/.kube
       sudo cp -i /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
-      sudo chown $(id -u):$(id -g) /home/ubuntu/.kube/config
+      sudo chown ubuntu:ubuntu /home/ubuntu/.kube/config
+
+
 
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>CREATING CONF"
 
@@ -63,12 +75,32 @@ $masterscript = <<SCRIPT
             
       kubectl get nodes
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
+      
+      # ----------------------------- nfs -----------------------------
+      sudo apt-get install nfs-kernel-server
+      # katalog dla joina:
+      
+      sudo mkdir /var/nfs/kubernetes_share -p
+      sudo chown nobody:nogroup /var/nfs/kubernetes_share
+      sudo sh -c "echo '/var/nfs/kubernetes_share    *(rw,sync,no_subtree_check,no_root_squash)' >> /etc/exports"      
+      sudo exportfs -ra
+      sudo cp join_command_sudo /var/nfs/kubernetes_share
+      # ----------------------------- nfs -----------------------------
+		
 
 SCRIPT
 
 $nodescript = <<SCRIPT
       echo I am node provisioning...
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
+
+      # ----------------------------- nfs -----------------------------
+      sudo mkdir -p /nfs/kubernetes_share
+      sudo mount k8smaster.local:/var/nfs/kubernetes_share /nfs/kubernetes_share
+      JOIN_COMMAND=$(    sudo cat /nfs/kubernetes_share/join_command_sudo  )
+      eval $JOIN_COMMAND
+      # ----------------------------- nfs -----------------------------
+
 
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
 
