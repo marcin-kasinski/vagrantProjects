@@ -12,6 +12,10 @@ spec:
       labels:
         app: springbootmicroservice
     spec:
+      initContainers:
+      - name: init-springbootmicroservice
+        image: busybox
+        command: ['sh', '-c', 'ls -l']
       containers:
       - name: springbootmicroservice
         image: marcinkasinski/springbootmicroservice
