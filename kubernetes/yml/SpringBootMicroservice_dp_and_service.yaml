@@ -12,6 +12,8 @@ metadata:
     ]'  
 spec:
   replicas: 1
+  selector:
+    app: springbootmicroservice
   template:
     metadata:
       labels:
