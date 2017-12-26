@@ -15,7 +15,7 @@ spec:
       initContainers:
       - name: init-springbootmicroservice
         image: busybox
-        command: ['sh', '-c', 'ls -l']
+        command: ['sh', '-c', 'curl -POST http://monitoring-influxdb.kube-system.svc.cluster.local:8086/query --data-urlencode \"q=CREATE DATABASE metrics\"']
       containers:
       - name: springbootmicroservice
         image: marcinkasinski/springbootmicroservice
