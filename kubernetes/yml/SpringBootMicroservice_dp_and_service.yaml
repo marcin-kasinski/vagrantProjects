@@ -2,14 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: springbootmicroservice-deployment
-  annotations:
-    pod.beta.kubernetes.io/init-containers: '[
-        {
-            "name": "init-myservice",
-            "image": "busybox",
-            "command": ["sh", "-c", "until curl -POST http://monitoring-influxdb.kube-system.svc.cluster.local:8086/query --data-urlencode "q=SHOW DATABASES"; do echo waiting; sleep 2; done;  curl -POST http://monitoring-influxdb.kube-system.svc.cluster.local:8086/query --data-urlencode \"q=CREATE DATABASE metrics\""]
-        }
-    ]'  
 spec:
   replicas: 1
   selector:
