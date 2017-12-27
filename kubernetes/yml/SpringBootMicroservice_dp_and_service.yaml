@@ -14,8 +14,8 @@ spec:
     spec:
       initContainers:
       - name: init-springbootmicroservice
-        image: busybox
-        command: ['sh', '-c', 'curl -POST http://monitoring-influxdb.kube-system.svc.cluster.local:8086/query --data-urlencode \"q=CREATE DATABASE metrics\"']
+        image: openjdk:8
+        command: ['sh', '-c', 'apt update && apt install -y netcat && echo "Waiting monitoring to launch on 8080..."  && while ! nc -z monitoring-influxdb.kube-system.svc.cluster.local 8086; do   echo "waiting..." ; sleep 2 ; done ;  curl -POST http://monitoring-influxdb.kube-system.svc.cluster.local:8086/query --data-urlencode "q=CREATE DATABASE metrics"']
       containers:
       - name: springbootmicroservice
         image: marcinkasinski/springbootmicroservice
