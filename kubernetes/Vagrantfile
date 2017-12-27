@@ -87,8 +87,8 @@ $masterscript = <<SCRIPT
       curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/ingress-service-nodeport.yaml | kubectl apply -f -
             
       kubectl get nodes
-      echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
 
+      # moje aplikacje
       curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootMicroservice_dp_and_service.yaml  | kubectl apply -f -     
       
       # ----------------------------- nfs -----------------------------
@@ -97,10 +97,25 @@ $masterscript = <<SCRIPT
       
       sudo mkdir /var/nfs/kubernetes_share -p
       sudo chown nobody:nogroup /var/nfs/kubernetes_share
+      
+      sudo mkdir /var/nfs/mysql -p
+      sudo chown nobody:nogroup /var/nfs/mysql
+      
+      sudo mkdir /var/nfs/jenkins -p
+      sudo chown nobody:nogroup /var/nfs/jenkins
+      #Jeœli jenkins nie moze zapisywaæ do pliku 
+      sudo chown -R 1000:1000 /var/nfs/jenkins/
+      
+      
+      
       sudo sh -c "echo '/var/nfs/kubernetes_share    *(rw,sync,no_subtree_check,no_root_squash)' >> /etc/exports"      
+      sudo sh -c "echo '/var/nfs/mysql    *(rw,sync,no_subtree_check,no_root_squash)' >> /etc/exports"      
+      sudo sh -c "echo '/var/nfs/jenkins    *(rw,sync,no_subtree_check,no_root_squash)' >> /etc/exports"      
       sudo exportfs -ra
       sudo cp join_command_sudo /var/nfs/kubernetes_share
       # ----------------------------- nfs -----------------------------
+
+      echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
 		
 
 SCRIPT
@@ -108,6 +123,8 @@ SCRIPT
 $nodescript = <<SCRIPT
       echo I am node provisioning...
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
+
+      echo "Waiting kubernetes master to launch ..."  && while ! nc -z 192.168.1.227 6443; do   echo "waiting ..." ; sleep 5 ; done
 
       # ----------------------------- nfs -----------------------------
       sudo mkdir -p /nfs/kubernetes_share
@@ -117,7 +134,7 @@ $nodescript = <<SCRIPT
       # ----------------------------- nfs -----------------------------
 
 
-      echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
+      echo ">>>>>>>>>>>>>>>>>>>>>>>>>>node machine provisioned "$1
 
 SCRIPT
 

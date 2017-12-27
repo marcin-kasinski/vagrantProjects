@@ -1,0 +1,91 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfsjenkins
+spec:
+  capacity:
+    storage: 1Mi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    # FIXME: use the right IP
+    server: k8smaster.local
+    path: "/var/nfs/jenkins"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfsjenkins
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 1Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins      
+  template:
+    metadata:
+      labels:
+        app: jenkins
+    spec:
+      containers:
+      - name: jenkins
+        image: jenkins
+        ports:
+        - name: jenkins-port1
+          containerPort: 8080
+        - name: jenkins-port2
+          containerPort: 50000
+        volumeMounts:
+        - name: nfsjenkins
+          mountPath: /var/jenkins_home
+      volumes:
+      - name: nfsjenkins
+        persistentVolumeClaim:
+          claimName: nfsjenkins
+          
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    nodePort: 31888
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  - port: 50000
+    nodePort: 32000
+    targetPort: 50000
+    protocol: TCP
+    name: http2
+  selector:
+    app: jenkins
+---
+# An Ingress with 2 hosts and 3 endpoints
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: jenkins-ingress
+spec:
+  rules:
+  - host: jenkins
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: jenkins
+          servicePort: 8080
