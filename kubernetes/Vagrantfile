@@ -103,7 +103,7 @@ $masterscript = <<SCRIPT
       
       sudo mkdir /var/nfs/jenkins -p
       sudo chown nobody:nogroup /var/nfs/jenkins
-      #Jeœli jenkins nie moze zapisywaæ do pliku 
+      #Jesli jenkins nie moze zapisywac do pliku 
       sudo chown -R 1000:1000 /var/nfs/jenkins/
       
       
@@ -116,8 +116,7 @@ $masterscript = <<SCRIPT
       # ----------------------------- nfs -----------------------------
 
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
-		
-
+      
 SCRIPT
 
 $nodescript = <<SCRIPT
