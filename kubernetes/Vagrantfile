@@ -92,6 +92,8 @@ $masterscript = <<SCRIPT
       curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/jenkins_dp_and_service.yaml | kubectl apply -f -     
 
       curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mysql_dp_and_service.yaml | kubectl apply -f -     
+      curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/phpmyadmin_dp_and_service.yaml | kubectl apply -f -     
+
       curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootMicroservice_dp_and_service.yaml  | kubectl apply -f -     
       
       # ----------------------------- nfs -----------------------------
@@ -109,6 +111,7 @@ $masterscript = <<SCRIPT
 
       #Jesli jenkins nie moze zapisywac do pliku
       sudo chown -R 1000:1000 /var/nfs/jenkins
+      sudo chown -R 1000:1000 /var/nfs/mysql
 
       
       
