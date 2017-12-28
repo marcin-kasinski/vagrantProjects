@@ -134,11 +134,8 @@ $masterscript = <<SCRIPT
       curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kibana.yaml | kubectl apply -f -
 
 
-      #mysql init
-      
-      
-      
-      
+      #------------------------------- mysql init ------------------------------- 
+            
       sudo apt install -y netcat
       sudo apt install -y mysql-client 
       
@@ -186,16 +183,29 @@ EOF
     	fi
     
     
-      
-      #sudo apt update && sudo apt install -y netcat && echo "Waiting mysql to launch"  && while ! nc -z mysql.default.svc.cluster.local 3306; do   echo "waiting..." ; sleep 5 ; done ;        sudo apt-get install -y mysql-client  && ls -l 
+    
+          #------------------------------- mysql init ------------------------------- 
+    
+          #------------------------------- kafka init ------------------------------- 
+     
+     sudo apt install -y openjdk-8-jdk
+       while ! kubectl get po -o wide | grep kafka-broker1 | grep Running ; do   echo "waiting for kafka IP..." ; sleep 5 ; done
 
 
+      KAFKAPODIP=`kubectl get po -o wide | grep kafka-broker1 | grep Running `
+      echo $KAFKAPODIP
+      KAFKAPODIP=`echo $KAFKAPODIP  | cut -d " " -f 6`
+      echo $KAFKAPODIP
+
+      while ! nc -z $KAFKAPODIP 9092; do   echo "waiting kafka to launch ..." ; sleep 5 ; done
 
 
+		cd /tmp
+		curl http://ftp.ps.pl/pub/apache/kafka/1.0.0/kafka_2.11-1.0.0.tgz | tar xvz
+		/tmp/kafka_2.11-1.0.0/bin/kafka-topics.sh --list --zookeeper $KAFKAPODIP:2181
 
 
-
-
+          #------------------------------- kafka init ------------------------------- 
 
 
 
