@@ -95,29 +95,6 @@ $masterscript = <<SCRIPT
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>CREATING CONF"
 
       kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-	  kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
-
-      # ingress
-      curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/namespace.yaml | kubectl apply -f -
-      curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/default-backend.yaml | kubectl apply -f -
-      curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/configmap.yaml | kubectl apply -f -
-      curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/tcp-services-configmap.yaml | kubectl apply -f -
-      curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/udp-services-configmap.yaml | kubectl apply -f -
-      curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/rbac.yaml | kubectl apply -f -
-      curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/with-rbac.yaml | kubectl apply -f -
-      
-      # heapster
-      curl https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/grafana.yaml | kubectl apply -f -
-      curl https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/influxdb.yaml | kubectl apply -f -
-      curl https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/heapster.yaml | kubectl apply -f -
-      curl https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/rbac/heapster-rbac.yaml | kubectl apply -f -
-            
-      # moje poprawki : dashboard
-      curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/dashboard-service-ingress.yaml | kubectl apply -f -
-      curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/grafana-ingress.yaml | kubectl apply -f -
-      curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/ingress-service-nodeport.yaml | kubectl apply -f -
-            
-      kubectl get nodes
 
       # moje aplikacje
       curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/jenkins_dp_and_service.yaml | kubectl apply -f -     
@@ -127,6 +104,8 @@ $masterscript = <<SCRIPT
       curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mysql_dp_and_service.yaml | kubectl apply -f -     
       curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/phpmyadmin_dp_and_service.yaml | kubectl apply -f -     
 
+
+	  #curl 'elasticsearch-logging:9200/_cat/indices?v'
       curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/elasticsearch.yaml | kubectl apply -f -
 
       curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/logstash.yml | kubectl apply -f -
@@ -156,6 +135,8 @@ $masterscript = <<SCRIPT
       cat <<EOT >> microserviceinit.sql
 
 
+	CREATE DATABASE test;
+    use test;
 	
 	CREATE TABLE users (
 	  id bigint(20) NOT NULL,
@@ -171,18 +152,19 @@ EOT
 
 SQL=$(cat <<-EOF
     
-CREATE DATABASE test;
-use test;
+	CREATE DATABASE test;
+    use test;
 	
-	CREATE TABLE \`users\` (
-	  \`id\` bigint(20) NOT NULL,
-	  \`email\` varchar(255) DEFAULT NULL,
-	  \`name\` varchar(255) DEFAULT NULL
+	CREATE TABLE users (
+	  id bigint(20) NOT NULL,
+	  email varchar(255) DEFAULT NULL,
+	  name varchar(255) DEFAULT NULL
 	) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 	
-	INSERT INTO users (\`id\`,\`email\`, \`name\`) VALUES (1 , 'x@x.com','Marcin');
-	INSERT INTO users (\`id\`,\`email\`, \`name\`) VALUES (2 , 'z@fromlistener.com','Marcin from listener');
+	
+	INSERT INTO users (id,email, name) VALUES (1 , 'x@x.com','Marcin');
+	INSERT INTO users (id,email, name) VALUES (2 , 'z@fromlistener.com','Marcin from listener');
+
 
 
 EOF
@@ -229,10 +211,33 @@ EOF
 
           #------------------------------- kafka init ------------------------------- 
 
+      curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootRabbitMQListener_dp_and_service.yaml  | kubectl apply -f -     
+      curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootKafkaListener_dp_and_service.yaml  | kubectl apply -f -     
       curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootMicroservice_dp_and_service.yaml  | kubectl apply -f -     
       curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootWebdp_and_service.yaml  | kubectl apply -f -     
       
 
+	  kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+
+      # ingress
+      curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/namespace.yaml | kubectl apply -f -
+      curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/default-backend.yaml | kubectl apply -f -
+      curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/configmap.yaml | kubectl apply -f -
+      curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/tcp-services-configmap.yaml | kubectl apply -f -
+      curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/udp-services-configmap.yaml | kubectl apply -f -
+      curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/rbac.yaml | kubectl apply -f -
+      curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/with-rbac.yaml | kubectl apply -f -
+      
+      # heapster
+      curl https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/grafana.yaml | kubectl apply -f -
+      curl https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/influxdb.yaml | kubectl apply -f -
+      curl https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/heapster.yaml | kubectl apply -f -
+      curl https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/rbac/heapster-rbac.yaml | kubectl apply -f -
+            
+      # moje poprawki : dashboard
+      curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/dashboard-service-ingress.yaml | kubectl apply -f -
+      curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/grafana-ingress.yaml | kubectl apply -f -
+      curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/ingress-service-nodeport.yaml | kubectl apply -f -
 
 
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
