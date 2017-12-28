@@ -106,9 +106,10 @@ $masterscript = <<SCRIPT
       
       sudo mkdir /var/nfs/jenkins -p
       sudo chown nobody:nogroup /var/nfs/jenkins
-      #Jesli jenkins nie moze zapisywac do pliku 
-      sudo chown -R 1000:1000 /var/nfs/jenkins/
-      
+
+      #Jesli jenkins nie moze zapisywac do pliku
+      sudo chown -R 1000:1000 /var/nfs/jenkins
+
       
       
       sudo sh -c "echo '/var/nfs/kubernetes_share    *(rw,sync,no_subtree_check,no_root_squash)' >> /etc/exports"      
