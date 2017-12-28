@@ -1,3 +1,36 @@
+kind: ConfigMap
+metadata:
+  name: logstash-config-logstash.yml
+  namespace: default
+apiVersion: v1
+data:    
+  springbootmicroservice.sql: |-   
+
+    SHOW DATABASES LIKE 'test';
+
+    IF (SELECT 1 = 1 FROM Table WHERE FieldValue='') THEN
+    BEGIN
+        SELECT TableID FROM Table WHERE FieldValue='';
+    END;
+    ELSE
+    BEGIN
+        INSERT INTO Table (FieldValue) VALUES('');
+        SELECT LAST_INSERT_ID() AS TableID;
+    END;
+    END IF;
+
+    CREATE DATABASE test;
+    use test
+	
+    CREATE TABLE `users` (
+    `id` bigint(20) NOT NULL,
+    `email` varchar(255) DEFAULT NULL,
+    `name` varchar(255) DEFAULT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+    
+    INSERT INTO users (`id`,`email`, `name`) VALUES (1 , 'x@x.com','Marcin');
+    INSERT INTO users (`id`,`email`, `name`) VALUES (2 , 'z@fromlistener.com','Marcin from listener');
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -13,9 +46,12 @@ spec:
         app: springbootmicroservice
     spec:
       initContainers:
-      - name: init-springbootmicroservice
+      - name: init-springbootmicroservice-monitoring
         image: openjdk:8
-        command: ['sh', '-c', 'apt update && apt install -y netcat && echo "Waiting monitoring to launch on 8080..."  && while ! nc -z monitoring-influxdb.kube-system.svc.cluster.local 8086; do   echo "waiting..." ; sleep 2 ; done ;  curl -POST http://monitoring-influxdb.kube-system.svc.cluster.local:8086/query --data-urlencode "q=CREATE DATABASE metrics"']
+        command: ['sh', '-c', 'apt update && apt install -y netcat && echo "Waiting monitoring to launch"  && while ! nc -z monitoring-influxdb.kube-system.svc.cluster.local 8086; do   echo "waiting..." ; sleep 5 ; done ;  curl -POST http://monitoring-influxdb.kube-system.svc.cluster.local:8086/query --data-urlencode "q=CREATE DATABASE metrics"']
+      - name: init-springbootmicroservice-mysql
+        image: openjdk:8
+        command: ['sh', '-c', 'apt update && apt install -y netcat && echo "Waiting mysql to launch"  && while ! nc -z mysql.default.svc.cluster.local 3306; do   echo "waiting..." ; sleep 5 ; done ;        apt-get install -y mysql-client  && ls -l ']
       containers:
       - name: springbootmicroservice
         image: marcinkasinski/springbootmicroservice
