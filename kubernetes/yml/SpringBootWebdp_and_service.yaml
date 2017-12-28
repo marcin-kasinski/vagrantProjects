@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springbootweb-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: springbootweb
+  template:
+    metadata:
+      labels:
+        app: springbootweb
+    spec:
+      containers:
+      - name: springbootweb
+        image: marcinkasinski/springbootweb
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 7070
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: springbootweb
+spec:
+  type: NodePort
+  ports:
+  - port: 7070
+    nodePort: 30070
+    targetPort: 7070
+    protocol: TCP
+    name: http
+  selector:
+    app: springbootweb
+---
+# An Ingress with 2 hosts and 3 endpoints
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: springbootweb-ingress
+  annotations:
+    ingress.kubernetes.io/enable-cors: "true"
+    ingress.kubernetes.io/rewrite-target: /  
+spec:
+  rules:
+  - host: springbootweb
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: springbootweb
+          servicePort: 7070

@@ -16,9 +16,6 @@ spec:
       - name: init-springbootmicroservice-monitoring
         image: openjdk:8
         command: ['sh', '-c', 'apt update && apt install -y netcat && echo "Waiting monitoring to launch"  && while ! nc -z monitoring-influxdb.kube-system.svc.cluster.local 8086; do   echo "waiting..." ; sleep 5 ; done ;  curl -POST http://monitoring-influxdb.kube-system.svc.cluster.local:8086/query --data-urlencode "q=CREATE DATABASE metrics"']
-      - name: init-springbootmicroservice-mysql
-        image: openjdk:8
-        command: ['sh', '-c', 'apt update && apt install -y netcat && echo "Waiting mysql to launch"  && while ! nc -z mysql.default.svc.cluster.local 3306; do   echo "waiting..." ; sleep 5 ; done ;        apt-get install -y mysql-client  && ls -l ']
       containers:
       - name: springbootmicroservice
         image: marcinkasinski/springbootmicroservice
