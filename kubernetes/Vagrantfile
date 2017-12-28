@@ -45,7 +45,7 @@ $masterscript = <<SCRIPT
       # ----------------------------- nfs -----------------------------
       sudo apt-get install nfs-kernel-server
       # katalog dla joina:
-      
+
       sudo mkdir /var/nfs/kubernetes_share -p
       sudo chown nobody:nogroup /var/nfs/kubernetes_share
       
@@ -68,20 +68,16 @@ $masterscript = <<SCRIPT
 
       # ----------------------------- nfs -----------------------------      
             
-      sudo sh -c "rm -rf ~/.kube && kubeadm reset && kubeadm init --pod-network-cidr 10.244.0.0/16 --apiserver-advertise-address 192.168.1.227 |  grep \"kubeadm join\"  >/var/nfs/kubernetes_share/join_command"
+      sudo rm -rf ~/.kube && sudo kubeadm reset && sudo kubeadm init --pod-network-cidr 10.244.0.0/16 --apiserver-advertise-address 192.168.1.227 |  grep "kubeadm join"  >join_command
       
       
+      sudo cp join_command /var/nfs/kubernetes_share/join_command
       JOIN_COMMAND="$( sudo cat /var/nfs/kubernetes_share/join_command )"
+      	   
+       echo "sudo "$JOIN_COMMAND > join_command_sudo
+
+      sudo cp join_command_sudo /var/nfs/kubernetes_share/join_command_sudo
       
-      
-      echo "JOIN_COMMAND "$JOIN_COMMAND
-	   
-      sudo sh -c " echo \"sudo \"$JOIN_COMMAND >/var/nfs/kubernetes_share/join_command_sudo  "
-
-      echo "JOIN_COMMAND "
-
-      cat /var/nfs/kubernetes_share/join_command_sudo
-
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>CREATING CONF "
 
        mkdir -p $HOME/.kube
@@ -146,7 +142,7 @@ $masterscript = <<SCRIPT
       sudo apt install -y netcat
       sudo apt install -y mysql-client 
       
-      while ! kubectl get po -o wide | grep mysql | grep Running ; do   echo "waiting for mysql IP..." ; sleep 2 ; done
+      while ! kubectl get po -o wide | grep mysql | grep Running ; do   echo "waiting for mysql IP..." ; sleep 5 ; done
 
       MYSQLPODIP=`kubectl get po -o wide | grep mysql | grep Running `
       echo $MYSQLPODIP
@@ -177,7 +173,7 @@ EOF
 
 
 
-      mysqlshow -h $MYSQLPODIP --user=root --password=secret test| grep -v Wildcard | grep -o test
+      mysqlshow -h $MYSQLPODIP --user=root --password=secret mysql | grep -v Wildcard | grep -o test
 
          if [ $? -gt 0 ] ; then
           echo "nie ma bazy"
@@ -219,14 +215,14 @@ $nodescript = <<SCRIPT
       echo "Waiting kubernetes master to launch ..."  && while ! nc -z 192.168.1.227 6443; do   echo "waiting for master ..." ; sleep 5 ; done
 
       # ----------------------------- nfs -----------------------------
-      #sudo mkdir -p /nfs/kubernetes_share
-      #sudo mount k8smaster.local:/var/nfs/kubernetes_share /nfs/kubernetes_share
+      sudo mkdir -p /nfs/kubernetes_share
+      sudo mount k8smaster.local:/var/nfs/kubernetes_share /nfs/kubernetes_share
       
-      #while [ ! -f /nfs/kubernetes_share/join_command_sudo ] ; do echo "waiting for join command..." ;  sleep 2 ; done
+      while [ ! -f /nfs/kubernetes_share/join_command_sudo ] ; do echo "waiting for join command..." ;  sleep 5 ; done
       
       
-      #JOIN_COMMAND=$(    sudo cat /nfs/kubernetes_share/join_command_sudo  )
-      #eval $JOIN_COMMAND
+      JOIN_COMMAND=$(    sudo cat /nfs/kubernetes_share/join_command_sudo  )
+      eval $JOIN_COMMAND
       # ----------------------------- nfs -----------------------------
 
 
