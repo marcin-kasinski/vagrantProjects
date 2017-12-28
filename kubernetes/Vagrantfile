@@ -135,6 +135,8 @@ $masterscript = <<SCRIPT
 
       curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/rabbitmq_dp_and_service.yaml | kubectl apply -f -
 
+      curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootZipkin_dp_and_service.yaml | kubectl apply -f -     
+
 
       #------------------------------- mysql init ------------------------------- 
             
@@ -151,6 +153,22 @@ $masterscript = <<SCRIPT
       while ! nc -z $MYSQLPODIP 3306; do   echo "waiting mysql to launch ..." ; sleep 5 ; done
 
 
+      cat <<EOT >> microserviceinit.sql
+
+
+	
+	CREATE TABLE users (
+	  id bigint(20) NOT NULL,
+	  email varchar(255) DEFAULT NULL,
+	  name varchar(255) DEFAULT NULL
+	) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+	
+	
+	INSERT INTO users (id,email, name) VALUES (1 , 'x@x.com','Marcin');
+	INSERT INTO users (id,email, name) VALUES (2 , 'z@fromlistener.com','Marcin from listener');
+
+EOT
+
 SQL=$(cat <<-EOF
     
 CREATE DATABASE test;
@@ -161,7 +179,7 @@ use test;
 	  \`email\` varchar(255) DEFAULT NULL,
 	  \`name\` varchar(255) DEFAULT NULL
 	) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-	
+
 	
 	INSERT INTO users (\`id\`,\`email\`, \`name\`) VALUES (1 , 'x@x.com','Marcin');
 	INSERT INTO users (\`id\`,\`email\`, \`name\`) VALUES (2 , 'z@fromlistener.com','Marcin from listener');
@@ -179,7 +197,9 @@ EOF
           
           
           
-          mysql -h $MYSQLPODIP  -uroot -psecret  --port 3306  mysql -e "$SQL"
+          #echo $SQL >microserviceinit.sql
+          #mysql -h $MYSQLPODIP  -uroot -psecret  --port 3306  mysql -e "$SQL"
+          mysql -h $MYSQLPODIP  -uroot -psecret  --port 3306  mysql < microserviceinit.sql
         else
           echo "jest baza"
     	fi
@@ -208,10 +228,6 @@ EOF
 
 
           #------------------------------- kafka init ------------------------------- 
-
-
-
-      curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootZipkin_dp_and_service.yaml | kubectl apply -f -     
 
       curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootMicroservice_dp_and_service.yaml  | kubectl apply -f -     
       curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootWebdp_and_service.yaml  | kubectl apply -f -     
