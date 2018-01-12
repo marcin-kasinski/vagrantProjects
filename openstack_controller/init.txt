@@ -11,3 +11,14 @@
     vagrant up --provision 
 
 	vagrant ssh controller
+	
+	
+	
+systemctl list-unit-files | grep enabled
+
+systemctl list-unit-files | grep cpu
+	
+systemctl restart devstack@c-*
+
+
+journalctl -f --unit devstack@c-vol.service
