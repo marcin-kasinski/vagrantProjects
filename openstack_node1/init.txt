@@ -1,0 +1,13 @@
+
+    cd /vagrantprojects/openstack_box/
+	vagrant halt
+	vagrant box update
+	vboxmanage unregistervm openstackmaster --delete
+	vboxmanage unregistervm openstacknode1 --delete
+
+	vboxmanage list vms
+
+#    vagrant up openstackmaster --provision 
+    vagrant up --provision 
+
+	vagrant ssh openstackmaster 
