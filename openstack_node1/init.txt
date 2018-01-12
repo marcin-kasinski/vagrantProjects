@@ -1,9 +1,9 @@
 
-    cd /vagrantprojects/openstack_box/
+    cd /vagrantprojects/openstack_node1/
 	vagrant halt
 	vagrant box update
-	vboxmanage unregistervm openstackmaster --delete
-	vboxmanage unregistervm openstacknode1 --delete
+
+	vboxmanage unregistervm node1 --delete
 
 	vboxmanage list vms
 
