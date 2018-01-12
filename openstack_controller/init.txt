@@ -1,0 +1,13 @@
+
+    cd /vagrantprojects/openstack_controller/
+	vagrant halt
+	vagrant box update
+
+	vboxmanage unregistervm controller --delete
+
+	vboxmanage list vms
+
+#    vagrant up openstackmaster --provision 
+    vagrant up --provision 
+
+	vagrant ssh controller
