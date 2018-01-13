@@ -10,4 +10,4 @@
 #    vagrant up openstackmaster --provision 
     vagrant up --provision 
 
-	vagrant ssh openstackmaster 
+	vagrant ssh node1 

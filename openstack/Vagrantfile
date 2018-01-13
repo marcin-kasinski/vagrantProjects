@@ -21,10 +21,10 @@ $masterscript = <<SCRIPT
       
 
       echo '[[local|localrc]]' > local.conf
-      echo ADMIN_PASSWORD=password >> local.conf
-      echo DATABASE_PASSWORD=password >> local.conf
-      echo RABBIT_PASSWORD=password >> local.conf
-      echo SERVICE_PASSWORD=password >> local.conf
+      echo ADMIN_PASSWORD=secret >> local.conf
+      echo DATABASE_PASSWORD=secret >> local.conf
+      echo RABBIT_PASSWORD=secret >> local.conf
+      echo SERVICE_PASSWORD=secret >> local.conf
       sudo chown -R stack:stack /home/ubuntu/devstack
       
       sudo su -c "./stack.sh" -s /bin/sh stack

@@ -12,7 +12,10 @@
 
 	vagrant ssh controller
 	
+
+
 	
+systemctl list-units devstack@*
 	
 systemctl list-unit-files | grep enabled
 
@@ -22,3 +25,6 @@ systemctl restart devstack@c-*
 
 
 journalctl -f --unit devstack@c-vol.service
+
+
+journalctl -f --unit devstack@n-cpu.service
