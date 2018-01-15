@@ -23,8 +23,14 @@ systemctl list-unit-files | grep cpu
 	
 systemctl restart devstack@c-*
 
+sudo systemctl restart devstack@n-cpu
+
 
 journalctl -f --unit devstack@c-vol.service
 
 
 journalctl -f --unit devstack@n-cpu.service
+
+
+
+openstack server create --image cirros-0.3.5-x86_64-disk --flavor 1 --nic net-id=abbf0a85-530d-4360-bd69-f2db599d6a43 my_first_vm

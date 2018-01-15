@@ -7,6 +7,27 @@
 
 	vboxmanage list vms
 
+
+
+
+
+
     vagrant up openstackmaster --provision 
 
 	vagrant ssh openstackmaster 
+
+	
+	#tylko node1
+	vagrant halt openstacknode1
+		vboxmanage unregistervm openstacknode1 --delete
+	
+	 vagrant up openstacknode1 --provision 
+	
+	vagrant ssh openstacknode1  
+	
+	
+	
+	#discover 
+	openstack compute service list --service nova-compute
+	
+	su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova

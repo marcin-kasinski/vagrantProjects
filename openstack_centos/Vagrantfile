@@ -1,0 +1,162 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.require_version ">= 1.6.0"
+
+$initscript = <<SCRIPT
+      echo I am provisioning...
+      echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
+
+SCRIPT
+
+$masterscript = <<SCRIPT
+      echo I am provisioning master...
+      echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
+	  sudo useradd -s /bin/bash -d /opt/stack -m stack
+	  sudo apt-get install sudo -y || yum install -y sudo
+	  sudo echo "stack ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+	  sudo apt-get install git -y || sudo yum install -y git
+	  git clone https://git.openstack.org/openstack-dev/devstack
+      cd devstack
+      
+
+      echo '[[local|localrc]]' > local.conf
+      echo ADMIN_PASSWORD=secret >> local.conf
+      echo DATABASE_PASSWORD=secret >> local.conf
+      echo RABBIT_PASSWORD=secret >> local.conf
+      echo SERVICE_PASSWORD=secret >> local.conf
+      sudo chown -R stack:stack /home/ubuntu/devstack
+      
+      sudo su -c "./stack.sh" -s /bin/sh stack
+
+      ############################ adding image ############################
+
+
+
+      source /home/ubuntu/devstack/accrc/admin/admin
+      export OS_PASSWORD=password
+      export OS_AUTH_URL=http://192.168.1.227/identity/v3
+      export OS_IDENTITY_API_VERSION=3
+
+      cd /home/ubuntu
+            
+      #wget http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
+      #openstack image create --disk-format qcow2 --container-format bare  --public --file /home/ubuntu/xenial-server-cloudimg-amd64-disk1.img xenial-server-cloudimg-amd64
+      
+      #wget http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
+      #openstack image create --disk-format qcow2 --container-format bare  --public --file /home/ubuntu/CentOS-7-x86_64-GenericCloud.qcow2 CentOS-7-x86_64-GenericCloud.qcow2
+      
+      #wget http://cdimage.debian.org/cdimage/openstack/current/debian-9.3.3-20180105-openstack-amd64.qcow2
+      #openstack image create --container-format bare --disk-format qcow2 --file /home/ubuntu/debian-9.3.3-20180105-openstack-amd64.qcow2 debian-9-openstack-amd64
+      
+      #wget https://download.fedoraproject.org/pub/fedora/linux/releases/27/CloudImages/x86_64/images/Fedora-Cloud-Base-27-1.6.x86_64.qcow2
+      #openstack image create --container-format bare --disk-format qcow2 --file /home/ubuntu/Fedora-Cloud-Base-27-1.6.x86_64.qcow2 Fedora-Cloud-Base-27-1.6.x86_64
+      
+      
+      
+SCRIPT
+
+$nodescript = <<SCRIPT
+      echo I am node provisioning...
+      echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
+
+SCRIPT
+
+
+boxes = [
+    {
+        :name => "openstackmaster",
+        :interface => "enp3s0",
+        :mac=> "5CA1AB1E0001",
+        :ip => "192.168.10.10",
+        :mem => "15375",
+        :cpu => "1"
+    },
+    {
+        :name => "openstacknode1",
+        :interface => "enp3s0",
+        :mac=> "5CA1AB1E0002",
+        :ip => "192.168.10.11",
+        :mem => "15375",
+        :cpu => "1"
+    }]
+
+Vagrant.configure(2) do |config|
+
+  config.vm.box = "ubuntu/xenial64"
+#  config.vm.box = "ubuntu/trusty64"
+#  config.vm.box = "bento/ubuntu-16.04"
+  
+  #config.vm.box_version = "20171212.0.0"
+
+  boxes.each do |opts|
+      config.vm.define opts[:name] do |config|
+        config.vm.hostname = opts[:name]
+        #config.vm.network :forwarded_port, host: 2222, guest: 22
+        #config.ssh.username = "ubuntu"
+        #config.ssh.password = "379a8188cba8c5e64b9a429f"
+
+        config.vm.provider "virtualbox" do |v|
+          v.customize ["modifyvm", :id, "--memory", opts[:mem]]
+          v.customize ["modifyvm", :id, "--cpus", opts[:cpu]]
+          v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+          v.name = opts[:name]
+        end
+
+        config.vm.network "public_network", bridge: opts[:interface], type: "dhcp" , mac: opts[:mac]        
+        #config.vm.network "public_network", bridge: opts[:interface] , mac: opts[:mac], ip: opts[:ip]
+        #config.vm.network "private_network" ,  bridge: opts[:interface], ip: opts[:ip]
+        
+      end
+  end
+
+
+
+
+
+
+  boxes.each do |opts|
+    config.vm.define opts[:name] do |config|
+      config.vm.provision "shell" do |s|
+        s.privileged = false
+        s.inline = $initscript
+        s.args = opts[:ip]
+      end
+
+
+ # default router
+  config.vm.provision "shell",
+    run: "always",
+    inline: "sudo route add default gw 192.168.1.1"
+
+  # default router ipv6
+  config.vm.provision "shell",
+    run: "always",
+    inline: "#sudo route -A inet6 add default gw fe80::5ea1:abff:fe1e:1 dev enp0s8"
+
+  # delete default gw on enp0s3 
+  config.vm.provision "shell",
+    run: "always",
+    inline: "sudo route del default gw 10.0.2.2"
+
+
+
+    end
+  end
+
+
+
+
+
+   config.vm.define  "openstackmaster" do |config|
+      config.vm.provision "shell" do |s|
+        s.inline = $masterscript
+        s.args = "192.168.10.10"
+      end
+    end
+
+
+
+
+
+end
