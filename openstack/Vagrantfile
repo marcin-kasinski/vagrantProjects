@@ -158,6 +158,7 @@ virt_type = qemu' >> /etc/nova/nova.conf"
 
 
 
+      sudo cp /vagrant/openstacknode1/nova.conf /etc/nova/nova.conf
       
       sudo cat /etc/nova/nova.conf
       
