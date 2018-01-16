@@ -1,13 +1,13 @@
 
     cd /vagrantprojects/openstack_node1/
-	vagrant halt
+	vagrant halt node1
 	vagrant box update
 
 	vboxmanage unregistervm node1 --delete
 
 	vboxmanage list vms
 
-#    vagrant up openstackmaster --provision 
-    vagrant up --provision 
+    vagrant up node1 --provision 
+#    vagrant up --provision 
 
 	vagrant ssh node1 

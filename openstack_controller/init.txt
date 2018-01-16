@@ -7,8 +7,8 @@
 
 	vboxmanage list vms
 
-#    vagrant up openstackmaster --provision 
-    vagrant up --provision 
+   vagrant up controller --provision 
+#    vagrant up --provision 
 
 	vagrant ssh controller
 	
@@ -23,12 +23,13 @@ systemctl list-unit-files | grep cpu
 	
 systemctl restart devstack@c-*
 
-sudo systemctl restart devstack@n-cpu
 
 
 journalctl -f --unit devstack@c-vol.service
 
 
+
+sudo systemctl restart devstack@n-cpu
 journalctl -f --unit devstack@n-cpu.service
 
 
