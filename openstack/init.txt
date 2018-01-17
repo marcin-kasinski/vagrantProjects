@@ -7,14 +7,16 @@
 
 	vboxmanage list vms
 
-
-
-
-
-
     vagrant up openstackmaster --provision 
-
+    
+    
+    
+    #vagrant up openstacknode1 --provision 
+	
+	
+	
 	vagrant ssh openstackmaster 
+
 
 	
 	#tylko node1

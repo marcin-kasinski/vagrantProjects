@@ -35,3 +35,23 @@ journalctl -f --unit devstack@n-cpu.service
 
 
 openstack server create --image cirros-0.3.5-x86_64-disk --flavor 1 --nic net-id=abbf0a85-530d-4360-bd69-f2db599d6a43 my_first_vm
+
+
+
+
+
+
+
+
+#nova conduct
+sudo systemctl restart devstack@n-cond-cell1
+sudo systemctl status devstack@n-cond-cell1
+sudo journalctl -f --unit  devstack@n-cond-cell1
+
+
+#nova compute
+sudo systemctl restart devstack@n-cpu.service
+sudo systemctl status devstack@n-cpu.service
+sudo journalctl -f --unit  devstack@n-cpu.service
+
+

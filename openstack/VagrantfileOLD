@@ -20,26 +20,42 @@ $masterscript = <<SCRIPT
 	  sudo apt-get install git -y || sudo yum install -y git
 	  git clone https://git.openstack.org/openstack-dev/devstack
 
-      mkdir ~/.ssh; chmod 700 ~/.ssh
-      echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCyYjfgyPazTvGpd8OaAvtU2utL8W6gWC4JdRS1J95GhNNfQd657yO6s1AH5KYQWktcE6FO/xNUC2reEXSGC7ezy+sGO1kj9Limv5vrvNHvF1+wts0Cmyx61D2nQw35/Qz8BvpdJANL7VwP/cFI/p3yhvx2lsnjFE3hN8xRB2LtLUopUSVdBwACOVUmH2G+2BWMJDjVINd2DPqRIA4Zhy09KJ3O1Joabr0XpQL0yt/I9x8BVHdAx6l9U0tMg9dj5+tAjZvMAFfye3PJcYwwsfJoFxC8w/SLtqlFX7Ehw++8RtvomvuipLdmWCy+T9hIkl+gHYE4cS3OIqXH7f49jdJf jesse@spacey.local" > ~/.ssh/authorized_keys
-      
       cd /home/vagrant/devstack 
-       
-      cp /vagrant/controller_local.conf /home/vagrant/devstack/local.conf 
-      cp /vagrant/localrc.password /home/vagrant/devstack/.localrc.password 
+
+      #echo '[[local|localrc]]' > local.conf
+      #echo ADMIN_PASSWORD=secret >> local.conf
+      #echo DATABASE_PASSWORD=secret >> local.conf
+      #echo RABBIT_PASSWORD=secret >> local.conf
+      #echo SERVICE_PASSWORD=secret >> local.conf
+      
+      #echo '[[local|localrc]]' > .localrc.password
+      echo ADMIN_PASSWORD=secret >> .localrc.password
+      echo DATABASE_PASSWORD=secret >> .localrc.password
+      echo RABBIT_PASSWORD=secret >> .localrc.password
+      echo SERVICE_PASSWORD=secret >> .localrc.password
+      
+      
+      
       
       sudo chown -R stack:stack /home/vagrant/devstack
+      
+      
+      
+      
      
-      #sudo su -c "./stack.sh" -s /bin/sh stack
- 
+      
+      
+      sudo su -c "./stack.sh" -s /bin/sh stack
+      #./stack.sh
+
       ############################ adding image ############################
 
 
 
       #source /home/vagrant/devstack/accrc/admin/admin
-      source /home/vagrant/devstack/openrc admin admin
+      source openrc admin admin
       export OS_PASSWORD=secret
-      export OS_AUTH_URL=http://192.168.42.11/identity/v3
+      export OS_AUTH_URL=http://192.168.1.227/identity/v3
       export OS_IDENTITY_API_VERSION=3
 
       cd /home/vagrant
@@ -63,30 +79,99 @@ $masterscript = <<SCRIPT
 SCRIPT
 
 $nodescript = <<SCRIPT
-  
-   echo I am provisioning node...
+      echo provisioning node ...
+      sudo apt install -y nova-compute
       
-      echo $USER
-      echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
-	  sudo useradd -s /bin/bash -d /opt/stack -m stack
-	  sudo apt-get install sudo -y || yum install -y sudo
-	  sudo echo "stack ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-	  sudo apt-get install git -y || sudo yum install -y git
-	  git clone https://git.openstack.org/openstack-dev/devstack
-
-      mkdir ~/.ssh; chmod 700 ~/.ssh
-      echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCyYjfgyPazTvGpd8OaAvtU2utL8W6gWC4JdRS1J95GhNNfQd657yO6s1AH5KYQWktcE6FO/xNUC2reEXSGC7ezy+sGO1kj9Limv5vrvNHvF1+wts0Cmyx61D2nQw35/Qz8BvpdJANL7VwP/cFI/p3yhvx2lsnjFE3hN8xRB2LtLUopUSVdBwACOVUmH2G+2BWMJDjVINd2DPqRIA4Zhy09KJ3O1Joabr0XpQL0yt/I9x8BVHdAx6l9U0tMg9dj5+tAjZvMAFfye3PJcYwwsfJoFxC8w/SLtqlFX7Ehw++8RtvomvuipLdmWCy+T9hIkl+gHYE4cS3OIqXH7f49jdJf jesse@spacey.local" > ~/.ssh/authorized_keys
       
-      cd /home/vagrant/devstack 
-      cp /vagrant/compute_local.conf /home/vagrant/devstack/local.conf 
-      cp /vagrant/localrc.password /home/vagrant/devstack/.localrc.password 
- 
-      sudo chown -R stack:stack /home/vagrant/devstack
-     
-      #sudo su -c "./stack.sh" -s /bin/sh stack
+      #sudo cp /etc/nova/nova.confOLD /etc/nova/nova.conf
+      sudo cp /etc/nova/nova.conf /etc/nova/nova.confOLD
+      
+      NOVA_HOST=openstackmaster
+      NOVA_PASS=secret
+      
+      DB_HOST=openstackmaster
+      DB_USER=root
+      DB_PASS=secret
+      RABBIT_USER=stackrabbit
+      RABBIT_PASS=secret
+      RABBIT_HOST=openstackmaster
+      
+      MY_IP=192.168.1.228
 
-      ############################ adding image ############################
+		# remuje connection=
+      sudo sed -i -r '/connection=/ s/^(.*)$/#\1/g' /etc/nova/nova.conf
 
+	  SED_RABBIT="sudo sed -i -- 's/\[DEFAULT\]/\[DEFAULT\]\ntransport_url = rabbit:\\/\\/$RABBIT_USER:$RABBIT_PASS@$RABBIT_HOST\nmy_ip = $MY_IP\nuse_neutron = True\nfirewall_driver = nova.virt.firewall.NoopFirewallDriver/g' /etc/nova/nova.conf"
+      eval $SED_RABBIT
+            
+	  SED_RABBIT="sudo sed -i -- 's/\[database\]/\[database\]\nconnection = mysql+pymysql:\/\/$DB_USER:$DB_PASS@$DB_HOST\/nova/g' /etc/nova/nova.conf"
+      eval $SED_RABBIT
+            
+	  SED_RABBIT="sudo sed -i -- 's/\[api_database\]/\[api_database\]\nconnection = mysql+pymysql:\/\/$DB_USER:$DB_PASS@$DB_HOST\/nova_api/g' /etc/nova/nova.conf"
+      eval $SED_RABBIT
+            
+      sudo sh -c "echo '
+      
+[api]
+auth_strategy = keystone
+
+[keystone_authtoken]
+auth_uri = http://$NOVA_HOST:5000
+auth_url = http://$NOVA_HOST:35357
+memcached_servers = $NOVA_HOST:11211
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = nova
+password = $NOVA_PASS' >> /etc/nova/nova.conf"
+
+
+
+      sudo sh -c "echo '
+      
+[vnc]
+enabled = True
+vncserver_listen = 0.0.0.0
+vncserver_proxyclient_address = \$my_ip
+novncproxy_base_url = http://$NOVA_HOST:6080/vnc_auto.html' >> /etc/nova/nova.conf"
+
+
+      sudo sh -c "echo '
+      
+[glance]
+api_servers = http://$NOVA_HOST:9292' >> /etc/nova/nova.conf"
+
+      sudo sh -c "echo '
+      
+[oslo_concurrency]
+lock_path = /var/lib/nova/tmp' >> /etc/nova/nova.conf"
+
+
+
+#    sudo sed -i -r '/virt_type=kvm/ s/^(.*)$/#\1/g' /etc/nova/nova-compute.conf
+
+
+   sudo sh -c "echo '
+[libvirt]
+virt_type = qemu' >> /etc/nova/nova.conf"
+
+
+
+      sudo cp /vagrant/openstacknode1/nova.conf /etc/nova/nova.conf
+      
+      sudo cat /etc/nova/nova.conf
+      
+      
+      sudo service nova-compute restart
+      #sudo tail -f /var/log/syslog
+      
+      
+      
+      # add parameter in DEFAULT
+      #sudo sed -i '$SED_RABBIT' /etc/nova/nova.conf
+      #sudo sed -i $SED_RABBIT /etc/nova/nova.conf
+      
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
 
 SCRIPT
@@ -97,7 +182,7 @@ boxes = [
         :name => "openstackmaster",
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0001",
-        :ip => "192.168.42.11",
+        :ip => "192.168.10.10",
         :mem => "15375",
         :cpu => "1"
     },
@@ -105,15 +190,7 @@ boxes = [
         :name => "openstacknode1",
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0002",
-        :ip => "192.168.42.11",
-        :mem => "15375",
-        :cpu => "1"
-    },
-    {
-        :name => "openstacknode2",
-        :interface => "enp3s0",
-        :mac=> "5CA1AB1E0003",
-        :ip => "192.168.42.11",
+        :ip => "192.168.10.11",
         :mem => "15375",
         :cpu => "1"
     }]
@@ -137,13 +214,12 @@ Vagrant.configure(2) do |config|
           v.customize ["modifyvm", :id, "--memory", opts[:mem]]
           v.customize ["modifyvm", :id, "--cpus", opts[:cpu]]
           v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
-          v.customize ['modifyvm', :id, '--natnet1', '192.168.222.0/24']
           v.name = opts[:name]
         end
 
-        #config.vm.network "public_network", bridge: opts[:interface], type: "dhcp" , mac: opts[:mac]        
+        config.vm.network "public_network", bridge: opts[:interface], type: "dhcp" , mac: opts[:mac]        
         #config.vm.network "public_network", bridge: opts[:interface] , mac: opts[:mac], ip: opts[:ip]
-        config.vm.network "private_network" ,  bridge: opts[:interface],mac: opts[:mac], ip: opts[:ip]
+        #config.vm.network "private_network" ,  bridge: opts[:interface], ip: opts[:ip]
         
       end
   end
@@ -162,20 +238,20 @@ Vagrant.configure(2) do |config|
       end
 
 
-# default router
-#  config.vm.provision "shell",
-#    run: "always",
-#    inline: "sudo route add default gw 192.168.1.1"
+ # default router
+  config.vm.provision "shell",
+    run: "always",
+    inline: "sudo route add default gw 192.168.1.1"
 
-# default router ipv6
-#  config.vm.provision "shell",
-#    run: "always",
-#    inline: "#sudo route -A inet6 add default gw fe80::5ea1:abff:fe1e:1 dev enp0s8"
+  # default router ipv6
+  config.vm.provision "shell",
+    run: "always",
+    inline: "#sudo route -A inet6 add default gw fe80::5ea1:abff:fe1e:1 dev enp0s8"
 
-# delete default gw on enp0s3 
-#  config.vm.provision "shell",
-#    run: "always",
-#    inline: "sudo route del default gw 10.0.2.2"
+  # delete default gw on enp0s3 
+  config.vm.provision "shell",
+    run: "always",
+    inline: "sudo route del default gw 10.0.2.2"
 
 
 
@@ -187,7 +263,6 @@ Vagrant.configure(2) do |config|
 
 
    config.vm.define  "openstackmaster" do |config|
-     config.vm.network "forwarded_port", guest: 80, host: 8080
       config.vm.provision "shell" do |s|
         s.inline = $masterscript
         s.args = "192.168.10.10"
@@ -198,15 +273,6 @@ Vagrant.configure(2) do |config|
 
 
    config.vm.define  "openstacknode1" do |config|
-      config.vm.provision "shell" do |s|
-        s.inline = $nodescript
-        s.args = "192.168.10.10"
-      end
-    end
-
-
-
-   config.vm.define  "openstacknode2" do |config|
       config.vm.provision "shell" do |s|
         s.inline = $nodescript
         s.args = "192.168.10.10"
