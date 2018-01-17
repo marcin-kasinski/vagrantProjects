@@ -16,19 +16,23 @@ $masterscript = <<SCRIPT
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
 	  sudo useradd -s /bin/bash -d /opt/stack -m stack
 	  sudo apt-get install sudo -y || yum install -y sudo
-	  sudo echo "stack ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+	  #sudo echo "stack ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+	  
+	  sudo sh -c "echo 'stack ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers"      
+	  
+	  
 	  sudo apt-get install git -y || sudo yum install -y git
 	  git clone https://git.openstack.org/openstack-dev/devstack
 
-      mkdir ~/.ssh; chmod 700 ~/.ssh
-      echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCyYjfgyPazTvGpd8OaAvtU2utL8W6gWC4JdRS1J95GhNNfQd657yO6s1AH5KYQWktcE6FO/xNUC2reEXSGC7ezy+sGO1kj9Limv5vrvNHvF1+wts0Cmyx61D2nQw35/Qz8BvpdJANL7VwP/cFI/p3yhvx2lsnjFE3hN8xRB2LtLUopUSVdBwACOVUmH2G+2BWMJDjVINd2DPqRIA4Zhy09KJ3O1Joabr0XpQL0yt/I9x8BVHdAx6l9U0tMg9dj5+tAjZvMAFfye3PJcYwwsfJoFxC8w/SLtqlFX7Ehw++8RtvomvuipLdmWCy+T9hIkl+gHYE4cS3OIqXH7f49jdJf jesse@spacey.local" > ~/.ssh/authorized_keys
+      #mkdir ~/.ssh; chmod 700 ~/.ssh
+      echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCyYjfgyPazTvGpd8OaAvtU2utL8W6gWC4JdRS1J95GhNNfQd657yO6s1AH5KYQWktcE6FO/xNUC2reEXSGC7ezy+sGO1kj9Limv5vrvNHvF1+wts0Cmyx61D2nQw35/Qz8BvpdJANL7VwP/cFI/p3yhvx2lsnjFE3hN8xRB2LtLUopUSVdBwACOVUmH2G+2BWMJDjVINd2DPqRIA4Zhy09KJ3O1Joabr0XpQL0yt/I9x8BVHdAx6l9U0tMg9dj5+tAjZvMAFfye3PJcYwwsfJoFxC8w/SLtqlFX7Ehw++8RtvomvuipLdmWCy+T9hIkl+gHYE4cS3OIqXH7f49jdJf jesse@spacey.local" >> ~/.ssh/authorized_keys
       
       cd /home/vagrant/devstack 
        
       cp /vagrant/controller_local.conf /home/vagrant/devstack/local.conf 
       cp /vagrant/localrc.password /home/vagrant/devstack/.localrc.password 
       
-      sudo chown -R stack:stack /home/vagrant/devstack
+      #sudo chown -R stack:stack /home/vagrant/devstack
      
       #sudo su -c "./stack.sh" -s /bin/sh stack
  
@@ -37,14 +41,14 @@ $masterscript = <<SCRIPT
 
 
       #source /home/vagrant/devstack/accrc/admin/admin
-      source /home/vagrant/devstack/openrc admin admin
-      export OS_PASSWORD=secret
-      export OS_AUTH_URL=http://192.168.42.11/identity/v3
-      export OS_IDENTITY_API_VERSION=3
+      #source /home/vagrant/devstack/openrc admin admin
+      #export OS_PASSWORD=secret
+      #export OS_AUTH_URL=http://192.168.42.11/identity/v3
+      #export OS_IDENTITY_API_VERSION=3
 
-      cd /home/vagrant
+      #cd /home/vagrant
        
-      openstack server list
+      #openstack server list
             
       #wget http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
       #openstack image create --disk-format qcow2 --container-format bare  --public --file /home/vagrant/xenial-server-cloudimg-amd64-disk1.img xenial-server-cloudimg-amd64
@@ -74,8 +78,8 @@ $nodescript = <<SCRIPT
 	  sudo apt-get install git -y || sudo yum install -y git
 	  git clone https://git.openstack.org/openstack-dev/devstack
 
-      mkdir ~/.ssh; chmod 700 ~/.ssh
-      echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCyYjfgyPazTvGpd8OaAvtU2utL8W6gWC4JdRS1J95GhNNfQd657yO6s1AH5KYQWktcE6FO/xNUC2reEXSGC7ezy+sGO1kj9Limv5vrvNHvF1+wts0Cmyx61D2nQw35/Qz8BvpdJANL7VwP/cFI/p3yhvx2lsnjFE3hN8xRB2LtLUopUSVdBwACOVUmH2G+2BWMJDjVINd2DPqRIA4Zhy09KJ3O1Joabr0XpQL0yt/I9x8BVHdAx6l9U0tMg9dj5+tAjZvMAFfye3PJcYwwsfJoFxC8w/SLtqlFX7Ehw++8RtvomvuipLdmWCy+T9hIkl+gHYE4cS3OIqXH7f49jdJf jesse@spacey.local" > ~/.ssh/authorized_keys
+      #mkdir ~/.ssh; chmod 700 ~/.ssh
+      #echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCyYjfgyPazTvGpd8OaAvtU2utL8W6gWC4JdRS1J95GhNNfQd657yO6s1AH5KYQWktcE6FO/xNUC2reEXSGC7ezy+sGO1kj9Limv5vrvNHvF1+wts0Cmyx61D2nQw35/Qz8BvpdJANL7VwP/cFI/p3yhvx2lsnjFE3hN8xRB2LtLUopUSVdBwACOVUmH2G+2BWMJDjVINd2DPqRIA4Zhy09KJ3O1Joabr0XpQL0yt/I9x8BVHdAx6l9U0tMg9dj5+tAjZvMAFfye3PJcYwwsfJoFxC8w/SLtqlFX7Ehw++8RtvomvuipLdmWCy+T9hIkl+gHYE4cS3OIqXH7f49jdJf jesse@spacey.local" > ~/.ssh/authorized_keys
       
       cd /home/vagrant/devstack 
       cp /vagrant/compute_local.conf /home/vagrant/devstack/local.conf 
@@ -105,7 +109,7 @@ boxes = [
         :name => "openstacknode1",
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0002",
-        :ip => "192.168.42.11",
+        :ip => "192.168.42.12",
         :mem => "15375",
         :cpu => "1"
     },
@@ -113,7 +117,7 @@ boxes = [
         :name => "openstacknode2",
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0003",
-        :ip => "192.168.42.11",
+        :ip => "192.168.42.13",
         :mem => "15375",
         :cpu => "1"
     }]
@@ -190,6 +194,7 @@ Vagrant.configure(2) do |config|
      config.vm.network "forwarded_port", guest: 80, host: 8080
       config.vm.provision "shell" do |s|
         s.inline = $masterscript
+        s.privileged = false
         s.args = "192.168.10.10"
       end
     end
