@@ -1,0 +1,201 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.require_version ">= 1.6.0"
+
+$initscript = <<SCRIPT
+      echo initscript. I am provisioning...
+      echo ">>>>>>>>>>>>>>>>>>>>>>>>>>initscript machine provisioning "$1
+
+SCRIPT
+
+$masterscript = <<SCRIPT
+      echo I am provisioning master...
+      
+      echo $USER
+
+    sudo apt-get update
+    sudo apt-get install -y postgresql postgresql-contrib
+
+
+      echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
+	
+      
+      
+      
+SCRIPT
+
+$nodescript = <<SCRIPT
+  
+   echo I am provisioning node...
+   echo $USER
+
+      sudo apt-get update
+      sudo apt-get install -y postgresql postgresql-contrib
+
+
+	  sudo -u postgres createdb test
+	  #sudo su -c "psql" -s /bin/sh postgres
+	  sudo -u postgres psql -d test
+      #CREATE TABLE guestbook (visitor_email text, vistor_id serial, date timestamp, message text);
+      #INSERT INTO guestbook (visitor_email, date, message) VALUES ( 'jim@gmail.com', current_date, 'This is a test.');
+
+    
+      #Create a user for replication / ju¿ jest
+      #sudo -u postgres createuser -U postgres repuser -P -c 5 --replication
+    
+    
+      sudo mkdir -p /var/lib/postgresql/main/mnt/server/archivedir
+      sudo chown -R postgres:postgres /var/lib/postgresql
+
+      sudo sh -c "echo 'host     replication     repuser         192.168.1.228/32        md5' >> /etc/postgresql/9.5/main/pg_hba.conf"      
+
+      sudo sh -c "echo 'wal_level = hot_standby' >> /etc/postgresql/9.5/main/postgresql.conf"      
+
+      echo "archive_command = 'test ! -f /var/lib/postgresql/main/mnt/server/archivedir/%f && cp %p /var/lib/postgresql/main/mnt/server/archivedir/%f'" >~/archive_command
+		
+	  
+	  sudo sh -c "cat /home/vagrant/archive_command >> /etc/postgresql/9.5/main/postgresql.conf"      
+	  
+	  rm ~/archive_command
+
+      sudo sh -c "echo 'max_wal_senders = 3' >> /etc/postgresql/9.5/main/postgresql.conf"      
+
+      sudo service postgresql restart && sudo cat /var/log/postgresql/postgresql-9.5-main.log
+	   
+      echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
+      
+
+      
+      
+
+SCRIPT
+
+
+boxes = [
+    {
+        :name => "postgresqlmaster",
+        :interface => "enp3s0",
+        :mac=> "5CA1AB1E0001",
+        :ip => "192.168.42.11",
+        :mem => "15375",
+        :cpu => "1"
+    },
+    {
+        :name => "postgresqlnode1",
+        :interface => "enp3s0",
+        :mac=> "5CA1AB1E0002",
+        :ip => "192.168.42.12",
+        :mem => "15375",
+        :cpu => "1"
+    },
+    {
+        :name => "postgresqlnode2",
+        :interface => "enp3s0",
+        :mac=> "5CA1AB1E0003",
+        :ip => "192.168.42.13",
+        :mem => "15375",
+        :cpu => "1"
+    }]
+
+Vagrant.configure(2) do |config|
+
+  config.vm.box = "ubuntu/xenial64"
+#  config.vm.box = "ubuntu/trusty64"
+#  config.vm.box = "bento/ubuntu-16.04"
+  
+  #config.vm.box_version = "20171212.0.0"
+
+  boxes.each do |opts|
+      config.vm.define opts[:name] do |config|
+        config.vm.hostname = opts[:name]
+        #config.vm.network :forwarded_port, host: 2222, guest: 22
+        #config.ssh.username = "ubuntu"
+        #config.ssh.password = "379a8188cba8c5e64b9a429f"
+
+        config.vm.provider "virtualbox" do |v|
+          v.customize ["modifyvm", :id, "--memory", opts[:mem]]
+          v.customize ["modifyvm", :id, "--cpus", opts[:cpu]]
+          v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+#          v.customize ['modifyvm', :id, '--natnet1', '192.168.222.0/24']
+          v.name = opts[:name]
+        end
+
+        config.vm.network "public_network", bridge: opts[:interface], type: "dhcp" , mac: opts[:mac]        
+        #config.vm.network "public_network", bridge: opts[:interface] , mac: opts[:mac], ip: opts[:ip]
+        #config.vm.network "private_network" ,  bridge: opts[:interface],mac: opts[:mac], ip: opts[:ip]
+        
+      end
+  end
+
+
+
+
+
+
+  boxes.each do |opts|
+    config.vm.define opts[:name] do |config|
+      config.vm.provision "shell" do |s|
+        s.privileged = false
+        s.inline = $initscript
+        s.args = opts[:ip]
+      end
+
+
+# default router
+  config.vm.provision "shell",
+    run: "always",
+    inline: "sudo route add default gw 192.168.1.1"
+
+# default router ipv6
+  config.vm.provision "shell",
+    run: "always",
+    inline: "#sudo route -A inet6 add default gw fe80::5ea1:abff:fe1e:1 dev enp0s8"
+
+# delete default gw on enp0s3 
+  config.vm.provision "shell",
+    run: "always",
+    inline: "sudo route del default gw 10.0.2.2"
+
+
+
+    end
+  end
+
+
+
+
+
+   config.vm.define  "postgresqlmaster" do |config|
+#     config.vm.network "forwarded_port", guest: 80, host: 8080
+      config.vm.provision "shell" do |s|
+        s.inline = $masterscript
+#        s.privileged = false
+        s.args = "192.168.10.10"
+      end
+    end
+
+
+
+
+   config.vm.define  "postgresqlnode1" do |config|
+      config.vm.provision "shell" do |s|
+        s.inline = $nodescript
+        s.args = "192.168.10.10"
+      end
+    end
+
+
+
+   config.vm.define  "postgresqlnode2" do |config|
+      config.vm.provision "shell" do |s|
+        s.inline = $nodescript
+        s.args = "192.168.10.10"
+      end
+    end
+
+
+
+
+
+end

@@ -1,0 +1,36 @@
+
+    cd /vagrantprojects/postgresql/
+	vagrant halt
+	vagrant box update
+	vboxmanage unregistervm postgresqlmaster --delete
+	vboxmanage unregistervm postgresqlnode1 --delete
+
+	vboxmanage list vms
+
+    vagrant up postgresqlmaster --provision 
+    
+    
+    
+    #vagrant up postgresqlnode1 --provision 
+	
+	
+	
+	vagrant ssh postgresqlmaster 
+
+
+	
+	#tylko node1
+	  cd /vagrantprojects/postgresql/
+	vagrant halt postgresqlnode1
+		vboxmanage unregistervm postgresqlnode1 --delete
+	
+	 vagrant up postgresqlnode1 --provision 
+	
+	vagrant ssh postgresqlnode1  
+	
+	
+	
+	#discover 
+	postgresql compute service list --service nova-compute
+	
+	su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova

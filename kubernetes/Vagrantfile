@@ -68,8 +68,15 @@ $masterscript = <<SCRIPT
 
       # ----------------------------- nfs -----------------------------      
             
-      sudo rm -rf ~/.kube && sudo kubeadm reset && sudo kubeadm init --pod-network-cidr 10.244.0.0/16 --apiserver-advertise-address 192.168.1.227 |  grep "kubeadm join"  >join_command
+      #sudo rm -rf ~/.kube && sudo kubeadm reset && 
       
+      
+      IP=$( ifconfig enp0s8 | grep "inet addr:" | cut -d: -f2 | awk '{ print $1}' )
+      
+      sudo kubeadm init --pod-network-cidr 10.244.0.0/16 --apiserver-advertise-address $IP |  grep "kubeadm join"  >join_command
+      
+      echo $IP >master_IP
+      sudo cp master_IP /var/nfs/kubernetes_share/master_IP
       
       sudo cp join_command /var/nfs/kubernetes_share/join_command
       JOIN_COMMAND="$( sudo cat /var/nfs/kubernetes_share/join_command )"
@@ -248,17 +255,22 @@ $nodescript = <<SCRIPT
       echo I am node provisioning...
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
 
-      echo "Waiting kubernetes master to launch ..."  && while ! nc -z 192.168.1.227 6443; do   echo "waiting for master ..." ; sleep 5 ; done
+      #echo "Waiting kubernetes master to launch ..."  && while ! nc -z 192.168.1.227 6443; do   echo "waiting for master ..." ; sleep 5 ; done
 
       # ----------------------------- nfs -----------------------------
       sudo mkdir -p /nfs/kubernetes_share
       sudo mount k8smaster.local:/var/nfs/kubernetes_share /nfs/kubernetes_share
       
-      while [ ! -f /nfs/kubernetes_share/join_command_sudo ] ; do echo "waiting for join command..." ;  sleep 5 ; done
+      while [ ! -f /nfs/kubernetes_share/join_command_sudo ] ; do echo "waiting for join command..." ;  sleep 10 ; done
       
       
       JOIN_COMMAND=$(    sudo cat /nfs/kubernetes_share/join_command_sudo  )
       eval $JOIN_COMMAND
+      
+      
+      #MASTER_IP=$( echo /nfs/kubernetes_share/master_IP )
+      
+      
       # ----------------------------- nfs -----------------------------
 
 
@@ -273,7 +285,7 @@ boxes = [
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0001",
         :ip => "192.168.10.10",
-        :mem => "15375",
+        :mem => "8192",
         :cpu => "1"
     },
     {
@@ -281,7 +293,7 @@ boxes = [
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0002",
         :ip => "192.168.10.11",
-        :mem => "15375",
+        :mem => "8192",
         :cpu => "1"
     },
     {
@@ -289,7 +301,7 @@ boxes = [
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0003",
         :ip => "192.168.10.12",
-        :mem => "15375",
+        :mem => "8192",
         :cpu => "1"
     },
     {

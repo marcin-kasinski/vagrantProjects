@@ -4,9 +4,22 @@
 	vagrant box update
 	vboxmanage unregistervm openstackmaster --delete
 	vboxmanage unregistervm openstacknode1 --delete
+	vboxmanage unregistervm openstacknode2 --delete
 
 	vboxmanage list vms
 
-    vagrant up openstackmaster --provision 
+    vagrant up openstackmaster --provision
+    
+    
 
-	vagrant ssh openstackmaster 
+    #vagrant up openstackmaster --provision &
+    #vagrant up openstacknode1 --provision &
+    #vagrant up openstacknode2 --provision &
+        
+    vagrant ssh openstackmaster 
+    
+    vagrant up openstacknode1 --provision &
+    
+    vagrant up openstacknode2 --provision &
+
+	
