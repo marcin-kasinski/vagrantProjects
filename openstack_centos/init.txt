@@ -2,21 +2,17 @@
     cd /vagrantprojects/openstack_centos/
 	vagrant halt
 	vagrant box update
-	vboxmanage unregistervm openstackmaster --delete
-	vboxmanage unregistervm openstacknode1 --delete
-	vboxmanage unregistervm openstacknode2 --delete
 
 	vboxmanage list vms
 
-    vagrant up openstackmaster --provision
+    vagrant up node1.example.dd --provision
     
     
 
-    #vagrant up openstackmaster --provision &
-    #vagrant up openstacknode1 --provision &
-    #vagrant up openstacknode2 --provision &
         
-    vagrant ssh openstackmaster 
+    vagrant ssh node1.example.dd 
+    
+    
     
     vagrant up openstacknode1 --provision &
     
