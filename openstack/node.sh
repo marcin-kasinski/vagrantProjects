@@ -1,28 +1,40 @@
-      echo I am provisioning node...
+    echo I am provisioning node...
+		
+      sudo sed -i -r '/openstacknode1/ s/^(.*)$/#\1/g' /etc/hosts
+
+	  sudo sh -c "echo '192.168.33.11      openstacknode1' >> /etc/hosts"
       
-      echo $USER
+      
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
 	  sudo useradd -s /bin/bash -d /opt/stack -m stack
 	  sudo apt-get install sudo -y || yum install -y sudo
-	  #sudo echo "stack ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-	  
-	  sudo sh -c "echo 'stack ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers"      
-	  
-	  
-	  sudo apt-get install git -y || sudo yum install -y git
-	  git clone https://git.openstack.org/openstack-dev/devstack
 
-      #mkdir ~/.ssh
-	  chmod 700 ~/.ssh
-      echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCyYjfgyPazTvGpd8OaAvtU2utL8W6gWC4JdRS1J95GhNNfQd657yO6s1AH5KYQWktcE6FO/xNUC2reEXSGC7ezy+sGO1kj9Limv5vrvNHvF1+wts0Cmyx61D2nQw35/Qz8BvpdJANL7VwP/cFI/p3yhvx2lsnjFE3hN8xRB2LtLUopUSVdBwACOVUmH2G+2BWMJDjVINd2DPqRIA4Zhy09KJ3O1Joabr0XpQL0yt/I9x8BVHdAx6l9U0tMg9dj5+tAjZvMAFfye3PJcYwwsfJoFxC8w/SLtqlFX7Ehw++8RtvomvuipLdmWCy+T9hIkl+gHYE4cS3OIqXH7f49jdJf jesse@spacey.local" >> ~/.ssh/authorized_keys
+	  sudo sh -c "echo 'stack ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/stack"      
+	  
+	  
+	  sudo apt update
+	  sudo apt install -y python-systemd
+	  sudo apt-get install git -y || sudo yum install -y git
+	  
+      cd /opt/stack
+      sudo git clone --branch stable/pike https://git.openstack.org/openstack-dev/devstack
+
+      #sudo cp /vagrant/controller_local.conf /opt/stack/devstack/local.conf 
+      sudo cp /vagrant/compute_local.conf /opt/stack/devstack/local.conf 
       
-      cd /home/vagrant/devstack 
-       
-      cp /vagrant/compute_local.conf /home/vagrant/devstack/local.conf 
-      cp /vagrant/localrc.password /home/vagrant/devstack/.localrc.password 
+      sudo cp /vagrant/localrc.password /opt/stack/devstack/.localrc.password 
       
-      sudo chown -R stack:stack /home/vagrant/devstack
-     
-      sudo su -c "./stack.sh" -s /bin/sh stack
+      sudo chown -R stack:stack /opt/stack/devstack
+
+      sudo -S -u stack -i /bin/bash -l -c 'cd /opt/stack/devstack ;./stack.sh'
  
-      echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
+      ############################ adding image ############################
+
+      source /opt/stack/devstack/openrc admin admin
+      #export OS_PASSWORD=secret
+      #export OS_AUTH_URL=http://192.168.33.10/identity/v3
+      #export OS_IDENTITY_API_VERSION=3
+
+      openstack server list
+ 
+      echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1  

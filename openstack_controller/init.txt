@@ -39,7 +39,14 @@ openstack server create --image cirros-0.3.5-x86_64-disk --flavor 1 --nic net-id
 
 
 
+restarting glance
 
+
+sudo systemctl restart devstack@g-*
+
+#sudo journalctl -f --unit devstack@g-api.service
+
+sudo journalctl -f --unit devstack@g-req.service
 
 
 
@@ -55,3 +62,11 @@ sudo systemctl status devstack@n-cpu.service
 sudo journalctl -f --unit  devstack@n-cpu.service
 
 
+
+
+
+	service nova-compute restart
+	tail -f /var/log/nova/nova-compute.log
+	
+	
+	
