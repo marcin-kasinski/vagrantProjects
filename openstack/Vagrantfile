@@ -25,37 +25,46 @@ $masterscript = <<SCRIPT
       
       
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
-	  sudo useradd -s /bin/bash -d /opt/stack -m stack
+      
+      rm -rf /vagrant_data/opt
+      mkdir /vagrant_data/opt
+      mkdir /vagrant_data/opt/stack
+	  #sudo useradd -s /bin/bash -d /vagrant_data/opt/stack -m stack
 	  sudo apt-get install sudo -y || yum install -y sudo
 	  sudo apt-get install mc -y 
-	  sudo sh -c "echo 'stack ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/stack"      
+	  #sudo sh -c "echo 'stack ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/stack"      
 	  
 	  
 	  sudo apt update
 	  sudo apt install -y python-systemd
 	  sudo apt-get install git -y || sudo yum install -y git
 	  
+	  #sudo chown -R vagrant:vagrant /opt
+      cd /vagrant_data/opt/stack
+      git clone --branch stable/pike https://git.openstack.org/openstack-dev/devstack
 
-      cd /opt/stack
-      sudo git clone --branch stable/pike https://git.openstack.org/openstack-dev/devstack
-
-      #sudo cp /vagrant/controller_local.conf /opt/stack/devstack/local.conf 
-      sudo cp /vagrant/controller_localFromudemy.conf /opt/stack/devstack/local.conf 
+      #sudo cp /vagrant/controller_local.conf /vagrant_data/opt/stack/devstack/local.conf 
+      sudo cp /vagrant/controller_localFromudemy.conf /vagrant_data/opt/stack/devstack/local.conf 
       
-      sudo cp /vagrant/localrc.password /opt/stack/devstack/.localrc.password 
+      sed -i -e 's/\r//g' /vagrant_data/opt/stack/devstack/local.conf
       
-      sudo chown -R stack:stack /opt/stack/devstack
+      cp /vagrant/localrc.password /vagrant_data/opt/stack/devstack/.localrc.password 
+      
+      #sudo chown -R stack:stack /vagrant_data/opt/stack/devstack
 
-      sudo -S -u stack -i /bin/bash -l -c 'cd /opt/stack/devstack ;./stack.sh'
+	  cd /vagrant_data/opt/stack/devstack
+		./stack.sh
+
+      #sudo -S -u stack -i /bin/bash -l -c 'cd /vagrant_data/opt/stack/devstack ;./stack.sh'
  
       ############################ adding image ############################
 
-      source /opt/stack/devstack/openrc admin admin
+      #source /vagrant_data/opt/stack/devstack/openrc admin admin
       #export OS_PASSWORD=secret
       #export OS_AUTH_URL=http://192.168.33.10/identity/v3
       #export OS_IDENTITY_API_VERSION=3
 
-      openstack server list
+      #openstack server list
            
       #wget http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
       #openstack image create --disk-format qcow2 --container-format bare  --public --file /home/vagrant/xenial-server-cloudimg-amd64-disk1.img xenial-server-cloudimg-amd64
@@ -81,12 +90,15 @@ $nodescript = <<SCRIPT
 
 	  sudo sh -c "echo '192.168.33.11      openstacknode1' >> /etc/hosts"
       
-      
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
-	  sudo useradd -s /bin/bash -d /opt/stack -m stack
+      
+      rm -rf /vagrant_data/opt
+      mkdir /vagrant_data/opt
+      mkdir /vagrant_data/opt/stack
+	  #sudo useradd -s /bin/bash -d /vagrant_data/opt/stack -m stack
 	  sudo apt-get install sudo -y || yum install -y sudo
-
-	  sudo sh -c "echo 'stack ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/stack"      
+	  sudo apt-get install mc -y 
+	  #sudo sh -c "echo 'stack ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/stack"      
 	  
 	  
 	  sudo apt update
@@ -94,37 +106,69 @@ $nodescript = <<SCRIPT
 	  sudo apt-get install git -y || sudo yum install -y git
 	  
 
+	  sudo chown -R vagrant:vagrant /opt
+      cd /vagrant_data/opt/stack
+      git clone --branch stable/pike https://git.openstack.org/openstack-dev/devstack
+
+      #sudo cp /vagrant/controller_local.conf /vagrant_data/opt/stack/devstack/local.conf 
+	  sudo cp /vagrant/compute_local.conf /vagrant_data/opt/stack/devstack/local.conf
+      
+      sed -i -e 's/\r//g' /vagrant_data/opt/stack/devstack/local.conf
+      
+      cp /vagrant/localrc.password /vagrant_data/opt/stack/devstack/.localrc.password 
+      
+      #sudo chown -R stack:stack /vagrant_data/opt/stack/devstack
+
+	  cd /vagrant_data/opt/stack/devstack
+		./stack.sh
+
+      #sudo -S -u stack -i /bin/bash -l -c 'cd /vagrant_data/opt/stack/devstack ;./stack.sh'
+ 
+      ############################ adding image ############################
+
+      #source /vagrant_data/opt/stack/devstack/openrc admin admin
+      #export OS_PASSWORD=secret
+      #export OS_AUTH_URL=http://192.168.33.10/identity/v3
+      #export OS_IDENTITY_API_VERSION=3
+
+      #openstack server list
+
 
   
 SCRIPT
-
 
 boxes = [
     {
         :name => "openstackmaster",
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0001",
-        :ip => "192.168.33.10",
+#        :ip => "192.168.33.10",
+        :ip => "192.168.1.11",
         :mem => "8192",
         :cpu => "1",
+        :share_folder_host => "/vagrantprojects/data/openstackmaster",
         :initscript => "/vagrant/master.sh"
     },
     {
         :name => "openstacknode1",
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0002",
-        :ip => "192.168.33.11",
+#        :ip => "192.168.33.11",
+        :ip => "192.168.1.12",
         :mem => "8192",
         :cpu => "1",
+        :share_folder_host => "/vagrantprojects/data/openstacknode1",
         :initscript => "/vagrant/node.sh"
     },
     {
         :name => "openstacknode2",
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0003",
-        :ip => "192.168.42.12",
+#        :ip => "192.168.42.12",
+        :ip => "192.168.1.13",
         :mem => "8192",
         :cpu => "1",
+        :share_folder_host => "/vagrantprojects/data/openstacknode2",
         :initscript => "/vagrant/node.sh"
     }]
 
@@ -139,6 +183,8 @@ Vagrant.configure(2) do |config|
   boxes.each do |opts|
       config.vm.define opts[:name] do |config|
         config.vm.hostname = opts[:name]
+        config.vm.synced_folder opts[:share_folder_host], "/vagrant_data"
+        
         #config.vm.network :forwarded_port, host: 2222, guest: 22
         #config.ssh.username = "ubuntu"
         #config.ssh.password = "379a8188cba8c5e64b9a429f"
@@ -153,11 +199,14 @@ Vagrant.configure(2) do |config|
         end
 
         #config.vm.network "public_network", bridge: opts[:interface], type: "dhcp" , mac: opts[:mac]        
-        #config.vm.network "public_network", bridge: opts[:interface] , mac: opts[:mac], ip: opts[:ip]
+        config.vm.network "public_network", bridge: opts[:interface] , mac: opts[:mac], ip: opts[:ip]
         #config.vm.network "private_network" ,  bridge: opts[:interface],mac: opts[:mac], ip: opts[:ip]
-        config.vm.network "private_network", ip: opts[:ip],  bridge: opts[:interface],mac: opts[:mac]
-        #config.vm.network "public_network", auto_config: false, bridge: opts[:interface]
         
+        
+        #poni¿sz dzia³a dla sieci prywatnej         
+        #config.vm.network "private_network", ip: opts[:ip],  bridge: opts[:interface],mac: opts[:mac]
+        
+
       end
   end
 
