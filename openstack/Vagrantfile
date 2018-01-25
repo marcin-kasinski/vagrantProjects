@@ -43,8 +43,8 @@ $masterscript = <<SCRIPT
       cd /vagrant_data/opt/stack
       git clone --branch stable/pike https://git.openstack.org/openstack-dev/devstack
 
-      #sudo cp /vagrant/controller_local.conf /vagrant_data/opt/stack/devstack/local.conf 
-      sudo cp /vagrant/controller_localFromudemy.conf /vagrant_data/opt/stack/devstack/local.conf 
+      sudo cp /vagrant/controller_local.conf /vagrant_data/opt/stack/devstack/local.conf 
+      #sudo cp /vagrant/controller_localFromudemy.conf /vagrant_data/opt/stack/devstack/local.conf 
       
       sed -i -e 's/\r//g' /vagrant_data/opt/stack/devstack/local.conf
       
@@ -142,8 +142,8 @@ boxes = [
         :name => "openstackmaster",
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0001",
-        :ip => "192.168.33.10",
-#        :ip => "192.168.1.11",
+#        :ip => "192.168.33.10",
+        :ip => "192.168.1.11",
         :mem => "8192",
         :cpu => "1",
         :share_folder_host => "/vagrantprojects/data/openstackmaster",
@@ -153,8 +153,8 @@ boxes = [
         :name => "openstacknode1",
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0002",
-        :ip => "192.168.33.11",
-#        :ip => "192.168.1.12",
+#        :ip => "192.168.33.11",
+        :ip => "192.168.1.12",
         :mem => "8192",
         :cpu => "1",
         :share_folder_host => "/vagrantprojects/data/openstacknode1",
@@ -164,8 +164,8 @@ boxes = [
         :name => "openstacknode2",
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0003",
-        :ip => "192.168.33.12",
-#        :ip => "192.168.1.13",
+#        :ip => "192.168.33.12",
+        :ip => "192.168.1.13",
         :mem => "8192",
         :cpu => "1",
         :share_folder_host => "/vagrantprojects/data/openstacknode2",
@@ -199,12 +199,12 @@ Vagrant.configure(2) do |config|
         end
 
         #config.vm.network "public_network", bridge: opts[:interface], type: "dhcp" , mac: opts[:mac]        
-        #config.vm.network "public_network", bridge: opts[:interface] , mac: opts[:mac], ip: opts[:ip]
+        config.vm.network "public_network", bridge: opts[:interface] , mac: opts[:mac], ip: opts[:ip]
         #config.vm.network "private_network" ,  bridge: opts[:interface],mac: opts[:mac], ip: opts[:ip]
         
         
         #poni¿sz dzia³a dla sieci prywatnej         
-        config.vm.network "private_network", ip: opts[:ip],  bridge: opts[:interface],mac: opts[:mac]
+        #config.vm.network "private_network", ip: opts[:ip],  bridge: opts[:interface],mac: opts[:mac]
         
 
       end
