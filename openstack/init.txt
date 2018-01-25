@@ -34,3 +34,16 @@
 	openstack compute service list --service nova-compute
 	
 	su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova
+	
+	
+	
+	
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+default         mkrouter.local  0.0.0.0         UG    0      0        0 enp0s8
+10.0.2.0        *               255.255.255.0   U     0      0        0 enp0s3
+192.168.1.0     *               255.255.255.0   U     0      0        0 enp0s8
+	
+	
+	change default route
+	ip route change default via 192.168.1.11 dev enp0s8
