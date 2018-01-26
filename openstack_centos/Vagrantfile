@@ -31,7 +31,9 @@ sudo yum update -y
 
 sudo yum install -y openstack-packstack
 
-sudo packstack --allinone
+#sudo packstack --answer-file=/vagrant/anwserfile.txt
+#sudo packstack --allinone
+#packstack --allinone --provision-demo=n --os-neutron-ovs-bridge-mappings=extnet:br-ex --os-neutron-ovs-bridge-interfaces=br-ex:eth1 --os-neutron-ml2-type-drivers=vxlan,flat
 
 	
 
@@ -58,11 +60,13 @@ SCRIPT
       machine.vm.hostname = hostname
       machine.vm.network :private_network, :ip => attrs[:ip], :bridge => "enp3s0"
       machine.vm.network "public_network", auto_config: false
+      machine.vm.network "forwarded_port", guest: 80, host: 9090
       
 
       machine.vm.provider "virtualbox" do | v |
         v.memory = "4096"
         v.cpus = "2"
+        v.name = hostname
       end
 
     end

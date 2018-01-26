@@ -19,9 +19,9 @@ $masterscript = <<SCRIPT
 
       echo I am provisioning master...
             
-      sudo sed -i -r '/openstackmaster/ s/^(.*)$/#\1/g' /etc/hosts
+      #sudo sed -i -r '/openstackmaster/ s/^(.*)$/#\1/g' /etc/hosts
 
-	  sudo sh -c "echo '192.168.33.10      openstackmaster' >> /etc/hosts"
+	  #sudo sh -c "echo '192.168.33.10      openstackmaster' >> /etc/hosts"
       
       
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
@@ -43,7 +43,11 @@ $masterscript = <<SCRIPT
       cd /vagrant_data/opt/stack
       git clone --branch stable/pike https://git.openstack.org/openstack-dev/devstack
 
-      sudo cp /vagrant/controller_local.conf /vagrant_data/opt/stack/devstack/local.conf 
+      #sudo cp /vagrant/controller_local.conf /vagrant_data/opt/stack/devstack/local.conf 
+      #sudo cp /vagrant/controller_local_private.conf /vagrant_data/opt/stack/devstack/local.conf 
+      sudo cp /vagrant/ctr_local.conf /vagrant_data/opt/stack/devstack/local.conf 
+      
+      
       #sudo cp /vagrant/controller_localFromudemy.conf /vagrant_data/opt/stack/devstack/local.conf 
       
       sed -i -e 's/\r//g' /vagrant_data/opt/stack/devstack/local.conf
@@ -53,16 +57,26 @@ $masterscript = <<SCRIPT
       #sudo chown -R stack:stack /vagrant_data/opt/stack/devstack
 
 	  cd /vagrant_data/opt/stack/devstack
-		./stack.sh
+	  ./stack.sh
 
       #sudo -S -u stack -i /bin/bash -l -c 'cd /vagrant_data/opt/stack/devstack ;./stack.sh'
  
       ############################ adding image ############################
 
-      #source /vagrant_data/opt/stack/devstack/openrc admin admin
+      source /vagrant_data/opt/stack/devstack/openrc demo demo
       #export OS_PASSWORD=secret
       #export OS_AUTH_URL=http://192.168.33.10/identity/v3
       #export OS_IDENTITY_API_VERSION=3
+      
+      
+      openstack security group create SSH
+	  openstack security group rule create --proto tcp --dst-port 22 SSH
+
+      openstack security group create ICMP	  
+	  openstack security group rule create --proto icmp --dst-port 0 ICMP
+
+	  ip --oneline addr show
+	  
 
       #openstack server list
            
@@ -142,8 +156,8 @@ boxes = [
         :name => "openstackmaster",
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0001",
-#        :ip => "192.168.33.10",
-        :ip => "192.168.1.11",
+#        :ip => "192.168.1.11",
+        :ip => "192.168.33.10",
         :mem => "8192",
         :cpu => "1",
         :share_folder_host => "/vagrantprojects/data/openstackmaster",
@@ -192,20 +206,18 @@ Vagrant.configure(2) do |config|
         config.vm.provider "virtualbox" do |v|
           v.customize ["modifyvm", :id, "--memory", opts[:mem]]
           v.customize ["modifyvm", :id, "--cpus", opts[:cpu]]
-          v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
-          v.customize ['modifyvm', :id, '--natnet1', '192.168.222.0/24']
+          #v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+          #v.customize ['modifyvm', :id, '--natnet1', '192.168.222.0/24']
 
           v.name = opts[:name]
         end
 
         #config.vm.network "public_network", bridge: opts[:interface], type: "dhcp" , mac: opts[:mac]        
-        config.vm.network "public_network", bridge: opts[:interface] , mac: opts[:mac], ip: opts[:ip]
-        #config.vm.network "private_network" ,  bridge: opts[:interface],mac: opts[:mac], ip: opts[:ip]
-        
+        #config.vm.network "public_network", bridge: opts[:interface] , mac: opts[:mac], ip: opts[:ip]
         
         #poni¿sz dzia³a dla sieci prywatnej         
-        #config.vm.network "private_network", ip: opts[:ip],  bridge: opts[:interface],mac: opts[:mac]
-        
+        config.vm.network "private_network", ip: opts[:ip],  bridge: opts[:interface],mac: opts[:mac]
+        config.vm.network "public_network", auto_config: false, bridge: "enp3s0"
 
       end
   end
