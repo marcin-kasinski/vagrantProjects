@@ -10,13 +10,60 @@ $initscript = <<SCRIPT
 SCRIPT
 
 $masterscript = <<SCRIPT
-      echo I am provisioning master...
+
+     echo I am provisioning master...
       
-      echo $USER
+   echo $USER
 
-    sudo apt-get update
-    sudo apt-get install -y postgresql postgresql-contrib
 
+      sudo apt-get update
+      sudo apt-get install -y postgresql postgresql-contrib
+
+	  echo "A-6"
+
+	  #sudo -u postgres createdb test
+	  #postgres createdb test
+	  #sudo su -c "psql" -s /bin/sh postgres
+	  	  echo "A-5"
+	  
+	  #sudo -u postgres psql -d test
+      #CREATE TABLE guestbook (visitor_email text, vistor_id serial, date timestamp, message text);
+      #INSERT INTO guestbook (visitor_email, date, message) VALUES ( 'jim@gmail.com', current_date, 'This is a test.');
+
+    
+      #Create a user for replication / juz jest
+      #sudo -u postgres createuser -U postgres repuser -P -c 5 --replication
+    
+	  echo "A-4"
+    
+      sudo mkdir -p /var/lib/postgresql/main/mnt/server/archivedir
+	  echo "A-3"
+      sudo chown -R postgres:postgres /var/lib/postgresql
+
+	  echo "A-2"
+
+      sudo sh -c "echo 'host     replication     repuser         192.168.1.0/32        md5' >> /etc/postgresql/9.5/main/pg_hba.conf"      
+
+	  echo "A0"
+
+      sudo sh -c "echo 'wal_level = hot_standby' >> /etc/postgresql/9.5/main/postgresql.conf"      
+
+	  echo "A1"
+	    
+      echo "archive_command = 'test ! -f /var/lib/postgresql/main/mnt/server/archivedir/%f && cp %p /var/lib/postgresql/main/mnt/server/archivedir/%f'" > /home/vagrant/archive_command
+		
+	  echo "A2"
+	  
+	  sudo sh -c "cat /home/vagrant/archive_command >> /etc/postgresql/9.5/main/postgresql.conf"      
+
+	  echo "A3"
+	  
+	  #rm ~/archive_command
+
+      sudo sh -c "echo 'max_wal_senders = 3' >> /etc/postgresql/9.5/main/postgresql.conf"      
+
+      sudo service postgresql restart && sudo cat /var/log/postgresql/postgresql-9.5-main.log
+	   
 
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
 	
@@ -28,46 +75,24 @@ SCRIPT
 $nodescript = <<SCRIPT
   
    echo I am provisioning node...
-   echo $USER
 
+      echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
+      
       sudo apt-get update
       sudo apt-get install -y postgresql postgresql-contrib
 
-
-	  sudo -u postgres createdb test
-	  #sudo su -c "psql" -s /bin/sh postgres
-	  sudo -u postgres psql -d test
-      #CREATE TABLE guestbook (visitor_email text, vistor_id serial, date timestamp, message text);
-      #INSERT INTO guestbook (visitor_email, date, message) VALUES ( 'jim@gmail.com', current_date, 'This is a test.');
-
-    
-      #Create a user for replication / ju¿ jest
-      #sudo -u postgres createuser -U postgres repuser -P -c 5 --replication
-    
-    
-      sudo mkdir -p /var/lib/postgresql/main/mnt/server/archivedir
-      sudo chown -R postgres:postgres /var/lib/postgresql
-
-      sudo sh -c "echo 'host     replication     repuser         192.168.1.228/32        md5' >> /etc/postgresql/9.5/main/pg_hba.conf"      
-
-      sudo sh -c "echo 'wal_level = hot_standby' >> /etc/postgresql/9.5/main/postgresql.conf"      
-
-      echo "archive_command = 'test ! -f /var/lib/postgresql/main/mnt/server/archivedir/%f && cp %p /var/lib/postgresql/main/mnt/server/archivedir/%f'" >~/archive_command
-		
-	  
-	  sudo sh -c "cat /home/vagrant/archive_command >> /etc/postgresql/9.5/main/postgresql.conf"      
-	  
-	  rm ~/archive_command
-
-      sudo sh -c "echo 'max_wal_senders = 3' >> /etc/postgresql/9.5/main/postgresql.conf"      
-
-      sudo service postgresql restart && sudo cat /var/log/postgresql/postgresql-9.5-main.log
-	   
-      echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
+      #sed -i '/<pattern>/s/^#//g' /etc/postgresql/9.5/main/postgresql.conf
       
-
+      sudo cp /usr/share/postgresql/9.5/recovery.conf.sample /etc/postgresql/9.5/main/recovery.conf
+      sudo sh -c "echo 'standby_mode = on' >> /etc/postgresql/9.5/main/recovery.conf"
       
       
+      echo "primary_conninfo = 'host=192.168.1.20 port=5432 user=repuser password='" >primary_conninfo 
+      
+      
+      sudo sh -c "cat /home/vagrant/primary_conninfo >> /etc/postgresql/9.5/main/recovery.conf"
+           
+      sudo service postgresql start
 
 SCRIPT
 
@@ -77,24 +102,24 @@ boxes = [
         :name => "postgresqlmaster",
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0001",
-        :ip => "192.168.42.11",
-        :mem => "15375",
+        :ip => "192.168.1.20",
+        :mem => "8192",
         :cpu => "1"
     },
     {
         :name => "postgresqlnode1",
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0002",
-        :ip => "192.168.42.12",
-        :mem => "15375",
+        :ip => "192.168.1.21",
+        :mem => "8192",
         :cpu => "1"
     },
     {
         :name => "postgresqlnode2",
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0003",
-        :ip => "192.168.42.13",
-        :mem => "15375",
+        :ip => "192.168.1.22",
+        :mem => "8192",
         :cpu => "1"
     }]
 
@@ -121,8 +146,8 @@ Vagrant.configure(2) do |config|
           v.name = opts[:name]
         end
 
-        config.vm.network "public_network", bridge: opts[:interface], type: "dhcp" , mac: opts[:mac]        
-        #config.vm.network "public_network", bridge: opts[:interface] , mac: opts[:mac], ip: opts[:ip]
+        #config.vm.network "public_network", bridge: opts[:interface], type: "dhcp" , mac: opts[:mac]        
+        config.vm.network "public_network", bridge: opts[:interface] , mac: opts[:mac], ip: opts[:ip]
         #config.vm.network "private_network" ,  bridge: opts[:interface],mac: opts[:mac], ip: opts[:ip]
         
       end
