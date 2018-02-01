@@ -22,6 +22,9 @@
 	#tylko node1
 	  cd /vagrantprojects/openstack/
 	vagrant halt openstacknode1
+	
+	vboxmanage list vms
+	
 		vboxmanage unregistervm openstacknode1 --delete
 	
 	 vagrant up openstacknode1 --provision 
