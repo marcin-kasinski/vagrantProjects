@@ -33,6 +33,25 @@
 	
 	
 	
+	#tylko node2
+	  cd /vagrantprojects/openstack/
+	vagrant halt openstacknode2
+	
+	vboxmanage list vms
+	
+		vboxmanage unregistervm openstacknode2 --delete
+	
+	 vagrant up openstacknode2 --provision 
+	
+	vagrant ssh openstacknode2
+	
+	
+	
+	
+	
+	
+	
+	
 	#discover 
 	openstack compute service list --service nova-compute
 	
