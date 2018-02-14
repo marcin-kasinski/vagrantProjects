@@ -1,0 +1,15 @@
+
+    cd /vagrantprojects/mysql_galera/
+	vagrant halt
+	vagrant box update
+	vboxmanage unregistervm galeranode1 --delete
+	vboxmanage unregistervm galeranode2 --delete
+	vboxmanage unregistervm galeranode3 --delete
+
+	vboxmanage list vms
+
+    vagrant up galeranode1 --provision
+    vagrant up galeranode2 --provision
+    vagrant up galeranode3 --provision
+    	
+	vagrant ssh galeranode1 
