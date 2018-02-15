@@ -1,4 +1,8 @@
-echo I am provisioning master...
+IP=$1
+
+echo $IP
+
+echo I am provisioning ...
 
 #sudo sed -i -r '/openstackmaster/ s/^(.*)$/#\1/g' /etc/hosts
 
@@ -15,7 +19,6 @@ sudo apt-get install -y python-software-properties
 sudo apt-get install -y  software-properties-common
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv BC19DDBA
 
-
 echo "# Codership Repository (Galera Cluster for MySQL)" >>galera.list
 echo "deb http://releases.galeracluster.com/mysql-wsrep-5.6/ubuntu xenial main" >>galera.list
 echo "deb http://releases.galeracluster.com/galera-3/ubuntu xenial main" >>galera.list
@@ -29,14 +32,33 @@ echo "Pin-Priority: 1001" >>galera.pref
 
 sudo cp galera.pref /etc/apt/preferences.d/galera.pref
 
-
 sudo apt-get update
 
 #sudo apt-get install -y galera-3 galera-arbitrator-3 mysql-wsrep-5.6
 
-
-
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y galera-3 galera-arbitrator-3 mysql-wsrep-5.6
 sudo mysql -h127.0.0.1 -P3306 -uroot -e"UPDATE mysql.user SET password = PASSWORD('secret') WHERE user = 'root'"
 
-sudo service mysql restart
+sudo cp /vagrant/files/galera.cnf /etc/mysql/conf.d/galera.cnf
+
+#replace
+sudo sed -i -e 's/{IP}/'"$IP"'/g' /etc/mysql/conf.d/galera.cnf
+
+HOSTNAME=`hostname`
+sudo sed -i -e 's/{NODENAME}/'"$HOSTNAME"'/g' /etc/mysql/conf.d/galera.cnf
+
+#Na pierwszym
+#sudo /etc/init.d/mysql start --wsrep-new-cluster
+
+#Na pozosta³ych
+#sudo systemctl start mysql
+
+
+# mysql -u root -psecret
+#mysql -u root -psecret -e "SHOW STATUS LIKE 'wsrep_cluster_size'"
+#mysql -u root -psecret -e "Create database tstMK"
+
+
+
+
+
