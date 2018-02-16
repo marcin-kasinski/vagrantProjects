@@ -56,6 +56,7 @@ sudo sed -i -e 's/{NODENAME}/'"$HOSTNAME"'/g' /etc/mysql/conf.d/galera.cnf
 
 # mysql -u root -psecret
 #mysql -u root -psecret -e "SHOW STATUS LIKE 'wsrep_cluster_size'"
+#mysql -u root -psecret -e "use testmkusers; select * from users;"
 #mysql -u root -psecret -e "Create database tstMK"
 
 

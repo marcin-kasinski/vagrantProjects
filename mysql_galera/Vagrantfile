@@ -78,6 +78,15 @@ boxes = [
         :mem => "8192",
         :cpu => "1",
         :initscript => "nodeinit.sh"
+    },
+    {
+        :name => "haproxy",
+        :interface => "enp3s0",
+        :mac=> "5CA1AB1E0004",
+        :ip => "192.168.44.13",
+        :mem => "8192",
+        :cpu => "1",
+        :initscript => "nodehaproxyinit.sh"
     }]
 
 Vagrant.configure(2) do |config|

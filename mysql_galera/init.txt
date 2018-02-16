@@ -5,11 +5,13 @@
 	vboxmanage unregistervm galeranode1 --delete
 	vboxmanage unregistervm galeranode2 --delete
 	vboxmanage unregistervm galeranode3 --delete
-
+	vboxmanage unregistervm haproxy --delete
+	
 	vboxmanage list vms
 
     vagrant up galeranode1 --provision
     vagrant up galeranode2 --provision
     vagrant up galeranode3 --provision
+    vagrant up haproxy --provision
     	
 	vagrant ssh galeranode1 
