@@ -36,6 +36,8 @@ sudo apt-get update
 
 #sudo apt-get install -y galera-3 galera-arbitrator-3 mysql-wsrep-5.6
 
+
+sudo DEBIAN_FRONTEND=noninteractive apt install -y mysql-common mysql-server
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y galera-3 galera-arbitrator-3 mysql-wsrep-5.6
 sudo mysql -h127.0.0.1 -P3306 -uroot -e"UPDATE mysql.user SET password = PASSWORD('secret') WHERE user = 'root'"
 

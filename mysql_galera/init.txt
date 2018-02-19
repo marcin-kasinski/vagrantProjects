@@ -10,8 +10,8 @@
 	vboxmanage list vms
 
     vagrant up galeranode1 --provision
-    vagrant up galeranode2 --provision
-    vagrant up galeranode3 --provision
-    vagrant up haproxy --provision
+    #vagrant up galeranode2 --provision
+    #vagrant up galeranode3 --provision
+    #vagrant up haproxy --provision
     	
 	vagrant ssh galeranode1 

@@ -5,11 +5,11 @@ Vagrant.require_version ">= 1.6.0"
 
 $firstnodescript = <<SCRIPT
 
-echo "stop mysql"
-sudo /etc/init.d/mysql stop
+#echo "stop mysql"
+#sudo /etc/init.d/mysql stop
 echo "start mysql"
-sudo /etc/init.d/mysql start --wsrep-new-cluster
-
+#sudo /etc/init.d/mysql start --wsrep-new-cluster
+sudo service mysql start --wsrep-new-cluster
 sleep 5
 mysql -uroot -psecret  --port 3306  mysql < /vagrant/files/init.sql
 
