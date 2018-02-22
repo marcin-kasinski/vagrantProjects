@@ -1,0 +1,232 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.require_version ">= 1.6.0"
+
+$firstnodescript = <<SCRIPT
+
+#echo "stop mysql"
+#sudo /etc/init.d/mysql stop
+echo "start mysql"
+#sudo /etc/init.d/mysql start --wsrep-new-cluster
+sudo service mysql start --wsrep-new-cluster
+sleep 5
+mysql -uroot -psecret  --port 3306  mysql < /vagrant/files/init.sql
+
+SCRIPT
+
+$slavenodesscript = <<SCRIPT
+
+echo "stop mysql"
+sudo systemctl stop mysql
+echo "start mysql"
+sudo systemctl start mysql
+
+SCRIPT
+
+
+
+
+$initscript = <<SCRIPT
+     
+		IP=$1
+		SCRIPT=$2
+	
+		echo $IP
+		echo $SCRIPT
+	
+		
+		cp /vagrant/scripts/$SCRIPT $SCRIPT
+		
+		
+		#win2linux
+		sed -i -e 's/\r//g' ~/$SCRIPT
+		
+		chmod u+x ~/$SCRIPT
+		~/$SCRIPT $IP
+
+SCRIPT
+
+
+
+
+
+boxes = [
+    {
+        :name => "mysqlnode1",
+        :interface => "enp3s0",
+        :mac=> "5CA1AB1E0001",
+        :ip => "192.168.44.10",
+        :mem => "8192",
+        :cpu => "2",
+        :initscript => "nodeinit.sh"
+    },
+    {
+        :name => "mysqlnode2",
+        :interface => "enp3s0",
+        :mac=> "5CA1AB1E0002",
+        :ip => "192.168.44.11",
+        :mem => "8192",
+        :cpu => "1",
+        :initscript => "nodeinit.sh"
+    },
+    {
+        :name => "mysqlnode3",
+        :interface => "enp3s0",
+        :mac=> "5CA1AB1E0003",
+        :ip => "192.168.44.12",
+        :mem => "8192",
+        :cpu => "1",
+        :initscript => "nodeinit.sh"
+    },
+    {
+        :name => "mysqlrouter",
+        :interface => "enp3s0",
+        :mac=> "5CA1AB1E0003",
+        :ip => "192.168.44.13",
+        :mem => "8192",
+        :cpu => "1",
+        :initscript => "noderouterinit.sh"
+    },
+    {
+        :name => "mysqlclient",
+        :interface => "enp3s0",
+        :mac=> "5CA1AB1E0003",
+        :ip => "192.168.44.14",
+        :mem => "8192",
+        :cpu => "1",
+        :initscript => "nodemysqlclientinit.sh"
+    }]
+
+Vagrant.configure(2) do |config|
+
+  config.vm.box = "ubuntu/xenial64"
+#  config.vm.box = "ubuntu/trusty64"
+#  config.vm.box = "bento/ubuntu-16.04"
+  
+  #config.vm.box_version = "20171212.0.0"
+
+  boxes.each do |opts|
+      config.vm.define opts[:name] do |config|
+        config.vm.hostname = opts[:name]
+        #config.vm.synced_folder opts[:share_folder_host], ""
+        
+        #config.vm.network :forwarded_port, host: 2222, guest: 22
+        #config.ssh.username = "ubuntu"
+        #config.ssh.password = "379a8188cba8c5e64b9a429f"
+
+        config.vm.provider "virtualbox" do |v|
+          v.customize ["modifyvm", :id, "--memory", opts[:mem]]
+          v.customize ["modifyvm", :id, "--cpus", opts[:cpu]]
+          #v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+          #v.customize ['modifyvm', :id, '--natnet1', '192.168.222.0/24']
+          v.customize ["modifyvm", :id, "--nicpromisc1", "allow-all"]
+          v.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
+          v.customize ["modifyvm", :id, "--nicpromisc3", "allow-all"]
+
+          v.name = opts[:name]
+        end
+
+        #config.vm.network "public_network", bridge: opts[:interface], type: "dhcp" , mac: opts[:mac]        
+        #config.vm.network "public_network", bridge: opts[:interface] , mac: opts[:mac], ip: opts[:ip]
+        
+        #poni¿sz dzia³a dla sieci prywatnej         
+        config.vm.network "private_network", ip: opts[:ip],  bridge: opts[:interface],mac: opts[:mac]
+#        config.vm.network "private_network", ip: "172.24.4.2",:netmask => "255.255.255.0", :auto_config => false
+#        config.vm.network "private_network", ip: "172.24.4.2", auto_config: false
+
+      end
+  end
+
+
+
+
+
+
+  boxes.each do |opts|
+    config.vm.define opts[:name] do |config|
+      config.vm.provision "shell" do |s|
+        s.privileged = false
+        s.inline = $initscript
+        s.args = [opts[:ip] , opts[:initscript]]
+      end
+
+
+# default router
+#  config.vm.provision "shell",
+#    run: "always",
+#    inline: "sudo route add default gw 192.168.1.1"
+
+# default router ipv6
+#  config.vm.provision "shell",
+#    run: "always",
+#    inline: "#sudo route -A inet6 add default gw fe80::5ea1:abff:fe1e:1 dev enp0s8"
+
+# delete default gw on enp0s3 
+#  config.vm.provision "shell",
+#    run: "always",
+#    inline: "sudo route del default gw 10.0.2.2"
+
+# delete default gw on enp0s3 
+#  config.vm.provision "shell",
+#    run: "always",
+#    inline: "sudo route del default gw 192.168.222.2"
+
+
+
+
+
+    end
+  end
+
+
+
+
+
+
+#tu dla pojedynczych maszym eventualnie
+#   config.vm.define  "galeranode1" do |config|
+#     config.vm.network "forwarded_port", guest: 80, host: 8080
+#    end
+
+
+
+
+#   config.vm.define  "galeranode1" do |config|
+#      config.vm.provision "shell" do |s|
+#        s.inline = $firstnodescript
+#      end
+#    end
+
+#   config.vm.define  "galeranode2" do |config|
+#      config.vm.provision "shell" do |s|
+#        s.inline = $slavenodesscript
+#      end
+#    end
+
+#   config.vm.define  "galeranode3" do |config|
+#      config.vm.provision "shell" do |s|
+#        s.inline = $slavenodesscript
+#      end
+#    end
+
+
+
+
+#tu dla pojedynczych maszym eventualnie
+#   config.vm.define  "openstackmaster" do |config|
+#     config.vm.network "forwarded_port", guest: 80, host: 8080
+#      config.vm.provision "shell" do |s|
+#        s.inline = $masterscript
+#        s.privileged = false
+#        s.args = "192.168.42.11"
+#      end
+#    end
+
+
+
+
+
+
+
+end
