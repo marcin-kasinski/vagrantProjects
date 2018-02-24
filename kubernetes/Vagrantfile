@@ -93,9 +93,9 @@ $masterscript = <<SCRIPT
 
 
 
-	  mkdir -p /home/ubuntu/.kube
-      sudo cp -i /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
-      sudo chown ubuntu:ubuntu /home/ubuntu/.kube/config
+	  mkdir -p /home/vagrant/.kube
+      sudo cp -i /etc/kubernetes/admin.conf /home/vagrant/.kube/config
+      sudo chown vagrant:vagrant /home/vagrant/.kube/config
 
 
 
@@ -309,7 +309,7 @@ boxes = [
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0004",
         :ip => "192.168.10.13",
-        :mem => "15375",
+        :mem => "8192",
         :cpu => "1"
     },
 ]
