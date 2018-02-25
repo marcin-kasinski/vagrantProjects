@@ -35,7 +35,6 @@ boxes = [
         :name => "openstackmaster",
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0001",
-#        :ip => "192.168.1.11",
         :ip => "192.168.33.10",
         :mem => "8192",
         :cpu => "2",
@@ -46,7 +45,6 @@ boxes = [
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0002",
         :ip => "192.168.33.11",
-#        :ip => "192.168.1.12",
         :mem => "8192",
         :cpu => "1",
         :initscript => "node_devstack.sh"
@@ -56,7 +54,6 @@ boxes = [
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0003",
         :ip => "192.168.33.12",
-#        :ip => "192.168.1.13",
         :mem => "8192",
         :cpu => "1",
         :initscript => "node_manual.sh"
@@ -121,20 +118,11 @@ Vagrant.configure(2) do |config|
     run: "always",
     inline: "sudo route add -net 192.168.1.0 netmask 255.255.255.0 gw 192.168.33.1"
 
-# default router ipv6
-#  config.vm.provision "shell",
-#    run: "always",
-#    inline: "#sudo route -A inet6 add default gw fe80::5ea1:abff:fe1e:1 dev enp0s8"
-
 # delete default gw on enp0s3 
   config.vm.provision "shell",
     run: "always",
     inline: "sudo route del default gw 10.0.2.2 && sudo route add default gw 192.168.33.1"
 
-# delete default gw on enp0s3 
-#  config.vm.provision "shell",
-#    run: "always",
-#    inline: "sudo route del default gw 192.168.222.2"
 
 
 
