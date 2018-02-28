@@ -37,3 +37,4 @@
 	  openstack security group rule create --proto icmp --dst-port 0 ICMP
 
 	  ip --oneline addr show
+	  
