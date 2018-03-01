@@ -10,11 +10,11 @@
 	
 	vboxmanage list vms
 
-    vagrant up mysqlnode1 --provision 
-    #vagrant up mysqlnode2 --provision &
-    #vagrant up mysqlnode3 --provision &
+    vagrant up mysqlnode1 --provision &
+    vagrant up mysqlnode2 --provision &
+    vagrant up mysqlnode3 --provision &
     #vagrant up mysqlrouter --provision &
     #vagrant up mysqlclient --provision &
 
     	
-	vagrant ssh mysqlnode1
+	#vagrant ssh mysqlnode1
