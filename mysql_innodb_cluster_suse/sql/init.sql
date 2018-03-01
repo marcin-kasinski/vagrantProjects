@@ -1,0 +1,4 @@
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'Secretqaz@wsx123'; 
+
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'Secretqaz@wsx123' WITH GRANT OPTION; FLUSH PRIVILEGES;
+
