@@ -11,3 +11,5 @@
 #    vagrant up --provision 
 
 	vagrant ssh node1 
+
+	

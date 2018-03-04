@@ -91,7 +91,7 @@ Vagrant.configure(2) do |config|
         #config.vm.network "public_network", bridge: opts[:interface], type: "dhcp" , mac: opts[:mac]        
         #config.vm.network "public_network", bridge: opts[:interface] , mac: opts[:mac], ip: opts[:ip]
         
-        #poni�sz dzia�a dla sieci prywatnej         
+        #ponizsz dziala dla sieci prywatnej         
         config.vm.network "private_network", ip: opts[:ip],  bridge: opts[:interface],mac: opts[:mac]
 #        config.vm.network "private_network", ip: "172.24.4.2",:netmask => "255.255.255.0", :auto_config => false
         config.vm.network "private_network", ip: "172.24.4.2", auto_config: false
