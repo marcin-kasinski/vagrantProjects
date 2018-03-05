@@ -94,6 +94,14 @@ on controller
 	
 	
       source devstack/openrc admin admin
+      
+       
+      openstack security group create SSH
+	  openstack security group rule create --proto tcp --dst-port 22 SSH
+
+      openstack security group create ICMP	  
+	  openstack security group rule create --proto icmp --dst-port 0 ICMP
+      
 	
 chmod u+x /vagrant/scripts/automate.sh
 

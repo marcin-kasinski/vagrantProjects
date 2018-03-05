@@ -1,5 +1,6 @@
 
     cd /vagrantprojects/mysql_innodb_cluster_suse/
+
 	vagrant halt
 	vagrant box update
 	vboxmanage unregistervm mysqlnode1 --delete

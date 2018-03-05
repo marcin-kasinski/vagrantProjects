@@ -13,3 +13,9 @@
 	vagrant ssh node1 
 
 	
+sudo systemctl restart devstack@n-cpu.service
+sudo systemctl status devstack@n-cpu.service
+sudo journalctl -f --unit  devstack@n-cpu.service
+
+
+	
