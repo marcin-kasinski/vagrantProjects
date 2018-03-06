@@ -21,15 +21,15 @@
 	
 	#tylko node1
 	  cd /vagrantprojects/openstack/
-	vagrant halt openstacknode1
+	vagrant halt node1
 	
 	vboxmanage list vms
 	
-		vboxmanage unregistervm openstacknode1 --delete
+		vboxmanage unregistervm node1 --delete
 	
-	 vagrant up openstacknode1 --provision 
+	 vagrant up node1 --provision
 	
-	vagrant ssh openstacknode1  
+	vagrant ssh node1
 	
 	
 	
@@ -76,3 +76,104 @@ default         mkrouter.local  0.0.0.0         UG    0      0        0 enp0s8
     qdhcp-a924fe7c-90ff-46f3-8b40-ffb482a17284
 
     vagrant@openstackmaster:~$ sudo ip netns exec qrouter-ff515318-54a0-46d6-99bf-966e70b87c64 ip address
+    
+    
+    
+    
+----------------------------------------------------------------------------------------------------------------------------
+
+
+on controller
+
+devstack/unstack.sh
+devstack/stack.sh
+
+on node1
+
+sudo systemctl restart devstack@n-cpu.service
+sudo systemctl status devstack@n-cpu.service
+sudo journalctl -f --unit  devstack@n-cpu.service
+
+
+
+
+
+
+on controller
+
+	sudo nova-manage cell_v2 discover_hosts --verbose 
+
+	
+	
+      source devstack/openrc admin admin
+      
+       
+      openstack security group create SSH
+	  openstack security group rule create --proto tcp --dst-port 22 SSH
+
+      openstack security group create ICMP	  
+	  openstack security group rule create --proto icmp --dst-port 0 ICMP
+      
+	
+chmod u+x /vagrant/scripts/automate.sh
+
+/vagrant/scripts/automate.sh
+
+
+clear gateway router1
+	
+
+openstack port list
+
+
+openstack port show  fb026600-4ace-4187-b953-a3bc46ed1552
+
+openstack subnet list 
+
+openstack subnet delete public-subnet
+
+openstack subnet delete ipv6-public-subnet
+
+openstack subnet list 
+
+openstack network list
+
+openstack network delete public
+
+openstack network list
+
+sudo ovs-vsctl list-br
+
+sudo ovs-vsctl list-ports br-ex 
+
+
+sudo ovs-vsctl add-port br-ex eth2
+
+
+sudo ovs-vsctl list-ports br-ex 
+
+
+
+openstack network create --provider-physical-network public --provider-network-type flat --external public  
+
+
+openstack subnet create --subnet-range 192.168.1.0/24 --no-dhcp --gateway 192.168.1.1 --network public --allocation-pool start=192.168.1.20,end=192.168.1.25 public-subnet
+
+
+
+
+openstack router set --external-gateway public myrouter 
+
+
+sudo ip link show eth2
+
+sudo ip link set dev eth2 up
+
+sudo ip link show eth2
+
+
+sudo ip netns ls
+
+
+sudo ip netns exec qrouter-93f15211-30ba-44dc-8e0e-4cecafe4c3fd ping 192.168.1.1
+    
