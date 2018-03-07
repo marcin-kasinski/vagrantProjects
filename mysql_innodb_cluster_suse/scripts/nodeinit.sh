@@ -31,6 +31,12 @@ PASSWORD_LINE="$( sudo cat /var/log/mysql/mysqld.log | grep 'A temporary passwor
 FIRST_PASSWORD="$( echo ${PASSWORD_LINE##* } )"
 echo $FIRST_PASSWORD
 
+
+sudo sh -c "echo 'ALTER USER 'root'@'localhost' IDENTIFIED BY 'Secretqaz@wsx123'; ' >> ./init.sql" 
+sudo sh -c "echo 'GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'Secretqaz@wsx123' WITH GRANT OPTION; FLUSH PRIVILEGES; ' >> ./init.sql" 
+
+
+
 mysql --connect-expired-password  -u root -p"$FIRST_PASSWORD" </vagrant/sql/init.sql
 
 mysql -u root -p"Secretqaz@wsx123" -e "use mysql; select user, host, authentication_string from user;"
@@ -41,5 +47,4 @@ sudo zypper --non-interactive --no-gpg-checks install mysql-shell
 #sudo zypper packages -i | grep mysql-.*community
 
 #sudo mysqlsh
-sudo /usr/sbin/rcmysql stop
-sudo /usr/sbin/rcmysql start
+sudo /usr/sbin/rcmysql restart

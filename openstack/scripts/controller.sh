@@ -28,7 +28,7 @@
 
       ############################ adding image ############################
 
-      source openrc demo demo
+      source openrc admin admin
       
       openstack security group create SSH
 	  openstack security group rule create --proto tcp --dst-port 22 SSH

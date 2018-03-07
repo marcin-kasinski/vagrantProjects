@@ -1,7 +1,15 @@
 
     cd /vagrantprojects/openstack/
+    
+    
+    vagrant plugin install vagrant-disksize
+    vagrant plugin install vagrant-persistent-storage
+    
 	vagrant halt
 	vagrant box update
+	
+	
+
 	vboxmanage unregistervm openstackmaster --delete
 	vboxmanage unregistervm openstacknode1 --delete
 
@@ -76,12 +84,14 @@ default         mkrouter.local  0.0.0.0         UG    0      0        0 enp0s8
     qdhcp-a924fe7c-90ff-46f3-8b40-ffb482a17284
 
     vagrant@openstackmaster:~$ sudo ip netns exec qrouter-ff515318-54a0-46d6-99bf-966e70b87c64 ip address
-    
-    
-    
-    
-----------------------------------------------------------------------------------------------------------------------------
 
+
+----------------------------------------------------------------------------------------------------------------------------
+adding disk
+	VBoxManage showvminfo openstackmaster
+
+
+----------------------------------------------------------------------------------------------------------------------------
 
 on controller
 
@@ -94,20 +104,12 @@ sudo systemctl restart devstack@n-cpu.service
 sudo systemctl status devstack@n-cpu.service
 sudo journalctl -f --unit  devstack@n-cpu.service
 
-
-
-
-
-
 on controller
 
 	sudo nova-manage cell_v2 discover_hosts --verbose 
 
-	
-	
       source devstack/openrc admin admin
-      
-       
+
       openstack security group create SSH
 	  openstack security group rule create --proto tcp --dst-port 22 SSH
 
@@ -165,11 +167,11 @@ openstack subnet create --subnet-range 192.168.1.0/24 --no-dhcp --gateway 192.16
 openstack router set --external-gateway public myrouter 
 
 
-sudo ip link show eth2
+sudo ip link show eth2 # sudo ip link show enp0s9
 
-sudo ip link set dev eth2 up
+sudo ip link set dev eth2 up # sudo ip link set dev enp0s9 up
 
-sudo ip link show eth2
+sudo ip link show eth2 # sudo ip link show enp0s9
 
 
 sudo ip netns ls
