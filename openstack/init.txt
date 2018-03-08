@@ -260,6 +260,9 @@ sudo journalctl -f --unit devstack@c-api.service
 sudo systemctl restart devstack@c-vol.service
 sudo journalctl -f --unit devstack@c-vol.service
 
+sudo systemctl restart devstack@c-sch.service
+sudo journalctl -f --unit devstack@c-sch.service
+
 sudo journalctl --unit devstack@c-vol.service | grep MKmyvolgroup
 
 #win2linux
