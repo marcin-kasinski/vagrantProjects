@@ -178,4 +178,115 @@ sudo ip netns ls
 
 
 sudo ip netns exec qrouter-93f15211-30ba-44dc-8e0e-4cecafe4c3fd ping 192.168.1.1
-    
+
+
+
+----------------------------------------------------------------------------------------------------------------------------
+
+CINDER
+https://www.digitalocean.com/community/tutorials/how-to-use-lvm-to-manage-storage-devices-on-ubuntu-16-04
+
+listuje dyski
+
+lsblk -o NAME,FSTYPE,SIZE,MOUNTPOINT,LABEL
+sudo lvmdiskscan
+sudo  lvmdiskscan -l
+sudo pvscan
+sudo pvs
+sudo pvdisplay
+sudo pvdisplay -m
+
+#volume group
+sudo vgscan
+sudo vgs -o +devices,lv_path
+sudo vgdisplay -v
+
+sudo lvscan
+sudo lvs
+sudo lvs --segments
+sudo lvdisplay -m
+
+
+#Creating Physical Volumes From Raw Storage Devices
+sudo lvmdiskscan
+
+
+sudo pvcreate /dev/sdc
+
+#Creating a New Volume Group from Physical Volumes
+
+sudo vgcreate MK_volume_group_name /dev/sdc
+
+#Creating a Logical Volume by Specifying Size
+
+For instance, to create a 10G logical volume named test from the LVMVolGroup volume group, type:
+
+sudo lvcreate -L 10G -n MK_logical_volume_test MK_volume_group_name
+
+#Creating a Logical Volume From All Remaining Free Space
+
+sudo lvcreate -l 100%FREE -n MK_logical_volume_test MK_volume_group_name
+
+
+Wyedytowac /etc/cinder/cinder.conf
+
+enabled_backends = lvmdriver-1,lvmdriver-2XXX
+
+
+
+[lvmdriver-2XXX]
+image_volume_cache_enabled = True
+volume_clear = zero
+lvm_type = default
+iscsi_helper = tgtadm
+volume_group = MKmyvolgroup
+volume_driver = cinder.volume.drivers.lvm.LVMVolumeDriver
+volume_backend_name = lvmdriver-2
+
+
+Listujemy serwisy 
+
+
+systemctl list-units devstack@*
+
+
+Restart Cinder Services.
+
+
+
+sudo systemctl restart devstack@c-api.service
+sudo journalctl -f --unit devstack@c-api.service
+
+sudo systemctl restart devstack@c-vol.service
+sudo journalctl -f --unit devstack@c-vol.service
+
+sudo journalctl --unit devstack@c-vol.service | grep MKmyvolgroup
+
+#win2linux
+sudo sed -i -e 's/\r//g'  /etc/cinder/cinder.conf
+
+
+
+source openrc admin admin
+
+
+
+ openstack volume type create --public LVM2
+ 
+openstack volume type set LVM2 --property volume_backend_name=lvmdriver-2 
+
+
+cinder get-pools
+
+
+Create 40GB Cinder Volume
+
+openstack volume create --size 4 4gb-vol_LVM1 --type LVM2
+
+openstack volume list
+
+
+###########loop
+
+openstack volume create --size 4 4gb-vol --type lvmdriver-1 
+openstack volume list

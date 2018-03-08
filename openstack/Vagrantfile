@@ -38,6 +38,7 @@ boxes = [
         :ip => "192.168.33.10",
         :mem => "8192",
         :cpu => "2",
+        :lvm_enable => true,
         :initscript => "controller.sh"
     },
     {
@@ -47,6 +48,7 @@ boxes = [
         :ip => "192.168.33.11",
         :mem => "8192",
         :cpu => "1",
+        :lvm_enable => false,
         :initscript => "node_devstack.sh"
     },
     {
@@ -56,6 +58,7 @@ boxes = [
         :ip => "192.168.33.12",
         :mem => "8192",
         :cpu => "1",
+        :lvm_enable => false,
         :initscript => "node_manual.sh"
     }]
 
@@ -76,6 +79,8 @@ Vagrant.configure(2) do |config|
         #config.ssh.username = "ubuntu"
         #config.ssh.password = "379a8188cba8c5e64b9a429f"
 
+
+
         config.vm.provider "virtualbox" do |v|
           v.customize ["modifyvm", :id, "--memory", opts[:mem]]
           v.customize ["modifyvm", :id, "--cpus", opts[:cpu]]
@@ -95,6 +100,20 @@ Vagrant.configure(2) do |config|
         config.vm.network "private_network", ip: opts[:ip],  bridge: opts[:interface],mac: opts[:mac]
 #       config.vm.network "private_network", ip: "172.24.4.2",:netmask => "255.255.255.0", :auto_config => false
         config.vm.network "public_network", auto_config: false,  bridge: "enp3s0"
+
+
+# configure a persistent storage for mysql data
+        config.persistent_storage.enabled = opts[:lvm_enable]
+        config.persistent_storage.location = "virtualdrive.vdi"
+        config.persistent_storage.size = 50000 # 50GB
+        #config.persistent_storage.mountname = 'mysql'
+        config.persistent_storage.filesystem = 'ext4'
+        #config.persistent_storage.mountpoint = '/var/lib/mysql'
+        config.persistent_storage.volgroupname = 'MKmyvolgroup'
+        config.persistent_storage.partition = false
+		config.persistent_storage.diskdevice = '/dev/sdc'
+
+
 
       end
   end
@@ -139,7 +158,12 @@ Vagrant.configure(2) do |config|
 #tu dla pojedynczych maszym eventualnie
    config.vm.define  "openstackmaster" do |config|
      config.vm.network "forwarded_port", guest: 80, host: 8080
+
+
     end
+
+
+
 
 
 
