@@ -26,7 +26,16 @@ waitForStackFinished(){
 
 }
 
+waitForNFS(){
 
+		echo "waiting for NFS server..."
+      
+		while ! nc -z 192.168.33.10 111; do   echo "waiting NFS to launch ..." ; sleep 5 ; done
+      
+
+}
+
+waitForNFS
 setupNFS
 waitForStackFinished
 

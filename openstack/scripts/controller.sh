@@ -102,13 +102,33 @@ waitForNode1Ready(){
 
 
 
-updateCinderConf(){
+updateCinder(){
 
 cp /etc/cinder/cinder.conf /etc/cinder/cinder_OLD.conf
 
 cat /vagrant/cinder.conf >> /etc/cinder/cinder.conf
-#sudo sed -i -e 's/enabled_backends = lvmdriver-1/enabled_backends = lvmdriver-1,lvmdriver-2/g' /etc/cinder/cinder.conf 
+sudo sed -i -e 's/enabled_backends = lvmdriver-1/enabled_backends = lvmdriver-1,lvmdriver-2/g' /etc/cinder/cinder.conf 
 
+#Restart Cinder Services.
+
+sudo systemctl restart devstack@c-api.service
+sudo systemctl restart devstack@c-vol.service
+sudo systemctl restart devstack@c-sch.service
+
+
+
+
+openstack volume type create --public LVM2
+ 
+openstack volume type set LVM2 --property volume_backend_name=lvmdriver-2 
+
+
+cinder get-pools
+
+openstack volume create --size 40 40gb-vol_LVM2 --type LVM2
+
+
+openstack volume list
 }
 
 #--------------------------------------------------------------------
@@ -134,7 +154,7 @@ waitForNode1Ready
 sudo nova-manage cell_v2 discover_hosts --verbose 
 
 
-updateCinderConf
+updateCinder
 
 
 
