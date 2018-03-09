@@ -190,7 +190,7 @@ delete_volume(){
 # Adds the Volume to VM1
 add_volume(){
 
-  
+  sleep 10
   openstack server add volume $VM1 $VOL_NAME || { echo "failed to add volume $VOL_NAME to server $VM1" >&2; exit 1; }
   echo "Added Volume $VOL_NAME to server $VM1"
 }

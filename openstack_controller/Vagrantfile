@@ -40,6 +40,21 @@ Vagrant.configure("2") do |config|
   # your network.
   config.vm.network "public_network", auto_config: false,  bridge: "enp3s0"
 
+
+		# configure a persistent storage for mysql data
+        config.persistent_storage.enabled = true
+        config.persistent_storage.location = "virtualdrive.vdi"
+        config.persistent_storage.size = 100000 # 100GB
+        #config.persistent_storage.mountname = 'mysql'
+        config.persistent_storage.filesystem = 'ext4'
+        #config.persistent_storage.mountpoint = '/var/lib/mysql'
+        config.persistent_storage.volgroupname = 'MKmyvolgroup'
+        config.persistent_storage.partition = false
+		config.persistent_storage.diskdevice = '/dev/sdc'
+
+
+
+
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
@@ -72,8 +87,12 @@ Vagrant.configure("2") do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
-  # config.vm.provision "shell", inline: <<-SHELL
-  #   apt-get update
-  #   apt-get install -y apache2
-  # SHELL
+  config.vm.provision "shell", inline: <<-SHELL
+  
+     	chmod u+x /vagrant/scripts/controller.sh
+     	#win2linux
+		sed -i -e 's/\r//g' /vagrant/scripts/controller.sh	
+		/vagrant/scripts/controller.sh
+
+   SHELL
 end 

@@ -2,8 +2,8 @@
     cd /vagrantprojects/openstack/
     
     
-    vagrant plugin install vagrant-disksize
-    vagrant plugin install vagrant-persistent-storage
+    #vagrant plugin install vagrant-disksize
+    #vagrant plugin install vagrant-persistent-storage
     
 	vagrant halt
 	vagrant box update
@@ -207,6 +207,10 @@ sudo lvs --segments
 sudo lvdisplay -m
 
 
+remove logical volume
+umount /dev/MKmyvolgroup/vps
+lvremove /dev/MKmyvolgroup/vps
+
 #Creating Physical Volumes From Raw Storage Devices
 sudo lvmdiskscan
 
@@ -234,7 +238,7 @@ enabled_backends = lvmdriver-1,lvmdriver-2XXX
 
 
 
-[lvmdriver-2XXX]
+[lvmdriver-2]
 image_volume_cache_enabled = True
 volume_clear = zero
 lvm_type = default
@@ -252,6 +256,9 @@ systemctl list-units devstack@*
 
 Restart Cinder Services.
 
+sudo systemctl restart devstack@c-api.service
+sudo systemctl restart devstack@c-vol.service
+sudo systemctl restart devstack@c-sch.service
 
 
 sudo systemctl restart devstack@c-api.service
@@ -263,6 +270,7 @@ sudo journalctl -f --unit devstack@c-vol.service
 sudo systemctl restart devstack@c-sch.service
 sudo journalctl -f --unit devstack@c-sch.service
 
+
 sudo journalctl --unit devstack@c-vol.service | grep MKmyvolgroup
 
 #win2linux
@@ -270,7 +278,7 @@ sudo sed -i -e 's/\r//g'  /etc/cinder/cinder.conf
 
 
 
-source openrc admin admin
+cd devstack && source openrc admin admin
 
 
 
@@ -282,9 +290,8 @@ openstack volume type set LVM2 --property volume_backend_name=lvmdriver-2
 cinder get-pools
 
 
-Create 40GB Cinder Volume
-
-openstack volume create --size 4 4gb-vol_LVM1 --type LVM2
+openstack volume create --size 20 20gb-vol_LVM2 --type LVM2
+openstack volume create --size 40 40gb-vol_LVM2 --type LVM2
 
 openstack volume list
 

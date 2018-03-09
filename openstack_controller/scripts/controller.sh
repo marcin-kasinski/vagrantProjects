@@ -17,46 +17,20 @@ init(){
 			sudo apt-get install git -y || sudo yum install -y git
 			sudo apt-get install mc -y 
 
-}
-
-setupNFS(){
-
- # ----------------------------- nfs -----------------------------
-      sudo apt-get install nfs-kernel-server
-      
-      # nfs biblioteki klienckie
-      sudo apt-get install -y nfs-common
-      
-      # katalog dla joina:
-
-      sudo mkdir /var/nfs/openstack_share -p
-      sudo chown nobody:nogroup /var/nfs/openstack_share
-      
-      
-      sudo sh -c "echo '/var/nfs/openstack_share    *(rw,sync,no_subtree_check,no_root_squash)' >> /etc/exports"      
-
-      sudo exportfs -ra
-
-      # ----------------------------- nfs -----------------------------      
 
 }
-
 
 
 
 # Creates a keypair
 remove_LVM_logical_volume(){
 
-
-#vagrant plugin creates logical volume.
-
-#We have to remove it
-lsblk -o NAME,FSTYPE,SIZE,MOUNTPOINT,LABEL
-sudo lvmdiskscan
-sudo lvscan
-#umount /dev/MKmyvolgroup/vps
-sudo lvremove -f /dev/MKmyvolgroup/vps
-sudo lvscan
+			#vagrant plugin creates logical volume.
+			#We have to remove it
+			sudo lvscan
+			#umount /dev/MKmyvolgroup/vps
+			lvremove /dev/MKmyvolgroup/vps
+			sudo lvscan
 }
 
 
@@ -90,27 +64,6 @@ create_security_group(){
 
 }
 
-waitForNode1Ready(){
-
-		echo "waiting for node1 ready..."
-    
-      
-      	while [ ! -f /var/nfs/openstack_share/openstack_node1_ready ] ; do NOW=$(date +"%d.%m.%Y %T"); echo $NOW" : waiting for node1 ready..." ;  sleep 20 ; done
-     
-
-}
-
-
-
-updateCinderConf(){
-
-cp /etc/cinder/cinder.conf /etc/cinder/cinder_OLD.conf
-
-cat /vagrant/cinder.conf >> /etc/cinder/cinder.conf
-#sudo sed -i -e 's/enabled_backends = lvmdriver-1/enabled_backends = lvmdriver-1,lvmdriver-2/g' /etc/cinder/cinder.conf 
-
-}
-
 #--------------------------------------------------------------------
 
 
@@ -118,28 +71,7 @@ cat /vagrant/cinder.conf >> /etc/cinder/cinder.conf
 remove_LVM_logical_volume
 #clone_GIT
 
-setupNFS
+source openrc admin admin
 
-devstack/unstack.sh
-devstack/stack.sh
-
-sudo touch /var/nfs/openstack_share/openstack_stack_finished
-
-source devstack/openrc admin admin
 
 create_security_group SSHandICMP
-
-waitForNode1Ready
-
-sudo nova-manage cell_v2 discover_hosts --verbose 
-
-
-updateCinderConf
-
-
-
-#chmod u+x /vagrant/scripts/automate.sh
-
-#/vagrant/scripts/automate.sh
-
-

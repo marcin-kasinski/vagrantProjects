@@ -33,6 +33,7 @@ SCRIPT
 boxes = [
     {
         :name => "openstackmaster",
+        :box => "najoy/os-pike-aio",
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0001",
         :ip => "192.168.33.10",
@@ -43,35 +44,33 @@ boxes = [
     },
     {
         :name => "node1",
+        :box => "najoy/openstack-pike-compute",
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0002",
         :ip => "192.168.33.11",
         :mem => "8192",
         :cpu => "1",
         :lvm_enable => false,
-        :initscript => "node_devstack.sh"
-    },
-    {
-        :name => "openstacknode2",
-        :interface => "enp3s0",
-        :mac=> "5CA1AB1E0003",
-        :ip => "192.168.33.12",
-        :mem => "8192",
-        :cpu => "1",
-        :lvm_enable => false,
         :initscript => "node_manual.sh"
-    }]
+        
+        
+    }
+]
 
 Vagrant.configure(2) do |config|
 
-  config.vm.box = "ubuntu/xenial64"
+#  config.vm.box = "ubuntu/xenial64"
 #  config.vm.box = "ubuntu/trusty64"
 #  config.vm.box = "bento/ubuntu-16.04"
-  
+#  config.vm.box = "najoy/os-pike-aio"
+
   #config.vm.box_version = "20171212.0.0"
 
   boxes.each do |opts|
       config.vm.define opts[:name] do |config|
+      
+        config.vm.box = opts[:box]
+      
         config.vm.hostname = opts[:name]
         #config.vm.synced_folder opts[:share_folder_host], ""
         
@@ -102,16 +101,16 @@ Vagrant.configure(2) do |config|
         config.vm.network "public_network", auto_config: false,  bridge: "enp3s0"
 
 
-# configure a persistent storage for mysql data
+		# configure a persistent storage for mysql data
         config.persistent_storage.enabled = opts[:lvm_enable]
-        config.persistent_storage.location = "virtualdrive.vdi"
-        config.persistent_storage.size = 50000 # 50GB
+        config.persistent_storage.location = "/vagrantprojects/openstackmaster.vdi"
+        config.persistent_storage.size = 80000 # 80GB
         #config.persistent_storage.mountname = 'mysql'
         config.persistent_storage.filesystem = 'ext4'
         #config.persistent_storage.mountpoint = '/var/lib/mysql'
         config.persistent_storage.volgroupname = 'MKmyvolgroup'
         config.persistent_storage.partition = false
-		config.persistent_storage.diskdevice = '/dev/sdc'
+		config.persistent_storage.diskdevice = '/dev/sdb'
 
 
 
