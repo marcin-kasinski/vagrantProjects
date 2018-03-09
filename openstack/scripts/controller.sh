@@ -101,6 +101,45 @@ waitForNode1Ready(){
 }
 
 
+configureExternalNetInterface(){
+
+
+openstack subnet list 
+
+openstack subnet delete public-subnet
+
+openstack subnet delete ipv6-public-subnet
+
+openstack subnet list 
+
+openstack network list
+
+openstack network delete public
+
+openstack network list
+
+sudo ovs-vsctl list-br
+
+sudo ovs-vsctl list-ports br-ex 
+
+
+sudo ovs-vsctl add-port br-ex eth2 
+
+
+sudo ovs-vsctl list-ports br-ex 
+
+sudo ip link show eth2 
+
+sudo ip link set dev eth2 up 
+
+sudo ip link show eth2 
+
+
+     
+
+}
+
+
 
 updateCinder(){
 
@@ -158,8 +197,14 @@ updateCinder
 
 
 
-#chmod u+x /vagrant/scripts/automate.sh
 
-#/vagrant/scripts/automate.sh
+
+neutron router-gateway-clear  router1
+
+configureExternalNetInterface
+
+chmod u+x /vagrant/scripts/automate-with-ext.sh
+
+/vagrant/scripts/automate-with-ext.sh
 
 

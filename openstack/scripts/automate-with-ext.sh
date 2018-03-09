@@ -54,16 +54,16 @@ VOL_SIZE=1  #1GB
 PHYSNET=public
 EXT_NET=public
 # Set this to your External CIDR Range
-EXT_NET_CIDR="10.1.2.0/24"
+EXT_NET_CIDR="192.168.1.0/24"
 # The IP Address of your Internet Gateway
-EXT_GATEWAY="10.1.2.254"
+EXT_GATEWAY="192.168.1.1"
 # Start and End IP address of the Allocation pool on the External Subnet
-ALLOCATION_POOL_START="10.1.2.20"
-ALLOCATION_POOL_END="10.1.2.25"
+ALLOCATION_POOL_START="192.168.1.20"
+ALLOCATION_POOL_END="192.168.1.99"
 EXT_SUBNET="public-subnet"
 # The floating IP address that you want Neutron to allocate from the pool
 # Tip: Use the last IP address on the pool as your FIP to avoid conflicts with other IP's allocated by Neutron
-FLOATING_IP="10.1.2.25"
+FLOATING_IP="192.168.1.99"
 ########### End global variables ###########
 
 
@@ -206,6 +206,11 @@ delete_volume(){
 
 # Adds the Volume to VM1
 add_volume(){
+
+  echo waiting instance to boot
+
+  while [ "$STATUS" != "ACTIVE" ]; do   STATUSLINE="$( openstack server show $VM1 | grep '| status' )" ; STATUS="$( echo $STATUSLINE | cut -d " " -f 4 )";  echo "waiting instance to boot..." ; sleep 5 ; done
+  
   openstack server add volume $VM1 $VOL_NAME || { echo "failed to add volume $VOL_NAME to server $VM1" >&2; exit 1; }
   echo "Added Volume $VOL_NAME to server $VM1"
 }
@@ -275,6 +280,14 @@ delete_floating_ip(){
 # Add the floating IP address to an instance
 add_floating_ip(){
   local vm_name=$1
+  
+  
+echo waiting instance to boot
+
+
+  while [ "$STATUS" != "ACTIVE" ]; do   STATUSLINE="$( openstack server show $vm_name | grep '| status' )" ; STATUS="$( echo $STATUSLINE | cut -d " " -f 4 )";  echo "waiting instance to boot..." ; sleep 5 ; done
+  
+  
   openstack server add floating ip $vm_name $FLOATING_IP || { echo "failed to add floating ip $FLOATING_IP to server $vm_name" >&2; exit 1; }
   echo "Added the floating ip address $FLOATING_IP to the instance $vm_name"
 }
