@@ -300,3 +300,70 @@ openstack volume list
 
 openstack volume create --size 4 4gb-vol --type lvmdriver-1 
 openstack volume list
+
+
+
+----------------------------------------------------------------------------------------------------------------------------
+
+montowanie dysku
+
+
+listowanie dysków
+lsblk -io KNAME,TYPE,SIZE,MODEL
+
+listowanie partycji
+sudo fdisk -l 
+
+tworzenie partycji na dysku
+
+
+fdisk /dev/vdc
+
+
+The basic fdisk commands you need are:
+
+    m – print help
+    p – print the partition table
+    n – create a new partition
+    d – delete a partition
+    q – quit without saving changes
+    w – write the new partition table and exit
+    
+    Format 
+    
+sudo mkfs.ext3 /dev/vdc1
+
+Mount
+
+sudo mkdir /disk1
+sudo mount /dev/vdc1 /disk1
+sudo df -H
+
+UMount
+
+sudo umount /dev/vdc1
+
+
+install ubuntu image
+
+wget -O /tmp/xenial-server-cloudimg-amd64-disk1.img http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
+
+
+
+source devstack/openrc admin admin
+
+
+openstack image create --disk-format qcow2  --container-format bare --public --file /tmp/xenial-server-cloudimg-amd64-disk1.img ubuntu-image
+
+
+boot vm
+
+openstack server create --image ubuntu-image --flavor m1.small --key-name mykey --network mynetwork1 --security-group SSHandICMP --availability-zone nova myvm_ubuntu
+                         
+                         
+                         
+
+
+logowanie do aszyny za pomoca klucza
+
+ssh -i ~/.ssh/mykey  ubuntu@192.168.1.99

@@ -194,7 +194,8 @@ delete_vm(){
 
 # Create a Volume
 create_volume(){
-  openstack volume create --size $VOL_SIZE $VOL_NAME || { echo "failed to create volume $VOL_NAME,SIZE=$VOL_SIZE" >&2; exit 1; }
+  openstack volume create --size $VOL_SIZE $VOL_NAME  --type LVM2|| { echo "failed to create volume $VOL_NAME,SIZE=$VOL_SIZE" >&2; exit 1; }
+#  openstack volume create --size $VOL_SIZE $VOL_NAME || { echo "failed to create volume $VOL_NAME,SIZE=$VOL_SIZE" >&2; exit 1; }
   echo "Created Volume $VOL_NAME size=$VOL_SIZE GB"
 }
 

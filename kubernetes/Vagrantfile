@@ -248,16 +248,22 @@ EOF
 
 
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
-      
+           
+       
 SCRIPT
 
 $nodescript = <<SCRIPT
       echo I am node provisioning...
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
 
-      #echo "Waiting kubernetes master to launch ..."  && while ! nc -z 192.168.1.227 6443; do   echo "waiting for master ..." ; sleep 5 ; done
+
+
+      #echo "Waiting kubernetes master to launch ..."  && while ! nc -z k8smaster.local 6443; do   echo "waiting for master ..." ; sleep 5 ; done
 
       # ----------------------------- nfs -----------------------------
+
+	  while ! nc -z k8smaster.local 111; do   echo "waiting NFS to launch ..." ; sleep 5 ; done
+
       sudo mkdir -p /nfs/kubernetes_share
       sudo mount k8smaster.local:/var/nfs/kubernetes_share /nfs/kubernetes_share
       
@@ -328,7 +334,7 @@ Vagrant.configure(2) do |config|
         #config.vm.network :forwarded_port, host: 2222, guest: 22
         #config.ssh.username = "ubuntu"
         #config.ssh.password = "379a8188cba8c5e64b9a429f"
-
+        
         config.vm.provider "virtualbox" do |v|
           v.customize ["modifyvm", :id, "--memory", opts[:mem]]
           v.customize ["modifyvm", :id, "--cpus", opts[:cpu]]
@@ -349,7 +355,7 @@ Vagrant.configure(2) do |config|
 
 
   boxes.each do |opts|
-    config.vm.define opts[:name] do |config|
+    config.vm.define opts[:name] do |config|    
       config.vm.provision "shell" do |s|
         s.inline = $initscript
         s.args = opts[:ip]
