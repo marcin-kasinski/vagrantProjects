@@ -28,7 +28,7 @@
 source /home/vagrant/devstack/openrc admin admin
 
 # Variables that control the script action
-CLEANUP=1  # When set, do a cleanup run to delete all old resources
+CLEANUP=0  # When set, do a cleanup run to delete all old resources
 CREATE=1   # When set, create cloud resources
 
 # Set global variables to control the names of the resources we create

@@ -367,3 +367,6 @@ openstack server create --image ubuntu-image --flavor m1.small --key-name mykey 
 logowanie do aszyny za pomoca klucza
 
 ssh -i ~/.ssh/mykey  ubuntu@192.168.1.99
+
+
+ssh -i /vagrantprojects/private_key ubuntu@192.168.1.99

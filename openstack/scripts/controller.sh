@@ -1,6 +1,42 @@
 #!/bin/bash
 # set -o xtrace
 
+
+# Set global variables to control the names of the resources we create
+KEYPAIR=mykey
+VM1=myvm1
+VM2=myvm2
+IMAGE="xenial-server-cloudimg-amd64"
+FLAVOR="m1.4gbdisk"
+NET1=mynetwork1
+NET2=mynetwork2
+NET1_CIDR="10.1.1.0/24"
+NET2_CIDR="10.2.2.0/24"
+SUBNET1=mysubnet1
+SUBNET2=mysubnet2
+ROUTER=myrouter
+SG=mysecgroup
+COMPUTE_NODENAME=node1
+AZ=az2
+
+#### External network & Floating IP Variables ####
+PHYSNET=public
+EXT_NET=public
+# Set this to your External CIDR Range
+EXT_NET_CIDR="192.168.1.0/24"
+# The IP Address of your Internet Gateway
+EXT_GATEWAY="192.168.1.1"
+# Start and End IP address of the Allocation pool on the External Subnet
+ALLOCATION_POOL_START="192.168.1.20"
+ALLOCATION_POOL_END="192.168.1.99"
+EXT_SUBNET="public-subnet"
+# The floating IP address that you want Neutron to allocate from the pool
+# Tip: Use the last IP address on the pool as your FIP to avoid conflicts with other IP's allocated by Neutron
+FLOATING_IP="192.168.1.99"
+########### End global variables ###########
+
+
+
 init(){
 
 			#sudo sed -i -r '/openstackmaster/ s/^(.*)$/#\1/g' /etc/hosts
@@ -42,6 +78,133 @@ setupNFS(){
 }
 
 
+# Creates a keypair
+create_keypair(){
+  openstack keypair create $KEYPAIR > ~/.ssh/${KEYPAIR} || { echo "failed to create keypair $KEYPAIR" >&2; exit 1; }
+  echo "Created Keypair $KEYPAIR"
+  chmod 600 ~/.ssh/${KEYPAIR} 
+}
+
+# Create a network
+create_network(){
+  local netname=$1
+  openstack network create $netname || { echo "failed to create network $netname" >&2; exit 1; }
+  echo "Created network $netname"
+}
+
+# Create a subnet
+create_subnet(){
+  local netname=$1
+  local subnetname=$2
+  local cidr=$3
+  openstack subnet create --subnet-range $cidr --dns-nameserver 8.8.8.8 --dns-nameserver 8.8.4.4 \
+                          --network $netname $subnetname || { echo "failed to create subnet $subnetname" >&2; exit 1; }
+  echo "Created subnet $subnetname"
+}
+
+# Create a router
+create_router(){
+  local routername=$1
+  openstack router create $routername || { echo "failed to create router $routername" >&2; exit 1; }
+  echo "Created router $routername"
+}
+
+# Add a router interface to a subnet
+add_router_interface(){
+  local routername=$1
+  local subnetname=$2
+  openstack router add subnet $routername $subnetname || { echo "failed to add router intf to subnet $subnetname" >&2; exit 1; }
+  echo "Added router $routername interface to subnet $subnetname"
+}
+
+# Create a Host Aggregate named az1 and expose a new Availability-Zone with name $AZ. Then add the compute node to this AZ
+create_az(){
+  openstack aggregate create --zone $AZ $AZ || { echo "failed to create Availability Zone $AZ" >&2; exit 1; }
+  echo "Created the Availability Zone $AZ"
+  openstack aggregate add host $AZ $COMPUTE_NODENAME || { echo "failed to add the host $COMPUTE_NODENAME to $AZ" >&2; exit 1; }
+  echo "Added the compute node $COMPUTE_NODENAME to the Host Aggregate $AZ"
+}
+
+# Boot a VM, inject keypair, add a NIC to the network, set security-group and place it in an AZ
+boot_vm(){
+ local vm_name=$1
+ local net_name=$2
+ local az=$3
+ openstack server create --image $IMAGE --flavor $FLAVOR --key-name $KEYPAIR --network $net_name --security-group $SG \
+                         --availability-zone $az $vm_name || { echo "Failed to create the VM: $vm_name" >&2; } 
+ echo "Created VM $vm_name, attached a NIC on $net_name, set security-group $SG, injected ssh-key $KEYPAIR and placed it on AZ $az"
+}
+
+# Create a Volume
+create_volume(){
+
+ local VOL_NAME=$1
+ local VOL_SIZE=$2
+
+  openstack volume create --size $VOL_SIZE $VOL_NAME  --type LVM2|| { echo "failed to create volume $VOL_NAME,SIZE=$VOL_SIZE" >&2; exit 1; }
+#  openstack volume create --size $VOL_SIZE $VOL_NAME || { echo "failed to create volume $VOL_NAME,SIZE=$VOL_SIZE" >&2; exit 1; }
+  echo "Created Volume $VOL_NAME size=$VOL_SIZE GB"
+}
+
+# Adds the Volume to VM1
+add_volume(){
+
+
+ local VOL_NAME=$1
+
+  echo waiting instance to boot
+
+  while [ "$STATUS" != "ACTIVE" ]; do   STATUSLINE="$( openstack server show $VM1 | grep '| status' )" ; STATUS="$( echo $STATUSLINE | cut -d " " -f 4 )";  echo "waiting instance to boot..." ; sleep 5 ; done
+  
+  openstack server add volume $VM1 $VOL_NAME || { echo "failed to add volume $VOL_NAME to server $VM1" >&2; exit 1; }
+  echo "Added Volume $VOL_NAME to server $VM1"
+}
+
+## Functions for creating & deleting an external provider network, subnet & floating IP address ##
+
+# Create a flat provider external network
+create_provider_external_network(){
+   openstack network create --provider-physical-network $PHYSNET --provider-network-type flat --external $EXT_NET || \
+          { echo "failed to create the provider external network $EXT_NET" >&2; exit 1; }
+   echo "Created the provider external network $EXT_NET"
+}
+
+# Create external subnet
+create_external_subnet() {
+   openstack subnet create --subnet-range $EXT_NET_CIDR --gateway $EXT_GATEWAY --no-dhcp --allocation-pool \
+                           start=$ALLOCATION_POOL_START,end=$ALLOCATION_POOL_END --network $EXT_NET \
+                           $EXT_SUBNET || { echo "failed to create the external subnet $EXT_SUBNET" >&2; exit 1; }
+   echo "Created external subnet $EXT_SUBNET"
+}
+
+# Set router's gateway on the external network
+set_router_gateway(){
+    local router_name=$1
+    openstack router set --external-gateway $EXT_NET $router_name || { echo "failed to set the external gateway $EXT_NET" >&2; exit 1; }
+    echo "Set external gateway $EXT_NET on router $router_name"
+}
+
+# Allocate a floating IP address on the public network
+allocate_floating_ip(){
+    openstack floating ip create --floating-ip-address $FLOATING_IP $EXT_NET || \
+                   { echo "failed to allocate floating ip $FLOATING_IP" >&2; exit 1; }
+    echo "Allocated Floating IP address $FLOATING_IP on external network $EXT_NET"
+}
+
+# Add the floating IP address to an instance
+add_floating_ip(){
+  local vm_name=$1
+  
+  
+echo waiting instance to boot
+
+
+  while [ "$STATUS" != "ACTIVE" ]; do   STATUSLINE="$( openstack server show $vm_name | grep '| status' )" ; STATUS="$( echo $STATUSLINE | cut -d " " -f 4 )";  echo "waiting instance to boot..." ; sleep 5 ; done
+  
+  
+  openstack server add floating ip $vm_name $FLOATING_IP || { echo "failed to add floating ip $FLOATING_IP to server $vm_name" >&2; exit 1; }
+  echo "Added the floating ip address $FLOATING_IP to the instance $vm_name"
+}
 
 
 # Creates a keypair
@@ -96,7 +259,22 @@ waitForNode1Ready(){
     
       
       	while [ ! -f /var/nfs/openstack_share/openstack_node1_ready ] ; do NOW=$(date +"%d.%m.%Y %T"); echo $NOW" : waiting for node1 ready..." ;  sleep 20 ; done
-     
+
+}
+
+addImage(){
+
+		local image_name=$1
+		local image_url=$2
+		
+		source devstack/openrc admin admin
+		
+
+		echo "adding image $image_name from url $image_url"
+		
+		wget -O /tmp/$image_name.img $image_url
+		
+		openstack image create --disk-format qcow2  --container-format bare --public --file /tmp/$image_name.img $image_name || { echo "failed to create image $image_name" >&2; exit 1; }
 
 }
 
@@ -164,10 +342,9 @@ openstack volume type set LVM2 --property volume_backend_name=lvmdriver-2
 
 cinder get-pools
 
-openstack volume create --size 40 40gb-vol_LVM2 --type LVM2
+#openstack volume create --size 40 40gb-vol_LVM2 --type LVM2
 
-
-openstack volume list
+#openstack volume list
 }
 
 #--------------------------------------------------------------------
@@ -182,9 +359,18 @@ setupNFS
 devstack/unstack.sh
 devstack/stack.sh
 
+
+
 sudo touch /var/nfs/openstack_share/openstack_stack_finished
 
 source devstack/openrc admin admin
+
+
+
+openstack flavor create --public m1.4gbdisk --id auto --ram 2048 --disk 5 --vcpus 1 --rxtx-factor 1
+
+
+addImage xenial-server-cloudimg-amd64 "http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img"
 
 create_security_group SSHandICMP
 
@@ -192,19 +378,38 @@ waitForNode1Ready
 
 sudo nova-manage cell_v2 discover_hosts --verbose 
 
-
 updateCinder
-
-
-
-
 
 neutron router-gateway-clear  router1
 
 configureExternalNetInterface
 
-chmod u+x /vagrant/scripts/automate-with-ext.sh
+#chmod u+x /vagrant/scripts/automate-with-ext.sh
 
-/vagrant/scripts/automate-with-ext.sh
+#/vagrant/scripts/automate-with-ext.sh
+
+ echo "Creating virtual infrastructure..."
 
 
+ create_keypair
+ create_provider_external_network
+ create_network $NET1
+ create_network $NET2
+ create_subnet $NET1 $SUBNET1 $NET1_CIDR
+ create_subnet $NET2 $SUBNET2 $NET2_CIDR
+ create_external_subnet
+ create_router $ROUTER
+ add_router_interface $ROUTER $SUBNET1
+ add_router_interface $ROUTER $SUBNET2
+ set_router_gateway $ROUTER
+ create_security_group $SG
+ create_az 
+ allocate_floating_ip
+ boot_vm $VM1 $NET1 nova  # Boot the first VM on NET1 and AZ named nova (default) (i.e. place VM1 on the controller)
+ boot_vm $VM2 $NET2 $AZ  # Boot the second VM on NET2 and in AZ=az2 (i.e. place VM2 on the compute node)
+ create_volume "extra_space" 2  # Allocate some storage space
+ create_volume "30gb-vol_LVM2" 30  # Allocate some storage space
+ add_volume "extra_space"     # Attach the storage volume to $VM1
+ add_volume "30gb-vol_LVM2"
+
+ add_floating_ip $VM1   # Add a floating ip address to $VM1
