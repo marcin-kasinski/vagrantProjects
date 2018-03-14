@@ -2,6 +2,9 @@
 # set -o xtrace
 
 
+echo "exiting"
+exit 1
+
 # Set global variables to control the names of the resources we create
 KEYPAIR=mykey
 VM1=myvm1
@@ -413,3 +416,7 @@ configureExternalNetInterface
  add_volume "30gb-vol_LVM2"
 
  add_floating_ip $VM1   # Add a floating ip address to $VM1
+
+echo "search for magnum"
+
+cat /tmp/stack_output.txt | grep magnum
