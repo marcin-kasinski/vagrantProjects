@@ -1,10 +1,6 @@
 #!/bin/bash
 # set -o xtrace
 
-
-echo "exiting"
-exit 1
-
 # Set global variables to control the names of the resources we create
 KEYPAIR=mykey
 VM1=myvm1
@@ -236,11 +232,6 @@ clone_GIT(){
 			sed -i -e 's/\r//g' devstack/local.conf
 			
 			cp /vagrant/localrc.password devstack/.localrc.password 
-			
-			cd devstack
-			./stack.sh
-
-
 
 }
 
@@ -353,9 +344,9 @@ cinder get-pools
 #--------------------------------------------------------------------
 
 
-#init
+init
 remove_LVM_logical_volume
-#clone_GIT
+clone_GIT
 
 setupNFS
 
