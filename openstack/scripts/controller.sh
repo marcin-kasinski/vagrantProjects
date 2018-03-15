@@ -5,7 +5,9 @@
 KEYPAIR=mykey
 VM1=myvm1
 VM2=myvm2
-IMAGE="xenial-server-cloudimg-amd64"
+#IMAGE="xenial-server-cloudimg-amd64"
+IMAGE="cirros-0.3.5-x86_64-disk"
+
 FLAVOR="m1.4gbdisk"
 NET1=mynetwork1
 NET2=mynetwork2
@@ -54,6 +56,40 @@ init(){
 
 }
 
+setupMagnum(){
+
+magnum service-list
+
+#magnum cluster-template-delete k8s-cluster-template 
+
+magnum cluster-template-create --name k8s-cluster-template \
+                       --image Fedora-Atomic-26-20170723.0.x86_64  \
+                       --keypair $KEYPAIR \
+                       --external-network public \
+                       --dns-nameserver 8.8.8.8 \
+                       --flavor m1.4gbdisk \
+                       --docker-volume-size 5 \
+                       --network-driver flannel \
+                       --coe kubernetes
+
+
+
+magnum cluster-create --name k8s-cluster \
+                      --cluster-template k8s-cluster-template \
+                      --master-count 1 \
+                      --node-count 1
+
+
+magnum cluster-list
+
+
+#systemctl list-units devstack@* | grep magnum
+#sudo journalctl -f --unit devstack@magnum-api.service
+#sudo journalctl -f --unit devstack@magnum-cond.service
+
+
+}
+
 setupNFS(){
 
  # ----------------------------- nfs -----------------------------
@@ -71,6 +107,9 @@ setupNFS(){
       sudo sh -c "echo '/var/nfs/openstack_share    *(rw,sync,no_subtree_check,no_root_squash)' >> /etc/exports"      
 
       sudo exportfs -ra
+      
+      
+      
 
       # ----------------------------- nfs -----------------------------      
 
@@ -221,8 +260,6 @@ sudo lvremove -f /dev/MKmyvolgroup/vps
 sudo lvscan
 }
 
-
-# Create a security group and add rules to permit ingress ICMP and SSH traffic
 clone_GIT(){
 
 			git clone --branch stable/pike https://git.openstack.org/openstack-dev/devstack
@@ -344,13 +381,19 @@ cinder get-pools
 #--------------------------------------------------------------------
 
 
-init
+#init
 remove_LVM_logical_volume
-clone_GIT
+
 
 setupNFS
 
+
 devstack/unstack.sh
+
+rm -rf /home/vagrant/devstack
+
+clone_GIT
+
 devstack/stack.sh
 
 
@@ -361,10 +404,10 @@ source devstack/openrc admin admin
 
 
 
-openstack flavor create --public m1.4gbdisk --id auto --ram 2048 --disk 5 --vcpus 1 --rxtx-factor 1
+openstack flavor create --public m1.4gbdisk --id auto --ram 8192 --disk 15 --vcpus 1 --rxtx-factor 1
 
 
-addImage xenial-server-cloudimg-amd64 "http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img"
+#addImage xenial-server-cloudimg-amd64 "http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img"
 
 create_security_group SSHandICMP
 
@@ -373,6 +416,16 @@ waitForNode1Ready
 sudo nova-manage cell_v2 discover_hosts --verbose 
 
 updateCinder
+
+echo "setup magnum"
+
+
+setupMagnum
+
+echo "setup magnum END"
+
+
+
 
 neutron router-gateway-clear  router1
 
@@ -408,6 +461,10 @@ configureExternalNetInterface
 
  add_floating_ip $VM1   # Add a floating ip address to $VM1
 
-echo "search for magnum"
+#echo "search for magnum"
 
-cat /tmp/stack_output.txt | grep magnum
+#cat /tmp/stack_output.txt | grep magnum
+
+
+
+

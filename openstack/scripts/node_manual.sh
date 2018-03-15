@@ -1,6 +1,40 @@
 #!/bin/bash
 # set -o xtrace
 
+
+
+init(){
+
+			#sudo sed -i -r '/openstackmaster/ s/^(.*)$/#\1/g' /etc/hosts
+			
+			#sudo sh -c "echo '192.168.33.10openstackmaster' >> /etc/hosts"
+			
+			
+			echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
+			
+			sudo apt-get install sudo -y || yum install -y sudo
+			
+			sudo apt update
+			sudo apt install -y python-systemd
+			sudo apt-get install git -y || sudo yum install -y git
+			sudo apt-get install mc -y 
+
+}
+
+
+clone_GIT(){
+
+			git clone --branch stable/pike https://git.openstack.org/openstack-dev/devstack
+			sudo cp /vagrant/ctr_local.conf devstack/local.conf 
+			
+			#win2linux
+			sed -i -e 's/\r//g' devstack/local.conf
+			
+			cp /vagrant/localrc.password devstack/.localrc.password 
+
+}
+
+
 setupNFS(){
 
  # ----------------------------- nfs -----------------------------
@@ -10,8 +44,9 @@ setupNFS(){
       	sudo apt-get install -y nfs-common
 
   		sudo mkdir -p /nfs/openstack_share
-      	sudo mount 192.168.33.10:/var/nfs/openstack_share /nfs/openstack_share
-  
+#      	sudo mount 192.168.33.10:/var/nfs/openstack_share /nfs/openstack_share
+#  		sudo mount -t nfs -o vers=3,nolock,proto=tcp 192.168.33.10:/var/nfs/openstack_share /nfs/openstack_share 
+  		sudo mount -t nfs -o nolock,proto=tcp 192.168.33.10:/var/nfs/openstack_share /nfs/openstack_share 
       # ----------------------------- nfs -----------------------------      
 
 }
@@ -35,8 +70,18 @@ waitForNFS(){
 
 }
 
+
+#init
+
 waitForNFS
 setupNFS
+
+#clone_GIT
+
+#devstack/unstack.sh
+#devstack/stack.sh
+
+
 waitForStackFinished
 
 sudo touch /nfs/openstack_share/openstack_node1_ready

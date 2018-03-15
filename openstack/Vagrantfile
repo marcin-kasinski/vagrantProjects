@@ -34,10 +34,12 @@ boxes = [
     {
         :name => "openstackmaster",
         :box => "najoy/os-pike-aio",
+#        :box => "ubuntu/xenial64",       
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0001",
         :ip => "192.168.33.10",
-        :mem => "8192",
+        :mem => "24576",
+#        :mem => "8192",
         :cpu => "2",
         :lvm_enable => true,
         :initscript => "controller.sh"
@@ -45,10 +47,12 @@ boxes = [
     {
         :name => "node1",
         :box => "najoy/openstack-pike-compute",
+#        :box => "ubuntu/xenial64",       
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0002",
         :ip => "192.168.33.11",
-        :mem => "8192",
+        :mem => "24576",
+#        :mem => "8192",
         :cpu => "1",
         :lvm_enable => false,
         :initscript => "node_manual.sh"
