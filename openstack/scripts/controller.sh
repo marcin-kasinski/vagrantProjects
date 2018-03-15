@@ -417,16 +417,6 @@ sudo nova-manage cell_v2 discover_hosts --verbose
 
 updateCinder
 
-echo "setup magnum"
-
-
-setupMagnum
-
-echo "setup magnum END"
-
-
-
-
 neutron router-gateway-clear  router1
 
 configureExternalNetInterface
@@ -465,6 +455,7 @@ configureExternalNetInterface
 
 #cat /tmp/stack_output.txt | grep magnum
 
+echo "setup magnum"
 
-
+setupMagnum
 
