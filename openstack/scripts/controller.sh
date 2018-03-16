@@ -8,7 +8,7 @@ VM2=myvm2
 #IMAGE="xenial-server-cloudimg-amd64"
 IMAGE="cirros-0.3.5-x86_64-disk"
 
-FLAVOR="m1.4gbdisk"
+FLAVOR="m1.mkflavor"
 NET1=mynetwork1
 NET2=mynetwork2
 NET1_CIDR="10.1.1.0/24"
@@ -67,12 +67,14 @@ magnum cluster-template-create --name k8s-cluster-template \
                        --keypair $KEYPAIR \
                        --external-network public \
                        --dns-nameserver 8.8.8.8 \
-                       --flavor m1.4gbdisk \
+                       --flavor m1.mkflavor \
+                       --master-flavor m1.mkflavor \
                        --docker-volume-size 5 \
                        --network-driver flannel \
                        --coe kubernetes
 
 
+sleep 30
 
 magnum cluster-create --name k8s-cluster \
                       --cluster-template k8s-cluster-template \
@@ -404,7 +406,7 @@ source devstack/openrc admin admin
 
 
 
-openstack flavor create --public m1.4gbdisk --id auto --ram 8192 --disk 15 --vcpus 1 --rxtx-factor 1
+openstack flavor create --public m1.mkflavor --id auto --ram 8192 --disk 15 --vcpus 1 --rxtx-factor 1
 
 
 #addImage xenial-server-cloudimg-amd64 "http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img"
@@ -441,19 +443,14 @@ configureExternalNetInterface
  set_router_gateway $ROUTER
  create_security_group $SG
  create_az 
- allocate_floating_ip
- boot_vm $VM1 $NET1 nova  # Boot the first VM on NET1 and AZ named nova (default) (i.e. place VM1 on the controller)
- boot_vm $VM2 $NET2 $AZ  # Boot the second VM on NET2 and in AZ=az2 (i.e. place VM2 on the compute node)
- create_volume "extra_space" 2  # Allocate some storage space
- create_volume "30gb-vol_LVM2" 30  # Allocate some storage space
- add_volume "extra_space"     # Attach the storage volume to $VM1
- add_volume "30gb-vol_LVM2"
-
- add_floating_ip $VM1   # Add a floating ip address to $VM1
-
-#echo "search for magnum"
-
-#cat /tmp/stack_output.txt | grep magnum
+# allocate_floating_ip
+# boot_vm $VM1 $NET1 nova  # Boot the first VM on NET1 and AZ named nova (default) (i.e. place VM1 on the controller)
+# boot_vm $VM2 $NET2 $AZ  # Boot the second VM on NET2 and in AZ=az2 (i.e. place VM2 on the compute node)
+create_volume "extra_space" 2  # Allocate some storage space
+create_volume "30gb-vol_LVM2" 30  # Allocate some storage space
+# add_volume "extra_space"     # Attach the storage volume to $VM1
+# add_volume "30gb-vol_LVM2"
+# add_floating_ip $VM1   # Add a floating ip address to $VM1
 
 echo "setup magnum"
 
