@@ -1,6 +1,10 @@
 #!/bin/bash
 # set -o xtrace
 
+DEV_BRANCH="stable/pike"
+#DEV_BRANCH="stable/queens"
+#DEV_BRANCH="master"
+
 # Set global variables to control the names of the resources we create
 KEYPAIR=mykey
 VM1=myvm1
@@ -54,16 +58,17 @@ init(){
 			sudo apt-get install git -y || sudo yum install -y git
 			sudo apt-get install mc -y 
 
+			sudo apt -y install python-dev libssl-dev libxml2-dev curl \
+                 libmysqlclient-dev libxslt-dev libpq-dev git \
+                 libffi-dev gettext build-essential python3-dev
+
+
 }
 
 setupMagnum(){
 
-magnum service-list
-
-#magnum cluster-template-delete k8s-cluster-template 
-
-magnum cluster-template-create --name k8s-cluster-template \
-                       --image Fedora-Atomic-26-20170723.0.x86_64  \
+openstack coe cluster template create k8s-cluster-template \
+                       --image Fedora-Atomic-26-20170723.0.x86_64   \
                        --keypair $KEYPAIR \
                        --external-network public \
                        --dns-nameserver 8.8.8.8 \
@@ -73,7 +78,6 @@ magnum cluster-template-create --name k8s-cluster-template \
                        --network-driver flannel \
                        --coe kubernetes
 
-
 sleep 30
 
 magnum cluster-create --name k8s-cluster \
@@ -81,9 +85,11 @@ magnum cluster-create --name k8s-cluster \
                       --master-count 1 \
                       --node-count 1
 
+#openstack coe cluster create k8s-cluster \
+#                      --cluster-template k8s-cluster-template \
+#                      --node-count 1
 
-magnum cluster-list
-
+openstack coe cluster list
 
 #systemctl list-units devstack@* | grep magnum
 #sudo journalctl -f --unit devstack@magnum-api.service
@@ -264,7 +270,7 @@ sudo lvscan
 
 clone_GIT(){
 
-			git clone --branch stable/pike https://git.openstack.org/openstack-dev/devstack
+			git clone --branch $DEV_BRANCH https://git.openstack.org/openstack-dev/devstack
 			sudo cp /vagrant/ctr_local.conf devstack/local.conf 
 			
 			#win2linux
@@ -383,7 +389,7 @@ cinder get-pools
 #--------------------------------------------------------------------
 
 
-#init
+init
 remove_LVM_logical_volume
 
 
@@ -397,8 +403,6 @@ rm -rf /home/vagrant/devstack
 clone_GIT
 
 devstack/stack.sh
-
-
 
 sudo touch /var/nfs/openstack_share/openstack_stack_finished
 
