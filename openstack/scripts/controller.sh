@@ -72,18 +72,14 @@ openstack coe cluster template create k8s-cluster-template \
                        --keypair $KEYPAIR \
                        --external-network public \
                        --dns-nameserver 8.8.8.8 \
-                       --flavor m1.mkflavor \
-                       --master-flavor m1.mkflavor \
+                       --flavor m1.small \
                        --docker-volume-size 5 \
                        --network-driver flannel \
                        --coe kubernetes
 
-sleep 30
+#sleep 30
 
-magnum cluster-create --name k8s-cluster \
-                      --cluster-template k8s-cluster-template \
-                      --master-count 1 \
-                      --node-count 1
+#magnum cluster-create --name k8s-cluster --cluster-template k8s-cluster-template --node-count 1
 
 #openstack coe cluster create k8s-cluster \
 #                      --cluster-template k8s-cluster-template \
@@ -362,8 +358,16 @@ updateCinder(){
 
 cp /etc/cinder/cinder.conf /etc/cinder/cinder_OLD.conf
 
+#kopiuje lvmdriver-2
 cat /vagrant/cinder.conf >> /etc/cinder/cinder.conf
+
 sudo sed -i -e 's/enabled_backends = lvmdriver-1/enabled_backends = lvmdriver-1,lvmdriver-2/g' /etc/cinder/cinder.conf 
+#sudo sed -i -e 's/enabled_backends = lvmdriver-1/enabled_backends = lvmdriver-2/g' /etc/cinder/cinder.conf 
+sudo sed -i -e 's/default_volume_type = lvmdriver-1/default_volume_type = LVM2/g' /etc/cinder/cinder.conf 
+
+#sudo sed -i -e 's/volume_group = stack-volumes-lvmdriver-1/volume_group = MKmyvolgroup/g' /etc/cinder/cinder.conf 
+
+
 
 #Restart Cinder Services.
 
@@ -377,7 +381,6 @@ sudo systemctl restart devstack@c-sch.service
 openstack volume type create --public LVM2
  
 openstack volume type set LVM2 --property volume_backend_name=lvmdriver-2 
-
 
 cinder get-pools
 
@@ -410,7 +413,7 @@ source devstack/openrc admin admin
 
 
 
-openstack flavor create --public m1.mkflavor --id auto --ram 8192 --disk 15 --vcpus 1 --rxtx-factor 1
+openstack flavor create --public m1.mkflavor --id auto --ram 8192 --disk 7 --vcpus 1 --rxtx-factor 1
 
 
 #addImage xenial-server-cloudimg-amd64 "http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img"
@@ -447,14 +450,14 @@ configureExternalNetInterface
  set_router_gateway $ROUTER
  create_security_group $SG
  create_az 
-# allocate_floating_ip
-# boot_vm $VM1 $NET1 nova  # Boot the first VM on NET1 and AZ named nova (default) (i.e. place VM1 on the controller)
-# boot_vm $VM2 $NET2 $AZ  # Boot the second VM on NET2 and in AZ=az2 (i.e. place VM2 on the compute node)
+ allocate_floating_ip
+ boot_vm $VM1 $NET1 nova  # Boot the first VM on NET1 and AZ named nova (default) (i.e. place VM1 on the controller)
+ boot_vm $VM2 $NET2 $AZ  # Boot the second VM on NET2 and in AZ=az2 (i.e. place VM2 on the compute node)
 create_volume "extra_space" 2  # Allocate some storage space
 create_volume "30gb-vol_LVM2" 30  # Allocate some storage space
-# add_volume "extra_space"     # Attach the storage volume to $VM1
+ add_volume "extra_space"     # Attach the storage volume to $VM1
 # add_volume "30gb-vol_LVM2"
-# add_floating_ip $VM1   # Add a floating ip address to $VM1
+ add_floating_ip $VM1   # Add a floating ip address to $VM1
 
 echo "setup magnum"
 
