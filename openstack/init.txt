@@ -43,19 +43,17 @@
 	
 	#tylko node2
 	  cd /vagrantprojects/openstack/
-	vagrant halt openstacknode2
+	vagrant halt node2
 	
 	vboxmanage list vms
 	
-		vboxmanage unregistervm openstacknode2 --delete
+		vboxmanage unregistervm node2 --delete
 	
-	 vagrant up openstacknode2 --provision 
+	 vagrant up node2 --provision
 	
-	vagrant ssh openstacknode2
+	vagrant ssh node2
 	
-	
-	
-	
+		
 	
 	
 	
@@ -269,6 +267,9 @@ sudo journalctl -f --unit devstack@c-vol.service
 
 sudo systemctl restart devstack@c-sch.service
 sudo journalctl -f --unit devstack@c-sch.service
+
+sudo systemctl restart devstack@n-cpu.service
+sudo journalctl -f --unit devstack@n-cpu.service
 
 
 sudo journalctl --unit devstack@c-vol.service | grep MKmyvolgroup

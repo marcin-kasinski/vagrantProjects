@@ -1,7 +1,7 @@
 #!/bin/bash
 # set -o xtrace
 
-
+IP=$1
 
 init(){
 
@@ -56,7 +56,7 @@ waitForStackFinished(){
 
 		echo "waiting for stack finished..."
       
-      	while [ ! -f /nfs/openstack_share/openstack_stack_finished ] ; do NOW=$(date +"%d.%m.%Y %T"); echo $NOW" : waiting for stack finished..." ;  sleep 20 ; done
+      	while [ ! -f /nfs/openstack_share/openstack_stack_finished ] ; do NOW=$(date +"%d.%m.%Y %T"); echo $NOW" : waiting for stack finished..." ;  sleep 30 ; done
       
 
 }
@@ -65,7 +65,7 @@ waitForNFS(){
 
 		echo "waiting for NFS server..."
       
-		while ! nc -z 192.168.33.10 111; do   echo "waiting NFS to launch ..." ; sleep 5 ; done
+		while ! nc -z 192.168.33.10 111; do   echo "waiting NFS to launch ..." ; sleep 30 ; done
 		sleep 5      
 
 }
@@ -84,7 +84,11 @@ setupNFS
 
 waitForStackFinished
 
-sudo touch /nfs/openstack_share/openstack_node1_ready
+
+hostname=$(hostname)
+
+echo  "Creating /nfs/openstack_share/$hostname.openstack_node_ready"
+sudo touch /nfs/openstack_share/$hostname.openstack_node_ready 
 
 sudo systemctl restart devstack@n-cpu.service
 sudo systemctl status devstack@n-cpu.service

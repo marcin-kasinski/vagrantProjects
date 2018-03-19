@@ -66,12 +66,13 @@ create_security_group(){
 
 #--------------------------------------------------------------------
 
-
+devstack/unstack.sh
+devstack/stack.sh
 #init
 remove_LVM_logical_volume
 #clone_GIT
 
-source openrc admin admin
+source devstack/openrc admin admin
 
 
 create_security_group SSHandICMP

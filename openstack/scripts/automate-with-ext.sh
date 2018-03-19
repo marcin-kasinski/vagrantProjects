@@ -28,7 +28,7 @@
 source /home/vagrant/devstack/openrc admin admin
 
 # Variables that control the script action
-CLEANUP=0  # When set, do a cleanup run to delete all old resources
+CLEANUP=1  # When set, do a cleanup run to delete all old resources
 CREATE=1   # When set, create cloud resources
 
 # Set global variables to control the names of the resources we create
@@ -194,7 +194,7 @@ delete_vm(){
 
 # Create a Volume
 create_volume(){
-  openstack volume create --size $VOL_SIZE $VOL_NAME  --type LVM2|| { echo "failed to create volume $VOL_NAME,SIZE=$VOL_SIZE" >&2; exit 1; }
+  openstack volume create --size $VOL_SIZE $VOL_NAME || { echo "failed to create volume $VOL_NAME,SIZE=$VOL_SIZE" >&2; exit 1; }
 #  openstack volume create --size $VOL_SIZE $VOL_NAME || { echo "failed to create volume $VOL_NAME,SIZE=$VOL_SIZE" >&2; exit 1; }
   echo "Created Volume $VOL_NAME size=$VOL_SIZE GB"
 }
@@ -207,10 +207,6 @@ delete_volume(){
 
 # Adds the Volume to VM1
 add_volume(){
-
-  echo waiting instance to boot
-
-  while [ "$STATUS" != "ACTIVE" ]; do   STATUSLINE="$( openstack server show $VM1 | grep '| status' )" ; STATUS="$( echo $STATUSLINE | cut -d " " -f 4 )";  echo "waiting instance to boot..." ; sleep 5 ; done
   
   openstack server add volume $VM1 $VOL_NAME || { echo "failed to add volume $VOL_NAME to server $VM1" >&2; exit 1; }
   echo "Added Volume $VOL_NAME to server $VM1"

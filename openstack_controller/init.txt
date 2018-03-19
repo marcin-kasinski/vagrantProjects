@@ -2,8 +2,8 @@
     cd /vagrantprojects/openstack_controller/
 	vagrant halt
 	vagrant box update
-  vagrant plugin install vagrant-disksize
-    vagrant plugin install vagrant-persistent-storage
+#  vagrant plugin install vagrant-disksize
+#    vagrant plugin install vagrant-persistent-storage
   
 	vboxmanage unregistervm controller --delete
 

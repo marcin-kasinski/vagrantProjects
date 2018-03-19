@@ -67,15 +67,15 @@ init(){
 
 setupMagnum(){
 
-#openstack coe cluster template create k8s-cluster-template \
-#                       --image Fedora-Atomic-26-20170723.0.x86_64   \
-#                       --keypair $KEYPAIR \
-#                       --external-network public \
-#                       --dns-nameserver 8.8.8.8 \
-#                       --flavor m1.small \
-#                       --docker-volume-size 5 \
-#                       --network-driver flannel \
-#                       --coe kubernetes
+openstack coe cluster template create k8s-cluster-template \
+                       --image Fedora-Atomic-26-20170723.0.x86_64   \
+                       --keypair $KEYPAIR \
+                       --external-network public \
+                       --dns-nameserver 8.8.8.8 \
+                       --flavor m1.small \
+                       --docker-volume-size 5 \
+                       --network-driver flannel \
+                       --coe kubernetes
 
 #sleep 30
 
@@ -267,6 +267,12 @@ sudo lvscan
 clone_GIT(){
 
 			git clone --branch $DEV_BRANCH https://git.openstack.org/openstack-dev/devstack
+			sudo cp /vagrant/ctr_local.conf devstack/local.conf 
+			
+			#win2linux
+			sed -i -e 's/\r//g' devstack/local.conf
+			
+			cp /vagrant/localrc.password devstack/.localrc.password 
 
 }
 
@@ -282,15 +288,12 @@ create_security_group(){
 
 }
 
-waitForNodeReady(){
+waitForNode1Ready(){
 
-		local node_name=$1
-
-
-		echo "waiting for $node_name ready..."
+		echo "waiting for node1 ready..."
     
       
-      	while [ ! -f /var/nfs/openstack_share/$node_name.openstack_node_ready ] ; do NOW=$(date +"%d.%m.%Y %T"); echo $NOW" : waiting for $node_name ready..." ;  sleep 20 ; done
+      	while [ ! -f /var/nfs/openstack_share/openstack_node1_ready ] ; do NOW=$(date +"%d.%m.%Y %T"); echo $NOW" : waiting for node1 ready..." ;  sleep 20 ; done
 
 }
 
@@ -389,8 +392,7 @@ cinder get-pools
 #--------------------------------------------------------------------
 
 
-exit 0
-init
+#init
 remove_LVM_logical_volume
 
 
@@ -399,18 +401,9 @@ setupNFS
 
 devstack/unstack.sh
 
-rm -rf /home/vagrant/devstack
+#rm -rf /home/vagrant/devstack
 
-clone_GIT
-
-sudo cp /vagrant/ctr_local.conf devstack/local.conf 
-			
-#win2linux
-sed -i -e 's/\r//g' devstack/local.conf
-		
-cp /vagrant/localrc.password devstack/.localrc.password 
-
-
+#clone_GIT
 
 devstack/stack.sh
 
@@ -418,28 +411,20 @@ sudo touch /var/nfs/openstack_share/openstack_stack_finished
 
 source devstack/openrc admin admin
 
-echo exiting
 
-exit 0
 
-#openstack flavor create --public m1.mkflavor --id auto --ram 8192 --disk 5 --vcpus 1 --rxtx-factor 1
+openstack flavor create --public m1.mkflavor --id auto --ram 8192 --disk 5 --vcpus 1 --rxtx-factor 1
 
 
 #addImage xenial-server-cloudimg-amd64 "http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img"
 
 create_security_group SSHandICMP
 
-echo exiting
-
-exit 0
-
-waitForNodeReady node1
-
-
+waitForNode1Ready
 
 sudo nova-manage cell_v2 discover_hosts --verbose 
 
-#updateCinder
+updateCinder
 
 neutron router-gateway-clear  router1
 
@@ -458,33 +443,23 @@ configureExternalNetInterface
  create_network $NET2
  create_subnet $NET1 $SUBNET1 $NET1_CIDR
  create_subnet $NET2 $SUBNET2 $NET2_CIDR
-
-# jak byl tu exit, to dzialalo
-
-
-
  create_external_subnet
  create_router $ROUTER
  add_router_interface $ROUTER $SUBNET1
  add_router_interface $ROUTER $SUBNET2
  set_router_gateway $ROUTER
  create_security_group $SG
-
-# create_az 
-# allocate_floating_ip
-
-
-#tu ju¿ nie dzialalo
-
-# boot_vm $VM1 $NET1 nova # Boot the first VM on NET1 and AZ named nova (default) (i.e. place VM1 on the controller)
-# boot_vm $VM2 $NET2 $AZ  # Boot the second VM on NET2 and in AZ=az2 (i.e. place VM2 on the compute node)
-#create_volume "extra_space" 2  # Allocate some storage space
+ create_az 
+ allocate_floating_ip
+ boot_vm $VM1 $NET1 nova  # Boot the first VM on NET1 and AZ named nova (default) (i.e. place VM1 on the controller)
+ boot_vm $VM2 $NET2 $AZ  # Boot the second VM on NET2 and in AZ=az2 (i.e. place VM2 on the compute node)
+create_volume "extra_space" 2  # Allocate some storage space
 #create_volume "30gb-vol_LVM2" 30  # Allocate some storage space
-# add_volume "extra_space"     # Attach the storage volume to $VM1
+ add_volume "extra_space"     # Attach the storage volume to $VM1
 # add_volume "30gb-vol_LVM2"
-# add_floating_ip $VM2   # Add a floating ip address to $VM1
+ add_floating_ip $VM1   # Add a floating ip address to $VM1
 
 echo "setup magnum"
 
-#setupMagnum
+setupMagnum
 
