@@ -120,6 +120,31 @@ setupNFS(){
 }
 
 
+fix_OVS(){
+
+#sudo pip uninstall ryu
+
+/usr/bin/yes | sudo pip uninstall ryu
+
+sudo pip install ryu
+
+sudo systemctl restart devstack@q-agt
+
+source devstack/openrc admin admin
+
+openstack network agent list
+
+
+
+  echo waiting OVS to boot
+
+  while [ "$STATUS" != "UP" ]; do  STATUS="$( openstack network agent list | grep "Open vSwitch agent" | grep openstackmaster | cut -d "|" -f 7 | xargs )" ;  echo "waiting OVS to boot..." ; sleep 20 ; done
+
+openstack network agent list
+
+
+}
+
 # Creates a keypair
 create_keypair(){
   openstack keypair create $KEYPAIR > ~/.ssh/${KEYPAIR} || { echo "failed to create keypair $KEYPAIR" >&2; exit 1; }
@@ -175,6 +200,10 @@ boot_vm(){
  openstack server create --image $IMAGE --flavor $FLAVOR --key-name $KEYPAIR --network $net_name --security-group $SG \
                          --availability-zone $az $vm_name || { echo "Failed to create the VM: $vm_name" >&2; } 
  echo "Created VM $vm_name, attached a NIC on $net_name, set security-group $SG, injected ssh-key $KEYPAIR and placed it on AZ $az"
+
+sudo journalctl -f --unit  devstack@n-sch
+
+
 }
 
 # Create a Volume
@@ -389,8 +418,11 @@ cinder get-pools
 #--------------------------------------------------------------------
 
 
-exit 0
-init
+
+#init
+
+
+
 remove_LVM_logical_volume
 
 
@@ -399,9 +431,9 @@ setupNFS
 
 devstack/unstack.sh
 
-rm -rf /home/vagrant/devstack
+#rm -rf /home/vagrant/devstack
 
-clone_GIT
+#clone_GIT
 
 sudo cp /vagrant/ctr_local.conf devstack/local.conf 
 			
@@ -410,36 +442,32 @@ sed -i -e 's/\r//g' devstack/local.conf
 		
 cp /vagrant/localrc.password devstack/.localrc.password 
 
-
-
 devstack/stack.sh
+
+
+
+fix_OVS
 
 sudo touch /var/nfs/openstack_share/openstack_stack_finished
 
+waitForNodeReady node1
+
+
 source devstack/openrc admin admin
 
-echo exiting
 
-exit 0
 
-#openstack flavor create --public m1.mkflavor --id auto --ram 8192 --disk 5 --vcpus 1 --rxtx-factor 1
+openstack flavor create --public m1.mkflavor --id auto --ram 8192 --disk 5 --vcpus 1 --rxtx-factor 1
 
 
 #addImage xenial-server-cloudimg-amd64 "http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img"
 
 create_security_group SSHandICMP
 
-echo exiting
-
-exit 0
-
-waitForNodeReady node1
-
-
 
 sudo nova-manage cell_v2 discover_hosts --verbose 
 
-#updateCinder
+updateCinder
 
 neutron router-gateway-clear  router1
 
@@ -459,8 +487,6 @@ configureExternalNetInterface
  create_subnet $NET1 $SUBNET1 $NET1_CIDR
  create_subnet $NET2 $SUBNET2 $NET2_CIDR
 
-# jak byl tu exit, to dzialalo
-
 
 
  create_external_subnet
@@ -470,19 +496,18 @@ configureExternalNetInterface
  set_router_gateway $ROUTER
  create_security_group $SG
 
-# create_az 
-# allocate_floating_ip
+ create_az 
+ allocate_floating_ip
 
 
-#tu ju¿ nie dzialalo
 
-# boot_vm $VM1 $NET1 nova # Boot the first VM on NET1 and AZ named nova (default) (i.e. place VM1 on the controller)
-# boot_vm $VM2 $NET2 $AZ  # Boot the second VM on NET2 and in AZ=az2 (i.e. place VM2 on the compute node)
-#create_volume "extra_space" 2  # Allocate some storage space
-#create_volume "30gb-vol_LVM2" 30  # Allocate some storage space
-# add_volume "extra_space"     # Attach the storage volume to $VM1
-# add_volume "30gb-vol_LVM2"
-# add_floating_ip $VM2   # Add a floating ip address to $VM1
+ boot_vm $VM1 $NET1 nova # Boot the first VM on NET1 and AZ named nova (default) (i.e. place VM1 on the controller)
+ boot_vm $VM2 $NET2 $AZ  # Boot the second VM on NET2 and in AZ=az2 (i.e. place VM2 on the compute node)
+create_volume "extra_space" 2  # Allocate some storage space
+create_volume "30gb-vol_LVM2" 30  # Allocate some storage space
+ add_volume "extra_space"     # Attach the storage volume to $VM1
+ add_volume "30gb-vol_LVM2"
+ add_floating_ip $VM2   # Add a floating ip address to $VM1
 
 echo "setup magnum"
 
