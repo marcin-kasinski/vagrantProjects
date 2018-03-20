@@ -81,7 +81,7 @@ openstack coe cluster template create k8s-cluster-template \
                        --coe kubernetes
 
 source devstack/openrc admin admin
-magnum cluster-create --name k8s-cluster --cluster-template k8s-cluster-template --node-count 3
+#magnum cluster-create --name k8s-cluster --cluster-template k8s-cluster-template --node-count 3
 
 openstack coe cluster list
 
