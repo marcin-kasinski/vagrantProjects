@@ -464,7 +464,9 @@ sudo nova-manage cell_v2 discover_hosts --verbose
 
 updateCinder
 
-neutron router-gateway-clear  router1
+#neutron router-gateway-clear  router1
+
+openstack router unset --external-gateway router1
 
 configureExternalNetInterface
 
