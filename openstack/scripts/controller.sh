@@ -67,23 +67,26 @@ init(){
 
 setupMagnum(){
 
-#openstack coe cluster template create k8s-cluster-template \
-#                       --image Fedora-Atomic-26-20170723.0.x86_64   \
-#                       --keypair $KEYPAIR \
-#                       --external-network public \
-#                       --dns-nameserver 8.8.8.8 \
-#                       --flavor m1.small \
-#                       --docker-volume-size 5 \
-#                       --network-driver flannel \
-#                       --coe kubernetes
+source devstack/openrc admin admin
 
-#sleep 30
+openstack coe cluster template create k8s-cluster-template \
+                       --image Fedora-Atomic-26-20170723.0.x86_64   \
+                       --keypair $KEYPAIR \
+                       --external-network public \
+                       --dns-nameserver 8.8.8.8 \
+                       --flavor m1.mkflavor \
+                       --master-flavor m1.mkflavor \
+                       --docker-volume-size 5 \
+                       --network-driver flannel \
+                       --coe kubernetes
 
-#magnum cluster-create --name k8s-cluster --cluster-template k8s-cluster-template --node-count 1
+#echo "sleeping 240 seconds"
+#sleep 240
 
-#openstack coe cluster create k8s-cluster \
-#                      --cluster-template k8s-cluster-template \
-#                      --node-count 1
+#source devstack/openrc admin admin
+#magnum cluster-create --name k8s-cluster --cluster-template k8s-cluster-template --node-count 3
+
+#openstack coe cluster create k8s-cluster2 --cluster-template k8s-cluster-template --node-count 1
 
 openstack coe cluster list
 
@@ -200,9 +203,6 @@ boot_vm(){
  openstack server create --image $IMAGE --flavor $FLAVOR --key-name $KEYPAIR --network $net_name --security-group $SG \
                          --availability-zone $az $vm_name || { echo "Failed to create the VM: $vm_name" >&2; } 
  echo "Created VM $vm_name, attached a NIC on $net_name, set security-group $SG, injected ssh-key $KEYPAIR and placed it on AZ $az"
-
-sudo journalctl -f --unit  devstack@n-sch
-
 
 }
 
@@ -385,13 +385,13 @@ updateCinder(){
 cp /etc/cinder/cinder.conf /etc/cinder/cinder_OLD.conf
 
 #kopiuje lvmdriver-2
-cat /vagrant/cinder.conf >> /etc/cinder/cinder.conf
+#cat /vagrant/cinder.conf >> /etc/cinder/cinder.conf
 
-sudo sed -i -e 's/enabled_backends = lvmdriver-1/enabled_backends = lvmdriver-1,lvmdriver-2/g' /etc/cinder/cinder.conf 
+#sudo sed -i -e 's/enabled_backends = lvmdriver-1/enabled_backends = lvmdriver-1,lvmdriver-2/g' /etc/cinder/cinder.conf 
 #sudo sed -i -e 's/enabled_backends = lvmdriver-1/enabled_backends = lvmdriver-2/g' /etc/cinder/cinder.conf 
 #sudo sed -i -e 's/default_volume_type = lvmdriver-1/default_volume_type = LVM2/g' /etc/cinder/cinder.conf 
 
-#sudo sed -i -e 's/volume_group = stack-volumes-lvmdriver-1/volume_group = MKmyvolgroup/g' /etc/cinder/cinder.conf 
+sudo sed -i -e 's/volume_group = stack-volumes-lvmdriver-1/volume_group = MKmyvolgroup/g' /etc/cinder/cinder.conf 
 
 
 
@@ -511,5 +511,5 @@ create_volume "30gb-vol_LVM2" 30  # Allocate some storage space
 
 echo "setup magnum"
 
-#setupMagnum
+setupMagnum
 
