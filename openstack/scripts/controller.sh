@@ -80,13 +80,8 @@ openstack coe cluster template create k8s-cluster-template \
                        --network-driver flannel \
                        --coe kubernetes
 
-#echo "sleeping 240 seconds"
-#sleep 240
-
-#source devstack/openrc admin admin
-#magnum cluster-create --name k8s-cluster --cluster-template k8s-cluster-template --node-count 3
-
-#openstack coe cluster create k8s-cluster2 --cluster-template k8s-cluster-template --node-count 1
+source devstack/openrc admin admin
+magnum cluster-create --name k8s-cluster --cluster-template k8s-cluster-template --node-count 3
 
 openstack coe cluster list
 
@@ -212,8 +207,8 @@ create_volume(){
  local VOL_NAME=$1
  local VOL_SIZE=$2
 
-  openstack volume create --size $VOL_SIZE $VOL_NAME  --type LVM2|| { echo "failed to create volume $VOL_NAME,SIZE=$VOL_SIZE" >&2; exit 1; }
-#  openstack volume create --size $VOL_SIZE $VOL_NAME || { echo "failed to create volume $VOL_NAME,SIZE=$VOL_SIZE" >&2; exit 1; }
+#  openstack volume create --size $VOL_SIZE $VOL_NAME  --type LVM2|| { echo "failed to create volume $VOL_NAME,SIZE=$VOL_SIZE" >&2; exit 1; }
+  openstack volume create --size $VOL_SIZE $VOL_NAME || { echo "failed to create volume $VOL_NAME,SIZE=$VOL_SIZE" >&2; exit 1; }
   echo "Created Volume $VOL_NAME size=$VOL_SIZE GB"
 }
 
@@ -457,7 +452,7 @@ source devstack/openrc admin admin
 
 
 
-openstack flavor create --public m1.mkflavor --id auto --ram 8192 --disk 5 --vcpus 1 --rxtx-factor 1
+openstack flavor create --public m1.mkflavor --id auto --ram 8192 --disk 7 --vcpus 1 --rxtx-factor 1
 
 
 #addImage xenial-server-cloudimg-amd64 "http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img"
@@ -504,9 +499,9 @@ configureExternalNetInterface
  boot_vm $VM1 $NET1 nova # Boot the first VM on NET1 and AZ named nova (default) (i.e. place VM1 on the controller)
  boot_vm $VM2 $NET2 $AZ  # Boot the second VM on NET2 and in AZ=az2 (i.e. place VM2 on the compute node)
 create_volume "extra_space" 2  # Allocate some storage space
-create_volume "30gb-vol_LVM2" 30  # Allocate some storage space
+create_volume "30gb-vol" 30  # Allocate some storage space
  add_volume "extra_space"     # Attach the storage volume to $VM1
- add_volume "30gb-vol_LVM2"
+ add_volume "30gb-vol"
  add_floating_ip $VM2   # Add a floating ip address to $VM1
 
 echo "setup magnum"
