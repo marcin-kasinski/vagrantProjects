@@ -81,7 +81,7 @@ openstack coe cluster template create k8s-cluster-template \
                        --coe kubernetes
 
 source devstack/openrc admin admin
-#magnum cluster-create --name k8s-cluster --cluster-template k8s-cluster-template --node-count 3
+#magnum cluster-create --cluster-template k8s-cluster-template --node-count 3 k8s-cluster
 
 openstack coe cluster list
 
@@ -439,14 +439,14 @@ cp /vagrant/localrc.password devstack/.localrc.password
 
 devstack/stack.sh
 
-
-
 fix_OVS
 
 sudo touch /var/nfs/openstack_share/openstack_stack_finished
 
 waitForNodeReady node1
 
+
+exit 0
 
 source devstack/openrc admin admin
 
@@ -466,6 +466,7 @@ updateCinder
 
 #neutron router-gateway-clear  router1
 
+source devstack/openrc admin admin
 openstack router unset --external-gateway router1
 
 configureExternalNetInterface
@@ -508,5 +509,5 @@ create_volume "30gb-vol" 30  # Allocate some storage space
 
 echo "setup magnum"
 
-setupMagnum
+#setupMagnum
 

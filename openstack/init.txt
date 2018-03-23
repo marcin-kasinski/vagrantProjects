@@ -371,3 +371,43 @@ ssh -i ~/.ssh/mykey  ubuntu@192.168.1.99
 
 
 ssh -i /vagrantprojects/private_key ubuntu@192.168.1.99
+
+
+
+
+systemctl list-units devstack@*
+systemctl list-units | grep rab*
+
+list failed services
+
+
+journalctl -b0 _PID=1 | grep Failed
+
+
+
+
+sudo systemctl restart rabbitmq-server
+sudo systemctl status rabbitmq-server
+sudo journalctl -f --unit  rabbitmq-server
+
+
+
+sudo systemctl restart devstack@c-sch
+sudo systemctl status devstack@c-sch
+sudo journalctl -f --unit devstack@c-sch
+
+sudo systemctl restart devstack@n-cond
+sudo systemctl status devstack@n-cond
+sudo journalctl -f --unit devstack@n-cond
+
+
+
+
+sudo systemctl restart devstack@c-sch
+sudo systemctl status devstack@c-sch
+sudo journalctl -f --unit devstack@c-sch
+
+
+sudo systemctl restart devstack@n-cpu
+sudo systemctl status devstack@n-cpu
+sudo journalctl -f --unit devstack@n-cpu
