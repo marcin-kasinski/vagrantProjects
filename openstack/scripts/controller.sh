@@ -446,7 +446,7 @@ sudo touch /var/nfs/openstack_share/openstack_stack_finished
 waitForNodeReady node1
 
 
-exit 0
+#exit 0
 
 source devstack/openrc admin admin
 
