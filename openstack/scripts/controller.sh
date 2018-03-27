@@ -95,7 +95,7 @@ openstack coe cluster list
 setupNFS(){
 
  # ----------------------------- nfs -----------------------------
-      sudo apt-get install nfs-kernel-server
+      sudo apt-get install -y nfs-kernel-server
       
       # nfs biblioteki klienckie
       sudo apt-get install -y nfs-common
@@ -443,7 +443,7 @@ fix_OVS
 
 sudo touch /var/nfs/openstack_share/openstack_stack_finished
 
-waitForNodeReady node1
+#waitForNodeReady node1
 
 
 #exit 0
@@ -494,18 +494,18 @@ configureExternalNetInterface
  set_router_gateway $ROUTER
  create_security_group $SG
 
- create_az 
+# create_az 
  allocate_floating_ip
 
 
 
  boot_vm $VM1 $NET1 nova # Boot the first VM on NET1 and AZ named nova (default) (i.e. place VM1 on the controller)
- boot_vm $VM2 $NET2 $AZ  # Boot the second VM on NET2 and in AZ=az2 (i.e. place VM2 on the compute node)
+ #boot_vm $VM2 $NET2 $AZ  # Boot the second VM on NET2 and in AZ=az2 (i.e. place VM2 on the compute node)
 create_volume "extra_space" 2  # Allocate some storage space
 create_volume "30gb-vol" 30  # Allocate some storage space
  add_volume "extra_space"     # Attach the storage volume to $VM1
  add_volume "30gb-vol"
- add_floating_ip $VM2   # Add a floating ip address to $VM1
+ add_floating_ip $VM1   # Add a floating ip address to $VM1
 
 echo "setup magnum"
 
