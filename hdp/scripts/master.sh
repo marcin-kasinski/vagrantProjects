@@ -70,7 +70,11 @@ init
 setupNFS
 
 
-sudo ssh-keygen -f /root/.ssh/id_rsa -t rsa -N ""
+#sudo ssh-keygen -f /root/.ssh/id_rsa -t rsa -N ""
+
+sudo cp /vagrant/ssh/id_rsa.pub /root/.ssh/id_rsa.pub
+sudo cp /vagrant/ssh/id_rsa /root/.ssh/id_rsa
+
 sudo cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
 
 sudo cp /root/.ssh/id_rsa.pub /var/nfs/hdp_share/master_authorized_keys
@@ -87,9 +91,9 @@ sudo apt install -y ambari-server
 sudo ambari-server setup -s -v
 sudo ambari-server start
 
-waitForNodeReady hdp2.local
-waitForNodeReady hdp3.local
-waitForNodeReady hdp4.local
+waitForNodeReady hdp2
+waitForNodeReady hdp3
+waitForNodeReady hdp4
 
 
 #sudo ssh-copy-id -i /root/.ssh/id_rsa.pub root@hdp1.local

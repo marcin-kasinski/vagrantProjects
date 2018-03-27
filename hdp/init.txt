@@ -25,7 +25,7 @@
     
     
 	
-	vagrant ssh hdp1 
+	vagrant ssh hdp1
 
 
 	
