@@ -54,6 +54,9 @@ init(){
 			sudo apt update
 	
 		sudo apt-get install mc -y 
+		apt-get install -y ntp ntpdate
+
+		echo never >/sys/kernel/mm/transparent_hugepage/enabled
 
 }
 
@@ -65,14 +68,33 @@ init(){
 init
 
 setupNFS
+
+
+sudo ssh-keygen -f /root/.ssh/id_rsa -t rsa -N ""
+sudo cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
+
+sudo cp /root/.ssh/id_rsa.pub /var/nfs/hdp_share/master_authorized_keys
+
+sudo wget -O /etc/apt/sources.list.d/ambari.list http://public-repo-1.hortonworks.com/ambari/ubuntu16/2.x/updates/2.6.1.5/ambari.list
+
+
+sudo apt-key adv --recv-keys --keyserver keyserver.ubuntu.com B9733A7A07513CAD
+
+
+sudo apt update
+sudo apt install -y ambari-server
+
+sudo ambari-server setup -s -v
+sudo ambari-server start
+
 waitForNodeReady hdp2
 waitForNodeReady hdp3
 waitForNodeReady hdp4
 
-ssh-keygen -f id_rsa -t rsa -N ""
 
-#ssh-copy-id -i ~/.ssh/id_rsa.pub root@hdp1.local
+#sudo ssh-copy-id -i /root/.ssh/id_rsa.pub root@hdp1.local
 #ssh-copy-id -i ~/.ssh/id_rsa.pub root@hdp2.local
 #ssh-copy-id -i ~/.ssh/id_rsa.pub root@hdp3.local
 #ssh-copy-id -i ~/.ssh/id_rsa.pub root@hdp4.local
+
 

@@ -31,7 +31,7 @@ SCRIPT
 
 boxes = [
     {
-        :name => "hdp1",
+        :name => "hdp1.local",
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0001",
         :ip => "192.168.10.10",
@@ -40,7 +40,7 @@ boxes = [
         :initscript => "master.sh"
     },
     {
-        :name => "hdp2",
+        :name => "hdp2.local",
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0002",
         :ip => "192.168.10.11",
@@ -50,7 +50,7 @@ boxes = [
         
     },
     {
-        :name => "hdp3",
+        :name => "hdp3.local",
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0003",
         :ip => "192.168.10.12",
@@ -60,7 +60,7 @@ boxes = [
         
     },
     {
-        :name => "hdp4",
+        :name => "hdp4.local",
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0004",
         :ip => "192.168.10.13",

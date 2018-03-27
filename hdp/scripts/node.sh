@@ -16,8 +16,12 @@ init(){
 			sudo apt update
 	
 		sudo apt-get install mc -y 
+		apt-get install -y ntp ntpdate
+
+		echo never >/sys/kernel/mm/transparent_hugepage/enabled
 
 }
+
 
 setupNFS(){
 
@@ -55,12 +59,22 @@ waitForNFS(){
 }
 
 
+waitForauthorized_keys(){
+
+		echo "waiting for authorized_keys..."
+      
+      	while [ ! -f /nfs/hdp_share/master_authorized_keys ] ; do NOW=$(date +"%d.%m.%Y %T"); echo $NOW" : waiting for authorized_keys..." ;  sleep 30 ; done
+      sudo cp /nfs/hdp_share/master_authorized_keys /root/.ssh/authorized_keys
+
+}
+
+
 init
 
 waitForNFS
 setupNFS
 
-#waitForStackFinished
+waitForauthorized_keys
 
 
 hostname=$(hostname)
