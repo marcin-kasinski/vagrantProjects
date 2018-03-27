@@ -87,9 +87,9 @@ sudo apt install -y ambari-server
 sudo ambari-server setup -s -v
 sudo ambari-server start
 
-waitForNodeReady hdp2
-waitForNodeReady hdp3
-waitForNodeReady hdp4
+waitForNodeReady hdp2.local
+waitForNodeReady hdp3.local
+waitForNodeReady hdp4.local
 
 
 #sudo ssh-copy-id -i /root/.ssh/id_rsa.pub root@hdp1.local
