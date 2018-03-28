@@ -18,9 +18,9 @@
 
 	vboxmanage list vms
 
-    #vagrant up hdp2 --provision & 
-    #vagrant up hdp3 --provision &
-    #vagrant up hdp4 --provision &
+    vagrant up hdp2 --provision & 
+    vagrant up hdp3 --provision &
+    vagrant up hdp4 --provision &
     vagrant up hdp1 --provision 
     
     

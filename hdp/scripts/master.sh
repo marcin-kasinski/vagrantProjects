@@ -54,9 +54,9 @@ init(){
 			sudo apt update
 	
 		sudo apt-get install mc -y 
-		apt-get install -y ntp ntpdate
+		sudo apt-get install -y ntp ntpdate
+		sudo sh -c "echo never >/sys/kernel/mm/transparent_hugepage/enabled"
 
-		echo never >/sys/kernel/mm/transparent_hugepage/enabled
 
 }
 
