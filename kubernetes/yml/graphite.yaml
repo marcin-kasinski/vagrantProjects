@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: graphite-deployment
+  labels:
+    app: graphite  
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: graphite    
+  template:
+    metadata:
+      labels:
+        app: graphite
+    spec:
+      containers:
+      - name: graphite
+        image: sitespeedio/graphite
+        ports:
+        - name: graphite-port
+          containerPort: 2003
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: graphite
+spec:
+  type: NodePort
+  ports:
+  - port: 2003
+    nodePort: 30003
+    targetPort: 2003
+    protocol: TCP
+    name: http
+  selector:
+    app: graphite
+# An Ingress with 2 hosts and 3 endpoints
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: graphite
+  namespace: default
+spec:
+  rules:
+  - host: graphite
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: graphite
+          servicePort: 2003
