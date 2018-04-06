@@ -16,10 +16,12 @@ spec:
     spec:
       containers:
       - name: graphite
-        image: sitespeedio/graphite
+        image: raintank/graphite-stack
         ports:
-        - name: graphite-port
+        - name: graphiteapi
           containerPort: 2003
+        - name: graphite-port
+          containerPort: 443
 
 ---
 
@@ -34,7 +36,12 @@ spec:
     nodePort: 30003
     targetPort: 2003
     protocol: TCP
-    name: http
+    name: http2003
+  - port: 443
+    nodePort: 30444
+    targetPort: 443
+    protocol: TCP
+    name: http443
   selector:
     app: graphite
 
@@ -44,7 +51,7 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: graphite
+  name: graphite-ingress
   namespace: default
 spec:
   rules:
@@ -54,4 +61,22 @@ spec:
       - path: /
         backend:
           serviceName: graphite
+          servicePort: 443
+---
+    
+# An Ingress with 2 hosts and 3 endpoints
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: graphiteapi-ingress
+  namespace: default
+spec:
+  rules:
+  - host: graphiteapi
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: graphiteapi
           servicePort: 2003
+          
