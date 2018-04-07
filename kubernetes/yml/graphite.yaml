@@ -42,6 +42,11 @@ spec:
     targetPort: 443
     protocol: TCP
     name: http443
+  - port: 3000
+    nodePort: 30300
+    targetPort: 3000
+    protocol: TCP
+    name: http3000
   selector:
     app: graphite
 
