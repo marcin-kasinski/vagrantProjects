@@ -107,6 +107,7 @@ $masterscript = <<SCRIPT
       curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/jenkins_dp_and_service.yaml | kubectl apply -f -     
 
       curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kafkaspotify.yml | kubectl apply -f -     
+      curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kafka1.0.yml | kubectl apply -f -     
 
       curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mysql_dp_and_service.yaml | kubectl apply -f -     
       curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/phpmyadmin_dp_and_service.yaml | kubectl apply -f -     
@@ -293,7 +294,8 @@ boxes = [
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0001",
         :ip => "192.168.10.10",
-        :mem => "8192",
+#        :mem => "8192",
+        :mem => "12228",
         :cpu => "1"
     },
     {
@@ -301,7 +303,8 @@ boxes = [
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0002",
         :ip => "192.168.10.11",
-        :mem => "8192",
+#        :mem => "8192",
+        :mem => "12228",
         :cpu => "1"
     },
     {
@@ -309,7 +312,8 @@ boxes = [
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0003",
         :ip => "192.168.10.12",
-        :mem => "8192",
+#        :mem => "8192",
+        :mem => "12228",
         :cpu => "1"
     },
     {
@@ -317,7 +321,8 @@ boxes = [
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0004",
         :ip => "192.168.10.13",
-        :mem => "8192",
+#        :mem => "8192",
+        :mem => "12228",
         :cpu => "1"
     },
 ]
