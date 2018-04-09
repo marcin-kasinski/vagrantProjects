@@ -49,14 +49,13 @@ spec:
         env:
         - name: MYSQL_ROOT_PASSWORD
           value: "secret"
-#        volumeMounts:
-#        - name: nfsmysql
-#          mountPath: /var/lib/mysql
-#      volumes:
-#      - name: nfsmysql
-#        persistentVolumeClaim:
-#          claimName: nfsmysql
-
+        volumeMounts:
+        - name: nfsmysql
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: nfsmysql
+        persistentVolumeClaim:
+          claimName: nfsmysql
 ---
 apiVersion: v1
 kind: Service
