@@ -5,44 +5,34 @@
 
 Vagrant.require_version ">= 1.6.0"
 
-
 $initscript = <<SCRIPT
 
-echo "Executing"
+		IP=$1
+		SCRIPT=$2
+		echo $IP
+		echo $SCRIPT
+
+
 		#win2linux
 		sed -i -e 's/\r//g' /vagrant/scripts/init.sh
-
+		
 		chmod u+x /vagrant/scripts/init.sh
-		/vagrant/scripts/init.sh $IP
-
-
-
-
-SCRIPT
-
-$masterscript = <<SCRIPT
-
-echo "Executing"
+		/vagrant/scripts/init.sh
+     		
+		
+		#cp /vagrant/scripts/$SCRIPT $SCRIPT
+		
+		
 		#win2linux
-		sed -i -e 's/\r//g' /vagrant/scripts/master.sh
+		sed -i -e 's/\r//g' /vagrant/scripts/$SCRIPT
+		
+		
+		echo "Executing"
+		chmod u+x /vagrant/scripts/$SCRIPT
+		/vagrant/scripts/$SCRIPT $IP
+	
+	
 
-		chmod u+x /vagrant/scripts/master.sh
-		/vagrant/scripts/master.sh $IP
-
-
-       
-SCRIPT
-
-$nodescript = <<SCRIPT
-  
-
-
-echo "Executing"
-		#win2linux
-		sed -i -e 's/\r//g' /vagrant/scripts/node.sh
-
-		chmod u+x /vagrant/scripts/node.sh
-		/vagrant/scripts/node.sh $IP
 
 SCRIPT
 
@@ -53,7 +43,8 @@ boxes = [
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0001",
         :ip => "192.168.10.10",
-        :mem => "12288",
+        :mem => "8192",
+        :initscript => "master.sh",
         :cpu => "1"
     },
     {
@@ -61,7 +52,8 @@ boxes = [
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0002",
         :ip => "192.168.10.11",
-        :mem => "12288",
+        :mem => "8192",
+        :initscript => "node.sh",        
         :cpu => "1"
     },
     {
@@ -69,7 +61,8 @@ boxes = [
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0003",
         :ip => "192.168.10.12",
-        :mem => "12288",
+        :mem => "8192",
+        :initscript => "node.sh",
         :cpu => "1"
     },
     {
@@ -77,9 +70,11 @@ boxes = [
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0004",
         :ip => "192.168.10.13",
-        :mem => "12288",
+#        :mem => "8192",
+        :mem => "12228",
+        :initscript => "node.sh",        
         :cpu => "1"
-    },
+    }
 ]
 
 Vagrant.configure(2) do |config|
@@ -87,6 +82,8 @@ Vagrant.configure(2) do |config|
   config.vm.box = "ubuntu/xenial64"
 #  config.vm.box = "ubuntu/trusty64"
 #  config.vm.box = "bento/ubuntu-16.04"
+
+#  config.disksize.size = '30GB'
   
   #config.vm.box_version = "20171212.0.0"
 
@@ -117,11 +114,14 @@ Vagrant.configure(2) do |config|
 
 
   boxes.each do |opts|
-    config.vm.define opts[:name] do |config|    
+    config.vm.define opts[:name] do |config|
       config.vm.provision "shell" do |s|
+# privileges default true      
+        s.privileged = true
         s.inline = $initscript
-        s.args = opts[:ip]
+        s.args = [opts[:ip] , opts[:initscript]]
       end
+
 
 
  # default router
@@ -148,32 +148,8 @@ Vagrant.configure(2) do |config|
 
 
 
-   config.vm.define  "k8smaster" do |config|
-      config.vm.provision "shell" do |s|
-        s.inline = $masterscript
-        s.args = "192.168.10.10"
-      end
-    end
 
 
-
-   config.vm.define  "k8snode1" do |config|
-      config.vm.provision "shell" do |s|
-        s.inline = $nodescript
-      end
-    end
-
-   config.vm.define  "k8snode2" do |config|
-      config.vm.provision "shell" do |s|
-        s.inline = $nodescript
-      end
-    end
-
-   config.vm.define  "k8snode3" do |config|
-      config.vm.provision "shell" do |s|
-        s.inline = $nodescript
-      end
-    end
 
 
 end

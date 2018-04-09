@@ -1,3 +1,4 @@
+
     echo I am node provisioning...
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
 
@@ -7,12 +8,13 @@
 
       # ----------------------------- nfs -----------------------------
 
-	  while ! nc -z k8smaster.local 111; do   echo "waiting NFS to launch ..." ; sleep 5 ; done
+	  while ! nc -z k8smaster.local 111; do   echo "waiting NFS to launch ..." ; sleep 20 ; done
 
+	  sleep 10 
       sudo mkdir -p /nfs/kubernetes_share
       sudo mount k8smaster.local:/var/nfs/kubernetes_share /nfs/kubernetes_share
       
-      while [ ! -f /nfs/kubernetes_share/join_command_sudo ] ; do echo "waiting for join command..." ;  sleep 10 ; done
+      while [ ! -f /nfs/kubernetes_share/join_command_sudo ] ; do echo "waiting for join command..." ;  sleep 20 ; done
       
       
       JOIN_COMMAND=$(    sudo cat /nfs/kubernetes_share/join_command_sudo  )
