@@ -52,10 +52,10 @@ spec:
         volumeMounts:
         - name: nfsmysql
           mountPath: /var/lib/mysql
-      volumes:
-      - name: nfsmysql
-        persistentVolumeClaim:
-          claimName: nfsmysql
+#      volumes:
+#      - name: nfsmysql
+#        persistentVolumeClaim:
+#          claimName: nfsmysql
 ---
 apiVersion: v1
 kind: Service
