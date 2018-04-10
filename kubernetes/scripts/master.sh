@@ -92,19 +92,13 @@
             
       sudo apt install -y netcat
       sudo apt install -y mysql-client 
-      
-      
-      
-      sleep 5
-      
+            
       while ! kubectl get po -o wide | grep mysql | grep Running ; do   echo "waiting for mysql IP..." ; sleep 20 ; done
 
       MYSQLPODIP=`kubectl get po -o wide | grep mysql | grep Running `
       echo $MYSQLPODIP
       MYSQLPODIP=`echo $MYSQLPODIP  | cut -d " " -f 6`
       echo $MYSQLPODIP
-
-      sleep 5
       
       while ! nc -w 20 -z $MYSQLPODIP 3306; do   echo "waiting mysql to launch ..." ; sleep 20 ; done
 
@@ -132,7 +126,7 @@
           #------------------------------- kafka init ------------------------------- 
      
      sudo apt install -y openjdk-8-jdk
-       while ! kubectl get po -o wide | grep kafka-broker1 | grep Running ; do   echo "waiting for kafka IP..." ; sleep 5 ; done
+       while ! kubectl get po -o wide | grep kafka-broker1 | grep Running ; do   echo "waiting for kafka IP..." ; sleep 20 ; done
 
 
       KAFKAPODIP=`kubectl get po -o wide | grep kafka-broker1 | grep Running `
@@ -140,7 +134,7 @@
       KAFKAPODIP=`echo $KAFKAPODIP  | cut -d " " -f 6`
       echo $KAFKAPODIP
 
-      while ! nc -z $KAFKAPODIP 9092; do   echo "waiting kafka to launch ..." ; sleep 5 ; done
+      while ! nc -z $KAFKAPODIP 9092; do   echo "waiting kafka to launch ..." ; sleep 20 ; done
 
 
 		cd /tmp
