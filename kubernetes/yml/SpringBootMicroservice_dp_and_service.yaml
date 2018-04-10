@@ -23,6 +23,9 @@ spec:
         ports:
         - name: http-port
           containerPort: 8081
+        env:
+        - name: SPRING_PROFILE
+          value: "prd"
 ---
 apiVersion: v1
 kind: Service
