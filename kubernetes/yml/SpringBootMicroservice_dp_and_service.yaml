@@ -22,7 +22,7 @@ spec:
         imagePullPolicy: Always
         ports:
         - name: http-port
-          containerPort: 8081
+          containerPort: 9191
         env:
         - name: SPRING_PROFILE
           value: "prd"
@@ -34,9 +34,9 @@ metadata:
 spec:
   type: NodePort
   ports:
-  - port: 8081
-    nodePort: 30081
-    targetPort: 8081
+  - port: 9191
+    nodePort: 30091
+    targetPort: 9191
     protocol: TCP
     name: http
   selector:
@@ -58,4 +58,4 @@ spec:
       - path: /
         backend:
           serviceName: springbootmicroservice
-          servicePort: 8081
+          servicePort: 9191
