@@ -19,6 +19,9 @@ spec:
         ports:
         - name: nodejs-port
           containerPort: 9191
+        env:
+        - name: SPRING_PROFILE
+          value: "prd"
 ---
 apiVersion: v1
 kind: Service
