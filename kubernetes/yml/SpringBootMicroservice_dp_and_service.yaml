@@ -35,7 +35,7 @@ spec:
   type: NodePort
   ports:
   - port: 9191
-    nodePort: 30091
+    nodePort: 30991
     targetPort: 9191
     protocol: TCP
     name: http
