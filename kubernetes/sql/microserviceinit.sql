@@ -11,3 +11,4 @@
 	
 	INSERT INTO users (id,email, name) VALUES (1 , 'x@x.com','Marcin');
 	INSERT INTO users (id,email, name) VALUES (2 , 'z@fromlistener.com','Marcin from listener');
+	INSERT INTO users (id,email, name) VALUES (2 , 'ajax@ajax.com','AJAX');
