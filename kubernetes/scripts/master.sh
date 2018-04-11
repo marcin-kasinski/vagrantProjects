@@ -1,4 +1,15 @@
 
+showDasboardIP(){
+
+while ! kubectl get po -n kube-system -o wide | grep kubernetes-dashboard | grep Running ; do   echo "waiting for dashboard IP..." ; sleep 20 ; done
+
+DASHBOARDPODIP=`kubectl get po -n kube-system -o wide | grep kubernetes-dashboard | grep Running`
+DASHBOARDPODIP=`echo $DASHBOARDPODIP  | cut -d " " -f 6`
+
+echo Dashboard IP $DASHBOARDPODIP
+
+}
+
   echo I am provisioning...
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
       
@@ -177,4 +188,5 @@
 
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
            
+      showDasboardIP
        
