@@ -38,7 +38,7 @@ metadata:
   name: springbootzipkin-ingress
 spec:
   rules:
-  - host: zipkin
+  - host: springbootzipkin
     http:
       paths:
       - path: /
