@@ -7,6 +7,8 @@
       sudo sh -c "echo '192.168.1.12 k8snode1.local' >> /etc/hosts"
       sudo sh -c "echo '192.168.1.13 k8snode1.local' >> /etc/hosts"
       sudo sh -c "echo '192.168.1.14 k8snode1.local' >> /etc/hosts"
+      sudo sh -c "echo '192.168.1.12 springbootmicroserviceingress' >> /etc/hosts"
+      
 
 
 
