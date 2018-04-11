@@ -1,5 +1,14 @@
-echo I am provisioning...
+
+
+
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
+
+      sudo sh -c "echo '192.168.1.11 k8smaster.local' >> /etc/hosts"
+      sudo sh -c "echo '192.168.1.12 k8snode1.local' >> /etc/hosts"
+      sudo sh -c "echo '192.168.1.13 k8snode1.local' >> /etc/hosts"
+      sudo sh -c "echo '192.168.1.14 k8snode1.local' >> /etc/hosts"
+
+
 
       sudo swapoff -a  
       sudo sed -i -r '/swap/ s/^(.*)$/#\1/g' /etc/fstab
