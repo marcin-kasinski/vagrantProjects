@@ -6,8 +6,10 @@ metadata:
     app: zookeeper
 spec:
   ports:
-  - port: 80
-    name: web
+  - port: 2888
+    name: server
+  - port: 3888
+    name: leader-election
   clusterIP: None
   selector:
     app: zookeeper
@@ -18,7 +20,7 @@ metadata:
   name: zk
 spec:
   serviceName: "zookeeper"
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: zookeeper
@@ -31,8 +33,10 @@ spec:
       - name: zookeeper
         image: marcinkasinski/kafkacluster
         ports:
-        - containerPort: 80
-          name: web
+        - containerPort: 2888
+          name: server
+        - containerPort: 3888
+          name: leader-election
         env:
         - name: "ZOOKEEPER_NODES"
           value: "server.1=zk-0.zookeeper.default.svc.cluster.local:2888:3888;server.2=zk-1.zookeeper.default.svc.cluster.local:2888:3888;server.3=zk-2.zookeeper.default.svc.cluster.local:2888:3888"
