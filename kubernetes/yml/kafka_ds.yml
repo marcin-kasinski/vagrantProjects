@@ -83,4 +83,4 @@ spec:
         env:
         - name: "ZOOKEEPER_NODES"
 #          value: "server.1=kafkacluster-0:2888:3888;server.2=kafkacluster-1:2888:3888;server.3=kafkacluster-2:2888:3888"
-          value: "server.1=zk-0:2888:3888"          
+          value: "server.1=zk-0:2888:3888;server.2=zk-1:2888:3888;server.3=zk-2:2888:3888"          
