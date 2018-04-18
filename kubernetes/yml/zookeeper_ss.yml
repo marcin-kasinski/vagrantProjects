@@ -52,5 +52,5 @@ spec:
           name: leader-election
         env:
         - name: "ZOOKEEPER_NODES"
-          value: "server.1=zk-0.zookeeper.default.svc.cluster.local:2888:3888;server.2=zk-1.zookeeper.default.svc.cluster.local:2888:3888;server.3=zk-2.zookeeper.default.svc.cluster.local:2888:3888"
+          value: "server.1=zk-0.zk-hs.default.svc.cluster.local:2888:3888;server.2=zk-1.zk-hs.default.svc.cluster.local:2888:3888;server.3=zk-2.zk-hs.default.svc.cluster.local:2888:3888"
           
