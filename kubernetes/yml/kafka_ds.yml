@@ -68,7 +68,7 @@ spec:
   ports:
   - port: 9092
     protocol: TCP
-    nodePort: 30092    
+    nodePort: 31099
     targetPort: 9092
   selector:
     app: kafkacluster
