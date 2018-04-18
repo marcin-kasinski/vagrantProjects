@@ -29,7 +29,11 @@ spec:
     spec:
       containers:
       - name: zookeeper
-        image: k8s.gcr.io/nginx-slim:0.8
+        image: marcinkasinski/kafkacluster
         ports:
         - containerPort: 80
           name: web
+        env:
+        - name: "ZOOKEEPER_NODES"
+          value: "server.1=zk-0.zookeeper.default.svc.cluster.local:2888:3888;server.2=zk-1.zookeeper.default.svc.cluster.local:2888:3888;server.3=zk-2.zookeeper.default.svc.cluster.local:2888:3888"
+          
