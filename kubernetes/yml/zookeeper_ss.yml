@@ -34,6 +34,9 @@ metadata:
 spec:
   serviceName: "zk-hs"
   replicas: 3
+  updateStrategy:
+    type: RollingUpdate
+  podManagementPolicy: Parallel
   selector:
     matchLabels:
       app: zookeeper
@@ -46,6 +49,8 @@ spec:
       - name: zookeeper
         image: marcinkasinski/kafkacluster
         ports:
+        - containerPort: 2181
+          name: client
         - containerPort: 2888
           name: server
         - containerPort: 3888
