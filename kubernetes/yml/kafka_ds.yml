@@ -65,15 +65,14 @@ metadata:
   namespace: default
   labels:
     k8s-app: kafkacluster
-    kubernetes.io/cluster-service: "true"
     addonmanager.kubernetes.io/mode: Reconcile
     kubernetes.io/name: "Elasticsearch"
 spec:
   type: NodePort
   ports:
-  - port: 9200
+  - port: 9092
     protocol: TCP
-    nodePort: 31200    
-    targetPort: db
+    nodePort: 31092    
+    targetPort: 9092
   selector:
     k8s-app: kafkacluster
