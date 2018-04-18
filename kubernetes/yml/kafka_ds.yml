@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: fluentd-elasticsearch
-  namespace: kube-system
+  name: kafkacluster
+  namespace: default
   labels:
-    k8s-app: fluentd-logging
+    k8s-app: kafkacluster
 spec:
   selector:
     matchLabels:
-      name: kafka
+      name: kafkacluster
   template:
     metadata:
       labels:
-        name: kafka
+        name: kafkacluster
     spec:
       tolerations:
       - key: node-role.kubernetes.io/master
         effect: NoSchedule
       containers:
-      - name: kafka
+      - name: kafkacluster
         image: marcinkasinski/kafkacluster
         resources:
           limits:
