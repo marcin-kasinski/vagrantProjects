@@ -72,14 +72,29 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: kafkacluster
-  namespace: default
+  name: zk-hs
+  labels:
+    app: kafkacluster
 spec:
-  type: NodePort
   ports:
-  - port: 9092
-    protocol: TCP
-    nodePort: 31099
-    targetPort: 9092
+  - port: 2888
+    name: server
+  - port: 3888
+    name: leader-election
+  clusterIP: None
   selector:
     app: kafkacluster
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zk-cs
+  labels:
+    app: kafkacluster
+spec:
+  ports:
+  - port: 2181
+    name: client
+  selector:
+    app: kafkacluster
+---
