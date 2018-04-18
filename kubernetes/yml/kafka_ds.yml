@@ -10,7 +10,7 @@ spec:
     name: web
   clusterIP: None
   selector:
-    app: nginx
+    name: kafkacluster
 ---
 apiVersion: apps/v1
 kind: StatefulSet
