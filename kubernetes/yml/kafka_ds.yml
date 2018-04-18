@@ -58,8 +58,8 @@ spec:
         - name: "ES_JAVA_OPTS"
           value: "-XX:-AssumeMP"
         - name: "ZOOKEEPER_NODES"
-          value: "server.1=kafkacluster-0.kafkacluster.default.svc.cluster.local:2888:3888;server.2=kafkacluster-1.kafkacluster.default.svc.cluster.local:2888:3888;server.3=kafkacluster-2.kafkacluster.default.svc.cluster.local:2888:3888"
-#          value: "server.11=kafkacluster-0.zk-hs.default.svc.cluster.local:2888:3888"
+#          value: "server.1=kafkacluster-0.kafkacluster.default.svc.cluster.local:2888:3888;server.2=kafkacluster-1.kafkacluster.default.svc.cluster.local:2888:3888;server.3=kafkacluster-2.kafkacluster.default.svc.cluster.local:2888:3888"
+          value: "server.1=kafkacluster-0:2888:3888"
       # Elasticsearch requires vm.max_map_count to be at least 262144.
       # If your OS already sets up this number to a higher value, feel free
       # to remove this init container.
