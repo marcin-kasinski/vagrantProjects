@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: zookeeper
+  name: zk-hs
   labels:
     app: zookeeper
 spec:
@@ -14,12 +14,25 @@ spec:
   selector:
     app: zookeeper
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zk-cs
+  labels:
+    app: zookeeper
+spec:
+  ports:
+  - port: 2181
+    name: client
+  selector:
+    app: zookeeper
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: zk
 spec:
-  serviceName: "zookeeper"
+  serviceName: "zk-hs"
   replicas: 3
   selector:
     matchLabels:
