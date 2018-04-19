@@ -5,8 +5,10 @@ metadata:
   labels:
     app: kafka
 spec:
+  type: NodePort
   ports:
   - port: 9092
+    nodePort: 30092
     name: client
   clusterIP: None
   selector:
