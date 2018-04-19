@@ -10,20 +10,9 @@ spec:
     name: server
   - port: 3888
     name: leader-election
-  clusterIP: None
-  selector:
-    app: zookeeper
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: zk-cs
-  labels:
-    app: zookeeper
-spec:
-  ports:
   - port: 2181
-    name: client
+    name: client    
+  clusterIP: None
   selector:
     app: zookeeper
 ---
