@@ -47,7 +47,7 @@ spec:
     spec:
       containers:
       - name: zookeeper
-        image: marcinkasinski/kafkacluster
+        image: marcinkasinski/zookeepercluster
         imagePullPolicy: Always        
         ports:
         - containerPort: 2181
