@@ -45,7 +45,7 @@ spec:
           name: leader-election
         env:
         - name: "ZOOKEEPER_CONNECT"
-          value: "zk-0.zk-cs.default.svc.cluster.local:2281,zk-1.zk-cs.default.svc.cluster.local:2281,zk-2.zk-cs.default.svc.cluster.local:2281"
+          value: "zk-0.zk-hs.default.svc.cluster.local:2281,zk-1.zk-hs.default.svc.cluster.local:2281,zk-2.zk-hs.default.svc.cluster.local:2281"
         - name: "BROKER_NODES"
           value: "server.1=zk-0.ks.default.svc.cluster.local:2888:3888;server.2=zk-1.ks.default.svc.cluster.local:2888:3888;server.3=zk-2.ks.default.svc.cluster.local:2888:3888"
           
