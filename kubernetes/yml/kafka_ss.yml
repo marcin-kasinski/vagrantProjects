@@ -41,5 +41,5 @@ spec:
         - name: "ZOOKEEPER_CONNECT"
           value: "zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181"
         - name: "BROKER_NODES"
-          value: "server.1=zk-0.ks.default.svc.cluster.local:2888:3888;server.2=zk-1.ks.default.svc.cluster.local:2888:3888;server.3=zk-2.ks.default.svc.cluster.local:2888:3888"
+          value: "1=kafka-0.k-hs.default.svc.cluster.local;2=kafka-1.k-hs.default.svc.cluster.local;3=kafka-2.k-hs.default.svc.cluster.local"
           
