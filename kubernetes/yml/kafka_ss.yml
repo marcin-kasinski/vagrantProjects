@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: k-hs
+  name: k-cs
   labels:
     app: kafka
 spec:
@@ -9,6 +9,20 @@ spec:
   ports:
   - port: 9092
     nodePort: 30092
+    name: client
+  clusterIP: None
+  selector:
+    app: kafka
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: k-hs
+  labels:
+    app: kafka
+spec:
+  ports:
+  - port: 9092
     name: client
   clusterIP: None
   selector:
