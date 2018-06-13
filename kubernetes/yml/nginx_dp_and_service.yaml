@@ -1,3 +1,15 @@
+kind: ConfigMap
+metadata:
+  name: cm_nginx
+  namespace: default
+apiVersion: v1
+data:    
+  nginx.confNEW: |-   
+    xpack.monitoring.enabled: false
+    #xpack.monitoring.elasticsearch.url: http://elasticsearch-logging:9200
+    #xpack.monitoring.elasticsearch.username: elastic
+    #xpack.monitoring.elasticsearch.password: changeme
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -21,7 +33,13 @@ spec:
           containerPort: 80
         env:
         - name: SPRING_PROFILE
-          value: "prd"          
+          value: "prd"
+      volumes:
+        - name: nginx-config-volume
+          configMap:
+            # Provide the name of the ConfigMap containing the files you want
+            # to add to the container
+            name: cm_nginx          
 ---
 apiVersion: v1
 kind: Service
