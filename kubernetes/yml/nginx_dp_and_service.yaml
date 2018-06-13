@@ -90,7 +90,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: nginx
+        image: ilagnev/alpine-nginx-lua
         imagePullPolicy: Always
         ports:
         - name: http
