@@ -1,6 +1,6 @@
 kind: ConfigMap
 metadata:
-  name: cm_nginx
+  name: cm.nginx
   namespace: default
 apiVersion: v1
 data:    
@@ -39,7 +39,7 @@ spec:
           configMap:
             # Provide the name of the ConfigMap containing the files you want
             # to add to the container
-            name: cm_nginx          
+            name: cm.nginx          
 ---
 apiVersion: v1
 kind: Service
