@@ -1,8 +1,8 @@
+apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: cm.nginx
+  name: nginx-config
   namespace: default
-apiVersion: v1
 data:
   nginx.conf: |-   
     # MK CONF
@@ -63,14 +63,14 @@ spec:
         - name: SPRING_PROFILE
           value: "prd"
         volumeMounts:
-        - name: nginx-config-volume
+        - name: nginx-config
           mountPath: /etc/nginx/nginx.conf
       volumes:
-        - name: nginx-config-volume
+        - name: nginx-config
           configMap:
             # Provide the name of the ConfigMap containing the files you want
             # to add to the container
-            name: cm.nginx          
+            name: nginx-config          
 ---
 apiVersion: v1
 kind: Service
