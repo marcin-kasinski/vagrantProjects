@@ -36,7 +36,7 @@ spec:
           value: "prd"
         volumeMounts:
         - name: nginx-config-volume
-          mountPath: /etc/nginx
+          mountPath: /etc/nginx/nginx2.xxx
       volumes:
         - name: nginx-config-volume
           configMap:
