@@ -98,8 +98,16 @@ spec:
         - name: nginx-config
           mountPath: /etc/nginx/nginx.conf
           subPath: nginx.conf
+        - name: nginx-configORG
+          mountPath: /etc/nginx/nginx.conf_ORG
+          subPath: nginx.conf_ORG
       volumes:
         - name: nginx-config
+          configMap:
+            # Provide the name of the ConfigMap containing the files you want
+            # to add to the container
+            name: nginx-config          
+        - name: nginx-configORG
           configMap:
             # Provide the name of the ConfigMap containing the files you want
             # to add to the container
