@@ -1,5 +1,5 @@
 
-
+      PATH=$PATH:/vagrant/scripts
 
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
 
