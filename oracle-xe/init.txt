@@ -1,0 +1,11 @@
+
+    cd /vagrantprojects/oracle-xe/
+    
+    #vagrant plugin install vagrant-disksize
+	vagrant halt
+	vagrant box update
+	vboxmanage unregistervm oracle-xe --delete
+	vboxmanage list vms
+	
+	vagrant up oracle-xe --provision 	
+	
