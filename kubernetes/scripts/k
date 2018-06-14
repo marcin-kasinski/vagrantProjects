@@ -2,6 +2,9 @@
 # set -o xtrace
 
 
+#przyklad : k e nginx sh
+
+
 kubelogs(){
 
 SEARCH=$1
@@ -14,31 +17,31 @@ kubectl logs -f $PODNAME
 
 }
 
-
 kubeexec(){
 
 SEARCH=$1
+BASH=$2
 echo "Searching $SEARCH"
 
 PODNAME=`kubectl get po | grep $SEARCH| grep Running | cut -d " " -f 1`
 
 echo "Pod name: $PODNAME"
 
-kubectl exec -it $PODNAME -- /bin/bash -
+kubectl exec -it $PODNAME -- /bin/$BASH -
 
 }
 
 
 COMMAND=$1
 ARG=$2
-
+BASH=$3
 
 echo $COMMAND
 
 
 if [ "$COMMAND" = "e" ]
 then
-kubeexec $ARG
+kubeexec $ARG $BASH
 elif [ "$COMMAND" = "l" ]
 then
 kubelogs $ARG
