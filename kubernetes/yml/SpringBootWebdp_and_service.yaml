@@ -22,6 +22,8 @@ spec:
         env:
         - name: SPRING_PROFILE
           value: "prd"          
+        - name: APP_AJAX_URL
+          value: "http://nginx:30080/api/get-by-email?email=ajax@ajax.com"          
 ---
 apiVersion: v1
 kind: Service
