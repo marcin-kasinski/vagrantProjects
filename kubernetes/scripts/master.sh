@@ -140,11 +140,11 @@ echo Dashboard IP $DASHBOARDPODIP
     
           #------------------------------- kafka init ------------------------------- 
      
-     sudo apt install -y openjdk-8-jdk
-       while ! kubectl get po -o wide | grep kafka-broker1 | grep Running ; do   echo "waiting for kafka IP..." ; sleep 20 ; done
+      sudo apt install -y openjdk-8-jdk
+      while ! kubectl get po -o wide | grep kafka-0 | grep Running ; do   echo "waiting for kafka IP..." ; sleep 20 ; done
 
 
-      KAFKAPODIP=`kubectl get po -o wide | grep kafka-broker1 | grep Running `
+      KAFKAPODIP=`kubectl get po -o wide | grep kafka-0 | grep Running `
       echo $KAFKAPODIP
       KAFKAPODIP=`echo $KAFKAPODIP  | cut -d " " -f 6`
       echo $KAFKAPODIP
