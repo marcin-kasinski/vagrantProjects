@@ -26,7 +26,7 @@ data:
         	  '$status $body_bytes_sent "$http_referer" '
         	  '"$http_user_agent" "$http_x_forwarded_for" '
         	  '"$http_x-b3-traceid" '
-        	  '" MK-X1 $MK-X1" '
+        	  '" MK-X1 $MK\-X1" '
         	  '" MK_X2 $MK_X2" '
         	  '"request postdata $request_body" '
         	  '"response postdata $resp_body" ';
