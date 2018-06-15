@@ -9,9 +9,6 @@
       sudo sh -c "echo '192.168.1.14 k8snode3.local' >> /etc/hosts"
       sudo sh -c "echo '192.168.1.12 springbootmicroserviceingress' >> /etc/hosts"
       
-
-
-
       sudo swapoff -a  
       sudo sed -i -r '/swap/ s/^(.*)$/#\1/g' /etc/fstab
       sudo sed -i -r '/cdrom/ s/^(.*)$/#\1/g' /etc/apt/sources.list
