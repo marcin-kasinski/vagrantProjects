@@ -1,7 +1,5 @@
 
-      sudo sh -c "export PATH=$PATH:/vagrant/scripts' >> /home/vagrant/.bashrc"
-
-      export PATH=$PATH:/vagrant/scripts
+      sudo sh -c "echo 'export PATH=$PATH:/vagrant/scripts' >> /home/vagrant/.bashrc"
 
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
 
