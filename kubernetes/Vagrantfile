@@ -17,8 +17,10 @@ $initscript = <<SCRIPT
 
 echo "Executing"
 		#win2linux
+		sed -i -e 's/\r//g' /vagrant/scripts/k
 		sed -i -e 's/\r//g' /vagrant/scripts/*.sh
 
+		chmod u+x /vagrant/scripts/k
 		chmod u+x /vagrant/scripts/*.sh
 		/vagrant/scripts/init.sh $IP
 
