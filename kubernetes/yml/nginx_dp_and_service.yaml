@@ -93,9 +93,9 @@ spec:
     spec:
       containers:
       - name: nginx
-        #image: nginx
+        image: nginx
         #image: ilagnev/alpine-nginx-lua
-        image: firesh/nginx-lua
+        #image: firesh/nginx-lua
         imagePullPolicy: Always
         ports:
         - name: http
