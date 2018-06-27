@@ -11,16 +11,14 @@
 	
 
 	vboxmanage unregistervm openstackmaster --delete
-	vboxmanage unregistervm openstacknode1 --delete
+	vboxmanage unregistervm node1 --delete
 
 	vboxmanage list vms
 
     vagrant up openstackmaster --provision 
     
     
-    
-    #vagrant up openstacknode1 --provision 
-	
+
 	
 	
 	vagrant ssh openstackmaster 

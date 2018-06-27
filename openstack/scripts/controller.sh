@@ -1,6 +1,8 @@
 #!/bin/bash
 # set -o xtrace
 
+#exit 0
+
 DEV_BRANCH="stable/pike"
 #DEV_BRANCH="stable/queens"
 #DEV_BRANCH="master"
@@ -81,7 +83,10 @@ openstack coe cluster template create k8s-cluster-template \
                        --coe kubernetes
 
 source devstack/openrc admin admin
-#magnum cluster-create --cluster-template k8s-cluster-template --node-count 3 k8s-cluster
+magnum cluster-create --cluster-template k8s-cluster-template --node-count 3 k8s-cluster
+
+
+#openstack coe cluster create mycluster --cluster-template k8s-cluster-template --node-count 1 --master-count 1
 
 openstack coe cluster list
 
@@ -142,6 +147,19 @@ openstack network agent list
 
 
 }
+
+
+
+restartFailedServices(){
+
+local message=$1
+
+chmod u+x /vagrant/scripts/restartfailedservices.sh
+/vagrant/scripts/restartfailedservices.sh $message
+
+}
+
+
 
 # Creates a keypair
 create_keypair(){
@@ -334,9 +352,9 @@ addImage(){
 
 }
 
-
 configureExternalNetInterface(){
 
+local public_interface=$1
 
 openstack subnet list 
 
@@ -356,24 +374,17 @@ sudo ovs-vsctl list-br
 
 sudo ovs-vsctl list-ports br-ex 
 
-
-sudo ovs-vsctl add-port br-ex eth2 
-
+sudo ovs-vsctl add-port br-ex $public_interface 
 
 sudo ovs-vsctl list-ports br-ex 
 
-sudo ip link show eth2 
+sudo ip link show $public_interface 
 
-sudo ip link set dev eth2 up 
+sudo ip link set dev $public_interface up 
 
-sudo ip link show eth2 
-
-
-     
+sudo ip link show $public_interface
 
 }
-
-
 
 updateCinder(){
 
@@ -412,17 +423,11 @@ cinder get-pools
 
 #--------------------------------------------------------------------
 
-
-
 #init
-
-
 
 remove_LVM_logical_volume
 
-
 setupNFS
-
 
 devstack/unstack.sh
 
@@ -437,19 +442,41 @@ sed -i -e 's/\r//g' devstack/local.conf
 		
 cp /vagrant/localrc.password devstack/.localrc.password 
 
+
+#upgrade pip
+
+echo "Upgrading PIP"
+
+sudo apt-get install -y python-pip
+
+/usr/bin/yes | sudo pip install --upgrade pip
+/usr/bin/yes | sudo pip install -U os-testr 
+
+cd devstack
+git pull
+cd ..
 devstack/stack.sh
 
-fix_OVS
+#bugfix in 3.15
+#sudo pip install python-openstackclient==3.12
 
-sudo touch /var/nfs/openstack_share/openstack_stack_finished
-
-#waitForNodeReady node1
-
+#restartFailedServices A1
 
 #exit 0
 
-source devstack/openrc admin admin
+#fix_OVS
 
+
+#echo "exiting"
+#exit 0
+
+sudo touch /var/nfs/openstack_share/openstack_stack_finished
+
+waitForNodeReady node1
+#waitForNodeReady node2
+
+
+source devstack/openrc admin admin
 
 
 openstack flavor create --public m1.mkflavor --id auto --ram 8192 --disk 7 --vcpus 1 --rxtx-factor 1
@@ -460,16 +487,28 @@ openstack flavor create --public m1.mkflavor --id auto --ram 8192 --disk 7 --vcp
 create_security_group SSHandICMP
 
 
+
 sudo nova-manage cell_v2 discover_hosts --verbose 
+
+
 
 updateCinder
 
+
 #neutron router-gateway-clear  router1
+
+
 
 source devstack/openrc admin admin
 openstack router unset --external-gateway router1
 
-configureExternalNetInterface
+
+
+#dla udemy
+configureExternalNetInterface eth2
+
+#dla ubuntu
+#configureExternalNetInterface enp0s9
 
 #chmod u+x /vagrant/scripts/automate-with-ext.sh
 
@@ -484,7 +523,6 @@ configureExternalNetInterface
  create_network $NET2
  create_subnet $NET1 $SUBNET1 $NET1_CIDR
  create_subnet $NET2 $SUBNET2 $NET2_CIDR
-
 
 
  create_external_subnet
@@ -502,12 +540,14 @@ configureExternalNetInterface
  boot_vm $VM1 $NET1 nova # Boot the first VM on NET1 and AZ named nova (default) (i.e. place VM1 on the controller)
  #boot_vm $VM2 $NET2 $AZ  # Boot the second VM on NET2 and in AZ=az2 (i.e. place VM2 on the compute node)
 create_volume "extra_space" 2  # Allocate some storage space
+
+add_volume "extra_space"     # Attach the storage volume to $VM1
+
+add_floating_ip $VM1   # Add a floating ip address to $VM1
 create_volume "30gb-vol" 30  # Allocate some storage space
- add_volume "extra_space"     # Attach the storage volume to $VM1
- add_volume "30gb-vol"
- add_floating_ip $VM1   # Add a floating ip address to $VM1
+add_volume "30gb-vol"
 
 echo "setup magnum"
 
-#setupMagnum
+setupMagnum
 
