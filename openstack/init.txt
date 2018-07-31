@@ -202,7 +202,6 @@ sudo lvs
 sudo lvs --segments
 sudo lvdisplay -m
 
-
 remove logical volume
 umount /dev/MKmyvolgroup/vps
 lvremove /dev/MKmyvolgroup/vps

@@ -3,8 +3,8 @@
 
 #exit 0
 
-DEV_BRANCH="stable/pike"
-#DEV_BRANCH="stable/queens"
+#DEV_BRANCH="stable/pike"
+DEV_BRANCH="stable/queens"
 #DEV_BRANCH="master"
 
 # Set global variables to control the names of the resources we create
@@ -429,11 +429,11 @@ remove_LVM_logical_volume
 
 setupNFS
 
-devstack/unstack.sh
+#devstack/unstack.sh
 
 #rm -rf /home/vagrant/devstack
 
-#clone_GIT
+clone_GIT
 
 sudo cp /vagrant/ctr_local.conf devstack/local.conf 
 			
@@ -505,10 +505,10 @@ openstack router unset --external-gateway router1
 
 
 #dla udemy
-configureExternalNetInterface eth2
+#configureExternalNetInterface eth2
 
 #dla ubuntu
-#configureExternalNetInterface enp0s9
+configureExternalNetInterface enp0s9
 
 #chmod u+x /vagrant/scripts/automate-with-ext.sh
 
@@ -549,5 +549,5 @@ add_volume "30gb-vol"
 
 echo "setup magnum"
 
-setupMagnum
+#setupMagnum
 

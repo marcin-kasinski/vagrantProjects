@@ -33,8 +33,8 @@ SCRIPT
 boxes = [
     {
         :name => "openstackmaster",
-        :box => "najoy/os-pike-aio",
-#        :box => "ubuntu/xenial64",       
+#        :box => "najoy/os-pike-aio",
+        :box => "ubuntu/xenial64",       
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0001",
         :ip => "192.168.33.10",
@@ -130,7 +130,8 @@ Vagrant.configure(2) do |config|
         #config.persistent_storage.mountpoint = '/var/lib/mysql'
         config.persistent_storage.volgroupname = 'MKmyvolgroup'
         config.persistent_storage.partition = false
-		config.persistent_storage.diskdevice = '/dev/sdb'
+        # sdb dla piko sdc dla ubuntu
+		config.persistent_storage.diskdevice = '/dev/sdc'
 
 
 
