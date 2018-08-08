@@ -24,7 +24,7 @@ init(){
 
 clone_GIT(){
 
-			git clone --branch stable/pike https://git.openstack.org/openstack-dev/devstack
+			git clone --branch stable/queens https://git.openstack.org/openstack-dev/devstack
 			sudo cp /vagrant/ctr_local.conf devstack/local.conf 
 			
 			#win2linux
