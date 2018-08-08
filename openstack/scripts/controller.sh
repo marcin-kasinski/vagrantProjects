@@ -3,8 +3,8 @@
 
 #exit 0
 
-#DEV_BRANCH="stable/pike"
-DEV_BRANCH="stable/queens"
+DEV_BRANCH="stable/pike"
+#DEV_BRANCH="stable/queens"
 #DEV_BRANCH="master"
 
 # Set global variables to control the names of the resources we create

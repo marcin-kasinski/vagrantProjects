@@ -3,12 +3,6 @@
 
 IP=$1
 
-
-#DEV_BRANCH="stable/pike"
-DEV_BRANCH="stable/queens"
-#DEV_BRANCH="master"
-
-
 init(){
 
 			#sudo sed -i -r '/openstackmaster/ s/^(.*)$/#\1/g' /etc/hosts
@@ -30,10 +24,15 @@ init(){
 
 clone_GIT(){
 
-			git clone --branch $DEV_BRANCH https://git.openstack.org/openstack-dev/devstack
+			git clone --branch stable/pike https://git.openstack.org/openstack-dev/devstack
+			sudo cp /vagrant/ctr_local.conf devstack/local.conf 
+			
+			#win2linux
+			sed -i -e 's/\r//g' devstack/local.conf
+			
+			cp /vagrant/localrc.password devstack/.localrc.password 
 
 }
-
 
 
 setupNFS(){
@@ -79,18 +78,11 @@ setupNFS
 
 #clone_GIT
 
-
-#	sudo cp /vagrant/compute_local.conf devstack/local.conf 
-			
-		#win2linux
-#		sed -i -e 's/\r//g' devstack/local.conf
-#		cp /vagrant/localrc.password devstack/.localrc.password 
-
 #devstack/unstack.sh
-waitForStackFinished
 #devstack/stack.sh
 
 
+waitForStackFinished
 
 
 hostname=$(hostname)
@@ -100,3 +92,4 @@ sudo touch /nfs/openstack_share/$hostname.openstack_node_ready
 
 sudo systemctl restart devstack@n-cpu.service
 sudo systemctl status devstack@n-cpu.service
+#sudo journalctl -f --unit  devstack@n-cpu.service
