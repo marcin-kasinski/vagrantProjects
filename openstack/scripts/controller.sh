@@ -547,7 +547,7 @@ add_floating_ip $VM1   # Add a floating ip address to $VM1
 create_volume "30gb-vol" 30  # Allocate some storage space
 add_volume "30gb-vol"
 
-echo "setup magnum"
+#echo "setup magnum"
 
 #setupMagnum
 

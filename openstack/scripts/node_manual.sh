@@ -3,6 +3,12 @@
 
 IP=$1
 
+
+#DEV_BRANCH="stable/pike"
+DEV_BRANCH="stable/queens"
+#DEV_BRANCH="master"
+
+
 init(){
 
 			#sudo sed -i -r '/openstackmaster/ s/^(.*)$/#\1/g' /etc/hosts
@@ -24,15 +30,10 @@ init(){
 
 clone_GIT(){
 
-			git clone --branch stable/pike https://git.openstack.org/openstack-dev/devstack
-			sudo cp /vagrant/ctr_local.conf devstack/local.conf 
-			
-			#win2linux
-			sed -i -e 's/\r//g' devstack/local.conf
-			
-			cp /vagrant/localrc.password devstack/.localrc.password 
+			git clone --branch $DEV_BRANCH https://git.openstack.org/openstack-dev/devstack
 
 }
+
 
 
 setupNFS(){
@@ -71,15 +72,22 @@ waitForNFS(){
 }
 
 
-#init
+init
 
 waitForNFS
 setupNFS
 
-#clone_GIT
+clone_GIT
+
+
+	sudo cp /vagrant/compute_local.conf devstack/local.conf 
+			
+		#win2linux
+		sed -i -e 's/\r//g' devstack/local.conf
+		cp /vagrant/localrc.password devstack/.localrc.password 
 
 #devstack/unstack.sh
-#devstack/stack.sh
+devstack/stack.sh
 
 
 waitForStackFinished

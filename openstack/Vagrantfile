@@ -47,8 +47,8 @@ boxes = [
     },
     {
         :name => "node1",
-        :box => "najoy/openstack-pike-compute",
-#        :box => "ubuntu/xenial64",       
+#        :box => "najoy/openstack-pike-compute",
+        :box => "ubuntu/xenial64",       
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0002",
         :ip => "192.168.33.11",
