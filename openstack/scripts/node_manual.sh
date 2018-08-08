@@ -72,23 +72,23 @@ waitForNFS(){
 }
 
 
-init
+#init
 
 waitForNFS
 setupNFS
 
-clone_GIT
+#clone_GIT
 
 
-	sudo cp /vagrant/compute_local.conf devstack/local.conf 
+#	sudo cp /vagrant/compute_local.conf devstack/local.conf 
 			
 		#win2linux
-		sed -i -e 's/\r//g' devstack/local.conf
-		cp /vagrant/localrc.password devstack/.localrc.password 
+#		sed -i -e 's/\r//g' devstack/local.conf
+#		cp /vagrant/localrc.password devstack/.localrc.password 
 
 #devstack/unstack.sh
 waitForStackFinished
-devstack/stack.sh
+#devstack/stack.sh
 
 
 
