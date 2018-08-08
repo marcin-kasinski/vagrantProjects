@@ -87,10 +87,10 @@ clone_GIT
 		cp /vagrant/localrc.password devstack/.localrc.password 
 
 #devstack/unstack.sh
+waitForStackFinished
 devstack/stack.sh
 
 
-waitForStackFinished
 
 
 hostname=$(hostname)
