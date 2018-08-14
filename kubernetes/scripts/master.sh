@@ -174,6 +174,8 @@ echo Dashboard IP $DASHBOARDPODIP
       curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootMicroservice_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -     
       curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootWebdp_and_service.yaml?$(date +%s)"  | kubectl apply -f -     
       
+      
+      # https://github.com/kubernetes/dashboard/wiki/Creating-sample-user
 	  kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
 
       # ingress
