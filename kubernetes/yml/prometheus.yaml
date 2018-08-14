@@ -69,7 +69,6 @@ spec:
         volumeMounts:
         - name: config-volume-prometheus-yml
           mountPath: /etc/prometheus2
-          subPath: prometheus.yml
       volumes:
         - name: config-volume-prometheus-yml
           configMap:
