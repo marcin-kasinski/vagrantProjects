@@ -1,6 +1,6 @@
 kind: ConfigMap
 metadata:
-  name: logstash-config-prometheus.yml
+  name: prometheus-config-prometheus.yml
   namespace: default
 apiVersion: v1
 data:
@@ -66,6 +66,16 @@ spec:
           value: "mysql"
         - name: PMA_HOST
           value: "mysql"
+        volumeMounts:
+        - name: config-volume-prometheus-yml
+          mountPath: /etc/prometheus
+      volumes:
+        - name: config-volume-prometheus-yml
+          configMap:
+            # Provide the name of the ConfigMap containing the files you want
+            # to add to the container
+            name: prometheus-config-prometheus.yml	
+          
 ---
 apiVersion: v1
 kind: Service
