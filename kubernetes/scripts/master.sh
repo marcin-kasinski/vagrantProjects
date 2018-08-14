@@ -1,5 +1,5 @@
 
-showDasboardIP(){
+showDashboardIP(){
 
 while ! kubectl get po -n kube-system -o wide | grep kubernetes-dashboard | grep Running ; do   echo "waiting for dashboard IP..." ; sleep 20 ; done
 
@@ -8,7 +8,14 @@ DASHBOARDPODIP=`echo $DASHBOARDPODIP  | cut -d " " -f 6`
 
 echo Dashboard IP $DASHBOARDPODIP
 
+
+      echo "DashboardToken ..."
+      
+      kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep kubernetes-dashboard | awk '{print $1}')
+
+
 }
+
 
   echo I am provisioning...
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
@@ -158,6 +165,9 @@ echo Dashboard IP $DASHBOARDPODIP
 
 
           #------------------------------- kafka init ------------------------------- 
+          
+      curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/prometheus.yaml?$(date +%s)"  | kubectl apply -f -     
+
 
       curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootRabbitMQListener_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -     
       curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootKafkaListener_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -     
@@ -199,5 +209,5 @@ echo Dashboard IP $DASHBOARDPODIP
 
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
            
-      showDasboardIP
-       
+      showDashboardIP
+             

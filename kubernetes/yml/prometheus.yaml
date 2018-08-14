@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-deployment
+  labels:
+    app: prometheus  
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      containers:
+      - name: prometheus
+        image: quay.io/prometheus/prometheus
+        ports:
+        - name: prometheus-port
+          containerPort: 9090
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "secret"
+        - name: MYSQL_HOST
+          value: "mysql"
+        - name: PMA_HOST
+          value: "mysql"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+spec:
+  type: NodePort
+  ports:
+  - port: 9090
+    nodePort: 30909
+    targetPort: 9090
+    protocol: TCP
+    name: http
+  selector:
+    app: prometheus
+---
+# An Ingress with 2 hosts and 3 endpoints
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: prometheus-ingress
+spec:
+  rules:
+  - host: prometheus
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: prometheus
+          servicePort: 9090
