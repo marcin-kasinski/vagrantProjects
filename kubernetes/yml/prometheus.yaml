@@ -68,7 +68,8 @@ spec:
           value: "mysql"
         volumeMounts:
         - name: config-volume-prometheus-yml
-          mountPath: /etc/prometheus/
+          mountPath: /etc/prometheus/prometheus.yml
+          subPath: /etc/prometheus/prometheus.yml
       volumes:
         - name: config-volume-prometheus-yml
           configMap:
