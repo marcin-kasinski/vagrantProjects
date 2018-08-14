@@ -11,8 +11,8 @@ DEV_BRANCH="stable/queens"
 KEYPAIR=mykey
 VM1=myvm1
 VM2=myvm2
-#IMAGE="xenial-server-cloudimg-amd64"
-IMAGE="cirros-0.3.5-x86_64-disk"
+IMAGE="xenial-server-cloudimg-amd64"
+#IMAGE="cirros-0.3.5-x86_64-disk"
 
 FLAVOR="m1.mkflavor"
 NET1=mynetwork1
@@ -482,7 +482,7 @@ source devstack/openrc admin admin
 openstack flavor create --public m1.mkflavor --id auto --ram 8192 --disk 7 --vcpus 1 --rxtx-factor 1
 
 
-#addImage xenial-server-cloudimg-amd64 "http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img"
+addImage xenial-server-cloudimg-amd64 "http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img"
 
 create_security_group SSHandICMP
 
@@ -532,7 +532,7 @@ configureExternalNetInterface enp0s9
  set_router_gateway $ROUTER
  create_security_group $SG
 
-# create_az 
+ create_az 
  allocate_floating_ip
 
 

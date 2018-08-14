@@ -8,8 +8,8 @@ $initscript = <<SCRIPT
 		IP=$1
 		SCRIPT=$2
 	
-		echo $IP
-		echo $SCRIPT
+		echo "IP:".$IP
+		echo "skrypt:".$SCRIPT
 	
 		
 		cp /vagrant/scripts/$SCRIPT $SCRIPT
@@ -38,8 +38,8 @@ boxes = [
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0001",
         :ip => "192.168.33.10",
-#        :mem => "24576",
-        :mem => "15360",
+#        :mem => "30720",
+        :mem => "18432",
 #        :mem => "8192",
         :cpu => "2",
         :lvm_enable => true,
@@ -52,8 +52,8 @@ boxes = [
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0002",
         :ip => "192.168.33.11",
-#        :mem => "24576",
-        :mem => "15360",
+#        :mem => "30720",
+        :mem => "18432",
 #        :mem => "8192",
         :cpu => "1",
         :lvm_enable => false,
@@ -69,11 +69,12 @@ boxes = [
         :mac=> "5CA1AB1E0003",
         :ip => "192.168.33.12",
 #        :mem => "20480",
-        :mem => "15360",
+        :mem => "18432",
 #        :mem => "8192",
+#        :mem => "4096",
         :cpu => "1",
         :lvm_enable => false,
-        :initscript => "node_manual.sh"
+        :initscript => "node_from_package.sh"
         
         
     }
