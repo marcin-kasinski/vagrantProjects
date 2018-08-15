@@ -37,7 +37,7 @@ data:
       - job_name: 'SpringBootMicroservice'
         metrics_path: /actuator/prometheus
         static_configs:
-        - targets: ['SpringBootMicroservice:9191'] 
+        - targets: ['http://springbootmicroservice:9191'] 
 ---
 apiVersion: apps/v1
 kind: Deployment
