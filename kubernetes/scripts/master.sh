@@ -72,17 +72,18 @@ echo Dashboard IP $DASHBOARDPODIP
        sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
        sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
-
-
 	  mkdir -p /home/vagrant/.kube
       sudo cp -i /etc/kubernetes/admin.conf /home/vagrant/.kube/config
       sudo chown vagrant:vagrant /home/vagrant/.kube/config
 
-
-
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>CREATING CONF"
 
       kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+      # https://github.com/kubernetes/dashboard/wiki/Creating-sample-user
+	  kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+
+      showDashboardIP
 
       # moje aplikacje
       curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/jenkins_dp_and_service.yaml | kubectl apply -f -     
@@ -173,10 +174,6 @@ echo Dashboard IP $DASHBOARDPODIP
       curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootKafkaListener_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -     
       curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootMicroservice_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -     
       curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootWebdp_and_service.yaml?$(date +%s)"  | kubectl apply -f -     
-      
-      
-      # https://github.com/kubernetes/dashboard/wiki/Creating-sample-user
-	  kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
 
       # ingress
       curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/namespace.yaml | kubectl apply -f -
