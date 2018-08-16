@@ -1,4 +1,23 @@
 
+
+addGrafanaDatasource(){
+
+
+GRAFANAPODNAME="monitoring-grafana"
+
+while ! kubectl get po -n kube-system -o wide | grep $GRAFANAPODNAME | grep Running ; do   echo "waiting for Grafana IP..." ; sleep 20 ; done
+
+GRAFANAPODIP=`kubectl get po -n kube-system -o wide | grep $GRAFANAPODNAME | grep Running`
+GRAFANAPODIP=`echo $GRAFANAPODIP | cut -d " " -f 6`
+
+echo GRAFANA IP $GRAFANAPODIP
+
+curl -XPOST --data @/vagrant/conf/grafanaprometheusdatasource.json -H "Content-Type:application/json"  http://$GRAFANAPODIP:3000/api/datasources
+
+}
+
+
+
 showDashboardIP(){
 
 while ! kubectl get po -n kube-system -o wide | grep kubernetes-dashboard | grep Running ; do   echo "waiting for dashboard IP..." ; sleep 20 ; done
