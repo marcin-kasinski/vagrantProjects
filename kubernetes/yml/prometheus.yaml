@@ -47,7 +47,7 @@ data:
         - api_servers:
           - 'https://kubernetes.default.svc'
           in_cluster: true
-          role: apiserver
+          role: endpoints
   
 ---
 apiVersion: apps/v1
