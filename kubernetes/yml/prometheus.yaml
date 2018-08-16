@@ -40,7 +40,7 @@ data:
         - targets: ['springbootmicroservice:9191'] 
       - job_name: 'kubernetes-apiservers'
         kubernetes_sd_configs:
-          role: endpoints
+        - role: endpoints
         scheme: https
 ---
 apiVersion: apps/v1
