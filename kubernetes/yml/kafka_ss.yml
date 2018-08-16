@@ -11,10 +11,6 @@ spec:
     nodePort: 30092
     targetPort: 9092
     name: client
-  - port: 8080
-    nodePort: 30088
-    targetPort: 8080
-    name: jmx_agent
   selector:
     app: kafka
 ---
@@ -28,6 +24,10 @@ spec:
   ports:
   - port: 9092
     name: client
+  - port: 8080
+    nodePort: 30088
+    targetPort: 8080
+    name: jmxagent
   clusterIP: None
   selector:
     app: kafka
