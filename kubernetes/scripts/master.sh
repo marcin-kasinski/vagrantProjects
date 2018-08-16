@@ -3,11 +3,11 @@
 configureGrafana(){
 
 
-GRAFANAPODNAME="monitoring-grafana"
+GRAFANAPODNAME="grafana"
 
-while ! kubectl get po -n kube-system -o wide | grep $GRAFANAPODNAME | grep Running ; do   echo "waiting for Grafana IP..." ; sleep 20 ; done
+while ! kubectl get po -n default -o wide | grep $GRAFANAPODNAME | grep Running ; do   echo "waiting for Grafana IP..." ; sleep 20 ; done
 
-GRAFANAPODIP=`kubectl get po -n kube-system -o wide | grep $GRAFANAPODNAME | grep Running`
+GRAFANAPODIP=`kubectl get po -n default -o wide | grep $GRAFANAPODNAME | grep Running`
 GRAFANAPODIP=`echo $GRAFANAPODIP | cut -d " " -f 6`
 
 echo GRAFANA IP $GRAFANAPODIP
@@ -15,9 +15,9 @@ echo GRAFANA IP $GRAFANAPODIP
       while ! nc -w 20 -z $GRAFANAPODIP 3000; do   echo "waiting grafana to launch ..." ; sleep 20 ; done
 
 #add datasource
-curl -XPOST --data @/vagrant/conf/grafanaprometheusdatasource.json -H "Content-Type:application/json"  http://$GRAFANAPODIP:3000/api/datasources
+curl -XPOST --data @/vagrant/conf/grafanaprometheusdatasource.json -H "Content-Type:application/json"  http://admin:admin@$GRAFANAPODIP:3000/api/datasources
 #add dashboard
-curl -XPOST --data @/vagrant/conf/grafanaprometheusdatasource.json -H "Content-Type:application/json"  http://$GRAFANAPODIP:3000/api/dashboards/db
+curl -XPOST --data @/vagrant/conf/grafana_dashboard_kafka_overview.json -H "Content-Type:application/json"  http://admin:admin@$GRAFANAPODIP:3000/api/dashboards/db
 
 
 }
@@ -213,7 +213,7 @@ echo Dashboard IP $DASHBOARDPODIP
       curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/with-rbac.yaml | kubectl apply -f -
       
       # heapster
-      curl https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/grafana.yaml | kubectl apply -f -
+      #curl https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/grafana.yaml | kubectl apply -f -
       curl https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/influxdb.yaml | kubectl apply -f -
       curl https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/heapster.yaml | kubectl apply -f -
       
