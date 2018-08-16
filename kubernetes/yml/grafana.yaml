@@ -39,7 +39,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: monitoring-grafana-ingress
-  namespace: kube-system
+  namespace: default
 spec:
   rules:
   - host: grafana
@@ -47,5 +47,5 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: monitoring-grafana
+          serviceName: grafana
           servicePort: 3000
