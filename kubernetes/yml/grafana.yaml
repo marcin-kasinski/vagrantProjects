@@ -8,7 +8,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: grafana    
+      app: grafana
   template:
     metadata:
       labels:
@@ -18,8 +18,15 @@ spec:
       - name: grafana
         image: grafana/grafana
         ports:
-        - name: http
+        - name: grafana-port
           containerPort: 3000
+        env:
+        - name: XXX
+          value: "secret"
+        - name: XXX2
+          value: "mysql"
+        - name: XXX3
+          value: "mysql"
 ---
 apiVersion: v1
 kind: Service
@@ -29,17 +36,18 @@ spec:
   type: NodePort
   ports:
   - port: 3000
+    nodePort: 30333
     targetPort: 3000
     protocol: TCP
     name: http
   selector:
     app: grafana
 ---
+# An Ingress with 2 hosts and 3 endpoints
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: grafana-ingress
-  namespace: default
 spec:
   rules:
   - host: grafana
