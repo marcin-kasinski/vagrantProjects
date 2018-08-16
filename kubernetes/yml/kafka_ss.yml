@@ -47,6 +47,11 @@ spec:
     metadata:
       labels:
         app: kafka
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/scheme: "http"
+        prometheus.io/path: "/"
+        prometheus.io/port: "8080"          
     spec:
       containers:
       - name: kafka
