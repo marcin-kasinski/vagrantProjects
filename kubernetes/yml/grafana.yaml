@@ -38,7 +38,7 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: monitoring-grafana-ingress
+  name: grafana-ingress
   namespace: default
 spec:
   rules:
