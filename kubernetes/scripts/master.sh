@@ -168,7 +168,7 @@ echo Dashboard IP $DASHBOARDPODIP
           #------------------------------- kafka init ------------------------------- 
           
           #moje
-      #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/prometheus.yaml?$(date +%s)"  | kubectl apply -f -     
+      curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/prometheus.yaml?$(date +%s)"  | kubectl apply -f -     
 
 		#prometheus-operator
 	  #curl "https://raw.githubusercontent.com/coreos/prometheus-operator/master/bundle.yaml?$(date +%s)"  | kubectl apply -f -     
