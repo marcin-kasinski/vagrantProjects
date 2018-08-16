@@ -47,6 +47,8 @@ spec:
     metadata:
       labels:
         app: kafka
+        kubernetes.io/name: "kafka"
+        tier: backend
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/scheme: "http"
