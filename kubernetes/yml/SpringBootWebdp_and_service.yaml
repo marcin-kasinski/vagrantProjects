@@ -2,11 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: springbootweb-deployment
-  annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/scheme: "http"
-    prometheus.io/path: "/actuator/prometheus"
-    prometheus.io/port: "7070"  
 spec:
   replicas: 1
   selector:
@@ -16,6 +11,11 @@ spec:
     metadata:
       labels:
         app: springbootweb
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/scheme: "http"
+      prometheus.io/path: "/actuator/prometheus"
+      prometheus.io/port: "7070"  
     spec:
       containers:
       - name: springbootweb
