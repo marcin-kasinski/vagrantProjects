@@ -229,5 +229,6 @@ echo Dashboard IP $DASHBOARDPODIP
 
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
            
+      addGrafanaDatasource     
       showDashboardIP
              
