@@ -1,6 +1,6 @@
 
 
-addGrafanaDatasource(){
+configureGrafana(){
 
 
 GRAFANAPODNAME="monitoring-grafana"
@@ -12,7 +12,13 @@ GRAFANAPODIP=`echo $GRAFANAPODIP | cut -d " " -f 6`
 
 echo GRAFANA IP $GRAFANAPODIP
 
+      while ! nc -w 20 -z $MYSQLPODIP 3000; do   echo "waiting grafana to launch ..." ; sleep 20 ; done
+
+#add datasource
 curl -XPOST --data @/vagrant/conf/grafanaprometheusdatasource.json -H "Content-Type:application/json"  http://$GRAFANAPODIP:3000/api/datasources
+#add dashboard
+curl -XPOST --data @/vagrant/conf/grafanaprometheusdatasource.json -H "Content-Type:application/json"  http://$GRAFANAPODIP:3000/api/dashboards/db
+
 
 }
 
@@ -229,6 +235,6 @@ echo Dashboard IP $DASHBOARDPODIP
 
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
            
-      addGrafanaDatasource     
+      configureGrafana
       showDashboardIP
              
