@@ -5,7 +5,7 @@ metadata:
   namespace: kube-system
 spec:
   rules:
-  - host: monitoring-grafana
+  - host: grafana
     http:
       paths:
       - path: /
