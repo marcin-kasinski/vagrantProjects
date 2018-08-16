@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: springbootmicroservice-deployment
@@ -11,6 +11,11 @@ spec:
     metadata:
       labels:
         app: springbootmicroservice
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/scheme: "http"
+        prometheus.io/path: "/actuator/prometheus"
+        prometheus.io/port: "9191"        
     spec:
       initContainers:
       - name: init-springbootmicroservice-monitoring
