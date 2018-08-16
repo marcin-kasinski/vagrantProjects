@@ -1,3 +1,4 @@
+#http://prometheus.default.svc.cluster.local:9090
 kind: ConfigMap
 metadata:
   name: prometheus-config-prometheus.yml
