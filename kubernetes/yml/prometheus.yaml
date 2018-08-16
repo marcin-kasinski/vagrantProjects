@@ -38,6 +38,17 @@ data:
         metrics_path: /actuator/prometheus
         static_configs:
         - targets: ['springbootmicroservice:9191'] 
+      - job_name: 'kubernetes-cluster'
+        scheme: https
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        kubernetes_sd_configs:
+        - api_servers:
+          - 'https://kubernetes.default.svc'
+          in_cluster: true
+          role: apiserver
+  
 ---
 apiVersion: apps/v1
 kind: Deployment
