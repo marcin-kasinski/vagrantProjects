@@ -12,6 +12,8 @@ spec:
     name: leader-election
   - port: 2181
     name: client    
+  - port: 8080
+    name: jmxagent
   clusterIP: None
   selector:
     app: zookeeper
