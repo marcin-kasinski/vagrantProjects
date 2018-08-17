@@ -128,8 +128,8 @@ spec:
         volumeMounts:
 #        - name: config-volume-logstash-yml
 #          mountPath: /usr/share/logstash/config                    
-#        - name: config-volume-logstash-conf
-#          mountPath: /usr/share/logstash/pipeline                    
+        - name: config-volume-logstash-conf
+          mountPath: /usr/share/logstash/pipeline                    
       volumes:
         - name: config-volume-logstash-conf
           configMap:
