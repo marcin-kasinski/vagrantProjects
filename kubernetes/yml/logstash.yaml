@@ -114,8 +114,8 @@ spec:
     spec:
       containers:
       - name: logstash
-#        image: docker.elastic.co/logstash/logstash:5.2.2
-        image: docker.elastic.co/logstash/logstash:6.3.2
+        image: docker.elastic.co/logstash/logstash:5.2.2
+#        image: docker.elastic.co/logstash/logstash:6.3.2
         imagePullPolicy: Always
         ports:
         - name: logstash-port
