@@ -127,7 +127,7 @@ echo Dashboard IP $DASHBOARDPODIP
 	  #curl 'elasticsearch-logging:9200/_cat/indices?v'
       curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/elasticsearch.yaml | kubectl apply -f -
 
-      curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/logstash.yml | kubectl apply -f -
+      curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/logstash.yaml | kubectl apply -f -
 
       curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kibana.yaml | kubectl apply -f -
 
