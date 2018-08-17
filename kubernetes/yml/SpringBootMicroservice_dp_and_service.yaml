@@ -31,6 +31,8 @@ spec:
         env:
         - name: SPRING_PROFILE
           value: "prd"
+        - name: KAFKA_BROKER_NODES
+          value: "zk-0.zk-hs.default.svc.cluster.local,zk-1.zk-hs.default.svc.cluster.local,zk-2.zk-hs.default.svc.cluster.local"
 ---
 apiVersion: v1
 kind: Service
