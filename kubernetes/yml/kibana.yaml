@@ -21,8 +21,8 @@ spec:
       - name: kibana-logging
 
         # official image without logtrail:
-        image: docker.elastic.co/kibana/kibana:5.5.1
-#        image: docker.elastic.co/kibana/kibana:6.3.2
+#        image: docker.elastic.co/kibana/kibana:5.5.1
+        image: docker.elastic.co/kibana/kibana:6.3.2
 
         # image with logtrail
         # image: wardviaene/kibana-logtrail:5.5.1
