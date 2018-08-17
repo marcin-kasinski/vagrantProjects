@@ -73,8 +73,8 @@ spec:
     spec:
       serviceAccountName: elasticsearch-logging
       containers:
-#      - image: gcr.io/google-containers/elasticsearch:v5.5.1-1
-      - image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
+      - image: gcr.io/google-containers/elasticsearch:v5.5.1-1
+#      - image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
         name: elasticsearch-logging
         resources:
           # need more cpu upon initialization, therefore burstable class
