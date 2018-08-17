@@ -93,8 +93,9 @@ metadata:
 apiVersion: v1
 data:    
   logstash.yml: |-   
-    xpack.monitoring.enabled: false
-    #xpack.monitoring.elasticsearch.url: http://elasticsearch-logging:9200
+    #xpack.monitoring.enabled: false
+    http.host: "0.0.0.0"
+    xpack.monitoring.elasticsearch.url: http://elasticsearch-logging:9200
     #xpack.monitoring.elasticsearch.username: elastic
     #xpack.monitoring.elasticsearch.password: changeme
 ---
@@ -126,8 +127,8 @@ spec:
         - name: KAFKA_BROKER_NODES
           value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"          
         volumeMounts:
-#        - name: config-volume-logstash-yml
-#          mountPath: /usr/share/logstash/config                    
+        - name: config-volume-logstash-yml
+          mountPath: /usr/share/logstash/config                    
         - name: config-volume-logstash-conf
           mountPath: /usr/share/logstash/pipeline                    
       volumes:
