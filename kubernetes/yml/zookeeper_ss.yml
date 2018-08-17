@@ -33,6 +33,13 @@ spec:
     metadata:
       labels:
         app: zookeeper
+        kubernetes.io/name: "zookeeper"
+        tier: backend
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/scheme: "http"
+        prometheus.io/path: "/"
+        prometheus.io/port: "8080"
     spec:
       containers:
       - name: zookeeper
