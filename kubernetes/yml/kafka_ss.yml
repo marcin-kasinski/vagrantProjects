@@ -62,9 +62,14 @@ spec:
         ports:
         - containerPort: 9092
           name: client
+        volumeMounts:
+        - mountPath: /tmp/kafka-logs
+          name: kafka-logs   
         env:
         - name: "ZOOKEEPER_CONNECT"
           value: "zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181"
         - name: "BROKER_NODES"
           value: "1=kafka-0.k-hs.default.svc.cluster.local;2=kafka-1.k-hs.default.svc.cluster.local;3=kafka-2.k-hs.default.svc.cluster.local"
-          
+        volumes:
+        - name: kafka-logs
+          emptyDir: {}    
