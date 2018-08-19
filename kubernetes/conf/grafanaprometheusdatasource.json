@@ -5,7 +5,7 @@
     "type": "prometheus",
     "typeLogoUrl": "",
     "access": "proxy",
-    "url": "http://prometheus.default.svc.cluster.local:9090",
+    "url": "http://prometheus-hs.default.svc.cluster.local:9090",
     "password": "",
     "user": "",
     "database": "",
