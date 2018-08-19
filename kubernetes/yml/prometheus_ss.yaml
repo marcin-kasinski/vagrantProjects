@@ -262,5 +262,5 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: prometheus
+          serviceName: prometheusxyz
           servicePort: 9090
