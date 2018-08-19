@@ -234,6 +234,22 @@ spec:
   selector:
     app: prometheus
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-cs
+  labels:
+    app: prometheus
+spec:
+  type: NodePort
+  ports:
+  - port: 9090
+#    nodePort: 30092
+    targetPort: 9090
+    name: client
+  selector:
+    app: prometheus
+---
 # An Ingress with 2 hosts and 3 endpoints
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -241,7 +257,7 @@ metadata:
   name: prometheus-ingress
 spec:
   rules:
-  - host: prometheus-hs
+  - host: prometheus-cs
     http:
       paths:
       - path: /
