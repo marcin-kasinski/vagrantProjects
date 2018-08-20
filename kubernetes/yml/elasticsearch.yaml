@@ -58,7 +58,7 @@ metadata:
     kubernetes.io/cluster-service: "true"
     addonmanager.kubernetes.io/mode: Reconcile
 spec:
-  serviceName: elasticsearch-logging
+  serviceName: elasticsearch-logging-hs
   replicas: 3
   selector:
     matchLabels:
@@ -157,7 +157,27 @@ spec:
     targetPort: db
   selector:
     k8s-app: elasticsearch-logging
+    
+    
 ---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch-logging-hs
+  labels:
+    app: elasticsearch-logging
+spec:
+  ports:
+  - port: 9200
+    name: a
+  - port: 9300
+    name: b
+  clusterIP: None
+  selector:
+    app: elasticsearch-logging
+---
+
 # An Ingress with 2 hosts and 3 endpoints
 apiVersion: extensions/v1beta1
 kind: Ingress
