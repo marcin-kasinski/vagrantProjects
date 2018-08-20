@@ -143,7 +143,23 @@ spec:
   ports:
   - port: 9200
     protocol: TCP
-    nodePort: 31200    
+    #nodePort: 31200    
     targetPort: db
   selector:
     k8s-app: elasticsearch-logging
+---
+# An Ingress with 2 hosts and 3 endpoints
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: elasticsearch-logging-ingress
+spec:
+  rules:
+  - host: elasticsearch
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: elasticsearch-logging
+          servicePort: 9200
+  
