@@ -6,7 +6,7 @@ metadata:
     app: springbootmicroservice  
 spec:
   serviceName: "springbootmicroservice-hs"
-  replicas: 3
+  replicas: 1
   updateStrategy:
     type: RollingUpdate
   podManagementPolicy: Parallel  
@@ -39,7 +39,8 @@ spec:
           value: "prd"
         - name: KAFKA_BROKER_NODES
           value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"
----
+        - name: JAVA_OPTS
+          value: "-Dlogging.level.zipkin=DEBUG -Dlogging.level.zipkin2=DEBUG -Dlogging.level.=DEBUG -Dlogging.level.root=DEBUG"
 ---
 apiVersion: v1
 kind: Service
