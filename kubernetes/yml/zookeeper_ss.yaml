@@ -54,7 +54,16 @@ spec:
           name: server
         - containerPort: 3888
           name: leader-election
+        volumeMounts:
+        - mountPath: /datalog/zookeeper
+          name: zookeeper-logs
+        - mountPath: /data/zookeeper
+          name: zookeeper-data
         env:
         - name: "ZOOKEEPER_NODES"
           value: "server.1=zk-0.zk-hs.default.svc.cluster.local:2888:3888;server.2=zk-1.zk-hs.default.svc.cluster.local:2888:3888;server.3=zk-2.zk-hs.default.svc.cluster.local:2888:3888"
-          
+      volumes:
+      - name: zookeeper-logs
+        emptyDir: {}
+      - name: zookeeper-data
+        emptyDir: {}        
