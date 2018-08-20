@@ -65,11 +65,6 @@ spec:
         app: elasticsearch-logging
         kubernetes.io/name: "elasticsearch-logging"
         tier: backend
-      annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/scheme: "http"
-        prometheus.io/path: "/"
-        prometheus.io/port: "8080"
     spec:
       containers:
 #      - image: gcr.io/google-containers/elasticsearch:v5.5.1-1
@@ -85,7 +80,7 @@ spec:
             cpu: 100m
         ports:
         - containerPort: 9200
-          name: db
+          name: web
           protocol: TCP
         - containerPort: 9300
           name: transport
@@ -159,8 +154,8 @@ spec:
   ports:
   - port: 9200
     protocol: TCP
-    #nodePort: 31200    
-    targetPort: db
+  - port: 9300
+    protocol: TCP
   selector:
     k8s-app: elasticsearch-logging
 ---
