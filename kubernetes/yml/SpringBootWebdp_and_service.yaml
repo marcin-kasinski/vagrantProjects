@@ -28,7 +28,7 @@ spec:
         - name: SPRING_PROFILE
           value: "prd"          
         - name: APP_AJAX_URL
-          value: "http://nginx:30080/api/get-by-email?email=ajax@ajax.com"          
+          value: "http://springbootmicroservice:30080/api/get-by-email?email=ajax@ajax.com"          
         - name: APP_REST_URL
           value: "http://springbootmicroservice-cs.default.svc.cluster.local:9191/api/get-by-email?email=x@x.com"          
 ---
