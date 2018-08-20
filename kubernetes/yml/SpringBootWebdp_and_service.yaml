@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: springbootweb-deployment
+  name: springbootweb
 spec:
   replicas: 1
   selector:
