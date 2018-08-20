@@ -11,10 +11,15 @@ spec:
     spec:
       containers:
       - name: springbootzipkin
-        image: marcinkasinski/springbootzipkin
+#        image: marcinkasinski/springbootzipkin
+        image: openzipkin/zipkin        
         ports:
         - name: web-port
-          containerPort: 7777
+          containerPort: 9411
+        env:
+        - name: JAVA_OPTS
+          value: "-Dlogging.level.zipkin=DEBUG -Dlogging.level.zipkin2=DEBUG"          
+          
 ---
 apiVersion: v1
 kind: Service
@@ -24,8 +29,7 @@ spec:
   type: NodePort
   ports:
   - port: 7777
-    nodePort: 30777
-    targetPort: 7777
+    targetPort: 9411
     protocol: TCP
     name: http
   selector:
