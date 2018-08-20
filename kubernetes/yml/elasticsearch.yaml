@@ -107,7 +107,7 @@ spec:
         #- name: CLUSTER_NAME
         #  value: myesdb
         - name: "discovery.zen.ping.unicast.hosts"
-          value: "elasticsearch-logging-hs"          
+          value: "elasticsearch-logging"          
         - name: NUMBER_OF_MASTERS
           value: "2"
         - name: NODE_MASTER
