@@ -170,9 +170,9 @@ metadata:
 spec:
   ports:
   - port: 9200
-    name: a
+    name: web
   - port: 9300
-    name: b
+    name: transport
   clusterIP: None
   selector:
     app: elasticsearch-logging
