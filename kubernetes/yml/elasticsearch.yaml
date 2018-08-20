@@ -106,8 +106,8 @@ spec:
         #  value: myesdb
         #- name: CLUSTER_NAME
         #  value: myesdb
-        #- name: "discovery.zen.ping.unicast.hosts"
-        #  value: "'elasticsearch-logging-0.elasticsearch-logging-hs.default.svc.cluster.local','elasticsearch-logging-1.elasticsearch-logging-hs.default.svc.cluster.local','elasticsearch-logging-2.elasticsearch-logging-hs.default.svc.cluster.local','elasticsearch-logging-2','elasticsearch-data-0','elasticsearch-data-1','elasticsearch-data-2'"          
+        - name: "discovery.zen.ping.unicast.hosts"
+          value: "elasticsearch-logging-hs"          
         - name: NUMBER_OF_MASTERS
           value: "2"
         - name: NODE_MASTER
