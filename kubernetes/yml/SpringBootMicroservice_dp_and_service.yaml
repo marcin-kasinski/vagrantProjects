@@ -59,7 +59,7 @@ metadata:
     ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-  - host: springbootmicroserviceingress
+  - host: springbootmicroservice
     http:
       paths:
       - path: /
