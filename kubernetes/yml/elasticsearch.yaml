@@ -51,27 +51,27 @@ apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
   name: elasticsearch-logging
-  namespace: default
-  labels:
-    k8s-app: elasticsearch-logging
-    version: v5.5.1
-    kubernetes.io/cluster-service: "true"
-    addonmanager.kubernetes.io/mode: Reconcile
 spec:
   serviceName: elasticsearch-logging-hs
   replicas: 3
+  updateStrategy:
+    type: RollingUpdate
+  podManagementPolicy: Parallel
   selector:
     matchLabels:
-      k8s-app: elasticsearch-logging
-      version: v5.5.1
+      app: elasticsearch-logging
   template:
     metadata:
       labels:
-        k8s-app: elasticsearch-logging
-        version: v5.5.1
-        kubernetes.io/cluster-service: "true"
+        app: elasticsearch-logging
+        kubernetes.io/name: "elasticsearch-logging"
+        tier: backend
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/scheme: "http"
+        prometheus.io/path: "/"
+        prometheus.io/port: "8080"
     spec:
-      serviceAccountName: elasticsearch-logging
       containers:
 #      - image: gcr.io/google-containers/elasticsearch:v5.5.1-1
       - image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
