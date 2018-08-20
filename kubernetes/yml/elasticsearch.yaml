@@ -159,6 +159,7 @@ spec:
     protocol: TCP
     name: transport
   selector:
+    app: elasticsearch-logging
     k8s-app: elasticsearch-logging
 ---
 apiVersion: v1
