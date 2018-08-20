@@ -37,8 +37,6 @@ spec:
         env:
         - name: SPRING_PROFILE
           value: "prd"
-        - name: APP_REST_URL
-          value: "http://springbootmicroservice-cs:9191/api/get-by-email?email=x@x.com"
         - name: KAFKA_BROKER_NODES
           value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"
 ---
