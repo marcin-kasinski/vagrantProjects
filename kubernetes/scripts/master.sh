@@ -12,7 +12,7 @@ NGINXPODIP=`echo $NGINXPODIP | cut -d " " -f 6`
 while ! nc -w 20 -z $NGINXPODIP 80; do   echo "waiting nginx to launch ..." ; sleep 20 ; done
 
 
-echo "Adresy us³ug"
+echo "Adresy uslug"
 
 curl $NGINXPODIP | grep "<a"
 }
