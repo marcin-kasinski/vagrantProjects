@@ -90,17 +90,11 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        - name: NODE_NAME
+        - name: "node.name"
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
-        #- name: "node.name"
-        #  valueFrom:
-        #    fieldRef:
-        #      fieldPath: metadata.name
-        #- name: "cluster.name"
-        #  value: myesdb
-        - name: CLUSTER_NAME
+        - name: "cluster.name"
           value: myesdb
         - name: network.host
           value: "0.0.0.0"
@@ -110,13 +104,9 @@ spec:
           value: "elasticsearch-logging-hs"          
         - name: NUMBER_OF_MASTERS
           value: "2"
-        - name: NODE_MASTER
-          value: "true"
         - name: "node.master"
           value: "true"
         - name: NODE_INGEST
-          value: "false"
-        - name: NODE_DATA
           value: "false"
         - name: "node.data"
           value: "false"
