@@ -44,7 +44,7 @@ data:
     	
     	
       upstream myproject {
-    	server springbootmicroservice:9191;
+    	server springbootmicroservice-cs:9191;
       }
 
       server {
