@@ -109,7 +109,7 @@ spec:
         - name: network.host
           value: "0.0.0.0"
         - name: bootstrap.memory_lock
-          value: false
+          value: "false"
         - name: "discovery.zen.ping.unicast.hosts"
           value: "elasticsearch-logging-hs"          
         - name: NUMBER_OF_MASTERS
