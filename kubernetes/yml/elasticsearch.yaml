@@ -104,10 +104,14 @@ spec:
               fieldPath: status.podIP
         #- name: "cluster.name"
         #  value: myesdb
-        #- name: CLUSTER_NAME
-        #  value: myesdb
+        - name: CLUSTER_NAME
+          value: myesdb
+        - name: network.host
+          value: "0.0.0.0"
+        - name: bootstrap.memory_lock
+          value: false
         - name: "discovery.zen.ping.unicast.hosts"
-          value: "elasticsearch-logging"          
+          value: "elasticsearch-logging-hs"          
         - name: NUMBER_OF_MASTERS
           value: "2"
         - name: NODE_MASTER
