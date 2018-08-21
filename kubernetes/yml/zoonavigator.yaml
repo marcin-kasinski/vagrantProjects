@@ -15,14 +15,26 @@ spec:
         app: zoonavigator
     spec:
       containers:
-      - name: zoonavigator
+      - name: zoonavigator-web
         image: elkozmon/zoonavigator-web:latest
         ports:
-        - name: zoonavigator
+        - name: zoonavigator-web
           containerPort: 7070
         env:
-        - name: ZK_HOSTS
-          value: "zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181"
+        - name: WEB_HTTP_PORT
+          value: "7070"
+        - name: API_HOST
+          value: "zoonavigator"
+        - name: API_PORT
+          value: "9000"
+      - name: zoonavigator-api
+        image: elkozmon/zoonavigator-api:latest
+        ports:
+        - name: zoonavigator-api
+          containerPort: 9000
+        env:
+        - name: API_HTTP_PORT
+          value: "9000"
 ---
 apiVersion: v1
 kind: Service
