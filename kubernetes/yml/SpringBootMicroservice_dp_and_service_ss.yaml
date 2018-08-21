@@ -66,6 +66,7 @@ metadata:
 spec:
   ports:
   - port: 9191
+    targetPort: 9191
     name: server
   clusterIP: None
   selector:
