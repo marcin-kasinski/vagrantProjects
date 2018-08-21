@@ -18,7 +18,7 @@ spec:
       - name: zoonavigator-web
         image: elkozmon/zoonavigator-web:latest
         ports:
-        - name: zoonavigator-web
+        - name: zoonav-web
           containerPort: 7070
         env:
         - name: WEB_HTTP_PORT
@@ -30,7 +30,7 @@ spec:
       - name: zoonavigator-api
         image: elkozmon/zoonavigator-api:latest
         ports:
-        - name: zoonavigator-api
+        - name: zoonav-api
           containerPort: 9000
         env:
         - name: API_HTTP_PORT
