@@ -53,7 +53,7 @@
   "gnetId": 266,
   "graphTooltip": 1,
   "id": null,
-  "iteration": 1534842358430,
+  "iteration": 1534852185066,
   "links": [],
   "panels": [
     {
@@ -79,7 +79,7 @@
         "rgba(255, 166, 0, 0.89)",
         "rgba(245, 54, 54, 0.9)"
       ],
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "editable": true,
       "error": false,
       "format": "none",
@@ -172,7 +172,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "fill": 10,
       "gridPos": {
         "h": 3,
@@ -303,7 +303,7 @@
         "rgba(237, 129, 40, 0.89)",
         "rgba(50, 172, 45, 0.97)"
       ],
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "editable": true,
       "error": false,
       "format": "none",
@@ -384,7 +384,7 @@
         "rgba(237, 129, 40, 0.89)",
         "rgba(50, 172, 45, 0.97)"
       ],
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "editable": true,
       "error": false,
       "format": "none",
@@ -465,7 +465,7 @@
         "rgba(237, 129, 40, 0.89)",
         "rgba(50, 172, 45, 0.97)"
       ],
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "editable": true,
       "error": false,
       "format": "none",
@@ -560,7 +560,7 @@
         "rgba(237, 129, 40, 0.89)",
         "rgba(50, 172, 45, 0.97)"
       ],
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "editable": true,
       "error": false,
       "format": "none",
@@ -652,7 +652,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "editable": true,
       "error": false,
       "fill": 1,
@@ -692,7 +692,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "elasticsearch_process_cpu_percent",
+          "expr": "elasticsearch_process_cpu_percent{name=~\"$node\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -749,7 +749,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "editable": true,
       "error": false,
       "fill": 1,
@@ -789,7 +789,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "elasticsearch_jvm_memory_used_bytes",
+          "expr": "elasticsearch_jvm_memory_used_bytes{name=~\"$node\",area=\"heap\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -802,7 +802,7 @@
       "thresholds": [],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Memory usage",
+      "title": "Memory usage (Heap)",
       "tooltip": {
         "msResolution": false,
         "shared": true,
@@ -846,7 +846,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "editable": true,
       "error": false,
       "fill": 1,
@@ -886,11 +886,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "1 - elasticsearch_filesystem_data_available_bytes / elasticsearch_filesystem_data_size_bytes",
+          "expr": "1 - elasticsearch_filesystem_data_available_bytes{name=~\"$node\"} / elasticsearch_filesystem_data_size_bytes{name=~\"$node\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{node}} - {{path}}",
+          "legendFormat": "{{name}} - {{path}}",
           "metric": "",
           "refId": "A",
           "step": 60
@@ -972,7 +972,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "editable": true,
       "error": false,
       "fill": 5,
@@ -1012,7 +1012,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(elasticsearch_indices_indexing_index_total[$interval])",
+          "expr": "rate(elasticsearch_indices_indexing_index_total{name=~\"$node\"}[$interval])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1069,7 +1069,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "editable": true,
       "error": false,
       "fill": 0,
@@ -1109,7 +1109,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(elasticsearch_indices_indexing_index_time_seconds_total[$interval]) / rate(elasticsearch_indices_indexing_index_total[$interval]) ",
+          "expr": "rate(elasticsearch_indices_indexing_index_time_seconds_total{name=~\"$node\"}[$interval]) / rate(elasticsearch_indices_indexing_index_total{name=~\"$node\"}[$interval]) ",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1166,7 +1166,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "editable": true,
       "error": false,
       "fill": 5,
@@ -1206,7 +1206,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(elasticsearch_indices_search_query_total[$interval])",
+          "expr": "rate(elasticsearch_indices_search_query_total{name=~\"$node\"}[$interval])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1263,7 +1263,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "editable": true,
       "error": false,
       "fill": 0,
@@ -1303,7 +1303,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(es_indices_search_query_time_seconds[$interval]) / rate(elasticsearch_indices_search_query_total[$interval])",
+          "expr": "rate(es_indices_search_query_time_seconds{name=~\"$node\"}[$interval]) / rate(elasticsearch_indices_search_query_total{name=~\"$node\"}[$interval])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1360,7 +1360,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "editable": true,
       "error": false,
       "fill": 5,
@@ -1400,7 +1400,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "elasticsearch_indices_docs",
+          "expr": "elasticsearch_indices_docs{name=~\"$node\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1459,7 +1459,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "editable": true,
       "error": false,
       "fill": 5,
@@ -1499,7 +1499,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(elasticsearch_indices_docs_deleted[$interval])",
+          "expr": "rate(elasticsearch_indices_docs_deleted{name=~\"$node\"}[$interval])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1556,7 +1556,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "editable": true,
       "error": false,
       "fill": 5,
@@ -1596,7 +1596,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(elasticsearch_indices_merges_docs_total[$interval])",
+          "expr": "rate(elasticsearch_indices_merges_docs_total{name=~\"$node\"}[$interval])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1667,7 +1667,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "editable": true,
       "error": false,
       "fill": 5,
@@ -1764,7 +1764,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "editable": true,
       "error": false,
       "fill": 5,
@@ -1861,7 +1861,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "editable": true,
       "error": false,
       "fill": 5,
@@ -1901,7 +1901,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(elasticsearch_indices_query_cache_memory_size_bytes[$interval])",
+          "expr": "rate(elasticsearch_indices_query_cache_memory_size_bytes{name=~\"$node\"}[$interval])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1958,7 +1958,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "editable": true,
       "error": false,
       "fill": 5,
@@ -1998,7 +1998,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(elasticsearch_indices_query_cache_evictions[$interval])",
+          "expr": "rate(elasticsearch_indices_query_cache_evictions{name=~\"$node\"}[$interval])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -2055,7 +2055,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "editable": true,
       "error": false,
       "fill": 5,
@@ -2095,7 +2095,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(elasticsearch_indices_request_cache_memory_size_bytes[$interval])",
+          "expr": "rate(elasticsearch_indices_request_cache_memory_size_bytes{name=~\"$node\"}[$interval])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -2152,7 +2152,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "editable": true,
       "error": false,
       "fill": 5,
@@ -2192,7 +2192,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(elasticsearch_indices_get_missing_total[$interval])",
+          "expr": "rate(elasticsearch_indices_get_missing_total{name=~\"$node\"}[$interval])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -2263,7 +2263,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "editable": true,
       "error": false,
       "fill": 0,
@@ -2303,7 +2303,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(es_indices_indexing_throttle_time_seconds{cluster=\"$cluster\", node=~\"$node\"}[$interval])",
+          "expr": "rate(elasticsearch_indices_store_throttle_time_seconds_total{name=~\"$node\"}[$interval])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -2360,7 +2360,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "editable": true,
       "error": false,
       "fill": 0,
@@ -2471,7 +2471,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "editable": true,
       "error": false,
       "fill": 0,
@@ -2511,11 +2511,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "elasticsearch_jvm_memory_used_bytes",
+          "expr": "elasticsearch_jvm_memory_used_bytes{name=~\"$node\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{node}} - heap used",
+          "legendFormat": "{{name}} ( {{area}} )",
           "metric": "",
           "refId": "A",
           "step": 60
@@ -2568,7 +2568,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "editable": true,
       "error": false,
       "fill": 0,
@@ -2608,11 +2608,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(elasticsearch_jvm_gc_collection_seconds_count[$interval])",
+          "expr": "rate(elasticsearch_jvm_gc_collection_seconds_count{name=~\"$node\"}[$interval])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{node}} - {{gc}}",
+          "legendFormat": "{{name}} ( {{gc}} )",
           "metric": "",
           "refId": "A",
           "step": 60
@@ -2665,7 +2665,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "editable": true,
       "error": false,
       "fill": 0,
@@ -2705,11 +2705,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(elasticsearch_jvm_gc_collection_seconds_sum[$interval])",
+          "expr": "rate(elasticsearch_jvm_gc_collection_seconds_sum{name=~\"$node\"}[$interval])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{node}} - {{gc}}",
+          "legendFormat": "{{name}} ( {{gc}} )",
           "metric": "",
           "refId": "A",
           "step": 60
@@ -2820,6 +2820,26 @@
         "query": "15s, 30s, 1m, 5m, 1h, 6h, 1d",
         "refresh": 0,
         "type": "custom"
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_PROMETHEUS}",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Node name",
+        "multi": true,
+        "name": "node",
+        "options": [],
+        "query": "label_values(elasticsearch_process_cpu_percent,name)",
+        "refresh": 2,
+        "regex": "",
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
       }
     ]
   },
@@ -2855,5 +2875,5 @@
   "timezone": "utc",
   "title": "ElasticSearch",
   "uid": "A6L300tmk",
-  "version": 9
+  "version": 34
 }

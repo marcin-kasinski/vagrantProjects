@@ -46,6 +46,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
+  "iteration": 1534848875839,
   "links": [],
   "panels": [
     {
@@ -91,10 +92,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum without(area)(jvm_buffer_memory_used_bytes{app=~\"springboot(.*?)\",id=\"direct\"})",
+          "expr": "sum without(area)(jvm_buffer_memory_used_bytes{kubernetes_pod_name=~\"$app\",id=\"direct\"})",
           "format": "time_series",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}} ({{instance}})",
+          "legendFormat": "{{kubernetes_pod_name}} ({{instance}}) tag= $tag  {{tag}}",
           "metric": "jvm_memory_bytes_used",
           "refId": "A",
           "step": 4
@@ -184,7 +185,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum without(area)(process_cpu_usage{app=~\"springboot(.*?)\"})",
+          "expr": "sum without(area)(process_cpu_usage{kubernetes_pod_name=~\"$app\"})",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{kubernetes_pod_name}} ({{instance}})",
@@ -239,7 +240,28 @@
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_PROMETHEUS}",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Application name",
+        "multi": true,
+        "name": "app",
+        "options": [],
+        "query": "label_values(process_cpu_usage,kubernetes_pod_name)",
+        "refresh": 2,
+        "regex": "",
+        "sort": 0,
+        "tagValuesQuery": "{app=$tag}",
+        "tags": [],
+        "tagsQuery": "label_values(process_cpu_usage,kubernetes_pod_name)",
+        "type": "query",
+        "useTags": false
+      }
+    ]
   },
   "time": {
     "from": "now-6h",
@@ -273,5 +295,5 @@
   "timezone": "",
   "title": "My Apps",
   "uid": "8euHA4tiz",
-  "version": 14
+  "version": 50
 }
