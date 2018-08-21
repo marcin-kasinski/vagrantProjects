@@ -22,7 +22,7 @@ spec:
           containerPort: 9000
         env:
         - name: ZK_HOSTS
-          value: "zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181"
+          value: "zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka"
 ---
 apiVersion: v1
 kind: Service
