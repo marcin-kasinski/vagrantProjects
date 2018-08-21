@@ -33,8 +33,8 @@ spec:
         imagePullPolicy: Always
         livenessProbe:
           httpGet:
-            path: /healthz
-            port: 8080
+            path: /actuator/prometheus
+            port: 9191
             httpHeaders:
             - name: X-Custom-Header
               value: Awesome
