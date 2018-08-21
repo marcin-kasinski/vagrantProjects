@@ -1,4 +1,4 @@
-apiVersion: v1
+apiVersion: apps/v1
 kind: Service
 metadata:
   name: es-exporter
@@ -13,7 +13,7 @@ spec:
     app: es-exporter
   type: NodePort
 ---          
-apiVersion: v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: es-exporter
