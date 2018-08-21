@@ -19,13 +19,13 @@ curl -XPOST --data @/vagrant/conf/grafanaprometheusdatasource.json -H "Content-T
 
 
 DASHBOARD="{\"dashboard\":  $(</vagrant/conf/grafana_dashboard_kafka_overview.json)     }"
-
-#echo $DASHBOARD > a.json
-
-#add dashboard
-#curl -XPOST --data @/vagrant/conf/grafana_dashboard_kafka_overview.json -H "Content-Type:application/json"  http://admin:admin@$GRAFANAPODIP:3000/api/dashboards/db
 curl -XPOST --data "$DASHBOARD" -H "Content-Type:application/json"  http://admin:admin@$GRAFANAPODIP:3000/api/dashboards/db
-#curl -XPOST --data @a.json  -H "Content-Type:application/json"  http://admin:admin@$GRAFANAPODIP:3000/api/dashboards/db
+
+DASHBOARD="{\"dashboard\":  $(</vagrant/conf/grafana_dashboard_elasticsearch.json)     }"
+curl -XPOST --data "$DASHBOARD" -H "Content-Type:application/json"  http://admin:admin@$GRAFANAPODIP:3000/api/dashboards/db
+
+DASHBOARD="{\"dashboard\":  $(</vagrant/conf/grafana_dashboard_apps.json)     }"
+curl -XPOST --data "$DASHBOARD" -H "Content-Type:application/json"  http://admin:admin@$GRAFANAPODIP:3000/api/dashboards/db
 
 
 }
@@ -203,7 +203,7 @@ echo Dashboard IP $DASHBOARDPODIP
           
           #moje
       #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/prometheus.yaml?$(date +%s)"  | kubectl apply -f -     
-      curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/prometheus_ss.yaml?$(date +%s)"  | kubectl apply -f -     
+      curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/prometheus_ss.yaml?$(date +%s)"  | kubectl apply -f -
 
 		#prometheus-operator
 	  #curl "https://raw.githubusercontent.com/coreos/prometheus-operator/master/bundle.yaml?$(date +%s)"  | kubectl apply -f -     
