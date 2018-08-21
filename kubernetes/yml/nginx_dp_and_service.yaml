@@ -93,8 +93,8 @@ spec:
     spec:
       containers:
       - name: nginx
-        #image: nginx
-        image: ilagnev/alpine-nginx-lua
+        image: nginx
+        #image: ilagnev/alpine-nginx-lua
         #image: firesh/nginx-lua
         imagePullPolicy: Always
         ports:
@@ -104,9 +104,9 @@ spec:
         - name: SPRING_PROFILE
           value: "prd"
         volumeMounts:
-        - name: nginx-config
-          mountPath: /etc/nginx/nginx.conf
-          subPath: nginx.conf
+        #- name: nginx-config
+        #  mountPath: /etc/nginx/nginx.conf
+        #  subPath: nginx.conf
       volumes:
         - name: nginx-config
           configMap:
