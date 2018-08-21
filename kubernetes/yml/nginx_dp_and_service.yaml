@@ -1,6 +1,19 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: nginx-index
+  namespace: default
+data:
+  index.html: |-   
+    <html>
+    <body>
+    <a href="http://springbootweb:30080">http://springbootweb:30080/</a>
+    </body>
+    </html>
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: nginx-config
   namespace: default
 data:
@@ -107,12 +120,16 @@ spec:
         #- name: nginx-config
         #  mountPath: /etc/nginx/nginx.conf
         #  subPath: nginx.conf
+        - name: nginx-index
+          mountPath: /usr/share/nginx/html/index.html
+          subPath: index.html
       volumes:
         - name: nginx-config
           configMap:
-            # Provide the name of the ConfigMap containing the files you want
-            # to add to the container
-            name: nginx-config          
+            name: nginx-config
+        - name: nginx-index
+          configMap:
+            name: nginx-index
 ---
 apiVersion: v1
 kind: Service
