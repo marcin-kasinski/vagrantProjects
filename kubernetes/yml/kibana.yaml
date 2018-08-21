@@ -36,7 +36,7 @@ spec:
             memory: 2.5Gi
         env:
           - name: ELASTICSEARCH_URL
-            value: http://elasticsearch-logging:9200
+            value: http://es:9200
           # use this if you want to use proxy
           #- name: SERVER_BASEPATH
           #  value: /api/v1/proxy/namespaces/kube-system/services/kibana-logging

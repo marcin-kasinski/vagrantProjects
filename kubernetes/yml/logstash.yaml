@@ -76,7 +76,7 @@ data:
       }
       # Sending properly parsed log events to elasticsearch
       elasticsearch {
-        hosts => "elasticsearch-logging"
+        hosts => "es"
         user => elastic
         password => changeme
       }
