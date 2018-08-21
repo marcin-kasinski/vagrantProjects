@@ -31,6 +31,15 @@ spec:
       - name: springbootmicroservice
         image: marcinkasinski/springbootmicroservice
         imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+            httpHeaders:
+            - name: X-Custom-Header
+              value: Awesome
+          initialDelaySeconds: 20
+          periodSeconds: 10
         ports:
         - name: http-port
           containerPort: 9191
