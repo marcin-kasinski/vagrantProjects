@@ -1,4 +1,21 @@
 
+showCustomService()
+{
+
+NGINXPODNAME="nginx"
+
+while ! kubectl get po -n default -o wide | grep $NGINXPODNAME | grep Running ; do   echo "waiting for nginx IP..." ; sleep 20 ; done
+
+NGINXPODIP=`kubectl get po -n default -o wide | grep $NGINXPODNAME | grep Running`
+NGINXPODIP=`echo $NGINXPODIP | cut -d " " -f 6`
+
+while ! nc -w 20 -z $NGINXPODIP 80; do   echo "waiting nginx to launch ..." ; sleep 20 ; done
+
+
+echo "Adresy us³ug"
+
+curl $NGINXPODIP | grep "<a"
+}
 
 configureGrafana(){
 
@@ -250,4 +267,5 @@ echo Dashboard IP $DASHBOARDPODIP
            
       configureGrafana
       showDashboardIP
+      showCustomService
              
