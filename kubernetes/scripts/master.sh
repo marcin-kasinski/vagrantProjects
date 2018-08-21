@@ -119,16 +119,17 @@ echo Dashboard IP $DASHBOARDPODIP
       showDashboardIP
 
       # moje aplikacje
-      curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/jenkins_dp_and_service.yaml | kubectl apply -f -     
+      curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/jenkins_dp_and_service.yaml | kubectl apply -f -
 
-#      curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kafkaspotify.yml | kubectl apply -f -     
-#      curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kafka1.0.yml | kubectl apply -f -     
+#      curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kafkaspotify.yml | kubectl apply -f -
+#      curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kafka1.0.yml | kubectl apply -f -
 
-      curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/zookeeper_ss.yaml?$(date +%s)"  | kubectl apply -f -     
+      curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/zookeeper_ss.yaml?$(date +%s)"  | kubectl apply -f -
       curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kafka_ss.yaml?$(date +%s)"  | kubectl apply -f -
 
-      curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mysql_dp_and_service.yaml | kubectl apply -f -     
-      curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/phpmyadmin_dp_and_service.yaml | kubectl apply -f -     
+      curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mysql_dp_and_service.yaml | kubectl apply -f -
+      curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mysql_prometheus_exporter.yaml | kubectl apply -f -
+      curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/phpmyadmin_dp_and_service.yaml | kubectl apply -f -
 
      curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/nginx_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -
 
@@ -142,7 +143,7 @@ echo Dashboard IP $DASHBOARDPODIP
 
       curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/rabbitmq_dp_and_service.yaml | kubectl apply -f -
 
-      curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootZipkin_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -     
+      curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootZipkin_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -
 
 
       #------------------------------- mysql init ------------------------------- 
@@ -202,14 +203,14 @@ echo Dashboard IP $DASHBOARDPODIP
           #------------------------------- kafka init ------------------------------- 
           
           #moje
-      #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/prometheus.yaml?$(date +%s)"  | kubectl apply -f -     
+      #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/prometheus.yaml?$(date +%s)"  | kubectl apply -f -
       curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/prometheus_ss.yaml?$(date +%s)"  | kubectl apply -f -
 
 		#prometheus-operator
-	  #curl "https://raw.githubusercontent.com/coreos/prometheus-operator/master/bundle.yaml?$(date +%s)"  | kubectl apply -f -     
+	  #curl "https://raw.githubusercontent.com/coreos/prometheus-operator/master/bundle.yaml?$(date +%s)"  | kubectl apply -f -
 	
-      curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootRabbitMQListener_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -     
-      curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootKafkaListener_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -     
+      curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootRabbitMQListener_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -
+      curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootKafkaListener_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -
       #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootMicroservice_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -
       curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootMicroservice_dp_and_service_ss.yaml?$(date +%s)"  | kubectl apply -f -
       curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootWebdp_and_service.yaml?$(date +%s)"  | kubectl apply -f -

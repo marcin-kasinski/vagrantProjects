@@ -18,7 +18,7 @@ spec:
       - name: mysql-prometheus-exporter
         image: mysql-prometheus-exporter/mysql-prometheus-exporter
         ports:
-        - name: mysql-prometheus-exporter-port
+        - name: mysqlexporter
           containerPort: 9104
         env:
         - name: DATA_SOURCE_NAME
