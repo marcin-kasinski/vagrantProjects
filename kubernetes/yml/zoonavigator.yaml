@@ -24,7 +24,7 @@ spec:
         - name: WEB_HTTP_PORT
           value: "7070"
         - name: API_HOST
-          value: "zoonavigator"
+          value: "zoonavigator-api"
         - name: API_PORT
           value: "9000"
       - name: zoonavigator-api
@@ -49,6 +49,19 @@ spec:
   selector:
     app: zoonavigator
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zoonavigator-api
+spec:
+  type: NodePort
+  ports:
+  - port: 9000
+    protocol: TCP
+    name: api
+  selector:
+    app: zoonavigator
+---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -62,3 +75,18 @@ spec:
         backend:
           serviceName: zoonavigator
           servicePort: 7070
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: zoonavigator-api-ingress
+spec:
+  rules:
+  - host: zoonavigator-api
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: zoonavigator-api
+          servicePort: 9000
+          
