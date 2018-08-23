@@ -250,6 +250,8 @@ while ! kubectl get po -n kube-system -o wide | grep kubernetes-dashboard | grep
       curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mysql_prometheus_exporter.yaml?$(date +%s)"  | kubectl apply -f -
       curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/phpmyadmin_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -
 
+      curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mongodb.yaml?$(date +%s)"  | kubectl apply -f -
+
       curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/nginx_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -
 
 	  #curl 'elasticsearch-logging:9200/_cat/indices?v'

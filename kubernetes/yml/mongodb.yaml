@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-cs
+  labels:
+    app: mongodb
+spec:
+  type: NodePort
+  ports:
+  - port: 27017
+    name: mongodb
+  selector:
+    app: mongodb
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-hs
+  labels:
+    app: mongodb
+spec:
+  ports:
+  - port: 27017
+    name: mongodb
+  clusterIP: None
+  selector:
+    app: mongodb
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongodb
+spec:
+  serviceName: "mongodb-hs"
+  replicas: 3
+  updateStrategy:
+    type: RollingUpdate
+  podManagementPolicy: Parallel
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+        kubernetes.io/name: "mongodb"
+        tier: db
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/scheme: "http"
+        prometheus.io/path: "/"
+        prometheus.io/port: "8080"          
+    spec:
+      terminationGracePeriodSeconds: 10
+      affinity:
+         podAntiAffinity:
+           requiredDuringSchedulingIgnoredDuringExecution:
+           - labelSelector:
+               matchExpressions:
+               - key: "app"
+                 operator: In
+                 values:
+                 - mongodb
+             topologyKey: "kubernetes.io/hostname"      
+      containers:
+      - name: mongodb
+        image: mongo
+        imagePullPolicy: Always
+        command: 
+        - mongod 
+        - "--bind_ip_all"
+        - "--replSet"
+        - rs0
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+        - mountPath: /data/db
+          name: mongodb-data   
+        env:
+        - name: "X"
+          value: "Y"
+      volumes:
+      - name: mongodb-data
+        emptyDir: {}
