@@ -16,6 +16,21 @@ data:
     <a href="http://prometheus:30080">http://prometheus:30080/</a><br>
     <a href="http://grafana:30080">http://grafana:30080/</a><br>
     <a href="http://kibana:30080">http://kibana:30080/</a><br>
+    <a href="http://rabbitmq:30080">http://rabbitmq:30080/</a><br>
+    
+     <br>
+    
+    Inne:<br>
+    
+    http://prometheus:9090/api/v1/label/__name__/values - prometheus nazwy kluczy<br>
+    http://springbootmicroservice-cs.default.svc.cluster.local:9191/api/gethostname - nazwa hosta<br>
+
+    Linki elastic search<br>
+    <br>
+    http://es:9200/_cat/indices?v - lista indeksów<br>
+    http://es:9200/_cluster/health<br>
+    http://es:9200/_nodes<br>
+    http://es:9200/_cluster/stats?human&pretty<br>
     
     </body>
     </html>
