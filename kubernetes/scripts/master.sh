@@ -155,7 +155,7 @@ while ! kubectl get po -n kube-system -o wide | grep kubernetes-dashboard | grep
 	echo Dashboard Name: $DASHBOARDPODNAME
 	echo Dashboard IP $DASHBOARDPODIP
 
-#sudo kubectl port-forward  -n kube-system $DASHBOARDPODNAME 8443:8443 &
+#sudo kubectl port-forward -n kube-system $DASHBOARDPODNAME 8443:8443 &
 
       echo "DashboardToken ..."
       
