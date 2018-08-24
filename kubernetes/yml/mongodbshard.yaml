@@ -49,6 +49,7 @@ spec:
           image: mongo
           command:
             - "mongod"
+            - "--shardsvr"
             - "--port"
             - "27017"
             - "--bind_ip"
