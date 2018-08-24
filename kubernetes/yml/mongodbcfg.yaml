@@ -29,6 +29,7 @@ spec:
       labels:
         role: mongodb-configdb
         tier: configdb
+        replicaset: configdb
     spec:
       affinity:
         podAntiAffinity:
@@ -37,7 +38,7 @@ spec:
             podAffinityTerm:
               labelSelector:
                 matchExpressions:
-                - key: tier
+                - key: replicaset
                   operator: In
                   values:
                   - configdb
