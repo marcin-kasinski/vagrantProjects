@@ -7,8 +7,8 @@ metadata:
     name: mongodb-configdb
 spec:
   ports:
-  - port: 27017
-    targetPort: 27017
+  - port: 27019
+    targetPort: 27019
   clusterIP: None
   selector:
     role: mongodb-configdb
@@ -50,7 +50,7 @@ spec:
           command:
             - "mongod"
             - "--port"
-            - "27017"
+            - "27019"
             - "--dbpath"
             - "/mongo-disk"
             - "--bind_ip"
@@ -61,7 +61,7 @@ spec:
               cpu: 50m
               memory: 100Mi
           ports:
-            - containerPort: 27017
+            - containerPort: 27019
           volumeMounts:
             - name: mongodb-data
               mountPath: /mongo-disk
