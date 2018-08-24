@@ -1,0 +1,69 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-routers-headless-service
+  namespace: default
+  labels:
+    name: mongodb-routers
+spec:
+  ports:
+  - port: 27017
+    targetPort: 27017
+  clusterIP: None
+  selector:
+    role: mongodb-routers
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongodb-routers
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      role: mongodb-routers # has to match .spec.template.metadata.labels
+  serviceName: mongodb-routers-headless-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        role: mongodb-routers
+        tier: maindb
+        replicaset: routers
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: replicaset
+                  operator: In
+                  values:
+                  - routers
+              topologyKey: kubernetes.io/hostname
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: mongodb-routers-container
+          image: mongo
+          command:
+            - "mongos"
+            - "--port"
+            - "27017"
+            - "--bind_ip"
+            - "0.0.0.0"
+            - "--configdb"
+            - "mongodb-configdb-0.mongodb-configdb-headless-service.daemonsl.svc.cluster.local:27019"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 100Mi
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: mongodb-data
+              mountPath: /mongo-disk
+      volumes:
+      - name: mongodb-data
+        emptyDir: {}
