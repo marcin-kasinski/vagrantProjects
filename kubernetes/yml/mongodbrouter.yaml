@@ -54,7 +54,7 @@ spec:
             - "--bind_ip"
             - "0.0.0.0"
             - "--configdb"
-            - "ShardX/mongodb-configdb-0.mongodb-configdb-headless-service.default.svc.cluster.local:27019"
+            - "MyConfigRepl/mongodb-configdb-0.mongodb-configdb-headless-service.default.svc.cluster.local:27019"
           resources:
             requests:
               cpu: 50m
