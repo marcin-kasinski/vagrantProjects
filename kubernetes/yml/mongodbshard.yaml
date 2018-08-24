@@ -1,33 +1,33 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongodb-shardX-headless-service
+  name: mongodb-shard-headless-service
   namespace: default
   labels:
-    name: mongodb-shardX
+    name: mongodb-shard
 spec:
   ports:
   - port: 27017
     targetPort: 27017
   clusterIP: None
   selector:
-    role: mongodb-shardX
+    role: mongodb-shard
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mongodb-shardX
+  name: mongodb-shard
   namespace: default
 spec:
   selector:
     matchLabels:
-      role: mongodb-shardX # has to match .spec.template.metadata.labels
-  serviceName: mongodb-shardX-headless-service
+      role: mongodb-shard # has to match .spec.template.metadata.labels
+  serviceName: mongodb-shard-headless-service
   replicas: 1
   template:
     metadata:
       labels:
-        role: mongodb-shardX
+        role: mongodb-shard
         tier: maindb
         replicaset: ShardX
     spec:
@@ -45,7 +45,7 @@ spec:
               topologyKey: kubernetes.io/hostname
       terminationGracePeriodSeconds: 10
       containers:
-        - name: mongodb-shardX-container
+        - name: mongodb-shard-container
           image: mongo
           command:
             - "mongod"
