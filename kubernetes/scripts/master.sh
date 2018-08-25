@@ -1,11 +1,33 @@
 setupMongodb()
 {
-kubectl exec mongodb-configdb-0 -- mongo --port 27019 --eval "rs.status()"
-kubectl exec mongodb-configdb-0 -- mongo --port 27019 --eval "rs.initiate(  {    _id: \"MyConfigRepl\",    configsvr: true,    members: [      { _id : 0, host : \"mongodb-configdb-0.mongodb-configdb-headless-service.default.svc.cluster.local:27019\" }    ]  })"
-kubectl exec mongodb-configdb-0 -- mongo --port 27019 --eval "rs.status()"
 
-kubectl exec mongodb-routers-0 -- mongo --port 27017 --eval "sh.addShard('mongodb-shard-0.mongodb-shard-headless-service.default.svc.cluster.local:27017')"
-kubectl exec mongodb-routers-0 -- mongo --port 27017 --eval "rs.status();"
+      while ! kubectl get po -o wide | grep mongodb-configdb-0 | grep Running ; do   echo "waiting for Mongo cfg IP..." ; sleep 20 ; done
+
+      MONGOCFGPODIP=`kubectl get po -o wide | grep mongodb-configdb-0 | grep Running `
+      MONGOCFGPODIP=`echo $MONGOCFGPODIP | cut -d " " -f 6`
+      echo $MONGOCFGPODIP
+
+      while ! nc -z $MONGOCFGPODIP 27019; do   echo "waiting mongocgf to launch ..." ; sleep 20 ; done
+
+
+
+kubectl exec mongodb-configdb-0 -c mongodb-configdb-container -- mongo --port 27019 --eval "rs.status()"
+kubectl exec mongodb-configdb-0 -c mongodb-configdb-container -- mongo --port 27019 --eval "rs.initiate(  {    _id: \"MyConfigRepl\",    configsvr: true,    members: [      { _id : 0, host : \"mongodb-configdb-0.mongodb-configdb-headless-service.default.svc.cluster.local:27019\" }    ]  })"
+kubectl exec mongodb-configdb-0 -c mongodb-configdb-container -- mongo --port 27019 --eval "rs.status()"
+
+      while ! kubectl get po -o wide | grep mongodb-routers-0 | grep Running ; do   echo "waiting for Mongo cfg IP..." ; sleep 20 ; done
+
+      MONGOROUTERPODIP=`kubectl get po -o wide | grep mongodb-routers-0 | grep Running `
+      MONGOROUTERPODIP=`echo $MONGOROUTERPODIP | cut -d " " -f 6`
+      echo $MONGOROUTERPODIP
+
+      while ! nc -z $MONGOROUTERPODIP 27017; do   echo "waiting mongos to launch ..." ; sleep 20 ; done
+
+
+
+
+kubectl exec mongodb-routers-0 -c mongodb-routers-container -- mongo --port 27017 --eval "sh.addShard('mongodb-shard-0.mongodb-shard-headless-service.default.svc.cluster.local:27017')"
+kubectl exec mongodb-routers-0 -c mongodb-routers-container -- mongo --port 27017 --eval "rs.status();"
 
 
 }
@@ -148,6 +170,11 @@ curl -XPOST --data "$DASHBOARD" -H "Content-Type:application/json"  http://admin
 
 DASHBOARD="{\"dashboard\":  $(</vagrant/conf/grafana_dashboard_apps.json)     }"
 curl -XPOST --data "$DASHBOARD" -H "Content-Type:application/json"  http://admin:admin@$GRAFANAPODIP:3000/api/dashboards/db
+
+DASHBOARD="{\"dashboard\":  $(</vagrant/conf/grafana_dashboard_mongo.json)     }"
+curl -XPOST --data "$DASHBOARD" -H "Content-Type:application/json"  http://admin:admin@$GRAFANAPODIP:3000/api/dashboards/db
+
+
 
 DASHBOARD="{\"dashboard\":  $(</vagrant/conf/grafana_dashboard_mysql.json)     }"
 curl -XPOST --data "$DASHBOARD" -H "Content-Type:application/json"  http://admin:admin@$GRAFANAPODIP:3000/api/dashboards/db
@@ -334,6 +361,7 @@ setupkafka
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
            
       configureGrafana
+      setupMongodb
       showCustomService
       showDashboardIP
              
