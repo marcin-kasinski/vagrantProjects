@@ -14,6 +14,9 @@ setupMongodb()
 kubectl exec mongodb-configdb-0 -c mongodb-configdb-container -- mongo --port 27019 --eval "rs.status()"
 kubectl exec mongodb-configdb-0 -c mongodb-configdb-container -- mongo --port 27019 --eval "rs.initiate(  {    _id: \"MyConfigRepl\",    configsvr: true,    members: [      { _id : 0, host : \"mongodb-configdb-0.mongodb-configdb-headless-service.default.svc.cluster.local:27019\" }    ]  })"
 kubectl exec mongodb-configdb-0 -c mongodb-configdb-container -- mongo --port 27019 --eval "rs.status()"
+kubectl exec mongodb-configdb-0 -c mongodb-configdb-container -- mongo --port 27019 --eval "rs.add('mongodb-configdb-1.mongodb-configdb-headless-service.default.svc.cluster.local:27019')"
+kubectl exec mongodb-configdb-0 -c mongodb-configdb-container -- mongo --port 27019 --eval "rs.add('mongodb-configdb-2.mongodb-configdb-headless-service.default.svc.cluster.local:27019')"
+kubectl exec mongodb-configdb-0 -c mongodb-configdb-container -- mongo --port 27019 --eval "rs.status()"
 
       while ! kubectl get po -o wide | grep mongodb-routers-0 | grep Running ; do   echo "waiting for mongos IP..." ; sleep 20 ; done
 
@@ -27,7 +30,12 @@ kubectl exec mongodb-configdb-0 -c mongodb-configdb-container -- mongo --port 27
 
 
 kubectl exec mongodb-routers-0 -c mongodb-routers-container -- mongo --port 27017 --eval "sh.addShard('mongodb-shard-0.mongodb-shard-headless-service.default.svc.cluster.local:27017')"
-kubectl exec mongodb-routers-0 -c mongodb-routers-container -- mongo --port 27017 --eval "rs.status();"
+kubectl exec mongodb-routers-0 -c mongodb-routers-container -- mongo --port 27017 --eval "sh.addShard('mongodb-shard-1.mongodb-shard-headless-service.default.svc.cluster.local:27017')"
+kubectl exec mongodb-routers-0 -c mongodb-routers-container -- mongo --port 27017 --eval "sh.addShard('mongodb-shard-2.mongodb-shard-headless-service.default.svc.cluster.local:27017')"
+kubectl exec mongodb-routers-0 -c mongodb-routers-container -- mongo --port 27017 --eval "sh.status();"
+
+kubectl exec mongodb-routers-0 -c mongodb-routers-container -- mongo localhost:27017/mkdatabase --eval "db.myNewCollection1.insertOne( { x: 3 } );"
+
 
 
 }

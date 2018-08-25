@@ -1,6 +1,22 @@
 apiVersion: v1
 kind: Service
 metadata:
+  name: mongodb-router-cs
+  labels:
+    name: mongodb-routers
+spec:
+  type: NodePort
+  ports:
+  - port: 27017
+    nodePort: 32017
+    targetPort: 27017
+    name: client
+  selector:
+    name: mongodb-routers
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: mongodb-routers-headless-service
   namespace: default
   labels:
