@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: mongodb-router-cs
   labels:
-    name: mongodb-routers
+    name: mongodb-router-cs
 spec:
   type: NodePort
   ports:
@@ -12,7 +12,7 @@ spec:
     targetPort: 27017
     name: client
   selector:
-    name: mongodb-routers
+    role: mongodb-routers
 ---
 apiVersion: v1
 kind: Service
