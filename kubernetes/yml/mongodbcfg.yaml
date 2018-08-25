@@ -30,6 +30,13 @@ spec:
         role: mongodb-configdb
         tier: configdb
         replicaset: configdb
+        
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/scheme: "http"
+        #prometheus.io/path: "/actuator/prometheus"
+        prometheus.io/port: "9104"        
+        
     spec:
       affinity:
         podAntiAffinity:
