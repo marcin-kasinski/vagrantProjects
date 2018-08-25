@@ -45,6 +45,17 @@ spec:
               topologyKey: kubernetes.io/hostname
       terminationGracePeriodSeconds: 10
       containers:
+        - name: mongodb-prometheus-exporter
+          image: eses/mongodb_exporter
+          ports:
+          - name: mongodbexporter
+            containerPort: 9104
+          env:
+          - name: MONGODB_URL
+            value: "mongodb://mongodb-routers-0.mongodb-routers-headless-service.default.svc.cluster.local:27017"
+#          - name: HTTP_AUTH
+#            value: "user:password"
+      
         - name: mongodb-configdb-container
           image: mongo
           command:
