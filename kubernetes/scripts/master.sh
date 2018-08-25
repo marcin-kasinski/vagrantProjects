@@ -1,3 +1,16 @@
+setupMongodb()
+{
+kubectl exec mongodb-configdb-0 -- mongo --port 27019 --eval "rs.status()"
+kubectl exec mongodb-configdb-0 -- mongo --port 27019 --eval "rs.initiate(  {    _id: \"MyConfigRepl\",    configsvr: true,    members: [      { _id : 0, host : \"mongodb-configdb-0.mongodb-configdb-headless-service.default.svc.cluster.local:27019\" }    ]  })"
+kubectl exec mongodb-configdb-0 -- mongo --port 27019 --eval "rs.status()"
+
+kubectl exec mongodb-routers-0 -- mongo --port 27017 --eval "sh.addShard('mongodb-shard-0.mongodb-shard-headless-service.default.svc.cluster.local:27017')"
+kubectl exec mongodb-routers-0 -- mongo --port 27017 --eval "rs.status();"
+
+
+}
+
+
 forwardingressport()
 {
 
@@ -253,6 +266,7 @@ while ! kubectl get po -n kube-system -o wide | grep kubernetes-dashboard | grep
       curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mongodbcfg.yaml?$(date +%s)"  | sed -e 's/  replicas: 1/  replicas: 3/g'  | kubectl apply -f -
       curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mongodbshard.yaml?$(date +%s)" | sed -e 's/  replicas: 1/  replicas: 3/g'  | kubectl apply -f -
       curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mongodbrouter.yaml?$(date +%s)"  | kubectl apply -f -
+      curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mongodb_prometheus_exporter.yaml?$(date +%s)"  | kubectl apply -f -
 
       curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/nginx_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -
 

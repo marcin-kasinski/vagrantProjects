@@ -17,17 +17,14 @@ spec:
       containers:
       - name: mongodb-prometheus-exporter
         image: eses/mongodb_exporter
-        command:
-          - "mongodb_exporter"
-          - "-mongodb.uri"
-          - "$MONGO_URL"
-        
         ports:
         - name: mongodbexporter
           containerPort: 9104
         env:
-        - name: MONGO_URL
-          value: "mongodb://mongodb_exporter:s3cr3tpassw0rd@localhost:27017"
+        - name: MONGODB_URL
+          value: "mongodb://mongodb-routers-0.mongodb-routers-headless-service.default.svc.cluster.local:27017"
+#        - name: HTTP_AUTH
+#          value: "user:password"
 ---
 apiVersion: v1
 kind: Service
