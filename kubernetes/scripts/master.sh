@@ -1,7 +1,7 @@
 setupMongodb()
 {
 
-      while ! kubectl get po -o wide | grep mongodb-configdb-0 | grep Running ; do   echo "waiting for Mongo cfg IP..." ; sleep 20 ; done
+      while ! kubectl get po -o wide | grep mongodb-configdb-0 | grep Running ; do   echo "waiting for mongocfg IP..." ; sleep 20 ; done
 
       MONGOCFGPODIP=`kubectl get po -o wide | grep mongodb-configdb-0 | grep Running `
       MONGOCFGPODIP=`echo $MONGOCFGPODIP | cut -d " " -f 6`
@@ -15,7 +15,7 @@ kubectl exec mongodb-configdb-0 -c mongodb-configdb-container -- mongo --port 27
 kubectl exec mongodb-configdb-0 -c mongodb-configdb-container -- mongo --port 27019 --eval "rs.initiate(  {    _id: \"MyConfigRepl\",    configsvr: true,    members: [      { _id : 0, host : \"mongodb-configdb-0.mongodb-configdb-headless-service.default.svc.cluster.local:27019\" }    ]  })"
 kubectl exec mongodb-configdb-0 -c mongodb-configdb-container -- mongo --port 27019 --eval "rs.status()"
 
-      while ! kubectl get po -o wide | grep mongodb-routers-0 | grep Running ; do   echo "waiting for Mongo cfg IP..." ; sleep 20 ; done
+      while ! kubectl get po -o wide | grep mongodb-routers-0 | grep Running ; do   echo "waiting for mongos IP..." ; sleep 20 ; done
 
       MONGOROUTERPODIP=`kubectl get po -o wide | grep mongodb-routers-0 | grep Running `
       MONGOROUTERPODIP=`echo $MONGOROUTERPODIP | cut -d " " -f 6`
