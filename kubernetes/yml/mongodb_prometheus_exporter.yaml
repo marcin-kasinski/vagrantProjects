@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb-prometheus-exporter-deployment
+  labels:
+    app: mongodb-prometheus-exporter  
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb-prometheus-exporter
+  template:
+    metadata:
+      labels:
+        app: mongodb-prometheus-exporter
+    spec:
+      containers:
+      - name: mongodb-prometheus-exporter
+        image: eses/mongodb_exporter
+        command:
+          - "mongodb_exporter"
+          - "-mongodb.uri"
+          - "$MONGO_URL"
+        
+        ports:
+        - name: mongodbexporter
+          containerPort: 9104
+        env:
+        - name: MONGO_URL
+          value: "mongodb://mongodb_exporter:s3cr3tpassw0rd@localhost:27017"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-prometheus-exporter
+spec:
+  type: NodePort
+  ports:
+  - port: 9104
+    protocol: TCP
+    name: http
+  selector:
+    app: mongodb-prometheus-exporter
