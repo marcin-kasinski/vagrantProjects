@@ -30,6 +30,12 @@ spec:
         role: mongodb-shard
         tier: maindb
         replicaset: ShardX
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/scheme: "http"
+        #prometheus.io/path: "/actuator/prometheus"
+        prometheus.io/port: "9104"        
+        
     spec:
       affinity:
         podAntiAffinity:
@@ -45,6 +51,18 @@ spec:
               topologyKey: kubernetes.io/hostname
       terminationGracePeriodSeconds: 10
       containers:
+        - name: mongodbshard-prometheus-exporter
+          image: eses/mongodb_exporter
+          ports:
+          - name: mongodbexporter
+            containerPort: 9104
+          env:
+          - name: MONGODB_URL
+            value: "mongodb://localhost:27019"
+#          - name: HTTP_AUTH
+#            value: "user:password"
+      
+      
         - name: mongodb-shard-container
           image: mongo
           command:

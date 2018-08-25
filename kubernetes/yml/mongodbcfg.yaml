@@ -52,7 +52,7 @@ spec:
               topologyKey: kubernetes.io/hostname
       terminationGracePeriodSeconds: 10
       containers:
-        - name: mongodb-prometheus-exporter
+        - name: mongodbcfg-prometheus-exporter
           image: eses/mongodb_exporter
           ports:
           - name: mongodbexporter
