@@ -13,6 +13,12 @@ spec:
     metadata:
       labels:
         app: mongodb-prometheus-exporter
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/scheme: "http"
+        #prometheus.io/path: "/actuator/prometheus"
+        prometheus.io/port: "9104"        
+        
     spec:
       containers:
       - name: mongodb-prometheus-exporter
