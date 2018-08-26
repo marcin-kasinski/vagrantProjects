@@ -73,11 +73,11 @@ spec:
     spec:
       containers:
       - name: es-exporter
+        image: justwatch/elasticsearch_exporter:1.0.1
         command:
         - /bin/elasticsearch_exporter
         - -es.uri=http://es:9200
         - -es.all=true
-        image: justwatch/elasticsearch_exporter:1.0.1
         securityContext:
           capabilities:
             drop:
@@ -120,8 +120,8 @@ spec:
       restartPolicy: Always
       
 #      - image: gcr.io/google-containers/elasticsearch:v5.5.1-1
-      - image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
-        name: es
+      - name: es
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
         resources:
           # need more cpu upon initialization, therefore burstable class
           limits:
