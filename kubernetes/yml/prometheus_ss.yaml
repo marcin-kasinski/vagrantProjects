@@ -15,11 +15,6 @@ data:
     rule_files:
     - '/etc/prometheus-rules/alert.rules'
     scrape_configs:
-    - job_name: 'mysql'
-      static_configs:
-       - targets:
-         - mysql-prometheus-exporter:9104   # mysql-prometheus-exporter 
-      
     - job_name: 'elasticsearch'
       static_configs:
        - targets:

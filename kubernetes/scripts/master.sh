@@ -116,13 +116,16 @@ sudo apt install -y netcat
 sudo apt install -y mysql-client 
 
 
-while ! kubectl get po -o wide | grep mysql | grep Running ; do   echo "waiting for mysql IP..." ; sleep 20 ; done
+while ! kubectl get po -o wide | grep mysql-deployment | grep Running ; do   echo "waiting for mysql IP..." ; sleep 20 ; done
+
+MYSQLPODIP=`kubectl get po -o wide | grep mysql-deployment | grep Running `
+MYSQLPODIP=`echo $MYSQLPODIP  | cut -d " " -f 6`
 
 while ! nc -w 20 -z $MYSQLPODIP 3306; 
 do
-  while ! kubectl get po -o wide | grep mysql | grep Running ; do   echo "waiting for mysql IP..." ; sleep 20 ; done
+  while ! kubectl get po -o wide | grep mysql-deployment | grep Running ; do   echo "waiting for mysql IP..." ; sleep 20 ; done
 
-  MYSQLPODIP=`kubectl get po -o wide | grep mysql | grep Running `
+  MYSQLPODIP=`kubectl get po -o wide | grep mysql-deployment | grep Running `
   MYSQLPODIP=`echo $MYSQLPODIP  | cut -d " " -f 6`
   echo $MYSQLPODIP
   echo "waiting mysql ( $MYSQLPODIP ) to launch ..." ; sleep 20 ; 
@@ -307,7 +310,7 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kafka-manager.yaml?$(date +%s)"  | kubectl apply -f -
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mysql_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mysql_prometheus_exporter.yaml?$(date +%s)"  | kubectl apply -f -
+#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mysql_prometheus_exporter.yaml?$(date +%s)"  | kubectl apply -f -
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/phpmyadmin_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mongodbcfg.yaml?$(date +%s)"  | sed -e 's/  replicas: 1/  replicas: 3/g'  | kubectl apply -f -

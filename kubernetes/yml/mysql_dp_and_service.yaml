@@ -39,8 +39,21 @@ spec:
     metadata:
       labels:
         app: mysql
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/scheme: "http"
+        #prometheus.io/path: "/actuator/prometheus"
+        prometheus.io/port: "9104"        
     spec:
       containers:
+      - name: mysql-prometheus-exporter
+        image: prom/mysqld-exporter
+        ports:
+        - name: mysqlexporter
+          containerPort: 9104
+        env:
+        - name: DATA_SOURCE_NAME
+          value: "root:secret@(mysql:3306)/"      
       - name: mysql
         image: mysql:5.7
         ports:
