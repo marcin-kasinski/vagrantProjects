@@ -318,7 +318,11 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/nginx_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -
 
-#curl 'elasticsearch-logging:9200/_cat/indices?v'
+#curl http://es:9200/_cluster/health
+#curl http://es:9200/_cat/indices?v
+#curl http://es:9200/_nodes
+#curl http://es:9200/_cluster/stats?human&pretty
+
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/elasticsearch.yaml?$(date +%s)" | kubectl apply -f -
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/elastic-exporter.yaml?$(date +%s)" | kubectl apply -f -
 

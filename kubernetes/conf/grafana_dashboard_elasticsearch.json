@@ -14,7 +14,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "5.2.2"
+      "version": "5.2.3"
     },
     {
       "type": "panel",
@@ -53,7 +53,7 @@
   "gnetId": 266,
   "graphTooltip": 1,
   "id": null,
-  "iteration": 1534852185066,
+  "iteration": 1535318189622,
   "links": [],
   "panels": [
     {
@@ -75,9 +75,9 @@
       "colorBackground": true,
       "colorValue": false,
       "colors": [
-        "rgba(50, 172, 45, 0.97)",
+        "rgba(245, 54, 54, 0.9)",
         "rgba(255, 166, 0, 0.89)",
-        "rgba(245, 54, 54, 0.9)"
+        "rgba(50, 172, 45, 0.97)"
       ],
       "datasource": "Prometheus",
       "editable": true,
@@ -143,7 +143,7 @@
           "step": 600
         }
       ],
-      "thresholds": "1,2",
+      "thresholds": "0.5,0",
       "title": "Cluster status",
       "transparent": false,
       "type": "singlestat",
@@ -152,12 +152,12 @@
         {
           "op": "=",
           "text": "GREEN",
-          "value": "0"
+          "value": "1"
         },
         {
           "op": "=",
-          "text": "YELLOW",
-          "value": "1"
+          "text": "YELLOW / RED",
+          "value": "0"
         },
         {
           "op": "=",
@@ -221,7 +221,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(elasticsearch_cluster_health_status == 0) +1",
+          "expr": "(elasticsearch_cluster_health_status == 1) +1",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 10,
@@ -231,7 +231,7 @@
           "step": 300
         },
         {
-          "expr": "elasticsearch_cluster_health_status == 1",
+          "expr": "elasticsearch_cluster_health_status == 0",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 10,
@@ -2875,5 +2875,5 @@
   "timezone": "utc",
   "title": "ElasticSearch",
   "uid": "A6L300tmk",
-  "version": 34
+  "version": 6
 }
