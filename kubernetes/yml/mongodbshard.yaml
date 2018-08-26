@@ -1,35 +1,35 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongodb-shard-headless-service
+  name: mongodb-shard-rs-0x-hs
   namespace: default
   labels:
-    name: mongodb-shard
+    name: mongodb-shard-rs-0x
 spec:
   ports:
   - port: 27017
     targetPort: 27017
   clusterIP: None
   selector:
-    role: mongodb-shard
+    role: mongodb-shard-rs-0x
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mongodb-shard
+  name: mongodb-shard-rs-0x
   namespace: default
 spec:
   selector:
     matchLabels:
-      role: mongodb-shard # has to match .spec.template.metadata.labels
-  serviceName: mongodb-shard-headless-service
+      role: mongodb-shard-rs-0x # has to match .spec.template.metadata.labels
+  serviceName: mongodb-shard-rs-0x-hs
   replicas: 1
   template:
     metadata:
       labels:
-        role: mongodb-shard
+        role: mongodb-shard-rs-0x
         tier: maindb
-        replicaset: ShardX
+        replicaset: rs-0x
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/scheme: "http"
@@ -47,7 +47,7 @@ spec:
                 - key: replicaset
                   operator: In
                   values:
-                  - ShardX
+                  - rs-0x
               topologyKey: kubernetes.io/hostname
       terminationGracePeriodSeconds: 10
       containers:
@@ -63,7 +63,7 @@ spec:
 #            value: "user:password"
       
       
-        - name: mongodb-shard-container
+        - name: mongodb-shard-rs-0x-container
           image: mongo
           command:
             - "mongod"
@@ -72,8 +72,8 @@ spec:
             - "27017"
             - "--bind_ip"
             - "0.0.0.0"
-            #- "--replSet"
-            #- "ShardX"
+            - "--replSet"
+            - "rs-0x"
             - "--dbpath"
             - "/mongo-disk"
           resources:
