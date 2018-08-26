@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongodb-configdb-headless-service
+  name: mongodb-configdb-hs
   namespace: default
   labels:
     name: mongodb-configdb
@@ -22,7 +22,7 @@ spec:
   selector:
     matchLabels:
       role: mongodb-configdb # has to match .spec.template.metadata.labels
-  serviceName: mongodb-configdb-headless-service
+  serviceName: mongodb-configdb-hs
   replicas: 1
   template:
     metadata:
