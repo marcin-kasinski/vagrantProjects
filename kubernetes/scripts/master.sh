@@ -45,7 +45,7 @@ while ! nc -z $MONGOROUTERPODIP 27017; do   echo "waiting mongos to launch ..." 
 
 
 #dodanie pierwszego rs
-kubectl exec mongodb-routers-0 -c mongodb-routers-container -- mongo --port 27017 --eval "sh.addShard('rs-0x/mongodb-shard-rs-0x-0.mongodb-shard-rs-0x-hs.default.svc.cluster.local:27017')"
+kubectl exec mongodb-routers-0 -c mongodb-routers-container -- mongo --port 27017 --eval "sh.addShard('rs-0x/mongodb-shard-rs-0x-0.mongodb-shard-rs-0x-hs.default.svc.cluster.local:27017,mongodb-shard-rs-0x-1.mongodb-shard-rs-0x-hs.default.svc.cluster.local:27017,mongodb-shard-rs-0x-2.mongodb-shard-rs-0x-hs.default.svc.cluster.local:27017')"
 
 kubectl exec mongodb-routers-0 -c mongodb-routers-container -- mongo --port 27017 --eval "sh.status();"
 
@@ -250,11 +250,9 @@ sudo chown nobody:nogroup /var/nfs/jenkins
 sudo chown -R 1000:1000 /var/nfs/jenkins
 sudo chown -R 1000:1000 /var/nfs/mysql
 
-
-
-sudo sh -c "echo '/var/nfs/kubernetes_share*(rw,sync,no_subtree_check,no_root_squash)' >> /etc/exports"
-sudo sh -c "echo '/var/nfs/mysql*(rw,sync,no_subtree_check,no_root_squash)' >> /etc/exports"
-sudo sh -c "echo '/var/nfs/jenkins*(rw,sync,no_subtree_check,no_root_squash)' >> /etc/exports"
+sudo sh -c "echo '/var/nfs/kubernetes_share *(rw,sync,no_subtree_check,no_root_squash)' >> /etc/exports"
+sudo sh -c "echo '/var/nfs/mysql *(rw,sync,no_subtree_check,no_root_squash)' >> /etc/exports"
+sudo sh -c "echo '/var/nfs/jenkins *(rw,sync,no_subtree_check,no_root_squash)' >> /etc/exports"
 sudo exportfs -ra
 
 # ----------------------------- nfs -----------------------------
