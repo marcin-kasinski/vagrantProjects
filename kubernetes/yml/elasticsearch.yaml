@@ -65,11 +65,6 @@ spec:
         app: es
         kubernetes.io/name: "es"
         tier: backend
-      annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/scheme: "http"
-        #prometheus.io/path: "/actuator/prometheus"
-        prometheus.io/port: "9108"        
     spec:
       containers:
       - name: es-exporter

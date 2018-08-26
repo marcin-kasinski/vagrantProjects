@@ -31,16 +31,23 @@ spec:
     metadata:
       labels:
         app: es-exporter
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/scheme: "http"
+        #prometheus.io/path: "/actuator/prometheus"
+        prometheus.io/port: "9108"        
     spec:
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
+      restartPolicy: Always        
       containers:
-      - command:
+      - name: es-exporter
+        image: justwatch/elasticsearch_exporter:1.0.1      
+        command:
         - /bin/elasticsearch_exporter
         - -es.uri=http://es:9200
         - -es.all=true
-        image: justwatch/elasticsearch_exporter:1.0.1
         securityContext:
           capabilities:
             drop:
@@ -65,7 +72,6 @@ spec:
             port: 9108
           initialDelaySeconds: 30
           timeoutSeconds: 10
-        name: es-exporter
         ports:
         - containerPort: 9108
         readinessProbe:
@@ -81,4 +87,3 @@ spec:
           requests:
             cpu: 25m
             memory: 64Mi
-      restartPolicy: Always
