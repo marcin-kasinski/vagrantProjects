@@ -1,3 +1,4 @@
 eclipse.preferences.version=1
 encoding//kubernetes/conf/grafana_dashboard_kafka_overview.json=UTF-8
+encoding//kubernetes/conf/grafana_dashboard_mongo.json=UTF-8
 encoding//openstack/Vagrantfile=UTF-8
