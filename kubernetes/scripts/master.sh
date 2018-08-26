@@ -29,10 +29,9 @@ while ! nc -z $MONGOSHARDPODIP 27017; do   echo "waiting mongo shard to launch .
 
 kubectl exec mongodb-shard-rs-0x-0 -c mongodb-shard-rs-0x-container -- mongo --port 27017 --eval "rs.status()"
 kubectl exec mongodb-shard-rs-0x-0 -c mongodb-shard-rs-0x-container -- mongo --port 27017 --eval "rs.initiate(  {_id: \"rs-0x\", members: [{ _id : 0, host : \"mongodb-shard-rs-0x-0.mongodb-shard-rs-0x-hs.default.svc.cluster.local:27017\" }]  })"
+kubectl exec mongodb-shard-rs-0x-0 -c mongodb-shard-rs-0x-container -- mongo --port 27017 --eval "rs.add('mongodb-shard-rs-0x-1.mongodb-shard-rs-0x-hs.default.svc.cluster.local:27017')"
+kubectl exec mongodb-shard-rs-0x-0 -c mongodb-shard-rs-0x-container -- mongo --port 27017 --eval "rs.add('mongodb-shard-rs-0x-2.mongodb-shard-rs-0x-hs.default.svc.cluster.local:27017')"
 kubectl exec mongodb-shard-rs-0x-0 -c mongodb-shard-rs-0x-container -- mongo --port 27017 --eval "rs.status()"
-
-
-
 
 while ! kubectl get po -o wide | grep mongodb-routers-0 | grep Running ; do   echo "waiting for mongos IP..." ; sleep 20 ; done
 
@@ -313,8 +312,8 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mysql_prometheus_exporter.yaml?$(date +%s)"  | kubectl apply -f -
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/phpmyadmin_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -
 
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mongodbcfg.yaml?$(date +%s)"  | sed -e 's/  replicas: 1/  replicas: 1/g'  | kubectl apply -f -
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mongodbshard.yaml?$(date +%s)" | sed -e 's/  replicas: 1/  replicas: 1/g'  | kubectl apply -f -
+curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mongodbcfg.yaml?$(date +%s)"  | sed -e 's/  replicas: 1/  replicas: 3/g'  | kubectl apply -f -
+curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mongodbshard.yaml?$(date +%s)" | sed -e 's/  replicas: 1/  replicas: 3/g'  | kubectl apply -f -
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mongodbrouter.yaml?$(date +%s)"  | kubectl apply -f -
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/nginx_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -
