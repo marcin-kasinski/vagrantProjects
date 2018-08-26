@@ -18,8 +18,7 @@ data:
 #    - job_name: 'elasticsearch'
 #      static_configs:
 #       - targets:
-#         - es-exporter:9108   # es-exporter 
-      
+#         - es-exporter:9108   # es-exporter       
     - job_name: 'kubernetes-cluster'
       scheme: https
       tls_config:
