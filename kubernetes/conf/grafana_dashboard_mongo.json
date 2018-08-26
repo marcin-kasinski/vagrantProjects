@@ -53,7 +53,7 @@
   "gnetId": 7308,
   "graphTooltip": 1,
   "id": null,
-  "iteration": 1535219916952,
+  "iteration": 1535313946073,
   "links": [],
   "panels": [
     {
@@ -936,11 +936,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "mongodb_replset_oplog_size_bytes{instance=~\"$env\"}",
+          "expr": "mongodb_mongod_replset_oplog_size_bytes{kubernetes_pod_name=~\"$instance\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{type}}",
+          "legendFormat": "{{kubernetes_pod_name}} {{type}}",
           "metric": "mongodb_locks_time_acquiring_global_microseconds_total",
           "refId": "A",
           "step": 240
@@ -1027,11 +1027,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "mongodb_memory{instance=~\"$env\",type=~\"resident|virtual\"}",
+          "expr": "mongodb_mongod_memory{kubernetes_pod_name=~\"$instance\",type=~\"resident|virtual\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{type}}",
+          "legendFormat": "{{kubernetes_pod_name}} {{type}}",
           "refId": "A",
           "step": 240
         }
@@ -1115,11 +1115,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(mongodb_network_bytes_total{instance=~\"$env\"}[$interval])",
+          "expr": "rate(mongodb_mongod_network_bytes_total{kubernetes_pod_name=~\"$instance\"}[$interval])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{state}}",
+          "legendFormat": "{{kubernetes_pod_name}} {{state}}",
           "metric": "mongodb_metrics_operation_total",
           "refId": "A",
           "step": 240
@@ -1209,7 +1209,7 @@
         "executionErrorState": "keep_state",
         "frequency": "60s",
         "handler": 1,
-        "message": "A MongoDB oplog replication has been 5 minutes behind in its replication for more than 15 minutes.\nBeing able to fail over to a replica of your data is only useful if the data is up to date, so you need to know when that’s no longer the case!",
+        "message": "A MongoDB oplog replication has been 5 minutes behind in its replication for more than 15 minutes.\nBeing able to fail over to a replica of your data is only useful if the data is up to date, so you need to know when thatï¿½s no longer the case!",
         "name": "MongoDB Oplog lag alert",
         "noDataState": "no_data",
         "notifications": [
@@ -1254,12 +1254,12 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(mongodb_replset_oplog_head_timestamp[5m])",
+          "expr": "rate(mongodb_mongod_replset_oplog_head_timestamp[5m])",
           "format": "time_series",
           "hide": false,
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{instance}}",
+          "legendFormat": "{{kubernetes_pod_name}}",
           "refId": "A",
           "step": 240
         }
@@ -1765,5 +1765,5 @@
   "timezone": "browser",
   "title": "MongoDB",
   "uid": "sO5bQXpmz",
-  "version": 8
+  "version": 3
 }
