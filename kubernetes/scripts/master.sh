@@ -310,7 +310,6 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kafka-manager.yaml?$(date +%s)"  | kubectl apply -f -
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mysql_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -
-#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mysql_prometheus_exporter.yaml?$(date +%s)"  | kubectl apply -f -
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/phpmyadmin_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mongodbcfg.yaml?$(date +%s)"  | sed -e 's/  replicas: 1/  replicas: 3/g'  | kubectl apply -f -
@@ -321,7 +320,6 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 
 #curl 'elasticsearch-logging:9200/_cat/indices?v'
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/elasticsearch.yaml?$(date +%s)" | kubectl apply -f -
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/elastic-exporter.yaml?$(date +%s)" | kubectl apply -f -
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/logstash.yaml?$(date +%s)" | kubectl apply -f -
 
@@ -336,7 +334,6 @@ setupMYSQL
 setupkafka
 
 #moje
-#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/prometheus.yaml?$(date +%s)"  | kubectl apply -f -
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/prometheus_ss.yaml?$(date +%s)"  | kubectl apply -f -
 
 #prometheus-operator
