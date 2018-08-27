@@ -316,7 +316,7 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mongodbshard.yaml?$(date +%s)" | sed -e 's/  replicas: 1/  replicas: 3/g'  | kubectl apply -f -
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mongodbrouter.yaml?$(date +%s)"  | kubectl apply -f -
 
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/nginx_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -
+curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/nginx.yaml?$(date +%s)"  | kubectl apply -f -
 
 #curl http://es:9200/_cluster/health
 #curl http://es:9200/_cat/indices?v
