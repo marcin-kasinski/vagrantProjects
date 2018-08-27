@@ -30,7 +30,7 @@ spec:
         - name: APP_AJAX_URL
           value: "http://springbootmicroservice:30080/api/get-by-email?email=ajax@ajax.com"          
         - name: APP_REST_URL
-          value: "http://springbootmicroservice-cs.default.svc.cluster.local:9191/api/get-by-email?email=x@x.com"          
+          value: "http://springbootmicroservice-cs.default.svc.cluster.local:9191/api/adduser"
 ---
 apiVersion: v1
 kind: Service
