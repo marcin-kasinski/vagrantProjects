@@ -176,16 +176,16 @@ GRAFANAPODNAME="grafana"
 
 while ! kubectl get po -n default -o wide | grep $GRAFANAPODNAME | grep Running ; do   echo "waiting for Grafana IP..." ; sleep 20 ; done
 
-GRAFANAPODIP=`kubectl get po -n default -o wide | grep $GRAFANAPODNAME | grep Running`
-GRAFANAPODIP=`echo $GRAFANAPODIP | cut -d " " -f 6`
-
+GRAFANAPODLINE=`kubectl get po -n default -o wide | grep $GRAFANAPODNAME | grep Running`
+GRAFANAPODIP=`echo $GRAFANAPODLINE | cut -d " " -f 6`
+GRAFANAPODNAME=`echo $GRAFANAPODLINE | cut -d " " -f 1`
+echo GRAFANA POD NAME $GRAFANAPODNAME
 echo GRAFANA IP $GRAFANAPODIP
 
 while ! nc -w 20 -z $GRAFANAPODIP 3000; do   echo "waiting grafana to launch ..." ; sleep 20 ; done
 
 #add datasource
 curl -XPOST --data @/vagrant/conf/grafanaprometheusdatasource.json -H "Content-Type:application/json"  http://admin:admin@$GRAFANAPODIP:3000/api/datasources
-
 
 DASHBOARD="{\"dashboard\":  $(</vagrant/conf/grafana_dashboard_kafka_overview.json) }"
 curl -XPOST --data "$DASHBOARD" -H "Content-Type:application/json"  http://admin:admin@$GRAFANAPODIP:3000/api/dashboards/db
@@ -213,10 +213,10 @@ showDashboardIP(){
 
 while ! kubectl get po -n kube-system -o wide | grep kubernetes-dashboard | grep Running ; do   echo "waiting for dashboard IP..." ; sleep 20 ; done
 
-	DASHBOARDPODIP=`kubectl get po -n kube-system -o wide | grep kubernetes-dashboard | grep Running`
+	DASHBOARDPODLINE=`kubectl get po -n kube-system -o wide | grep kubernetes-dashboard | grep Running`
 	
-	DASHBOARDPODNAME=`echo $DASHBOARDPODIP  | cut -d " " -f 1`
-	DASHBOARDPODIP=`echo $DASHBOARDPODIP  | cut -d " " -f 6`
+	DASHBOARDPODNAME=`echo $DASHBOARDPODLINE  | cut -d " " -f 1`
+	DASHBOARDPODIP=`echo $DASHBOARDPODLINE  | cut -d " " -f 6`
 	echo Dashboard Name: $DASHBOARDPODNAME
 	echo Dashboard IP $DASHBOARDPODIP
 
