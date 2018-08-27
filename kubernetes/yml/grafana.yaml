@@ -21,12 +21,10 @@ spec:
         - name: grafana-port
           containerPort: 3000
         env:
-        - name: XXX
-          value: "secret"
-        - name: XXX2
-          value: "mysql"
-        - name: XXX3
-          value: "mysql"
+        - name: GF_SECURITY_ADMIN_PASSWORD
+          value: "admin"
+        - name: GF_INSTALL_PLUGINS
+          value: "jdbranham-diagram-panel"
 ---
 apiVersion: v1
 kind: Service
