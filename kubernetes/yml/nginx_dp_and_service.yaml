@@ -12,7 +12,7 @@ data:
     <a href="http://springbootweb:30080">http://springbootweb:30080/</a><br>
     <a href="http://zoonavigator:30080">http://zoonavigator:30080/</a><br>
     <a href="http://kafka-manager:30080">http://kafka-manager:30080/</a><br>
-    <a href="http://springbootzipkin:30080">http://springbootzipkin:30080/</a><br>
+    <a href="http://zipkin:30080">http://springbootzipkin:30080/</a><br>
     <a href="http://prometheus:30080">http://prometheus:30080/</a><br>
     <a href="http://grafana:30080">http://grafana:30080/</a><br>
     <a href="http://kibana:30080">http://kibana:30080/</a><br>
