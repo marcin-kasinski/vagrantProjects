@@ -12,38 +12,38 @@ spec:
     targetPort: 27017
     name: client
   selector:
-    role: mongodb-routers
+    role: mongodb-router
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongodb-routers-hs
+  name: mongodb-router-hs
   namespace: default
   labels:
-    name: mongodb-routers
+    name: mongodb-router
 spec:
   ports:
   - port: 27017
     targetPort: 27017
   clusterIP: None
   selector:
-    role: mongodb-routers
+    role: mongodb-router
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mongodb-routers
+  name: mongodb-router
   namespace: default
 spec:
   selector:
     matchLabels:
-      role: mongodb-routers # has to match .spec.template.metadata.labels
-  serviceName: mongodb-routers-hs
+      role: mongodb-router # has to match .spec.template.metadata.labels
+  serviceName: mongodb-router-hs
   replicas: 1
   template:
     metadata:
       labels:
-        role: mongodb-routers
+        role: mongodb-router
         tier: maindb
         replicaset: routers
       annotations:
@@ -79,7 +79,7 @@ spec:
 #            value: "user:password"
       
 
-        - name: mongodb-routers-container
+        - name: mongodb-router-container
           image: mongo
           command:
             - "mongos"
