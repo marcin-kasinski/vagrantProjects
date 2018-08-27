@@ -24,7 +24,7 @@ spec:
         - name: GF_SECURITY_ADMIN_PASSWORD
           value: "admin"
         - name: GF_INSTALL_PLUGINS
-          value: "jdbranham-diagram-panel"
+          value: "marcuscalidus-svg-panel"
 ---
 apiVersion: v1
 kind: Service
