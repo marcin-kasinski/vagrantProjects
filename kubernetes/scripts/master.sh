@@ -33,9 +33,9 @@ kubectl exec mongodb-shard-rs-0x-0 -c mongodb-shard-rs-0x-container -- mongo --p
 kubectl exec mongodb-shard-rs-0x-0 -c mongodb-shard-rs-0x-container -- mongo --port 27017 --eval "rs.add('mongodb-shard-rs-0x-2.mongodb-shard-rs-0x-hs.default.svc.cluster.local:27017')"
 kubectl exec mongodb-shard-rs-0x-0 -c mongodb-shard-rs-0x-container -- mongo --port 27017 --eval "rs.status()"
 
-while ! kubectl get po -o wide | grep mongodb-routers-0 | grep Running ; do   echo "waiting for mongos IP..." ; sleep 20 ; done
+while ! kubectl get po -o wide | grep mongodb-router-0 | grep Running ; do   echo "waiting for mongos IP..." ; sleep 20 ; done
 
-MONGOROUTERPODIP=`kubectl get po -o wide | grep mongodb-routers-0 | grep Running `
+MONGOROUTERPODIP=`kubectl get po -o wide | grep mongodb-router-0 | grep Running `
 MONGOROUTERPODIP=`echo $MONGOROUTERPODIP | cut -d " " -f 6`
 echo $MONGOROUTERPODIP
 
@@ -45,15 +45,15 @@ while ! nc -z $MONGOROUTERPODIP 27017; do   echo "waiting mongos to launch ..." 
 
 
 #dodanie pierwszego rs
-kubectl exec mongodb-routers-0 -c mongodb-routers-container -- mongo --port 27017 --eval "sh.addShard('rs-0x/mongodb-shard-rs-0x-0.mongodb-shard-rs-0x-hs.default.svc.cluster.local:27017,mongodb-shard-rs-0x-1.mongodb-shard-rs-0x-hs.default.svc.cluster.local:27017,mongodb-shard-rs-0x-2.mongodb-shard-rs-0x-hs.default.svc.cluster.local:27017')"
+kubectl exec mongodb-router-0 -c mongodb-routers-container -- mongo --port 27017 --eval "sh.addShard('rs-0x/mongodb-shard-rs-0x-0.mongodb-shard-rs-0x-hs.default.svc.cluster.local:27017,mongodb-shard-rs-0x-1.mongodb-shard-rs-0x-hs.default.svc.cluster.local:27017,mongodb-shard-rs-0x-2.mongodb-shard-rs-0x-hs.default.svc.cluster.local:27017')"
 
-kubectl exec mongodb-routers-0 -c mongodb-routers-container -- mongo --port 27017 --eval "sh.status();"
+kubectl exec mongodb-router-0 -c mongodb-routers-container -- mongo --port 27017 --eval "sh.status();"
 
 #enable sharding on db
-kubectl exec mongodb-routers-0 -c mongodb-routers-container -- mongo --port 27017 --eval "sh.enableSharding(\"mkdatabase\")"
+kubectl exec mongodb-router-0 -c mongodb-routers-container -- mongo --port 27017 --eval "sh.enableSharding(\"mkdatabase\")"
 
-kubectl exec mongodb-routers-0 -c mongodb-routers-container -- mongo localhost:27017/mkdatabase --eval "db.myNewCollection1.insertOne( { x: 3 } );"
-kubectl exec mongodb-routers-0 -c mongodb-routers-container -- mongo localhost:27017/mkdatabase --eval "db.myNewCollection1.insertOne( { x: 4 } );"
+kubectl exec mongodb-router-0 -c mongodb-routers-container -- mongo localhost:27017/mkdatabase --eval "db.myNewCollection1.insertOne( { x: 3 } );"
+kubectl exec mongodb-router-0 -c mongodb-routers-container -- mongo localhost:27017/mkdatabase --eval "db.myNewCollection1.insertOne( { x: 4 } );"
 
 
 
