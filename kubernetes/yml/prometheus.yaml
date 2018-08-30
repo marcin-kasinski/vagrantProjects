@@ -1,6 +1,6 @@
 kind: ConfigMap
 metadata:
-  name: prometheus-alert-rules
+  name: prometheus-alert-rules-cm
   namespace: default
 apiVersion: v1
 data:
@@ -243,9 +243,9 @@ spec:
         - name: config-volume-prometheus-yml
           configMap:
             name: prometheus-config-prometheus.yml	
-        - name: prometheus-alert-rules-config
+        - name: prometheus-alert-rules
           configMap:
-            name: prometheus-alert-rules	
+            name: prometheus-alert-rules-cm	
           
 ---
 apiVersion: v1
