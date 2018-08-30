@@ -24,7 +24,7 @@ data:
     myorigin = /etc/mailname
     mydestination = $myhostname, localhost.$mydomain, $mydomain
     relayhost =
-    mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128  10.0.0.0/24
+    mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128  10.244.2.0/24
     mailbox_size_limit = 0
     recipient_delimiter = +
     inet_interfaces = loopback-only
