@@ -195,8 +195,7 @@ spec:
       serviceAccountName: alertmanager
       containers:
       - name: alertmanager
-        image: quay.io/alertmanager/alertmanager
-        args: [ "--config.file=/etc/alertmanager/alertmanager.yml", "--storage.tsdb.path=/alertmanager", "--web.console.libraries=/usr/share/alertmanager/console_libraries", "--web.console.templates=/usr/share/alertmanager/consoles" ]
+        image: prom/alertmanager
         ports:
         - name: alertmanager-port
           containerPort: 9093
@@ -208,9 +207,9 @@ spec:
         - name: PMA_HOST
           value: "mysql"
         volumeMounts:
-        - name: config-volume-alertmanager-yml
-          mountPath: /etc/alertmanager/alertmanager.yml
-          subPath: alertmanager.yml
+#        - name: config-volume-alertmanager-yml
+#          mountPath: /etc/alertmanager/alertmanager.yml
+#          subPath: alertmanager.yml
       volumes:
         - name: config-volume-alertmanager-yml
           configMap:
