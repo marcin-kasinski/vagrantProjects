@@ -104,7 +104,7 @@ spec:
       containers:
       - name: alertmanager
         image: prom/alertmanager
-        args: [ "--log.level","info","--cluster.listen-address",":8001", "--cluster.peer","alertmanager-0.alertmanager-hs.default.svc.cluster.local:8001", "--cluster.peer","alertmanager-1.alertmanager-hs.default.svc.cluster.local:8001", "--cluster.peer","alertmanager-2.alertmanager-hs.default.svc.cluster.local:8001" ]
+        args: [ "--log.level","debug","--cluster.listen-address",":8001", "--cluster.peer","alertmanager-0.alertmanager-hs.default.svc.cluster.local:8001", "--cluster.peer","alertmanager-1.alertmanager-hs.default.svc.cluster.local:8001", "--cluster.peer","alertmanager-2.alertmanager-hs.default.svc.cluster.local:8001" ]
         ports:
         - name: alertmgr-port
           containerPort: 9093
