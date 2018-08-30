@@ -1,4 +1,23 @@
-#http://prometheus.default.svc.cluster.local:9090
+kind: ConfigMap
+metadata:
+  name: prometheus-alert-rules
+  namespace: default
+apiVersion: v1
+data:
+  alert.rules: |-
+    - name: example
+      rules:
+    
+      # Alert for any instance that is unreachable for >5 minutes.
+      - alert: InstanceDownXXX
+        expr: count(kafka_server_replicamanager_leadercount) <3
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Instance {{ $labels.instance }} down"
+          description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 1 minute."      
+---
 kind: ConfigMap
 metadata:
   name: prometheus-config-prometheus.yml
@@ -186,7 +205,7 @@ metadata:
     app: prometheus  
 spec:
   serviceName: "prometheus-hs"
-  replicas: 3
+  replicas: 1
   updateStrategy:
     type: RollingUpdate
   podManagementPolicy: Parallel  
@@ -217,12 +236,16 @@ spec:
         - name: config-volume-prometheus-yml
           mountPath: /etc/prometheus/prometheus.yml
           subPath: prometheus.yml
+        - name: prometheus-alert-rules
+          mountPath: /etc/prometheus-rules/alert.rules
+          subPath: alert.rules
       volumes:
         - name: config-volume-prometheus-yml
           configMap:
-            # Provide the name of the ConfigMap containing the files you want
-            # to add to the container
             name: prometheus-config-prometheus.yml	
+        - name: prometheus-alert-rules-config
+          configMap:
+            name: prometheus-alert-rules	
           
 ---
 apiVersion: v1
