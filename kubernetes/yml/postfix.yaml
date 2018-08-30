@@ -32,5 +32,10 @@ spec:
     targetPort: 587
     protocol: TCP
     name: http
+  - port: 25
+    #nodePort: 30070
+    targetPort: 25
+    protocol: TCP
+    name: http
   selector:
     app: postfix
