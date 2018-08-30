@@ -10,7 +10,7 @@ data:
     global:
       resolve_timeout: 5m
       
-      smtp_smarthost: 'fakesmtp:1025'
+      smtp_smarthost: 'fakesmtp:25'
       smtp_from: 'alertmanager@prometheus.com'
       smtp_auth_username: ''
       smtp_auth_password: ''
