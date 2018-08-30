@@ -104,9 +104,12 @@ spec:
       containers:
       - name: alertmanager
         image: prom/alertmanager
+        args: [ "--cluster.listen-address=8001", "--cluster.peer=alertmanager-0.alertmanager-hs.default.svc.cluster.local:8001", "--cluster.peer=alertmanager-1.alertmanager-hs.default.svc.cluster.local:8001", "--cluster.peer=alertmanager-2.alertmanager-hs.default.svc.cluster.local:8001" ]
         ports:
         - name: alertmgr-port
           containerPort: 9093
+        - name: alertclust
+          containerPort: 8001
         env:
         - name: MYSQL_ROOT_PASSWORD
           value: "secret"
@@ -135,9 +138,12 @@ metadata:
 spec:
   type: NodePort
   ports:
-  - port: 9093
+  - name: client
+    port: 9093
     targetPort: 9093
-    name: client
+  - name: cluster
+    port: 8001
+    targetPort: 8001
   selector:
     app: alertmanager
 ---
