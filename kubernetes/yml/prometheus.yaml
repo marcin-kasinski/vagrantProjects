@@ -37,7 +37,9 @@ data:
       alertmanagers:
       - static_configs:
         - targets:
-          - alertmanager-0.alertmanager-hs.default.svc.cluster.local:9093
+          - alertmanager-1.alertmanager-hs.default.svc.cluster.local:9093
+          - alertmanager-2.alertmanager-hs.default.svc.cluster.local:9093
+          - alertmanager-3.alertmanager-hs.default.svc.cluster.local:9093
     rule_files:
     - '/etc/prometheus-rules/alert.rules'
     scrape_configs:
