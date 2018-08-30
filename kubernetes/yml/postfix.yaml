@@ -31,7 +31,9 @@ data:
     recipient_delimiter = +
     #bylo
     #inet_interfaces = loopback-only
-    inet_protocols = all 
+    #inet_protocols = all 
+    inet_protocols = ipv4 
+    
 ---
 apiVersion: apps/v1
 kind: Deployment
