@@ -18,6 +18,7 @@ data:
     <a href="http://grafana:30080">http://grafana:30080/</a><br>
     <a href="http://kibana:30080">http://kibana:30080/</a><br>
     <a href="http://rabbitmq:30080">http://rabbitmq:30080/</a><br>
+    <a href="http://fakesmtp:30080">http://fakesmtp:30080/</a><br>
     
      <br>
     
