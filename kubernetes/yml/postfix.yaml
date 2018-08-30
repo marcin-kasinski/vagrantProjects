@@ -28,7 +28,7 @@ spec:
   type: NodePort
   ports:
   - port: 587
-    nodePort: 30070
+    #nodePort: 30070
     targetPort: 587
     protocol: TCP
     name: http
