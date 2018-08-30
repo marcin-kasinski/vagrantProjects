@@ -99,6 +99,7 @@ spec:
     metadata:
       labels:
         app: alertmanager
+      #bez poniższych annotacji nie dziala klaster  
       annotations:
         prometheus.io/scrape: 'true'
         prometheus.io/port: '9093'
@@ -136,6 +137,7 @@ metadata:
   name: alertmanager-cs
   labels:
     app: alertmanager
+  #bez poniższych annotacji nie dziala klaster
   annotations:
     prometheus.io/scrape: 'true'
     prometheus.io/port: '9093'
