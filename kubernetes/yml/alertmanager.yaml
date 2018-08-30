@@ -197,7 +197,7 @@ spec:
       - name: alertmanager
         image: prom/alertmanager
         ports:
-        - name: alertmanager-port
+        - name: alertmgr-port
           containerPort: 9093
         env:
         - name: MYSQL_ROOT_PASSWORD
