@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fakesmtp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fakesmtp
+  template:
+    metadata:
+      labels:
+        app: fakesmtp
+    spec:
+      containers:
+      - name: fakesmtp
+        image: mailhog/mailhog
+        imagePullPolicy: Always
+        ports:
+        - name: smtp
+          containerPort: 1025
+        - name: web
+          containerPort: 8025
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fakesmtp
+spec:
+  type: NodePort
+  ports:
+  - name: web
+    port: 8025
+    #nodePort: 30070
+    targetPort: 8025
+    protocol: TCP
+  - name: smtp
+    port: 25
+    #nodePort: 30070
+    targetPort: 1025
+    protocol: TCP
+  selector:
+    app: fakesmtp
