@@ -12,10 +12,15 @@ data:
       external_labels:
         monitor: 'prometheus.cloudapps.cloud-cafe.in'
         type: 'kubernetes'
+    # Alertmanager configuration
+    alerting:
+      alertmanagers:
+      - static_configs:
+        - targets:
+          - alertmanager-0.alertmanager-hs.default.svc.cluster.local:9093
     rule_files:
     - '/etc/prometheus-rules/alert.rules'
     scrape_configs:
-
     - job_name: 'kubernetes-cluster'
       scheme: https
       tls_config:
@@ -174,13 +179,17 @@ subjects:
   namespace: default
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: prometheus-deployment
+  name: prometheus
   labels:
     app: prometheus  
 spec:
-  replicas: 1
+  serviceName: "prometheus-hs"
+  replicas: 3
+  updateStrategy:
+    type: RollingUpdate
+  podManagementPolicy: Parallel  
   selector:
     matchLabels:
       app: prometheus
@@ -219,15 +228,29 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: prometheus
+  name: prometheus-cs
+  labels:
+    app: prometheus
 spec:
   type: NodePort
   ports:
   - port: 9090
-    nodePort: 30909
     targetPort: 9090
-    protocol: TCP
-    name: http
+    name: client
+  selector:
+    app: prometheus
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-hs
+  labels:
+    app: prometheus
+spec:
+  ports:
+  - port: 9090
+    name: server
+  clusterIP: None
   selector:
     app: prometheus
 ---
@@ -243,5 +266,5 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: prometheus
+          serviceName: prometheus-hs
           servicePort: 9090
