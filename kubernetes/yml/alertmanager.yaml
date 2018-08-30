@@ -136,6 +136,9 @@ metadata:
   name: alertmanager-cs
   labels:
     app: alertmanager
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '9093'
 spec:
   type: NodePort
   ports:
