@@ -10,8 +10,8 @@ data:
       rules:
     
       # Alert for any instance that is unreachable for >5 minutes.
-      - alert: InstanceDownXXX
-        expr: count(kafka_server_replicamanager_leadercount) <3
+      - alert: SpringbootmicroserviceDown
+        expr: count(process_cpu_usage{app="springbootmicroservice" }) <3
         for: 1m
         labels:
           severity: critical
