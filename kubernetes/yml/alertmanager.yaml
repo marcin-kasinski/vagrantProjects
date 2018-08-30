@@ -6,132 +6,27 @@ metadata:
 apiVersion: v1
 data:
   alertmanager.yml: |-
+    #mk conf#
     global:
-      scrape_interval:     5s
-      evaluation_interval: 5s
-      external_labels:
-        monitor: 'alertmanager.cloudapps.cloud-cafe.in'
-        type: 'kubernetes'
-    rule_files:
-    - '/etc/alertmanager-rules/alert.rules'
-    scrape_configs:
-    - job_name: 'kubernetes-cluster'
-      scheme: https
-      tls_config:
-        ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-        # alertmanagere query will be disable from URL if you uncomment below line
-        #insecure_skip_verify: true
-      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-      relabel_configs:
-      - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
-        action: keep
-        regex: default;kubernetes;https
-      kubernetes_sd_configs:
-      - role: endpoints
-
-    - job_name: 'kubernetes-nodes'
-      scheme: https
-      tls_config:
-        ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-        # alertmanagere query will be disable from URL if you uncomment below line
-        #insecure_skip_verify: true
-      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-      kubernetes_sd_configs:
-      - role: node
-      relabel_configs:
-      - action: labelmap
-        regex: __meta_kubernetes_node_label_(.+)
-      - target_label: __address__
-        replacement: kubernetes.default.svc:443
-      - source_labels: [__meta_kubernetes_node_name]
-        regex: (.+)
-        target_label: __metrics_path__
-        replacement: /api/v1/nodes/${1}/proxy/metrics
-
-    - job_name: 'kubernetes-service-endpoints'
-      kubernetes_sd_configs:
-      - role: endpoints
-      relabel_configs:
-      - source_labels: [__meta_kubernetes_service_annotation_alertmanager_io_scrape]
-        action: keep
-        regex: true
-      - source_labels: [__meta_kubernetes_service_annotation_alertmanager_io_scheme]
-        action: replace
-        target_label: __scheme__
-        regex: (https?)
-      - source_labels: [__meta_kubernetes_service_annotation_alertmanager_io_path]
-        action: replace
-        regex: (.+)
-        target_label: __metrics_path__
-      - source_labels: [__address__, __meta_kubernetes_service_annotation_alertmanager_io_port]
-        action: replace
-        target_label: __address__
-        regex: (.+)(?::\d+);(\d+)
-        replacement: $1:$2
-      - action: labelmap
-        regex: __meta_kubernetes_service_label_(.+)
-      - source_labels: [__meta_kubernetes_service_namespace]
-        action: replace
-        target_label: kubernetes_namespace
-      - source_labels: [__meta_kubernetes_service_name]
-        action: replace
-        target_label: kubernetes_name
-
-    - job_name: 'kubernetes-services'
-      metrics_path: /probe
-      params:
-        module: [http_2xx]
-      kubernetes_sd_configs:
-      - role: service
-      relabel_configs:
-      - source_labels: [__meta_kubernetes_service_annotation_alertmanager_io_probe]
-        action: keep
-        regex: true
-      - source_labels: []
-        target_label: __address__
-        replacement: blackbox
-      - source_labels: [__address__]
-        regex: (.*)(:80)?
-        target_label: __param_target
-      - source_labels: [__meta_kubernetes_service_name,__meta_kubernetes_service_namespace]
-        target_label: __param_target
-        regex: ([^;]+);(.+)
-        replacement: $1.$2.svc
-      - action: labelmap
-        regex: __meta_kubernetes_service_label_(.+)
-      - source_labels: [__meta_kubernetes_service_namespace]
-        action: replace
-        target_label: kubernetes_namespace
-      - source_labels: [__meta_kubernetes_service_name]
-        action: replace
-        target_label: kubernetes_name
-
-    - job_name: 'kubernetes-pods'
-      kubernetes_sd_configs:
-      - role: pod
-      relabel_configs:
-      - source_labels: [__meta_kubernetes_pod_annotation_alertmanager_io_scrape]
-        action: keep
-        regex: true
-      - source_labels: [__meta_kubernetes_pod_annotation_alertmanager_io_path]
-        action: replace
-        target_label: __metrics_path__
-        regex: (.+)
-      - source_labels: [__address__, __meta_kubernetes_pod_annotation_alertmanager_io_port]
-        action: replace
-        regex: (.+):(?:\d+);(\d+)
-        replacement: ${1}:${2}
-        target_label: __address__
-      - action: labelmap
-        regex: __meta_kubernetes_pod_label_(.+)
-      - source_labels: [__meta_kubernetes_pod_namespace]
-        action: replace
-        target_label: kubernetes_namespace
-      - source_labels: [__meta_kubernetes_pod_name]
-        action: replace
-        target_label: kubernetes_pod_name
-
----
+      resolve_timeout: 5m
+    
+    route:
+      group_by: ['alertname']
+      group_wait: 10s
+      group_interval: 10s
+      repeat_interval: 1h
+      receiver: 'web.hook'
+    receivers:
+    - name: 'web.hook'
+      webhook_configs:
+      - url: 'http://127.0.0.1:5001/'
+    inhibit_rules:
+      - source_match:
+          severity: 'critical'
+        target_match:
+          severity: 'warning'
+        equal: ['alertname', 'dev', 'instance']
+    ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
@@ -180,7 +75,7 @@ metadata:
     app: alertmanager  
 spec:
   serviceName: "alertmanager-hs"
-  replicas: 3
+  replicas: 1
   updateStrategy:
     type: RollingUpdate
   podManagementPolicy: Parallel  
@@ -207,9 +102,9 @@ spec:
         - name: PMA_HOST
           value: "mysql"
         volumeMounts:
-#        - name: config-volume-alertmanager-yml
-#          mountPath: /etc/alertmanager/alertmanager.yml
-#          subPath: alertmanager.yml
+        - name: config-volume-alertmanager-yml
+          mountPath: /etc/alertmanager/alertmanager.yml
+          subPath: alertmanager.yml
       volumes:
         - name: config-volume-alertmanager-yml
           configMap:
