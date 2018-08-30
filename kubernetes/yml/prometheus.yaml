@@ -8,8 +8,6 @@ data:
     groups:
     - name: example
       rules:
-    
-      # Alert for any instance that is unreachable for >5 minutes.
       - alert: SpringbootmicroserviceDown
         expr: count(process_cpu_usage{app="springbootmicroservice" }) <3
         for: 1m
@@ -17,7 +15,18 @@ data:
           severity: critical
         annotations:
           summary: "Instance {{ $labels.instance }} down"
-          description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 1 minute."      
+          description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 1 minute."
+      - alert: KafkaRule
+        expr: sum without(area)(jvm_memory_bytes_used{ app="kafka"}) >11
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Instance kafka {{ $labels.instance }} down"
+          description: "Kafka {{ $labels.instance }} of job {{ $labels.job }} has been down for more than 1 minute."
+          
+          
+          
 ---
 kind: ConfigMap
 metadata:
