@@ -88,7 +88,7 @@ metadata:
     app: alertmanager  
 spec:
   serviceName: "alertmanager-hs"
-  replicas: 3
+  replicas: 1
   updateStrategy:
     type: RollingUpdate
   podManagementPolicy: Parallel  
