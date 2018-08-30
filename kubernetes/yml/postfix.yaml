@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postfix
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postfix
+  template:
+    metadata:
+      labels:
+        app: postfix
+    spec:
+      containers:
+      - name: postfix
+        image: marcinkasinski/postfix
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 587
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postfix
+spec:
+  type: NodePort
+  ports:
+  - port: 587
+    nodePort: 30070
+    targetPort: 587
+    protocol: TCP
+    name: http
+  selector:
+    app: postfix
