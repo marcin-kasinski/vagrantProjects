@@ -70,6 +70,10 @@ spec:
           value: "zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka"
         - name: "BROKER_NODES"
           value: "1=kafka-0.k-hs.default.svc.cluster.local;2=kafka-1.k-hs.default.svc.cluster.local;3=kafka-2.k-hs.default.svc.cluster.local"
+        # default 16kb we set to 64
+        - name: "KAFKA_PARAM_batch_size"
+          value: "65536"
+          
       volumes:
       - name: kafka-logs
         emptyDir: {}    
