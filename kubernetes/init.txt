@@ -17,4 +17,7 @@
     vagrant up k8snode3 --provision &
 	
 	vagrant up k8smaster --provision 	
+		
+#	nohup vagrant ssh k8smaster -c "nohup kubectl port-forward -n kube-system  $(kubectl get po -n kube-system -l k8s-app=kubernetes-dashboard -o jsonpath=\"{.items[0].metadata.name}\") 8443:8443 &" &
 	
+#	nohup vagrant ssh k8smaster -c "nohup kubectl port-forward -n kube-system  $(kubectl get po -n kube-system -l k8s-app=kubernetes-dashboard -o jsonpath=\"{.items[0].metadata.name}\") 8443:8443 &"

@@ -99,6 +99,7 @@ kubectl exec mongodb-router-0 -c mongodb-router-container -- mongo localhost:270
 
 kubectl exec mongodb-router-0 -c mongodb-router-container -- mongo localhost:27017/mkdatabase --eval "db.myNewCollection1.insertOne( { x: 3 } );"
 kubectl exec mongodb-router-0 -c mongodb-router-container -- mongo localhost:27017/mkdatabase --eval "db.myNewCollection1.insertOne( { x: 4 } );"
+kubectl exec mongodb-router-0 -c mongodb-router-container -- mongo localhost:27017/mkdatabase --eval "for (var i = 0; i < 200; i++) {    db.myNewCollection1.insertOne({ message: \"alkdfjowritoszlkfashtopjasZ>Dnvl;asutp;amxcv;khrtpjas;xvnlxfjtp;damgv;xkng;psej\", x: i });}"
 
 
 kubectl exec mongodb-router-0 -c mongodb-router-container -- mongo localhost:27017/mkdatabase --eval "db.adminCommand({ listShards: 1 })"
@@ -272,8 +273,8 @@ while ! kubectl get po -n kube-system -o wide | grep kubernetes-dashboard | grep
 	DASHBOARDPODIP=`echo $DASHBOARDPODLINE  | cut -d " " -f 6`
 	echo Dashboard Name: $DASHBOARDPODNAME
 	echo Dashboard IP $DASHBOARDPODIP
-
-nohup kubectl port-forward -n kube-system  $(kubectl get po -n kube-system -l k8s-app=kubernetes-dashboard -o jsonpath="{.items[0].metadata.name}") 8443:8443 &
+#echo "forward port"
+#nohup kubectl port-forward -n kube-system  $(kubectl get po -n kube-system -l k8s-app=kubernetes-dashboard -o jsonpath="{.items[0].metadata.name}") 8443:8443 &
 
 echo "DashboardToken ..."
 
