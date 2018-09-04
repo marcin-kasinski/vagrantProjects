@@ -63,7 +63,7 @@ spec:
 #            value: "user:password"
       
       
-        - name: mongodb-shard-rs-0x-container
+        - name: mongodb-shard
           image: mongo
           command:
             - "mongod"
