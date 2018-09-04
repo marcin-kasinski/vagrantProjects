@@ -223,7 +223,7 @@ while ! kubectl get po -n kube-system -o wide | grep kubernetes-dashboard | grep
 	echo Dashboard Name: $DASHBOARDPODNAME
 	echo Dashboard IP $DASHBOARDPODIP
 
-#sudo kubectl port-forward -n kube-system $DASHBOARDPODNAME 8443:8443 &
+nohup kubectl port-forward -n kube-system  $(kubectl get po -n kube-system -l k8s-app=kubernetes-dashboard -o jsonpath="{.items[0].metadata.name}") 8443:8443 &
 
 echo "DashboardToken ..."
 
