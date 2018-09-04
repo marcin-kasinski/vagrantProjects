@@ -1,3 +1,53 @@
+setupMongodb_rs0()
+{
+rs_id=0
+
+POD_NAME="mongodb-shard-rs-"$rs_id"x-0"
+echo $POD_NAME
+
+while ! kubectl get po -o wide | grep $POD_NAME | grep Running ; do   echo "waiting for mongo shard IP $POD_NAME..." ; sleep 20 ; done
+
+MONGOSHARDPODIP=`kubectl get po -o wide | grep $POD_NAME | grep Running `
+MONGOSHARDPODIP=`echo $MONGOSHARDPODIP | cut -d " " -f 6`
+echo $MONGOSHARDPODIP
+
+while ! nc -z $MONGOSHARDPODIP 27017; do   echo "waiting mongo shard $POD_NAME to launch ..." ; sleep 20 ; done
+
+kubectl exec $POD_NAME -c mongodb-shard -- mongo --port 27017 --eval "rs.status()"
+
+kubectl exec $POD_NAME -c mongodb-shard -- mongo --port 27017 --eval "rs.initiate(  {_id: \"rs-0x\", members: [{ _id : 0, host : \"mongodb-shard-rs-0x-0.mongodb-shard-rs-0x-hs.default.svc.cluster.local:27017\" }]  })"
+kubectl exec $POD_NAME -c mongodb-shard -- mongo --port 27017 --eval "rs.add('mongodb-shard-rs-0x-1.mongodb-shard-rs-0x-hs.default.svc.cluster.local:27017')"
+kubectl exec $POD_NAME -c mongodb-shard -- mongo --port 27017 --eval "rs.add('mongodb-shard-rs-0x-2.mongodb-shard-rs-0x-hs.default.svc.cluster.local:27017')"
+kubectl exec $POD_NAME -c mongodb-shard -- mongo --port 27017 --eval "rs.status()"
+
+}
+
+
+setupMongodb_rs1()
+{
+rs_id=1
+
+POD_NAME="mongodb-shard-rs-"$rs_id"x-0"
+echo $POD_NAME
+
+while ! kubectl get po -o wide | grep $POD_NAME | grep Running ; do   echo "waiting for mongo shard IP $POD_NAME..." ; sleep 20 ; done
+
+MONGOSHARDPODIP=`kubectl get po -o wide | grep $POD_NAME | grep Running `
+MONGOSHARDPODIP=`echo $MONGOSHARDPODIP | cut -d " " -f 6`
+echo $MONGOSHARDPODIP
+
+while ! nc -z $MONGOSHARDPODIP 27017; do   echo "waiting mongo shard $POD_NAME to launch ..." ; sleep 20 ; done
+
+kubectl exec $POD_NAME -c mongodb-shard -- mongo --port 27017 --eval "rs.status()"
+
+kubectl exec $POD_NAME -c mongodb-shard -- mongo --port 27017 --eval "rs.initiate(  {_id: \"rs-1x\", members: [{ _id : 0, host : \"mongodb-shard-rs-1x-0.mongodb-shard-rs-1x-hs.default.svc.cluster.local:27017\" }]  })"
+kubectl exec $POD_NAME -c mongodb-shard -- mongo --port 27017 --eval "rs.add('mongodb-shard-rs-1x-1.mongodb-shard-rs-1x-hs.default.svc.cluster.local:27017')"
+kubectl exec $POD_NAME -c mongodb-shard -- mongo --port 27017 --eval "rs.add('mongodb-shard-rs-1x-2.mongodb-shard-rs-1x-hs.default.svc.cluster.local:27017')"
+kubectl exec $POD_NAME -c mongodb-shard -- mongo --port 27017 --eval "rs.status()"
+
+}
+
+
 setupMongodb()
 {
 
@@ -9,8 +59,6 @@ echo $MONGOCFGPODIP
 
 while ! nc -z $MONGOCFGPODIP 27019; do   echo "waiting mongocgf to launch ..." ; sleep 20 ; done
 
-
-
 kubectl exec mongodb-configdb-0 -c mongodb-configdb-container -- mongo --port 27019 --eval "rs.status()"
 kubectl exec mongodb-configdb-0 -c mongodb-configdb-container -- mongo --port 27019 --eval "rs.initiate(  {_id: \"MyConfigRepl\",configsvr: true,members: [{ _id : 0, host : \"mongodb-configdb-0.mongodb-configdb-hs.default.svc.cluster.local:27019\" }]  })"
 kubectl exec mongodb-configdb-0 -c mongodb-configdb-container -- mongo --port 27019 --eval "rs.status()"
@@ -19,19 +67,9 @@ kubectl exec mongodb-configdb-0 -c mongodb-configdb-container -- mongo --port 27
 kubectl exec mongodb-configdb-0 -c mongodb-configdb-container -- mongo --port 27019 --eval "rs.status()"
 
 
-while ! kubectl get po -o wide | grep mongodb-shard-rs-0x-0 | grep Running ; do   echo "waiting for mongo shard IP..." ; sleep 20 ; done
+setupMongodb_rs0
+setupMongodb_rs1
 
-MONGOSHARDPODIP=`kubectl get po -o wide | grep mongodb-shard-rs-0x-0 | grep Running `
-MONGOSHARDPODIP=`echo $MONGOSHARDPODIP | cut -d " " -f 6`
-echo $MONGOSHARDPODIP
-
-while ! nc -z $MONGOSHARDPODIP 27017; do   echo "waiting mongo shard to launch ..." ; sleep 20 ; done
-
-kubectl exec mongodb-shard-rs-0x-0 -c mongodb-shard-rs-0x-container -- mongo --port 27017 --eval "rs.status()"
-kubectl exec mongodb-shard-rs-0x-0 -c mongodb-shard-rs-0x-container -- mongo --port 27017 --eval "rs.initiate(  {_id: \"rs-0x\", members: [{ _id : 0, host : \"mongodb-shard-rs-0x-0.mongodb-shard-rs-0x-hs.default.svc.cluster.local:27017\" }]  })"
-kubectl exec mongodb-shard-rs-0x-0 -c mongodb-shard-rs-0x-container -- mongo --port 27017 --eval "rs.add('mongodb-shard-rs-0x-1.mongodb-shard-rs-0x-hs.default.svc.cluster.local:27017')"
-kubectl exec mongodb-shard-rs-0x-0 -c mongodb-shard-rs-0x-container -- mongo --port 27017 --eval "rs.add('mongodb-shard-rs-0x-2.mongodb-shard-rs-0x-hs.default.svc.cluster.local:27017')"
-kubectl exec mongodb-shard-rs-0x-0 -c mongodb-shard-rs-0x-container -- mongo --port 27017 --eval "rs.status()"
 
 while ! kubectl get po -o wide | grep mongodb-router-0 | grep Running ; do   echo "waiting for mongos IP..." ; sleep 20 ; done
 
@@ -43,8 +81,16 @@ while ! nc -z $MONGOROUTERPODIP 27017; do   echo "waiting mongos to launch ..." 
 
 #dodanie pierwszego rs
 kubectl exec mongodb-router-0 -c mongodb-router-container -- mongo --port 27017 --eval "sh.addShard('rs-0x/mongodb-shard-rs-0x-0.mongodb-shard-rs-0x-hs.default.svc.cluster.local:27017,mongodb-shard-rs-0x-1.mongodb-shard-rs-0x-hs.default.svc.cluster.local:27017,mongodb-shard-rs-0x-2.mongodb-shard-rs-0x-hs.default.svc.cluster.local:27017')"
+#dodanie drugiego rs
+kubectl exec mongodb-router-0 -c mongodb-router-container -- mongo --port 27017 --eval "sh.addShard('rs-1x/mongodb-shard-rs-1x-0.mongodb-shard-rs-1x-hs.default.svc.cluster.local:27017,mongodb-shard-rs-1x-1.mongodb-shard-rs-1x-hs.default.svc.cluster.local:27017,mongodb-shard-rs-1x-2.mongodb-shard-rs-1x-hs.default.svc.cluster.local:27017')"
 
 kubectl exec mongodb-router-0 -c mongodb-router-container -- mongo --port 27017 --eval "sh.status();"
+
+
+#The default chunk size in MongoDB is 64 megabytes.
+# set to 2 mb
+
+kubectl exec mongodb-router-0 -c mongodb-router-container -- mongo localhost:27017/config --eval "db.settings.save( { _id:\"chunksize\", value: 2 } );"
 
 #enable sharding on db
 kubectl exec mongodb-router-0 -c mongodb-router-container -- mongo --port 27017 --eval "sh.enableSharding(\"mkdatabase\")"
@@ -53,6 +99,10 @@ kubectl exec mongodb-router-0 -c mongodb-router-container -- mongo localhost:270
 
 kubectl exec mongodb-router-0 -c mongodb-router-container -- mongo localhost:27017/mkdatabase --eval "db.myNewCollection1.insertOne( { x: 3 } );"
 kubectl exec mongodb-router-0 -c mongodb-router-container -- mongo localhost:27017/mkdatabase --eval "db.myNewCollection1.insertOne( { x: 4 } );"
+
+
+kubectl exec mongodb-router-0 -c mongodb-router-container -- mongo localhost:27017/mkdatabase --eval "db.adminCommand({ listShards: 1 })"
+kubectl exec mongodb-router-0 -c mongodb-router-container -- mongo localhost:27017/mkdatabase --eval "db.myNewCollection1.getShardDistribution()"
 
 
 
@@ -317,6 +367,9 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mongodbcfg.yaml?$(date +%s)"  | sed -e 's/  replicas: 1/  replicas: 3/g'  | kubectl apply -f -
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mongodbshard.yaml?$(date +%s)" | sed -e 's/  replicas: 1/  replicas: 3/g'  | kubectl apply -f -
+#drugie replica set
+curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mongodbshard.yaml?$(date +%s)" | sed -e 's/  replicas: 1/  replicas: 3/g; s/rs-0x/rs-1x/g; '  | kubectl apply -f -
+
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mongodbrouter.yaml?$(date +%s)"  | kubectl apply -f -
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/nginx.yaml?$(date +%s)"  | kubectl apply -f -
