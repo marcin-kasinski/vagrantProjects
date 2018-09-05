@@ -48,6 +48,8 @@ spec:
           value: "prd"
         - name: MONGODB_URL
           value: "mongodb://mongodb-router-cs.default.svc.cluster.local:27017/mkdatabase"
+        - name: KAFKA_BROKER_NODES
+          value: "kafka-0.k-hs.default.svc.cluster.local,kafka-1.k-hs.default.svc.cluster.local,kafka-2.k-hs.default.svc.cluster.local"
 ---
 apiVersion: v1
 kind: Service
