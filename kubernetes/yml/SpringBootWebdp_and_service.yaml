@@ -32,7 +32,7 @@ spec:
         - name: APP_REST_URL
           value: "http://springbootmicroservice-cs.default.svc.cluster.local:9191/api/adduser"
         - name: KAFKA_BROKER_NODES
-          value: "kafka-0.k-hs.default.svc.cluster.local,kafka-1.k-hs.default.svc.cluster.local,kafka-2.k-hs.default.svc.cluster.local"          
+          value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"          
 ---
 apiVersion: v1
 kind: Service
