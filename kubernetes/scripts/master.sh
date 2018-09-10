@@ -274,17 +274,15 @@ while ! kubectl get po -n kube-system -o wide | grep kubernetes-dashboard | grep
 	echo Dashboard Name: $DASHBOARDPODNAME
 	echo Dashboard IP $DASHBOARDPODIP
 #echo "forward port"
-#nohup kubectl port-forward -n kube-system  $(kubectl get po -n kube-system -l k8s-app=kubernetes-dashboard -o jsonpath="{.items[0].metadata.name}") 8443:8443 &
+nohup kubectl port-forward -n kube-system  $(kubectl get po -n kube-system -l k8s-app=kubernetes-dashboard -o jsonpath="{.items[0].metadata.name}") 8443:8443  > /dev/null 2>&1 &
 
 echo "DashboardToken ..."
 
 kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep kubernetes-dashboard | awk '{print $1}')
 
-
 }
 
-
-  echo I am provisioning...
+echo I am provisioning...
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
 
 #ls | grep pattern | sed -e 's/^/prefix/' -e 's/$/suffix/'
