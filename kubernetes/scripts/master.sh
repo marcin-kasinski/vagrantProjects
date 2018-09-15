@@ -344,6 +344,10 @@ sudo chown vagrant:vagrant /home/vagrant/.kube/config
 sudo cp -i /etc/kubernetes/admin.conf /var/nfs/kubernetes_share/
 
 
+#taint pods on master nodes
+kubectl taint nodes --all node-role.kubernetes.io/master-
+
+
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>CREATING CONF"
 
 kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
