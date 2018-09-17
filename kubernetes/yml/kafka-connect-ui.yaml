@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-connect-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-connect-ui
+  template:
+    metadata:
+      labels:
+        app: kafka-connect-ui
+      annotations:
+        #prometheus.io/scrape: "true"
+        #prometheus.io/scheme: "http"
+        #prometheus.io/path: "/actuator/prometheus"
+        #prometheus.io/port: "7070"  
+    spec:
+      containers:
+      - name: kafka-connect-ui
+        image: landoop/kafka-connect-ui
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 8000
+        env:
+        - name: CONNECT_URL
+          value: "kafka-0.k-hs.default.svc.cluster.local:8083,kafka-1.k-hs.default.svc.cluster.local:8083,kafka-2.k-hs.default.svc.cluster.local:8083"          
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-connect-ui
+spec:
+  type: NodePort
+  ports:
+  - port: 8000
+    #nodePort: 30070
+    targetPort: 8000
+    protocol: TCP
+    name: http
+  selector:
+    app: kafka-connect-ui
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kafka-connect-ui-ingress
+  annotations:
+    ingress.kubernetes.io/enable-cors: "true"
+    ingress.kubernetes.io/rewrite-target: /  
+spec:
+  rules:
+  - host: kafka-connect-ui
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kafka-connect-ui
+          servicePort: 8000
