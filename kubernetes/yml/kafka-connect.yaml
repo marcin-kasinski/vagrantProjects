@@ -66,13 +66,13 @@ spec:
         - mountPath: /tmp/kafkaconnect-logs
           name: kafkaconnect-logs   
         env:
-        - name: "ZOOKEEPER_CONNECT"
-          value: "zkconnect-0.zkconnect-hs.default.svc.cluster.local:2181,zkconnect-1.zkconnect-hs.default.svc.cluster.local:2181,zkconnect-2.zkconnect-hs.default.svc.cluster.local:2181/kafkaconnect"
-        - name: "BROKER_NODES"
-          value: "1=kafkaconnect-0.kconnect-hs.default.svc.cluster.local;2=kafkaconnect-1.kconnect-hs.default.svc.cluster.local;3=kafkaconnect-2.kconnect-hs.default.svc.cluster.local"
+        - name: "KAFKA_PARAM_bootstrap_serversXXXX"
+          value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"
+        - name: "CONNECT_BOOTSTRAP_SERVERS"
+          value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"
         # default 16kb we set to 64
-        - name: "kafkaconnect_PARAM_batch_size"
-          value: "65536"          
+        #- name: "kafkaconnect_PARAM_batch_size"
+        #  value: "65536"          
       volumes:
       - name: kafkaconnect-logs
         emptyDir: {}    
