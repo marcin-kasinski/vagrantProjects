@@ -22,8 +22,8 @@ metadata:
     app: kafkaconnect
 spec:
   ports:
-  - port: 9092
-    name: client
+  - port: 8083
+    name: rest
   - port: 8080
     name: jmxagent
   clusterIP: None
