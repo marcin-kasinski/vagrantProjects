@@ -26,7 +26,7 @@ spec:
           containerPort: 8000
         env:
         - name: CONNECT_URL
-          value: "kafka-0.k-hs.default.svc.cluster.local:8083,kafka-1.k-hs.default.svc.cluster.local:8083,kafka-2.k-hs.default.svc.cluster.local:8083"          
+          value: "kafkaconnect-0.kconnect-hs.default.svc.cluster.local:8083,kafkaconnect-1.kconnect-hs.default.svc.cluster.local:8083,kafkaconnect-2.kconnect-hs.default.svc.cluster.local:8083"          
 ---
 apiVersion: v1
 kind: Service
