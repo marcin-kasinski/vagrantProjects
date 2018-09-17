@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kconnect-cs
+  labels:
+    app: kafkaconnect
+spec:
+  type: NodePort
+  ports:
+  - port: 9092
+    nodePort: 30092
+    targetPort: 9092
+    name: client
+  selector:
+    app: kafkaconnect
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kconnect-hs
+  labels:
+    app: kafkaconnect
+spec:
+  ports:
+  - port: 9092
+    name: client
+  - port: 8080
+    name: jmxagent
+  clusterIP: None
+  selector:
+    app: kafkaconnect
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafkaconnect
+spec:
+  serviceName: "kconnect-hs"
+  replicas: 3
+  updateStrategy:
+    type: RollingUpdate
+  podManagementPolicy: Parallel
+  selector:
+    matchLabels:
+      app: kafkaconnect
+  template:
+    metadata:
+      labels:
+        app: kafkaconnect
+        kubernetes.io/name: "kafkaconnect"
+        tier: backend
+      annotations:
+        #prometheus.io/scrape: "true"
+        #prometheus.io/scheme: "http"
+        #prometheus.io/path: "/"
+        #prometheus.io/port: "8080"          
+    spec:
+      containers:
+      - name: kafkaconnect
+        image: marcinkasinski/kafkaconnectcluster
+        imagePullPolicy: Always        
+        ports:
+        - containerPort: 8083
+          name: client
+        volumeMounts:
+        - mountPath: /tmp/kafkaconnect-logs
+          name: kafkaconnect-logs   
+        env:
+        - name: "ZOOKEEPER_CONNECT"
+          value: "zkconnect-0.zkconnect-hs.default.svc.cluster.local:2181,zkconnect-1.zkconnect-hs.default.svc.cluster.local:2181,zkconnect-2.zkconnect-hs.default.svc.cluster.local:2181/kafkaconnect"
+        - name: "BROKER_NODES"
+          value: "1=kafkaconnect-0.kconnect-hs.default.svc.cluster.local;2=kafkaconnect-1.kconnect-hs.default.svc.cluster.local;3=kafkaconnect-2.kconnect-hs.default.svc.cluster.local"
+        # default 16kb we set to 64
+        - name: "kafkaconnect_PARAM_batch_size"
+          value: "65536"          
+      volumes:
+      - name: kafkaconnect-logs
+        emptyDir: {}    
