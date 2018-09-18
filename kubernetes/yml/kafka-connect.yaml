@@ -68,11 +68,6 @@ spec:
         env:
         - name: "KAFKA_PARAM_BOOTSTRAP_SERVERS"
           value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"
-        - name: "CONNECT_BOOTSTRAP_SERVERS"
-          value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"
-        # default 16kb we set to 64
-        #- name: "kafkaconnect_PARAM_batch_size"
-        #  value: "65536"          
       volumes:
       - name: kafkaconnect-logs
         emptyDir: {}    
