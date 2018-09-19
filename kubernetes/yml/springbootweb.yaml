@@ -82,5 +82,5 @@ spec:
   - type: Pods
     pods:
       metricName: MKWEB_6_received_messages
-      targetAverageValue: 5
+      targetAverageValue: 5m
 ---
