@@ -82,23 +82,6 @@ spec:
   - type: Pods
     pods:
       metricName: MKWEB_6_received_messages
-      targetAverageValue: 10
+      #targetAverageValue: 10
+      targetValue: 10
 ---
-kind: HorizontalPodAutoscaler
-apiVersion: autoscaling/v2beta1
-metadata:
-name: springbootweb2
-spec:
-    scaleTargetRef:
-        kind: Deployment
-        name: springbootweb
-    minReplicas: 2
-    maxReplicas: 10
-    metrics:
-    - type: Object
-    object:
-        target:
-        kind: Service
-        name: springbootweb
-        metricName: MKWEB_6_received_messages
-        targetValue: 100
