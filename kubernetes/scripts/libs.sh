@@ -24,6 +24,7 @@ kubectl apply -f /vagrant/yml/monitoring/custom-metrics-api
 
 kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1" | jq .
 kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/MK_6_received_messages" | jq .
+kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/MKWEB_6_received_messages" | jq .
 
 
 }

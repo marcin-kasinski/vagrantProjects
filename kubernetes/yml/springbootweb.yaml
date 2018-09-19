@@ -73,7 +73,7 @@ metadata:
   name: springbootweb
 spec:
   scaleTargetRef:
-    apiVersion: extensions/v1beta1
+    apiVersion: apps/v1
     kind: Deployment
     name: springbootweb
   minReplicas: 2
@@ -83,3 +83,22 @@ spec:
     pods:
       metricName: MKWEB_6_received_messages
       targetAverageValue: 10
+---
+kind: HorizontalPodAutoscaler
+apiVersion: autoscaling/v2alpha1
+metadata:
+name: springbootweb2
+spec:
+    scaleTargetRef:
+        kind: Deployment
+        name: springbootweb
+    minReplicas: 2
+    maxReplicas: 10
+    metrics:
+    - type: Object
+    object:
+        target:
+        kind: Service
+        name: springbootweb
+        metricName: MKWEB_6_received_messages
+        targetValue: 100
