@@ -1,12 +1,11 @@
 apiVersion: apps/v1
-#kind: StatefulSet
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: springbootmicroservice
   labels:
     app: springbootmicroservice  
 spec:
-  #serviceName: "springbootmicroservice-hs" # only for StatefulSet
+  serviceName: "springbootmicroservice-hs"
   replicas: 3
   updateStrategy:
     type: RollingUpdate
