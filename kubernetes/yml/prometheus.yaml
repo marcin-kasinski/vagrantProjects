@@ -232,8 +232,8 @@ spec:
       serviceAccountName: prometheus
       containers:
       - name: prometheus
-        image: quay.io/prometheus/prometheus
-        #image: prom/prometheus
+        #image: quay.io/prometheus/prometheus
+        image: prom/prometheus
         args: [ "--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.path=/prometheus", "--web.console.libraries=/usr/share/prometheus/console_libraries", "--web.console.templates=/usr/share/prometheus/consoles" ]
         ports:
         - name: prometheus-port

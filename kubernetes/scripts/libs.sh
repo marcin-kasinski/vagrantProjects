@@ -11,6 +11,7 @@ curl "https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/mast
         - \/metrics-server\
         - --kubelet-insecure-tls\
         - --kubelet-preferred-address-types=InternalIP\
+        - --v=5\
         imagePullPolicy: Always	/g'   | kubectl apply -f -
 
 kubectl apply -f /vagrant/yml/monitoring/namespaces.yaml
