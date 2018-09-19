@@ -6,7 +6,7 @@ metadata:
   labels:
     app: springbootmicroservice  
 spec:
-  serviceName: "springbootmicroservice-hs"
+  #serviceName: "springbootmicroservice-hs" # only for StatefulSet
   replicas: 3
   updateStrategy:
     type: RollingUpdate
