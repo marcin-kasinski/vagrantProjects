@@ -59,7 +59,7 @@ data:
       #match => [ "message", "(?m)^%{DATE:date} %{TIME:time} %{SPACE}?%{LOGLEVEL:loglevel} \[%{DATA:appname},%{WORD:zipkintraceid}?,%{WORD:zipkinspanid}?,%{WORD:zipkinsend}?\] %{NUMBER:pid} --- \[%{DATA:thread}\] %{JAVACLASS:classname} %{GREEDYDATA:message}" ]
  
 
-         # poni¿sze dzia³a dla code plain
+         # poniï¿½sze dziaï¿½a dla code plain
           match => { "message" => "%{DATE:date} %{TIME:time} %{SPACE}?%{LOGLEVEL:loglevel} \[%{DATA:appname},%{WORD:zipkintraceid}?,%{WORD:zipkinspanid}?,%{WORD:zipkinsend}?\] %{NUMBER:pid} --- \[%{DATA:thread}\] %{JAVACLASS:classname} %{GREEDYDATA:message}" }
       }
     
@@ -113,7 +113,8 @@ spec:
       containers:
       - name: logstash
 #        image: docker.elastic.co/logstash/logstash:5.2.2
-        image: docker.elastic.co/logstash/logstash:6.3.2
+#        image: docker.elastic.co/logstash/logstash:6.3.2
+        image: docker.elastic.co/logstash/logstash:6.4.0
         imagePullPolicy: Always
         ports:
         - name: logstash-port

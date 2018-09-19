@@ -113,7 +113,8 @@ spec:
             cpu: 25m
             memory: 64Mi
       - name: es
-        image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
+        #image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.4.0
         resources:
           # need more cpu upon initialization, therefore burstable class
           limits:
