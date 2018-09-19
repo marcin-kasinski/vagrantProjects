@@ -99,3 +99,21 @@ spec:
         backend:
           serviceName: springbootmicroservice-cs
           servicePort: 9191
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: springbootmicroservice
+spec:
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: StatefulSet
+    name: springbootmicroservice
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Pods
+    pods:
+      metricName: MK_6_received_messages
+      targetAverageValue: 10
+          
