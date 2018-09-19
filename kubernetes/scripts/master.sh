@@ -1,3 +1,7 @@
+#!/bin/bash
+source /vagrant/scripts/libs.sh
+
+
 setupMongodb_rs0()
 {
 rs_id=0
@@ -136,7 +140,7 @@ setupkafka()
 
 #------------------------------- kafka init ------------------------------- 
  
-sudo apt install -y openjdk-8-jdk
+sudo apt install -y openjdk-8-jdk jq
 while ! kubectl get po -o wide | grep kafka-0 | grep Running ; do   echo "waiting for kafka IP..." ; sleep 20 ; done
 
 
@@ -438,6 +442,8 @@ curl https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-co
 # w nowszej wersji musia�em doda� bo by�y b��dy: Failed to list *v1.Node: nodes is forbidden: User "system:serviceaccount:kube-system:heapster" cannot list nodes at the cluster scope
 curl https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/rbac/heapster-rbac.yaml | kubectl apply -f -
 
+
+setupMonitoring
    
 # moje poprawki : dashboard
 curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/dashboard-service-ingress.yaml | kubectl apply -f -
