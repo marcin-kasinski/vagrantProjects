@@ -81,6 +81,6 @@ spec:
   metrics:
   - type: Pods
     pods:
-      metricName: MKWEB_exec_time
+      metricName: MKWEB_exec_time_seconds_sum
       targetAverageValue: 2m
 ---
