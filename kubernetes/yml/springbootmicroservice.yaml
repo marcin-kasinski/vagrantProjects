@@ -1,5 +1,6 @@
 apiVersion: apps/v1
-kind: StatefulSet
+#kind: StatefulSet
+kind: Deployment
 metadata:
   name: springbootmicroservice
   labels:
