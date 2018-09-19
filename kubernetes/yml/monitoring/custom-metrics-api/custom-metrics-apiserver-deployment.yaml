@@ -43,6 +43,8 @@ spec:
           readOnly: true
       volumes:
       - name: volume-key
+        #secret:
+        #  secretName: key
         configMap:
           name: key
       - name: volume-crt

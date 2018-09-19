@@ -13,5 +13,15 @@ curl "https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/mast
         - --kubelet-preferred-address-types=InternalIP\
         imagePullPolicy: Always	/g'   | kubectl apply -f -
 
+kubectl apply -f /vagrant/yml/monitoring/namespaces.yaml
+
+kubectl create secret generic key -n monitoring --from-file=/vagrant/conf/certs/prometheusadapter.key
+kubectl create configmap crt -n monitoring --from-file=/vagrant/conf/certs/prometheusadapter.crt
+
+kubectl apply -f /vagrant/yml/monitoring/custom-metrics-api
+
+kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1" | jq .
+
+
 }
 
