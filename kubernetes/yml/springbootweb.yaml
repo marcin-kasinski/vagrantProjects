@@ -66,3 +66,20 @@ spec:
         backend:
           serviceName: springbootweb
           servicePort: 7070
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: springbootweb
+spec:
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: springbootweb
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Pods
+    pods:
+      metricName: MKWEB_6_received_messages
+      targetAverageValue: 10
