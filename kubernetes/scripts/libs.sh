@@ -15,6 +15,7 @@ curl "https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/mast
 
 kubectl apply -f /vagrant/yml/monitoring/namespaces.yaml
 
+
 #kubectl create secret generic key -n monitoring --from-file=/vagrant/conf/certs/prometheusadapter.key
 kubectl create configmap key -n monitoring --from-file=/vagrant/conf/certs/prometheusadapter.key
 kubectl create configmap crt -n monitoring --from-file=/vagrant/conf/certs/prometheusadapter.crt
@@ -22,6 +23,7 @@ kubectl create configmap crt -n monitoring --from-file=/vagrant/conf/certs/prome
 kubectl apply -f /vagrant/yml/monitoring/custom-metrics-api
 
 kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1" | jq .
+kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/MK_6_received_messages" | jq .
 
 
 }
