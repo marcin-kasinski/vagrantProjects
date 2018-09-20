@@ -209,6 +209,8 @@ data:
       # these labels tell Prometheus to automatically attach source
       # pod and namespace information to each collected sample, so
       # that they'll be exposed in the custom metrics API automatically.
+      - action: labelmap
+        regex: __meta_kubernetes_pod_label_(.+)      
       - source_labels: [__meta_kubernetes_namespace]
         action: replace
         target_label: namespace
