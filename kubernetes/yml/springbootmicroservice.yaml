@@ -114,4 +114,4 @@ spec:
   - type: Pods
     pods:
       metricName: "MK_6_received_messages"
-      targetAverageValue: 1 # 1 seconds
+      targetAverageValue: 1
