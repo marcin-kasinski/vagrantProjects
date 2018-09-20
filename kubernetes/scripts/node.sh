@@ -17,6 +17,7 @@
       
       
       JOIN_COMMAND=$(    sudo cat /nfs/kubernetes_share/join_command_sudo  )
+      echo JOIN_COMMAND: $JOIN_COMMAND
       eval $JOIN_COMMAND
       
       
