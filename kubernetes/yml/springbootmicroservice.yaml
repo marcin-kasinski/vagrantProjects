@@ -81,7 +81,6 @@ spec:
   selector:
     app: springbootmicroservice
 ---
-
 # An Ingress with 2 hosts and 3 endpoints
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -99,3 +98,20 @@ spec:
         backend:
           serviceName: springbootmicroservice-cs
           servicePort: 9191
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: springbootmicroservice
+spec:
+  maxReplicas: 12
+  minReplicas: 3
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: StatefulSet
+    name: springbootmicroservice
+  metrics:
+  - type: Pods
+    pods:
+      metricName: "MK_6_received_messages"
+      targetAverageValue: 1 # 1 seconds
