@@ -237,7 +237,7 @@ data:
         target_label: namespace
       - source_labels: [__meta_kubernetes_pod_name]
         action: replace
-        target_label: pod
+        target_label: kubernetes_pod_name
       # these labels tell Prometheus to look for
       # prometheus.io/{scrape,path,port} annotations to configure
       # how to scrape
