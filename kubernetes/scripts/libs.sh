@@ -137,7 +137,7 @@ setupkafka()
 
 #------------------------------- kafka init ------------------------------- 
  
-sudo apt install -y openjdk-8-jdk jq
+sudo apt install -y openjdk-8-jdk
 while ! kubectl get po -o wide | grep kafka-0 | grep Running ; do   echo "waiting for kafka IP..." ; sleep 20 ; done
 
 

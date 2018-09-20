@@ -14,7 +14,7 @@
       sudo sed -i -r '/cdrom/ s/^(.*)$/#\1/g' /etc/apt/sources.list
       sudo apt -y update
       sudo apt -y install -y docker.io
-      sudo apt install -y curl 
+      sudo apt install -y curl jq
       sudo apt install -y apt-transport-https
       sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
       sudo echo "deb http://apt.kubernetes.io/ kubernetes-xenial main"> ~/kubernetes.list 
