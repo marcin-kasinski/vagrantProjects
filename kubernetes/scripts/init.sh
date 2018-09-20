@@ -20,13 +20,20 @@
       sudo echo "deb http://apt.kubernetes.io/ kubernetes-xenial main"> ~/kubernetes.list 
       sudo mv ~/kubernetes.list /etc/apt/sources.list.d/kubernetes.list
       sudo apt update
-      sudo apt install -y kubelet kubeadm kubectl  kubernetes-cni
-
+            
+      # get kubernetes stable version      
+      export K8S_VERSION=$(curl -sSL https://dl.k8s.io/release/stable.txt)
+      
+      #remove 'v' character
+      K8S_VERSION=${VERSION//v}
+      echo $K8S_VERSION
+      
+#      sudo apt install -qy kubelet=1.11.3-00 kubeadm=1.11.3-00  kubectl=1.11.3-00   kubernetes-cni 
+      sudo apt install -y kubelet=${VERSION}-00 kubeadm=${VERSION}-00  kubectl=${VERSION}-00   kubernetes-cni 
 
       #kubectl get nodes
       
       echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
-
 
       # nfs biblioteki klienckie
       sudo apt-get install -y nfs-common

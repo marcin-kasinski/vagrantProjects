@@ -321,7 +321,8 @@ sudo exportfs -ra
 
 IP=$( ifconfig enp0s8 | grep "inet addr:" | cut -d: -f2 | awk '{ print $1}' )
 
-sudo kubeadm init --pod-network-cidr 10.244.0.0/16 --apiserver-advertise-address $IP --ignore-preflight-errors all|  grep "kubeadm join"  >join_command
+#sudo kubeadm init --pod-network-cidr 10.244.0.0/16 --apiserver-advertise-address $IP  --kubernetes-version stable-1.11 --ignore-preflight-errors all|  grep "kubeadm join"  >join_command
+sudo kubeadm init --pod-network-cidr 10.244.0.0/16 --apiserver-advertise-address $IP |  grep "kubeadm join"  >join_command
 
 echo $IP >master_IP
 sudo cp master_IP /var/nfs/kubernetes_share/master_IP

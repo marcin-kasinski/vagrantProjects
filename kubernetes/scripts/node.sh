@@ -16,7 +16,10 @@
       while [ ! -f /nfs/kubernetes_share/join_command_sudo ] ; do echo "waiting for join command..." ;  sleep 20 ; done
       
       
-      JOIN_COMMAND=$(    sudo cat /nfs/kubernetes_share/join_command_sudo  )
+      #JOIN_COMMAND=$(    sudo cat /nfs/kubernetes_share/join_command_sudo  )
+      
+      JOIN_COMMAND=" $(</nfs/kubernetes_share/join_command_sudo)"
+      
       echo JOIN_COMMAND: $JOIN_COMMAND
       eval $JOIN_COMMAND
       
