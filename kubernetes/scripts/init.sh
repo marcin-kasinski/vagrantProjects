@@ -25,7 +25,7 @@
       export K8S_VERSION=$(curl -sSL https://dl.k8s.io/release/stable.txt)
       
       #remove 'v' character
-      K8S_VERSION=${VERSION//v}
+      K8S_VERSION=${K8S_VERSION//v}
       echo $K8S_VERSION
       
 #      sudo apt install -qy kubelet=1.11.3-00 kubeadm=1.11.3-00  kubectl=1.11.3-00   kubernetes-cni 
