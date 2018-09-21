@@ -1,10 +1,10 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     app: custom-metrics-apiserver
   name: custom-metrics-apiserver
-  namespace: monitoring
+  namespace: custom-metrics
 spec:
   replicas: 1
   selector:
@@ -19,18 +19,16 @@ spec:
       serviceAccountName: custom-metrics-apiserver
       containers:
       - name: custom-metrics-apiserver
-        #image: quay.io/coreos/k8s-prometheus-adapter-amd64:v0.2.0
         image: directxman12/k8s-prometheus-adapter-amd64
         args:
-        - /adapter
         - --secure-port=6443
         - --tls-cert-file=/var/run/serving-cert/prometheusadapter.crt
         - --tls-private-key-file=/var/run/serving-cert/prometheusadapter.key
         - --logtostderr=true
         - --prometheus-url=http://prometheus-cs.default.svc:9090/
-        - --metrics-relist-interval=30s
-        #- --rate-interval=5m
+        - --metrics-relist-interval=1m
         - --v=10
+        - --config=/etc/adapter/config.yaml
         ports:
         - containerPort: 6443
         volumeMounts:
@@ -42,7 +40,17 @@ spec:
           mountPath: /var/run/serving-cert/prometheusadapter.crt
           subPath: prometheusadapter.crt
           readOnly: true
+        - mountPath: /etc/adapter/
+          name: config
+          readOnly: true
+        - mountPath: /tmp
+          name: tmp-vol
       volumes:
+      - name: config
+        configMap:
+          name: adapter-config
+      - name: tmp-vol
+        emptyDir: {}
       - name: volume-key
         #secret:
         #  secretName: key
@@ -51,3 +59,4 @@ spec:
       - name: volume-crt
         configMap:
           name: crt
+        

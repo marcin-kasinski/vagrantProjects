@@ -11,7 +11,9 @@ SEARCH=$1
 
 PODNAME=`kubectl get po | grep $SEARCH| grep Running | cut -d " " -f 1`
 
-echo $PODNAME
+echo "Pod name:"
+
+echo "$PODNAME"
 
 kubectl logs -f $PODNAME 
 
