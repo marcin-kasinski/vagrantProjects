@@ -1,7 +1,7 @@
 
 loop_metrics()
 {
-for i in {1..1000}
+while true
 do
   metric_name="MKWEB_exec_time_seconds_max"	
   
