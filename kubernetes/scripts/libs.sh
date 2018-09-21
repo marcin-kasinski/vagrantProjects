@@ -1,3 +1,85 @@
+init_kubernetes
+{
+#sudo rm -rf ~/.kube && sudo kubeadm reset && 
+
+
+IP=$( ifconfig enp0s8 | grep "inet addr:" | cut -d: -f2 | awk '{ print $1}' )
+
+#sudo kubeadm init --pod-network-cidr 10.244.0.0/16 --apiserver-advertise-address $IP  --kubernetes-version stable-1.11 --ignore-preflight-errors all|  grep "kubeadm join"  >join_command
+sudo kubeadm init --pod-network-cidr 10.244.0.0/16 --apiserver-advertise-address $IP |  grep "kubeadm join"  >join_command
+
+echo $IP >master_IP
+sudo cp master_IP /var/nfs/kubernetes_share/master_IP
+
+sudo cp join_command /var/nfs/kubernetes_share/join_command
+JOIN_COMMAND="$( sudo cat /var/nfs/kubernetes_share/join_command )"
+ 
+ echo "sudo "$JOIN_COMMAND > join_command_sudo
+
+sudo cp join_command_sudo /var/nfs/kubernetes_share/join_command_sudo
+
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>CREATING CONF "
+
+ mkdir -p $HOME/.kube
+ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+ sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+mkdir -p /home/vagrant/.kube
+sudo cp -i /etc/kubernetes/admin.conf /home/vagrant/.kube/config
+sudo chown vagrant:vagrant /home/vagrant/.kube/config
+
+
+#copy to NFS
+sudo cp -i /etc/kubernetes/admin.conf /var/nfs/kubernetes_share/
+
+
+#taint pods on master nodes
+kubectl taint nodes --all node-role.kubernetes.io/master-
+
+
+
+}
+
+configure_nfs
+{
+# ----------------------------- nfs -----------------------------
+sudo apt-get install nfs-kernel-server
+# katalog dla joina:
+
+sudo mkdir /var/nfs/kubernetes_share -p
+sudo chown nobody:nogroup /var/nfs/kubernetes_share
+
+sudo mkdir /var/nfs/mysql -p
+sudo chown nobody:nogroup /var/nfs/mysql
+
+sudo mkdir /var/nfs/jenkins -p
+sudo chown nobody:nogroup /var/nfs/jenkins
+
+#Jesli jenkins nie moze zapisywac do pliku
+sudo chown -R 1000:1000 /var/nfs/jenkins
+sudo chown -R 1000:1000 /var/nfs/mysql
+
+sudo sh -c "echo '/var/nfs/kubernetes_share *(rw,sync,no_subtree_check,no_root_squash)' >> /etc/exports"
+sudo sh -c "echo '/var/nfs/mysql *(rw,sync,no_subtree_check,no_root_squash)' >> /etc/exports"
+sudo sh -c "echo '/var/nfs/jenkins *(rw,sync,no_subtree_check,no_root_squash)' >> /etc/exports"
+sudo exportfs -ra
+
+# ----------------------------- nfs -----------------------------
+
+}
+
+install_cfssl 
+{
+
+
+curl -OL https://pkg.cfssl.org/R1.2/cfssl_linux-amd64 -OL https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+chmod +x cfssl_linux-amd64 cfssljson_linux-amd64
+sudo mv cfssl_linux-amd64 /usr/local/bin/cfssl
+sudo mv cfssljson_linux-amd64 /usr/local/bin/cfssljson
+cfssl version
+
+}
+
 
 setupMongodb_rs0()
 {
