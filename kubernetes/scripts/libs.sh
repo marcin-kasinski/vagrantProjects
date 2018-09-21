@@ -1,3 +1,34 @@
+
+loop_metrics()
+{
+for i in {1..1000}
+do
+  metric_name="MKWEB_exec_time_seconds_max"	
+  
+  echo "$( date ) metric values for $metric_name"
+  LENGTH=$( kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/$metric_name" | jq '.items | length' )
+  for (( j=0; j<$LENGTH; j++ ))
+  do
+      #echo "loop [$j]"	
+	  
+	  CMD="kubectl get --raw /apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/$metric_name | jq '.items[$j].describedObject.name'"
+	  CMDMETRICVALUE="kubectl get --raw /apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/$metric_name | jq '.items[$j].value'"
+	  
+	  PODNAME=$( eval $CMD )
+	  #remove character
+      PODNAME=${PODNAME//\"}
+	  METRICVALUE=$( eval $CMDMETRICVALUE )
+	  #remove character
+      METRICVALUE=${METRICVALUE//\"}
+	  
+	  echo "$PODNAME: $METRICVALUE"
+  done
+  sleep 2
+done
+
+
+}
+
 init_kubernetes()
 {
 #sudo rm -rf ~/.kube && sudo kubeadm reset && 
