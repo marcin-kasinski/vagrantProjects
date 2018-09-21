@@ -25,7 +25,9 @@ echo "Searching $SEARCH"
 
 PODNAME=`kubectl get po | grep $SEARCH| grep Running | cut -d " " -f 1`
 
-echo "Pod name: $PODNAME"
+echo "Pod name:"
+
+echo "$PODNAME"
 
 echo "BASHCOMMAND [$BASHCOMMAND]"
 
