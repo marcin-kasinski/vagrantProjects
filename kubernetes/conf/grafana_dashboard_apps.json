@@ -350,7 +350,7 @@
         "sort": 0,
         "tagValuesQuery": "{app=$tag}",
         "tags": [],
-        "tagsQuery": "label_values(process_cpu_usage,kubernetes_pod_name)",
+        "tagsQuery": "label_values(process_cpu_usage,pod)",
         "type": "query",
         "useTags": false
       }

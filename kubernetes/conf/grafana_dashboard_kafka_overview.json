@@ -602,10 +602,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum without(area)(jvm_memory_bytes_used{kubernetes_pod_name=~\"$node\", app=\"kafka\"})",
+          "expr": "sum without(area)(jvm_memory_bytes_used{pod=~\"$node\", app=\"kafka\"})",
           "format": "time_series",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}} ({{instance}})",
+          "legendFormat": "{{pod}} ({{instance}})",
           "metric": "jvm_memory_bytes_used",
           "refId": "A",
           "step": 4
@@ -695,10 +695,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(process_cpu_seconds_total{kubernetes_pod_name=~\"$node\",app=\"kafka\"}[1m])",
+          "expr": "rate(process_cpu_seconds_total{pod=~\"$node\",app=\"kafka\"}[1m])",
           "format": "time_series",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}} ({{instance}})",
+          "legendFormat": "{{pod}} ({{instance}})",
           "metric": "process_cpu_seconds_total",
           "refId": "A",
           "step": 4
@@ -788,10 +788,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum without(gc)(rate(jvm_gc_collection_seconds_sum{kubernetes_pod_name=~\"$node\",app=\"kafka\"}[5m]))",
+          "expr": "sum without(gc)(rate(jvm_gc_collection_seconds_sum{pod=~\"$node\",app=\"kafka\"}[5m]))",
           "format": "time_series",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}} ({{instance}})",
+          "legendFormat": "{{pod}} ({{instance}})",
           "metric": "jvm_gc_collection_seconds_sum",
           "refId": "A",
           "step": 4
@@ -876,10 +876,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "kafka_network_socketserver_networkprocessoravgidlepercent{kubernetes_pod_name=~\"$node\",}*100",
+          "expr": "kafka_network_socketserver_networkprocessoravgidlepercent{pod=~\"$node\",}*100",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "{{kubernetes_pod_name}} ({{instance}})",
+          "legendFormat": "{{pod}} ({{instance}})",
           "refId": "A"
         }
       ],
@@ -1414,10 +1414,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(process_cpu_seconds_total{kubernetes_pod_name=~\"$node\",app=\"zookeeper\"}[1m])",
+          "expr": "rate(process_cpu_seconds_total{pod=~\"$node\",app=\"zookeeper\"}[1m])",
           "format": "time_series",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}} {{instance}}",
+          "legendFormat": "{{pod}} {{instance}}",
           "metric": "process_cpu_seconds_total",
           "refId": "A",
           "step": 4
@@ -1507,10 +1507,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum without(area)(jvm_memory_bytes_used{kubernetes_pod_name=~\"$node\",app=\"zookeeper\"})",
+          "expr": "sum without(area)(jvm_memory_bytes_used{pod=~\"$node\",app=\"zookeeper\"})",
           "format": "time_series",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}} ({{instance}})",
+          "legendFormat": "{{pod}} ({{instance}})",
           "metric": "jvm_memory_bytes_used",
           "refId": "A",
           "step": 4
@@ -1761,10 +1761,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum without(gc)(rate(jvm_gc_collection_seconds_sum{kubernetes_pod_name=~\"$node\",app=\"zookeeper\"}[5m]))",
+          "expr": "sum without(gc)(rate(jvm_gc_collection_seconds_sum{pod=~\"$node\",app=\"zookeeper\"}[5m]))",
           "format": "time_series",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}} ({{instance}})",
+          "legendFormat": "{{pod}} ({{instance}})",
           "metric": "jvm_gc_collection_seconds_sum",
           "refId": "A",
           "step": 4
@@ -1827,7 +1827,7 @@
         "multi": true,
         "name": "node",
         "options": [],
-        "query": "label_values(jvm_memory_pool_bytes_committed,kubernetes_pod_name)",
+        "query": "label_values(jvm_memory_pool_bytes_committed,pod)",
         "refresh": 2,
         "regex": "",
         "sort": 0,

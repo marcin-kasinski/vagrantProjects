@@ -101,11 +101,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(mongodb_mongod_op_counters_total{kubernetes_pod_name=~\"$instance\"}[$interval])",
+          "expr": "rate(mongodb_mongod_op_counters_total{pod=~\"$instance\"}[$interval])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name }} {{type}} ",
+          "legendFormat": "{{pod }} {{type}} ",
           "refId": "A",
           "step": 240
         }
@@ -192,11 +192,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(mongodb_mongod_metrics_document_total{kubernetes_pod_name =~\"$$instance\"}[$interval])",
+          "expr": "rate(mongodb_mongod_metrics_document_total{pod =~\"$$instance\"}[$interval])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "  {{kubernetes_pod_name }}  {{state}}",
+          "legendFormat": "  {{pod }}  {{state}}",
           "refId": "A",
           "step": 240
         }
@@ -278,11 +278,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(mongodb_mongod_metrics_query_executor_total{kubernetes_pod_name =~\"$instance\"}[$interval])",
+          "expr": "rate(mongodb_mongod_metrics_query_executor_total{pod =~\"$instance\"}[$interval])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name }} {{state}}",
+          "legendFormat": "{{pod }} {{state}}",
           "refId": "A",
           "step": 600
         }
@@ -378,7 +378,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "mongodb_mongod_replset_number_of_members{kubernetes_pod_name=~\"$instance\"}",
+          "expr": "mongodb_mongod_replset_number_of_members{pod=~\"$instance\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -387,7 +387,7 @@
           "step": 600
         },
         {
-          "expr": "sum(mongodb_mongod_replset_member_health{kubernetes_pod_name=~\"$instance\"})",
+          "expr": "sum(mongodb_mongod_replset_member_health{pod=~\"$instance\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -477,11 +477,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "mongodb_mongod_replset_member_state{kubernetes_pod_name=~\"$instance\"}",
+          "expr": "mongodb_mongod_replset_member_state{pod=~\"$instance\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}} {{state}} - {{name}}",
+          "legendFormat": "{{pod}} {{state}} - {{name}}",
           "refId": "A",
           "step": 240
         }
@@ -565,11 +565,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(mongodb_mongod_op_counters_repl_total{kubernetes_pod_name=~\"$instance\"}[$interval])",
+          "expr": "rate(mongodb_mongod_op_counters_repl_total{pod=~\"$instance\"}[$interval])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}} {{type}}",
+          "legendFormat": "{{pod}} {{type}}",
           "refId": "A",
           "step": 600
         }
@@ -669,11 +669,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "mongodb_mongod_connections{kubernetes_pod_name=~\"$instance\",state=~\"current\"}",
+          "expr": "mongodb_mongod_connections{pod=~\"$instance\",state=~\"current\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}} {{type}}",
+          "legendFormat": "{{pod}} {{type}}",
           "refId": "A",
           "step": 240
         }
@@ -757,11 +757,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "mongodb_mongod_replset_oplog_size_bytes{kubernetes_pod_name=~\"$instance\"}",
+          "expr": "mongodb_mongod_replset_oplog_size_bytes{pod=~\"$instance\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}} {{type}}",
+          "legendFormat": "{{pod}} {{type}}",
           "metric": "mongodb_locks_time_acquiring_global_microseconds_total",
           "refId": "A",
           "step": 240
@@ -848,11 +848,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "mongodb_mongod_connections{kubernetes_pod_name=~\"$instance\",state=~\"available\"}",
+          "expr": "mongodb_mongod_connections{pod=~\"$instance\",state=~\"available\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{pod}}",
           "refId": "A",
           "step": 240
         }
@@ -952,11 +952,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "mongodb_mongod_instance_uptime_seconds{kubernetes_pod_name=~\"$instance\"}",
+          "expr": "mongodb_mongod_instance_uptime_seconds{pod=~\"$instance\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{pod}}",
           "refId": "A",
           "step": 240
         }
@@ -1044,11 +1044,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "mongodb_mongod_memory{kubernetes_pod_name=~\"$instance\",type=~\"resident|virtual\"}",
+          "expr": "mongodb_mongod_memory{pod=~\"$instance\",type=~\"resident|virtual\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}} {{type}}",
+          "legendFormat": "{{pod}} {{type}}",
           "refId": "A",
           "step": 240
         }
@@ -1132,11 +1132,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(mongodb_mongod_network_bytes_total{kubernetes_pod_name=~\"$instance\"}[$interval])",
+          "expr": "rate(mongodb_mongod_network_bytes_total{pod=~\"$instance\"}[$interval])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}} {{state}}",
+          "legendFormat": "{{pod}} {{state}}",
           "metric": "mongodb_metrics_operation_total",
           "refId": "A",
           "step": 240
@@ -1276,7 +1276,7 @@
           "hide": false,
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{pod}}",
           "refId": "A",
           "step": 240
         }
@@ -1666,7 +1666,7 @@
         "multi": true,
         "name": "instance",
         "options": [],
-        "query": "label_values(mongodb_mongod_connections, kubernetes_pod_name)",
+        "query": "label_values(mongodb_mongod_connections, pod)",
         "refresh": 1,
         "regex": "",
         "sort": 1,
