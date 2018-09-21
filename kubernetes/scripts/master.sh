@@ -136,8 +136,8 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
  
-#configureGrafana
-#setupMongodb
+configureGrafana
+setupMongodb
 showCustomService
 showDashboardIP
  
