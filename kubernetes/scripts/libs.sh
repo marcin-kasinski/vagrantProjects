@@ -1,4 +1,4 @@
-init_kubernetes
+init_kubernetes()
 {
 #sudo rm -rf ~/.kube && sudo kubeadm reset && 
 
@@ -40,7 +40,7 @@ kubectl taint nodes --all node-role.kubernetes.io/master-
 
 }
 
-configure_nfs
+configure_nfs()
 {
 # ----------------------------- nfs -----------------------------
 sudo apt-get install nfs-kernel-server
@@ -68,7 +68,7 @@ sudo exportfs -ra
 
 }
 
-install_cfssl 
+install_cfssl() 
 {
 
 
