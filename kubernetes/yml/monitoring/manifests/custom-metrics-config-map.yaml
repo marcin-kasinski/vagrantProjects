@@ -13,7 +13,7 @@ data:
           namespace:
             resource: namespace
           pod_name:
-            resource: pod
+            resource: kubernetes_pod_name
       name:
         matches: ^container_(.*)_seconds_total$
         as: ""
@@ -27,7 +27,7 @@ data:
           namespace:
             resource: namespace
           pod_name:
-            resource: pod
+            resource: kubernetes_pod_name
       name:
         matches: ^container_(.*)_total$
         as: ""
@@ -41,7 +41,7 @@ data:
           namespace:
             resource: namespace
           pod_name:
-            resource: pod
+            resource: kubernetes_pod_name
       name:
         matches: ^container_(.*)$
         as: ""
