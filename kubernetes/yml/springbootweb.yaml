@@ -82,5 +82,5 @@ spec:
   - type: Pods
     pods:
       metricName: MKWEB_exec_time_seconds_max
-      targetAverageValue: 1 # 1 seconds
+      targetAverageValue: 1s # 1 seconds
 ---
