@@ -72,3 +72,24 @@ data:
         matches: ^(.*)_seconds_total$
         as: ""
       metricsQuery: sum(rate(<<.Series>>{<<.LabelMatchers>>}[5m])) by (<<.GroupBy>>)
+    - seriesQuery: 'MKWEB_exec_time_seconds_max{namespace!="",pod!=""}'
+      resources:
+        overrides:
+          kubernetes_namespace: {resource: "namespace"}
+          kubernetes_pod_name: {resource: "pod"}
+      name:
+        matches: "^(.*)_max"
+        as: "${1}_max_x1"
+      metricsQuery: 'sum(rate(<<.Series>>{<<.LabelMatchers>>}[2m])) by (<<.GroupBy>>)'
+    - seriesQuery: 'MKWEB_exec_time_seconds_max{namespace!="",pod!=""}'
+      resources:
+        overrides:
+          kubernetes_namespace: {resource: "namespace"}
+          kubernetes_pod_name: {resource: "pod"}
+      name:
+        matches: "^(.*)_max"
+        as: "${1}_max_x2"
+      metricsQuery: 'sum(rate(<<.Series>>{<<.LabelMatchers>>}[2m])) by (<<.GroupBy>>)'
+    
+        
+    
