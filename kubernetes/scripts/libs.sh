@@ -1,4 +1,21 @@
 
+setup_kafkaConnect()
+{
+
+POD_NAME="kafkaconnect-0"
+
+while ! kubectl get po -o wide | grep $POD_NAME | grep Running ; do   echo "waiting for kafka connect IP ($POD_NAME) ..." ; sleep 20 ; done
+
+IP=`kubectl get po -o wide | grep $POD_NAME | grep Running `
+IP=`echo $IP | cut -d " " -f 6`
+echo $IP
+
+while ! nc -z $IP 8083; do   echo "waiting for kafka connect pod ($POD_NAME) to launch ..." ; sleep 20 ; done
+
+curl -s -X POST -H "Content-Type: application/json" --data '{"name": "Mysql", "config":{"connector.class":"io.confluent.connect.jdbc.JdbcSourceConnector","key.converter.schemas.enable":"true","connection.url":"jdbc:mysql://mysql:3306/test?user=root&password=secret","tasks.max":"1","value.converter.schemas.enable":"true","name":"Mysql","value.converter":"org.apache.kafka.connect.json.JsonConverter","key.converter":"org.apache.kafka.connect.json.JsonConverter", "topic.prefix":"mysql-","mode": "timestamp","timestamp.column.name": "update_ts","table.whitelist": "foobar"}}' http://$IP:8083/connectors | jq
+
+}
+
 loop_metrics()
 {
 while true
@@ -410,7 +427,7 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kafka-connect-ui.yaml?$(date +%s)"  | kubectl apply -f -
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mysql_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -
-#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/phpmyadmin_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -
+curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/phpmyadmin_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mongodbcfg.yaml?$(date +%s)"  | sed -e 's/  replicas: 1/  replicas: 3/g'  | kubectl apply -f -
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mongodbshard.yaml?$(date +%s)" | sed -e 's/  replicas: 1/  replicas: 3/g'  | kubectl apply -f -
