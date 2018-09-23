@@ -12,7 +12,9 @@ echo $IP
 
 while ! nc -z $IP 8083; do   echo "waiting for kafka connect pod ($POD_NAME) to launch ..." ; sleep 20 ; done
 
-curl -s -X POST -H "Content-Type: application/json" --data '{"name": "Mysql", "config":{"connector.class":"io.confluent.connect.jdbc.JdbcSourceConnector","key.converter.schemas.enable":"true","connection.url":"jdbc:mysql://mysql:3306/test?user=root&password=secret","tasks.max":"1","value.converter.schemas.enable":"true","name":"Mysql","value.converter":"org.apache.kafka.connect.json.JsonConverter","key.converter":"org.apache.kafka.connect.json.JsonConverter", "topic.prefix":"mysql-","mode": "timestamp","timestamp.column.name": "update_ts","table.whitelist": "foobar"}}' http://$IP:8083/connectors | jq
+curl -s -X POST -H "Content-Type: application/json" --data '{"name": "Mysql", "config":{"connector.class":"io.confluent.connect.jdbc.JdbcSourceConnector","key.converter.schemas.enable":"true","connection.url":"jdbc:mysql://mysql:3306/test?user=root&password=secret","tasks.max":"1","value.converter.schemas.enable":"true","name":"Mysql","value.converter":"org.apache.kafka.connect.json.JsonConverter","key.converter":"org.apache.kafka.connect.json.JsonConverter", "topic.prefix":"mysql-","mode": "timestamp","timestamp.column.name": "update_ts","table.whitelist": "foobar"}}' http://$IP:8083/connectors
+
+curl  http://$IP:8083/connectors/Mysql | jq
 
 }
 
