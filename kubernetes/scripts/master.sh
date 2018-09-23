@@ -22,12 +22,9 @@ showDashboardIP
 
 createMyapps
 
-
 setupMYSQL
-setupkafka
+#setupkafka
 setup_kafkaConnect
-
-exit
 
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/postfix.yaml?$(date +%s)"  | kubectl apply -f -
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fakesmtp.yaml?$(date +%s)"  | kubectl apply -f -
@@ -86,4 +83,20 @@ showCustomService
 showDashboardIP
  
 kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/MKWEB_exec_time_seconds_max" | jq '.items[].value'
- 
+
+
+
+start=$(cat ~/start_time)
+
+end=$(date +%s)
+
+echo $end> ~/end_time
+
+runtime_seconds=$((end-start))
+runtime_minutes=$((runtime_seconds/ 60 ))
+
+
+echo Runtime $runtime seconds
+
+echo Runtime $runtime_minutes minutes
+

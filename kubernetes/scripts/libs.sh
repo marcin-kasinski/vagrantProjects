@@ -14,10 +14,12 @@ while ! nc -z $IP 8083; do   echo "waiting for kafka connect pod ($POD_NAME) to 
 
 #curl -s -X POST -H "Content-Type: application/json" --data 'data here' http://$IP:8083/connectors
 
+sleep 4
+
 curl -XPOST --data @/vagrant/conf/kafkaconnect/mysql.json -H "Content-Type:application/json"  http://$IP:8083/connectors
 
 
-curl  http://$IP:8083/connectors/Mysql | jq
+curl http://$IP:8083/connectors/Mysql | jq .
 
 }
 
@@ -275,14 +277,12 @@ setupkafka()
 sudo apt install -y openjdk-8-jdk
 while ! kubectl get po -o wide | grep kafka-0 | grep Running ; do   echo "waiting for kafka IP..." ; sleep 20 ; done
 
-
 KAFKAPODIP=`kubectl get po -o wide | grep kafka-0 | grep Running `
 echo $KAFKAPODIP
 KAFKAPODIP=`echo $KAFKAPODIP  | cut -d " " -f 6`
 echo $KAFKAPODIP
 
 while ! nc -z $KAFKAPODIP 9092; do   echo "waiting kafka to launch ..." ; sleep 20 ; done
-
 
 cd /tmp
 curl http://ftp.ps.pl/pub/apache/kafka/1.0.0/kafka_2.11-1.0.0.tgz | tar xvz
