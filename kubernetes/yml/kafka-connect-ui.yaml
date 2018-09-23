@@ -27,7 +27,7 @@ spec:
         env:
         - name: CONNECT_URL
           #value: "kafkaconnect-0.kconnect-hs.default.svc.cluster.local:8083,kafkaconnect-1.kconnect-hs.default.svc.cluster.local:8083,kafkaconnect-2.kconnect-hs.default.svc.cluster.local:8083"          
-          value: "kafkaconnect-0.kconnect-hs.default.svc.cluster.local:8083;dev cluster"          
+          value: "http://kconnect-cs:8083;dev cluster"          
 ---
 apiVersion: v1
 kind: Service
