@@ -1,0 +1,12 @@
+export KAFKA_OPTS=""
+./kafka-topics.sh --list --zookeeper zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka
+
+./kafka-topics.sh --create \
+    --zookeeper zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka \
+    --topic mktopic \
+    --partitions 3 \
+    --replication-factor 3
+
+./kafka-consumer-groups.sh --bootstrap-server kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092 --list
+
+./kafka-console-consumer.sh --bootstrap-server kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092 --topic mysql-foobar
