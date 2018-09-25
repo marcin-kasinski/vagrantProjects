@@ -1,5 +1,20 @@
 kind: ConfigMap
 metadata:
+  name: prometheus-record-rules-cm
+  namespace: default
+apiVersion: v1
+data:
+  record.rules: |-
+    groups:
+    - name: XXXXMKWEB_exec_time
+      rules:
+      - record: MKWEB_exec_time_seconds_avg
+        expr: MKWEB_exec_time_seconds_sum/MKWEB_exec_time_seconds_count
+          
+---
+
+kind: ConfigMap
+metadata:
   name: prometheus-alert-rules-cm
   namespace: default
 apiVersion: v1
@@ -49,6 +64,7 @@ data:
           - alertmanager-1.alertmanager-hs.default.svc.cluster.local:9093
           - alertmanager-2.alertmanager-hs.default.svc.cluster.local:9093
     rule_files:
+    - '/etc/prometheus-rules/record.rules'
     - '/etc/prometheus-rules/alert.rules'
     scrape_configs:
     - job_name: 'kubernetes-cluster'
@@ -270,6 +286,9 @@ spec:
         - name: prometheus-alert-rules
           mountPath: /etc/prometheus-rules/alert.rules
           subPath: alert.rules
+        - name: prometheus-record-rules
+          mountPath: /etc/prometheus-rules/record.rules
+          subPath: record.rules
       volumes:
         - name: config-volume-prometheus-yml
           configMap:
@@ -277,6 +296,9 @@ spec:
         - name: prometheus-alert-rules
           configMap:
             name: prometheus-alert-rules-cm	
+        - name: prometheus-record-rules
+          configMap:
+            name: prometheus-record-rules-cm	
           
 ---
 apiVersion: v1
