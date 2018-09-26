@@ -27,6 +27,8 @@ echo $start > ~/start_time
       sudo mv ~/kubernetes.list /etc/apt/sources.list.d/kubernetes.list
       sudo apt update
             
+      sudo service docker start
+            
       # get kubernetes stable version      
       export K8S_VERSION=$(curl -sSL https://dl.k8s.io/release/stable.txt)
       
