@@ -69,7 +69,7 @@ spec:
         - name: "ZOOKEEPER_CONNECT"
           value: "zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka"
         - name: "BROKER_NODES"
-          value: "1=kafka-0.k-hs.default.svc.cluster.local;2=kafka-1.k-hs.default.svc.cluster.local;3=kafka-2.k-hs.default.svc.cluster.local"
+          value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"
         # default 16kb we set to 64
         - name: "KAFKA_PARAM_BATCH_SIZE"
           value: "65536"
