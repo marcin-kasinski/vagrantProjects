@@ -46,9 +46,9 @@ spec:
         prometheus.io/port: "9104"        
     spec:
       initContainers:
-      - name: init-mysql
-        image: openjdk:8
-        command: ['sh', '-c', 'echo "bind-address   = $POD_IP" >/etc/mysql/mysql.conf.d/mysqld.cnf']    
+      #- name: init-mysql
+      #  image: openjdk:8
+      #  command: ['sh', '-c', 'echo "bind-address   = $POD_IP" >/etc/mysql/mysql.conf.d/mysqld.cnf']    
       containers:
       - name: mysql-prometheus-exporter
         image: prom/mysqld-exporter
