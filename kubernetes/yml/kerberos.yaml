@@ -113,6 +113,7 @@ spec:
   selector:
     app: kerberos
 ---
+apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: kerberos-ingress
