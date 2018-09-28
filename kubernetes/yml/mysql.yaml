@@ -1,3 +1,14 @@
+kind: ConfigMap
+metadata:
+  name: mysql-conf-cm
+  namespace: default
+apiVersion: v1
+data:
+  record.rules: |-
+    !includedir /etc/mysql/conf.d/
+    !includedir /etc/mysql/mysql.conf.d/
+    bind-address = 0.0.0.0
+---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -73,10 +84,17 @@ spec:
         volumeMounts:
         - name: nfsmysql
           mountPath: /var/lib/mysql
+        - name: mysql-conf-cm-my-cnf
+          mountPath: /etc/mysql/my.cnf
+          subPath: my.cnf
       volumes:
       - name: nfsmysql
         persistentVolumeClaim:
           claimName: nfsmysql
+      - name: mysql-conf-cm-my-cnf
+        configMap:
+          name: mysql-conf-cm	
+          
 ---
 apiVersion: v1
 kind: Service
