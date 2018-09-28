@@ -1,3 +1,22 @@
+kind: ConfigMap
+metadata:
+  name: kdc.conf-cm
+  namespace: default
+apiVersion: v1
+data:
+  kdc.conf: |-
+    [kdcdefaults]
+      kdc_ports = 88
+      kdc_tcp_ports = 88
+      default_realm=KAFKA.SECURE
+    [realms]
+      KAFKA.SECURE = {
+        acl_file = /var/kerberos/krb5kdc/kadm5.acl
+        dict_file = /usr/share/dict/words
+        admin_keytab = /var/kerberos/krb5kdc/kadm5.keytab
+        supported_enctypes = aes256-cts:normal aes128-cts:normal des3-hmac-sha1:normal arcfour-hmac:normal camellia256-cts:normal camellia128-cts:normal des-hmac-sha1:normal des-cbc-md5:normal des-cbc-crc:normal
+      }           
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -22,7 +41,15 @@ spec:
           containerPort: 88
         env:
         - name: AAAAAAA
-          value: "AAAAAA"          
+          value: "AAAAAA"
+        volumeMounts:
+        - name: config-volume-kdc.conf-cm
+          mountPath: /etc/krb5kdc/kdc.conf
+          subPath: kdc.conf          
+      volumes:
+        - name: config-volume-kdc.conf-cm
+          configMap:
+            name: kdc.conf-cm          
 ---
 apiVersion: v1
 kind: Service
