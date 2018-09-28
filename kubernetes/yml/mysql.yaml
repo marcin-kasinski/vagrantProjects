@@ -62,6 +62,10 @@ spec:
         env:
         - name: MYSQL_ROOT_PASSWORD
           value: "secret"
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
         volumeMounts:
         - name: nfsmysql
           mountPath: /var/lib/mysql
