@@ -17,6 +17,15 @@ data:
         supported_enctypes = aes256-cts:normal aes128-cts:normal des3-hmac-sha1:normal arcfour-hmac:normal camellia256-cts:normal camellia128-cts:normal des-hmac-sha1:normal des-cbc-md5:normal des-cbc-crc:normal
       }           
 ---
+kind: ConfigMap
+metadata:
+  name: kadm5-acl-cm
+  namespace: default
+apiVersion: v1
+data:
+  kadm5.acl: |-
+    */admin@KAFKA.SECURE *
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -45,11 +54,17 @@ spec:
         volumeMounts:
         - name: config-volume-kdc-conf-cm
           mountPath: /etc/krb5kdc/kdc.conf
-          subPath: kdc.conf          
+          subPath: kdc.conf
+        - name: config-volume-kadm5-acl-cm
+          mountPath: /etc/krb5kdc/kadm5.acl
+          subPath: kadm5.acl
       volumes:
         - name: config-volume-kdc-conf-cm
           configMap:
             name: kdc-conf-cm          
+        - name: config-volume-kadm5-acl-cm
+          configMap:
+            name: kadm5-acl-cm          
 ---
 apiVersion: v1
 kind: Service
