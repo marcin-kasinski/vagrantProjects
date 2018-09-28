@@ -4,7 +4,7 @@ metadata:
   namespace: default
 apiVersion: v1
 data:
-  record.rules: |-
+  my.cnf: |-
     !includedir /etc/mysql/conf.d/
     !includedir /etc/mysql/mysql.conf.d/
     bind-address = 0.0.0.0
