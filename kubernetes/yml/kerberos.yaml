@@ -26,6 +26,29 @@ data:
   kadm5.acl: |-
     */admin@KAFKA.SECURE *
 ---
+kind: ConfigMap
+metadata:
+  name: krb5-conf-cm
+  namespace: default
+apiVersion: v1
+data:
+  krb5.conf: |-
+    [logging]
+      default = FILE:/var/log/krb5libs.log
+      kdc = FILE:/var/log/krb5kdc.log
+      admin_server = FILE:/var/log/kadmind.log
+    
+    [libdefaults]
+        default_realm = KAFKA.SECURE
+        kdc_timesync = 1
+        ticket_lifetime = 24h
+    
+    [realms]
+        KAFKA.SECURE = {
+          admin_server = kerberos
+          kdc  = kerberos
+          } 
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -58,6 +81,9 @@ spec:
         - name: config-volume-kadm5-acl-cm
           mountPath: /etc/krb5kdc/kadm5.acl
           subPath: kadm5.acl
+        - name: config-volume-krb5-conf-cm
+          mountPath: /etc/krb5.conf
+          subPath: krb5.conf
       volumes:
         - name: config-volume-kdc-conf-cm
           configMap:
@@ -65,6 +91,9 @@ spec:
         - name: config-volume-kadm5-acl-cm
           configMap:
             name: kadm5-acl-cm          
+        - name: config-volume-krb5-conf-cm
+          configMap:
+            name: krb5-conf-cm          
 ---
 apiVersion: v1
 kind: Service
