@@ -1,5 +1,28 @@
 setupkerberos()
 {
+POD_NAME="kerberos-"
+
+KERBEROSPODNAME=`kubectl get po -n default -o wide | grep $POD_NAME | grep Running `
+KERBEROSPODNAME=`echo $KERBEROSPODNAME | cut -d " " -f 1`
+echo  $KERBEROSPODNAME
+
+
+
+while ! kubectl get po -o wide | grep $KERBEROSPODNAME | grep Running ; do   echo "waiting for kerberos IP..." ; sleep 20 ; done
+
+KERBEROSPODIP=`kubectl get po -o wide | grep $KERBEROSPODNAME | grep Running `
+KERBEROSPODIP=`echo $KERBEROSPODIP | cut -d " " -f 6`
+echo $KERBEROSPODIP
+
+while ! nc -z $KERBEROSPODIP 88; do   echo "waiting kerberos to launch ..." ; sleep 20 ; done
+
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey reader@KAFKA.SECURE"
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey writer@KAFKA.SECURE"
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey admin@KAFKA.SECURE"
+  
+
+
+
 }
 
 setupkafkaConnect()
