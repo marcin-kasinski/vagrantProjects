@@ -1,0 +1,11 @@
+run buid remotely
+
+
+ssh -o "StrictHostKeyChecking no" -i /vagrantprojects/private_key  vagrant@192.168.1.11 "rm  -fr /tmp/kafkacluster |true && cd /tmp && git clone https://github.com/marcin-kasinski/kafkacluster.git && cd kafkacluster && sudo docker build -t kafkacluster . && sudo docker tag kafkacluster marcinkasinski/kafkacluster:latest"
+
+ssh -o "StrictHostKeyChecking no" -i /vagrantprojects/private_key  vagrant@192.168.1.12 "rm  -fr /tmp/kafkacluster |true && cd /tmp && git clone https://github.com/marcin-kasinski/kafkacluster.git && cd kafkacluster && sudo docker build -t kafkacluster . && sudo docker tag kafkacluster marcinkasinski/kafkacluster:latest"
+
+ssh -o "StrictHostKeyChecking no" -i /vagrantprojects/private_key  vagrant@192.168.1.13 "rm  -fr /tmp/kafkacluster |true && cd /tmp && git clone https://github.com/marcin-kasinski/kafkacluster.git && cd kafkacluster && sudo docker build -t kafkacluster . && sudo docker tag kafkacluster marcinkasinski/kafkacluster:latest"
+ssh -o "StrictHostKeyChecking no" -i /vagrantprojects/private_key  vagrant@192.168.1.14 "rm  -fr /tmp/kafkacluster |true && cd /tmp && git clone https://github.com/marcin-kasinski/kafkacluster.git && cd kafkacluster && sudo docker build -t kafkacluster . && sudo docker tag kafkacluster marcinkasinski/kafkacluster:latest"
+
+

@@ -1,3 +1,6 @@
+setupkerberos()
+{
+}
 
 setupkafkaConnect()
 {

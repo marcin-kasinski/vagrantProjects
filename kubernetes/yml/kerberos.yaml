@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kerberos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kerberos
+  template:
+    metadata:
+      labels:
+        app: kerberos
+      annotations:
+    spec:
+      containers:
+      - name: kerberos
+        image: marcinkasinski/krb5-server
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 88
+        env:
+        - name: AAAAAAA
+          value: "AAAAAA"          
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kerberos
+spec:
+  type: NodePort
+  ports:
+  - port: 88
+    targetPort: 88
+    protocol: TCP
+    name: krb
+  selector:
+    app: kerberos
+---
