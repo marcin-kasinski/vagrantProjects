@@ -1,6 +1,6 @@
 kind: ConfigMap
 metadata:
-  name: kdc.conf-cm
+  name: kdc-conf-cm
   namespace: default
 apiVersion: v1
 data:
@@ -43,13 +43,13 @@ spec:
         - name: AAAAAAA
           value: "AAAAAA"
         volumeMounts:
-        - name: config-volume-kdc.conf-cm
+        - name: config-volume-kdc-conf-cm
           mountPath: /etc/krb5kdc/kdc.conf
           subPath: kdc.conf          
       volumes:
-        - name: config-volume-kdc.conf-cm
+        - name: config-volume-kdc-conf-cm
           configMap:
-            name: kdc.conf-cm          
+            name: kdc-conf-cm          
 ---
 apiVersion: v1
 kind: Service
