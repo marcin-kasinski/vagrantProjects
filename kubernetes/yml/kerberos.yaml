@@ -72,8 +72,10 @@ spec:
         - name: http
           containerPort: 88
         env:
-        - name: AAAAAAA
-          value: "AAAAAA"
+        - name: REALM
+          value: "KAFKA.SECURE"
+        - name: ADMINPW
+          value: "secret"
         volumeMounts:
         - name: config-volume-kdc-conf-cm
           mountPath: /etc/krb5kdc/kdc.conf
