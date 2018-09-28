@@ -1,5 +1,5 @@
 
-setup_kafkaConnect()
+setupkafkaConnect()
 {
 
 POD_NAME="kafkaconnect-0"

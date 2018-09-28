@@ -8,6 +8,7 @@
 kubelogs(){
 
 SEARCH=$1
+CONTAINER=$2
 
 PODNAME=`kubectl get po | grep $SEARCH| grep Running | cut -d " " -f 1`
 
@@ -16,6 +17,21 @@ echo "Pod name:"
 echo "$PODNAME"
 
 kubectl logs -f $PODNAME 
+
+
+if [ -z "$CONTAINER" ]; then 
+  #there is CONTAINER
+  kubectl logs -f $PODNAME
+else 
+  #there is CONTAINER
+  kubectl logs -f $PODNAME -c $CONTAINER
+  
+fi
+
+
+
+
+
 
 }
 
@@ -52,16 +68,17 @@ fi
 COMMAND=$1
 ARG=$2
 BASH="$3"
+CONTAINER=$3
 
 echo $COMMAND
-echo "BASH $BASH"
-echo "BASH2 $3"
+echo "BASH $3"
 
 if [ "$COMMAND" = "e" ]
 then
 kubeexec $ARG "$BASH"
 elif [ "$COMMAND" = "l" ]
 then
-kubelogs $ARG
+kubelogs $ARG $CONTAINER
+
 fi
 
