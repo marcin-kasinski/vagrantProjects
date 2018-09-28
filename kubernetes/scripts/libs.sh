@@ -19,8 +19,13 @@ while ! nc -z $KERBEROSPODIP 88; do   echo "waiting kerberos to launch ..." ; sl
 kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey reader@KAFKA.SECURE"
 kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey writer@KAFKA.SECURE"
 kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey admin@KAFKA.SECURE"
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey kafka/kerberos.default.svc.cluster.local@KAFKA.SECURE" 
   
-
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/reader.user.keytab reader@KAFKA.SECURE"
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/writer.user.keytab writer@KAFKA.SECURE"
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/admin.user.keytab admin@KAFKA.SECURE"
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/kafka.service.keytab kafka/kerberos.default.svc.cluster.local@KAFKA.SECURE"
+ 
 
 
 }
