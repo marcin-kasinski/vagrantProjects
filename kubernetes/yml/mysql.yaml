@@ -84,9 +84,9 @@ spec:
         volumeMounts:
         - name: nfsmysql
           mountPath: /var/lib/mysql
-        - name: mysql-conf-cm-my-cnf
-          mountPath: /etc/mysql/my.cnf
-          subPath: my.cnf
+        #- name: mysql-conf-cm-my-cnf
+        #  mountPath: /etc/mysql/my.cnf
+        #  subPath: my.cnf
       volumes:
       - name: nfsmysql
         persistentVolumeClaim:
