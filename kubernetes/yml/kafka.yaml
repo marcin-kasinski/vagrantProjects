@@ -89,8 +89,8 @@ spec:
         - name: config-volume-krb5-conf-cm
           mountPath: /etc/krb5.conf
           subPath: krb5.conf        
-        - mountPath: /tmp/kafka-logs
-          name: kafka-logs
+        - name: kafka-logs
+          mountPath: /tmp/kafka-logs
         env:
         - name: "ZOOKEEPER_CONNECT"
           value: "zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka"
@@ -103,5 +103,5 @@ spec:
         - name: config-volume-krb5-conf-cm
           configMap:
             name: kafka-krb5-conf-cm
-      - name: kafka-logs
-        emptyDir: {}    
+        - name: kafka-logs
+          emptyDir: {}    
