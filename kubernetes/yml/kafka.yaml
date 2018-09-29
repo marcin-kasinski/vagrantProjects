@@ -1,3 +1,26 @@
+kind: ConfigMap
+metadata:
+  name: kafka-krb5-conf-cm
+  namespace: default
+apiVersion: v1
+data:
+  krb5.conf: |-
+    [logging]
+      default = FILE:/var/log/krb5libs.log
+      kdc = FILE:/var/log/krb5kdc.log
+      admin_server = FILE:/var/log/kadmind.log
+    
+    [libdefaults]
+        default_realm = KAFKA.SECURE
+        kdc_timesync = 1
+        ticket_lifetime = 24h
+    
+    [realms]
+        KAFKA.SECURE = {
+          admin_server = kerberos
+          kdc  = kerberos
+          } 
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -63,8 +86,11 @@ spec:
         - containerPort: 9092
           name: client
         volumeMounts:
+        - name: config-volume-krb5-conf-cm
+          mountPath: /etc/krb5.conf
+          subPath: krb5.conf        
         - mountPath: /tmp/kafka-logs
-          name: kafka-logs   
+          name: kafka-logs
         env:
         - name: "ZOOKEEPER_CONNECT"
           value: "zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka"
@@ -73,7 +99,9 @@ spec:
         # default 16kb we set to 64
         - name: "KAFKA_PARAM_BATCH_SIZE"
           value: "65536"
-          
       volumes:
+        - name: config-volume-krb5-conf-cm
+          configMap:
+            name: kafka-krb5-conf-cm
       - name: kafka-logs
         emptyDir: {}    
