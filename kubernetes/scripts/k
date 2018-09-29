@@ -18,7 +18,6 @@ echo "$PODNAME"
 
 kubectl logs -f $PODNAME 
 
-
 if [ -z "$CONTAINER" ]; then 
   #there is CONTAINER
   kubectl logs -f $PODNAME

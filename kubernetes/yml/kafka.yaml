@@ -1,5 +1,20 @@
 kind: ConfigMap
 metadata:
+  name: kafka-server-jaas-conf-cm
+  namespace: default
+apiVersion: v1
+data:
+  kafka_server_jaas.conf: |-
+    KafkaServer {
+        com.sun.security.auth.module.Krb5LoginModule required
+        useKeyTab=true
+        storeKey=true
+        keyTab="/tmp/kafka.service.keytab"
+        principal="kafka/kerberos.default.svc.cluster.local@KAFKA.SECURE";
+    }; 
+---
+kind: ConfigMap
+metadata:
   name: kafka-krb5-conf-cm
   namespace: default
 apiVersion: v1
@@ -90,15 +105,23 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name              
-        - name: "ZOOKEEPER_CONNECT"
-          value: "zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka"
         - name: "BROKER_NODES"
           value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"
+        - name: "AUTH_TYPE"
+          value: "SASL_PLAINTEXT"
+        - name: "JAAS_FILE_LOCATION"
+          value: "/tmp/kafka_server_jaas.conf"
         # default 16kb we set to 64
         - name: "KAFKA_PARAM_BATCH_SIZE"
           value: "65536"
         - name: "KAFKA_PARAM_listeners"
           value: "PLAINTEXT://0.0.0.0:9092,SSL://0.0.0.0:9093,SASL_SSL://0.0.0.0:9094"
+        - name: "KAFKA_PARAM_ZOOKEEPER_CONNECT"
+          value: "zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka"
+        - name: "KAFKA_PARAM_sasl_enabled_mechanisms"
+          value: "GSSAPI"
+        - name: "KAFKA_PARAM_sasl.kerberos.service.name"
+          value: "kafka"
         volumeMounts:
         - name: config-volume-krb5-conf-cm
           mountPath: /etc/krb5.conf
@@ -106,6 +129,9 @@ spec:
         - name: config-volume-kafka-service-keytab
           mountPath: /tmp/kafka.service.keytab
           subPath: kafka.service.keytab        
+        - name: config-volume-kafka-server-jaas-conf-cm
+          mountPath: /tmp/kafka_server_jaas.conf
+          subPath: kafka_server_jaas.conf
         - name: kafka-logs
           mountPath: /tmp/kafka-logs
       volumes:
@@ -115,5 +141,8 @@ spec:
         - name: config-volume-kafka-service-keytab
           configMap:
             name: kafka-service-keytab
+        - name: config-volume-kafka-server-jaas-conf-cm
+          configMap:
+            name: kafka-server-jaas-conf-cm
         - name: kafka-logs
           emptyDir: {}    
