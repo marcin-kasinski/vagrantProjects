@@ -17,8 +17,9 @@ showDashboardIP
 
 createMyapps
 
-setupMYSQL
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kerberos.yaml?$(date +%s)"  | kubectl apply -f -
+
+setupMYSQL
 
 setupkerberos
 
