@@ -2,7 +2,8 @@ setupkerberos()
 {
 POD_NAME="kerberos-"
 
-KERBEROSPODNAME=`kubectl get po -n default -o wide | grep $POD_NAME | grep Running `
+#KERBEROSPODNAME=`kubectl get po -n default -o wide | grep $POD_NAME | grep Running `
+KERBEROSPODNAME=`kubectl get po -n default -o wide | grep $POD_NAME`
 KERBEROSPODNAME=`echo $KERBEROSPODNAME | cut -d " " -f 1`
 echo  $KERBEROSPODNAME
 
