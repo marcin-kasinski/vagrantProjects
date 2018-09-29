@@ -89,7 +89,7 @@ spec:
         - name: "POD_NAME"
           valueFrom:
             fieldRef:
-              fieldPath: metadata.name
+              fieldPath: metadata.name              
         - name: "ZOOKEEPER_CONNECT"
           value: "zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka"
         - name: "BROKER_NODES"
@@ -97,6 +97,8 @@ spec:
         # default 16kb we set to 64
         - name: "KAFKA_PARAM_BATCH_SIZE"
           value: "65536"
+        - name: "KAFKA_PARAM_listeners"
+          value: "PLAINTEXT://0.0.0.0:9092,SSL://0.0.0.0:9093,SASL_SSL://0.0.0.0:9094"
         volumeMounts:
         - name: config-volume-krb5-conf-cm
           mountPath: /etc/krb5.conf
