@@ -22,11 +22,17 @@ kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey writer@
 kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey admin@KAFKA.SECURE"
 kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey kafka/kerberos.default.svc.cluster.local@KAFKA.SECURE" 
   
+## create keytabs
+  
 kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/reader.user.keytab reader@KAFKA.SECURE"
 kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/writer.user.keytab writer@KAFKA.SECURE"
 kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/admin.user.keytab admin@KAFKA.SECURE"
 kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/kafka.service.keytab kafka/kerberos.default.svc.cluster.local@KAFKA.SECURE"
  
+
+kubectl cp default/$KERBEROSPODNAME:/tmp/kafka.service.keytab /tmp/kafka.service.keytab
+
+kubectl create configmap kafka-service-keytab -n default --from-file=/tmp/kafka.service.keytab
 
 
 }

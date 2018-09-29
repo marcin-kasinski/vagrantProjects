@@ -85,12 +85,6 @@ spec:
         ports:
         - containerPort: 9092
           name: client
-        volumeMounts:
-        - name: config-volume-krb5-conf-cm
-          mountPath: /etc/krb5.conf
-          subPath: krb5.conf        
-        - name: kafka-logs
-          mountPath: /tmp/kafka-logs
         env:
         - name: "ZOOKEEPER_CONNECT"
           value: "zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka"
@@ -99,9 +93,21 @@ spec:
         # default 16kb we set to 64
         - name: "KAFKA_PARAM_BATCH_SIZE"
           value: "65536"
+        volumeMounts:
+        - name: config-volume-krb5-conf-cm
+          mountPath: /etc/krb5.conf
+          subPath: krb5.conf        
+        - name: config-volume-kafka-service-keytab
+          mountPath: /tmp/kafka.service.keytab
+          subPath: kafka.service.keytab        
+        - name: kafka-logs
+          mountPath: /tmp/kafka-logs
       volumes:
         - name: config-volume-krb5-conf-cm
           configMap:
             name: kafka-krb5-conf-cm
+        - name: config-volume-kafka-service-keytab
+          configMap:
+            name: kafka-service-keytab
         - name: kafka-logs
           emptyDir: {}    
