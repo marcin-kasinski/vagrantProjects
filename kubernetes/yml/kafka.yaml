@@ -122,7 +122,7 @@ spec:
           value: "zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka"
         - name: "KAFKA_PARAM_sasl_enabled_mechanisms"
           value: "GSSAPI"
-        - name: "KAFKA_PARAM_sasl.kerberos.service.name"
+        - name: "KAFKA_PARAM_sasl_kerberos_service_name"
           value: "kafka"
         volumeMounts:
         - name: config-volume-krb5-conf-cm
