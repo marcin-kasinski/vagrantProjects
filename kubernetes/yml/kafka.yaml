@@ -9,7 +9,7 @@ data:
         com.sun.security.auth.module.Krb5LoginModule required
         useKeyTab=true
         storeKey=true
-        keyTab="/tmp/kafka.service.keytab"
+        keyTab="/opt/kafka/config/kafka.service.keytab"
         principal="kafka/kerberos.default.svc.cluster.local@KAFKA.SECURE";
     }; 
 ---
@@ -109,7 +109,7 @@ spec:
         - name: "BROKER_NODES"
           value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"
         - name: "JAAS_FILE_LOCATION"
-          value: "/tmp/kafka_server_jaas.conf"
+          value: "/opt/kafka/config/kafka_server_jaas.conf"
         # default 16kb we set to 64
         - name: "KAFKA_PARAM_BATCH_SIZE"
           value: "65536"
@@ -130,13 +130,13 @@ spec:
           mountPath: /etc/krb5.conf
           subPath: krb5.conf        
         - name: config-volume-kafka-service-keytab
-          mountPath: /tmp/kafka.service.keytab
+          mountPath: /opt/kafka/config/kafka.service.keytab
           subPath: kafka.service.keytab        
         - name: config-volume-kafka-server-jaas-conf-cm
-          mountPath: /tmp/kafka_server_jaas.conf
+          mountPath: /opt/kafka/config/kafka_server_jaas.conf
           subPath: kafka_server_jaas.conf
         - name: kafka-logs
-          mountPath: /tmp/kafka-logs
+          mountPath: /opt/kafka/config/kafka-logs
       volumes:
         - name: config-volume-krb5-conf-cm
           configMap:
