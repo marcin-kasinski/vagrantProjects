@@ -20,19 +20,23 @@ while ! nc -z $KERBEROSPODIP 88; do   echo "waiting kerberos to launch ..." ; sl
 kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey reader@KAFKA.SECURE"
 kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey writer@KAFKA.SECURE"
 kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey admin@KAFKA.SECURE"
-kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey kafka/kerberos.default.svc.cluster.local@KAFKA.SECURE" 
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey kafka/kafka-0.k-hs.default.svc.cluster.local@KAFKA.SECURE" 
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey kafka/kafka-1.k-hs.default.svc.cluster.local@KAFKA.SECURE" 
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey kafka/kafka-2.k-hs.default.svc.cluster.local@KAFKA.SECURE" 
   
 ## create keytabs
   
 kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/reader.user.keytab reader@KAFKA.SECURE"
 kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/writer.user.keytab writer@KAFKA.SECURE"
 kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/admin.user.keytab admin@KAFKA.SECURE"
-kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/kafka.service.keytab kafka/kerberos.default.svc.cluster.local@KAFKA.SECURE"
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/kafka.service.keytab kafka/kafka-0.k-hs.default.svc.cluster.local@KAFKA.SECURE"
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/kafka.service.keytab kafka/kafka-1.k-hs.default.svc.cluster.local@KAFKA.SECURE"
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/kafka.service.keytab kafka/kafka-2.k-hs.default.svc.cluster.local@KAFKA.SECURE"
  
 
 kubectl cp default/$KERBEROSPODNAME:/tmp/kafka.service.keytab /tmp/kafka.service.keytab
 
-kubectl create configmap kafka-service-keytab -n default --from-file=/tmp/kafka.service.keytab
+kubectl create configmap kafka-service-keytab -n default --from-file=/tmp/kafka-0.service.keytab
 
 
 }
@@ -471,7 +475,7 @@ createMyapps()
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/zookeeper.yaml?$(date +%s)"  | kubectl apply -f -
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/zoonavigator.yaml?$(date +%s)"  | kubectl apply -f -
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kafka.yaml?$(date +%s)"  | kubectl apply -f -
+curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kafka.yaml?$(date +%s)"  | | sed -e 's/  replicas: 1/  replicas: 1/g'  kubectl apply -f -
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kafka-manager.yaml?$(date +%s)"  | kubectl apply -f -
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kafka-connect.yaml?$(date +%s)"  | kubectl apply -f -
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kafka-connect-ui.yaml?$(date +%s)"  | kubectl apply -f -
