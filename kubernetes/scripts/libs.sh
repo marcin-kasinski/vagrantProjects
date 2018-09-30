@@ -29,14 +29,18 @@ kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey kafka/k
 kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/reader.user.keytab reader@KAFKA.SECURE"
 kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/writer.user.keytab writer@KAFKA.SECURE"
 kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/admin.user.keytab admin@KAFKA.SECURE"
-kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/kafka.service.keytab kafka/kafka-0.k-hs.default.svc.cluster.local@KAFKA.SECURE"
-kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/kafka.service.keytab kafka/kafka-1.k-hs.default.svc.cluster.local@KAFKA.SECURE"
-kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/kafka.service.keytab kafka/kafka-2.k-hs.default.svc.cluster.local@KAFKA.SECURE"
- 
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/kafka-0.service.keytab kafka/kafka-0.k-hs.default.svc.cluster.local@KAFKA.SECURE"
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/kafka-1.service.keytab kafka/kafka-1.k-hs.default.svc.cluster.local@KAFKA.SECURE"
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/kafka-2.service.keytab kafka/kafka-2.k-hs.default.svc.cluster.local@KAFKA.SECURE"
 
-kubectl cp default/$KERBEROSPODNAME:/tmp/kafka.service.keytab /tmp/kafka.service.keytab
+kubectl cp default/$KERBEROSPODNAME:/tmp/kafka-0.service.keytab /tmp/kafka-0.service.keytab
+kubectl cp default/$KERBEROSPODNAME:/tmp/kafka-1.service.keytab /tmp/kafka-1.service.keytab
+kubectl cp default/$KERBEROSPODNAME:/tmp/kafka-2.service.keytab /tmp/kafka-2.service.keytab
 
-kubectl create configmap kafka-service-keytab -n default --from-file=/tmp/kafka-0.service.keytab
+kubectl create configmap kafka-0-service-keytab -n default --from-file=/tmp/kafka-0.service.keytab
+kubectl create configmap kafka-1-service-keytab -n default --from-file=/tmp/kafka-1.service.keytab
+kubectl create configmap kafka-2-service-keytab -n default --from-file=/tmp/kafka-2.service.keytab
+
 
 
 }

@@ -23,3 +23,9 @@ kafkacluster marcinkasinski/kafkacluster \
 "
 
 
+
+
+
+klist -kt /tmp/kafka.service.keytab
+kinit -kt /tmp/kafka.service.keytab kafka/<<KAFKA-SERVER-PUBLIC-DNS>>
+klist

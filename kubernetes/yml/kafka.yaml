@@ -9,7 +9,7 @@ data:
         com.sun.security.auth.module.Krb5LoginModule required
         useKeyTab=true
         storeKey=true
-        keyTab="/opt/kafka/config/kafka.service.keytab"
+        keyTab="/opt/kafka/config/kafka-0.service.keytab"
         principal="kafka/kerberos.default.svc.cluster.local@KAFKA.SECURE";
     }; 
 ---
@@ -129,9 +129,15 @@ spec:
         - name: config-volume-krb5-conf-cm
           mountPath: /etc/krb5.conf
           subPath: krb5.conf        
-        - name: config-volume-kafka-service-keytab
-          mountPath: /opt/kafka/config/kafka.service.keytab
-          subPath: kafka.service.keytab        
+        - name: config-volume-kafka-0-service-keytab
+          mountPath: /opt/kafka/config/kafka-0.service.keytab
+          subPath: kafka-0.service.keytab
+        - name: config-volume-kafka-1-service-keytab
+          mountPath: /opt/kafka/config/kafka-1.service.keytab
+          subPath: kafka-1.service.keytab
+        - name: config-volume-kafka-2-service-keytab
+          mountPath: /opt/kafka/config/kafka-2.service.keytab
+          subPath: kafka-2.service.keytab
         - name: config-volume-kafka-server-jaas-conf-cm
           mountPath: /opt/kafka/config/kafka_server_jaas.conf
           subPath: kafka_server_jaas.conf
@@ -141,9 +147,15 @@ spec:
         - name: config-volume-krb5-conf-cm
           configMap:
             name: kafka-krb5-conf-cm
-        - name: config-volume-kafka-service-keytab
+        - name: config-volume-kafka-0-service-keytab
           configMap:
-            name: kafka-service-keytab
+            name: kafka-0-service-keytab
+        - name: config-volume-kafka-1-service-keytab
+          configMap:
+            name: kafka-1-service-keytab
+        - name: config-volume-kafka-2-service-keytab
+          configMap:
+            name: kafka-2-service-keytab
         - name: config-volume-kafka-server-jaas-conf-cm
           configMap:
             name: kafka-server-jaas-conf-cm
