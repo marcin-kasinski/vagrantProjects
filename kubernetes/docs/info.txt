@@ -26,6 +26,6 @@ kafkacluster marcinkasinski/kafkacluster \
 
 
 
-klist -kt /tmp/kafka.service.keytab
-kinit -kt /tmp/kafka.service.keytab kafka/<<KAFKA-SERVER-PUBLIC-DNS>>
+klist -kt /opt/kafka/config/kafka-0.service.keytab
+kinit -kt /opt/kafka/config/kafka-0.service.keytab kafka/kafka-0.k-hs.default.svc.cluster.local@KAFKA.SECURE
 klist

@@ -26,12 +26,12 @@ kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey kafka/k
   
 ## create keytabs
   
-kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/reader.user.keytab reader@KAFKA.SECURE"
-kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/writer.user.keytab writer@KAFKA.SECURE"
-kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/admin.user.keytab admin@KAFKA.SECURE"
-kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/kafka-0.service.keytab kafka/kafka-0.k-hs.default.svc.cluster.local@KAFKA.SECURE"
-kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/kafka-1.service.keytab kafka/kafka-1.k-hs.default.svc.cluster.local@KAFKA.SECURE"
-kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/kafka-2.service.keytab kafka/kafka-2.k-hs.default.svc.cluster.local@KAFKA.SECURE"
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -norandkey -kt /tmp/reader.user.keytab reader@KAFKA.SECURE"
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -norandkey -kt /tmp/writer.user.keytab writer@KAFKA.SECURE"
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -norandkey -kt /tmp/admin.user.keytab admin@KAFKA.SECURE"
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -norandkey -kt /tmp/kafka-0.service.keytab kafka/kafka-0.k-hs.default.svc.cluster.local@KAFKA.SECURE"
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -norandkey -kt /tmp/kafka-1.service.keytab kafka/kafka-1.k-hs.default.svc.cluster.local@KAFKA.SECURE"
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -norandkey -kt /tmp/kafka-2.service.keytab kafka/kafka-2.k-hs.default.svc.cluster.local@KAFKA.SECURE"
 
 kubectl cp default/$KERBEROSPODNAME:/tmp/kafka-0.service.keytab /tmp/kafka-0.service.keytab
 kubectl cp default/$KERBEROSPODNAME:/tmp/kafka-1.service.keytab /tmp/kafka-1.service.keytab
