@@ -118,7 +118,7 @@ spec:
           value: "PLAINTEXT://0.0.0.0:9093,SASL_PLAINTEXT://0.0.0.0:9094"
         - name: "KAFKA_PARAM_advertised_listeners"
           #value: "PLAINTEXT://{HOSTNAME}:9093,SASL_PLAINTEXT://{HOSTNAME}:9094"
-          value: "PLAINTEXT://|HOSTNAME|:9093,SASL_PLAINTEXT://|HOSTNAME|:9094"
+          value: "PLAINTEXT://{HOSTNAME}:9093,SASL_PLAINTEXT://{HOSTNAME}:9094"
         - name: "KAFKA_PARAM_ZOOKEEPER_CONNECT"
           value: "zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka"
         - name: "KAFKA_PARAM_sasl_enabled_mechanisms"
