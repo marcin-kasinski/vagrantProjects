@@ -1,3 +1,27 @@
+kind: ConfigMap
+metadata:
+  name: zookeeper-server-jaas-conf-cm
+  namespace: default
+apiVersion: v1
+data:
+  kafka_server_jaas.conf: |-
+    KafkaServer {
+        com.sun.security.auth.module.Krb5LoginModule required
+        useKeyTab=true
+        storeKey=true
+        keyTab="/opt/zookeeper/conf/kafka-0.service.keytab"
+        principal="zookeeper/{HOSTNAME_FQDN}@KAFKA.SECURE";
+    };
+
+    // ZooKeeper client authentication
+    Client {
+        com.sun.security.auth.module.Krb5LoginModule required
+        useKeyTab=true
+        storeKey=true
+        keyTab="/opt/zookeeper/conf/kafka-0.service.keytab"
+        principal="zookeeper/{HOSTNAME_FQDN}@KAFKA.SECURE";
+    };    
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -54,12 +78,11 @@ spec:
           name: server
         - containerPort: 3888
           name: leader-election
-        volumeMounts:
-        - mountPath: /datalog/zookeeper
-          name: zookeeper-logs
-        - mountPath: /data/zookeeper
-          name: zookeeper-data
         env:
+        - name: "JAAS_FILE_LOCATION"
+          value: "/opt/zookeeper/conf/zookeeper_server_jaas.conf"
+        - name: "JAAS_FILE_LOCATION_RO"
+          value: "/opt/zookeeper/conf/zookeeper_server_jaas.conf_RO"        
         - name: "ZOOKEEPER_NODES"
           value: "server.1=zk-0.zk-hs.default.svc.cluster.local:2888:3888;server.2=zk-1.zk-hs.default.svc.cluster.local:2888:3888;server.3=zk-2.zk-hs.default.svc.cluster.local:2888:3888"
         #ustawia na wartość default 
@@ -68,8 +91,19 @@ spec:
         #ustawia na wartość default 
         - name: "ZOOKEEPER_PARAM_maxClientCnxns"
           value: "60"
+        volumeMounts:
+        - mountPath: /datalog/zookeeper
+          name: zookeeper-logs
+        - mountPath: /data/zookeeper
+          name: zookeeper-data
+        - name: config-volume-zookeeper-server-jaas-conf-cm
+          mountPath: /opt/zookeeper/conf/zookeeper_server_jaas.conf_RO
+          subPath: zookeeper_server_jaas.conf
       volumes:
-      - name: zookeeper-logs
-        emptyDir: {}
-      - name: zookeeper-data
-        emptyDir: {}        
+        - name: config-volume-zookeeper-server-jaas-conf-cm
+          configMap:
+            name: zookeeper-server-jaas-conf-cm      
+        - name: zookeeper-logs
+          emptyDir: {}
+        - name: zookeeper-data
+          emptyDir: {}

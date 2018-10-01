@@ -7,8 +7,6 @@ KERBEROSPODNAME=`kubectl get po -n default -o wide | grep $POD_NAME`
 KERBEROSPODNAME=`echo $KERBEROSPODNAME | cut -d " " -f 1`
 echo  $KERBEROSPODNAME
 
-
-
 while ! kubectl get po -o wide | grep $KERBEROSPODNAME | grep Running ; do   echo "waiting for kerberos IP..." ; sleep 20 ; done
 
 KERBEROSPODIP=`kubectl get po -o wide | grep $KERBEROSPODNAME | grep Running `
@@ -23,6 +21,10 @@ kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey admin@K
 kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey kafka/kafka-0.k-hs.default.svc.cluster.local@KAFKA.SECURE" 
 kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey kafka/kafka-1.k-hs.default.svc.cluster.local@KAFKA.SECURE" 
 kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey kafka/kafka-2.k-hs.default.svc.cluster.local@KAFKA.SECURE" 
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey zookeeper/zk-0.zk-hs.default.svc.cluster.local@KAFKA.SECURE" 
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey zookeeper/zk-1.zk-hs.default.svc.cluster.local@KAFKA.SECURE" 
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey zookeeper/zk-2.zk-hs.default.svc.cluster.local@KAFKA.SECURE" 
+
   
 ## create keytabs
   
@@ -32,15 +34,28 @@ kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/admin.user.keytab
 kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/kafka-0.service.keytab kafka/kafka-0.k-hs.default.svc.cluster.local@KAFKA.SECURE"
 kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/kafka-1.service.keytab kafka/kafka-1.k-hs.default.svc.cluster.local@KAFKA.SECURE"
 kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/kafka-2.service.keytab kafka/kafka-2.k-hs.default.svc.cluster.local@KAFKA.SECURE"
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/zk-0.service.keytab zookeeper/zk-0.zk-hs.default.svc.cluster.local@KAFKA.SECURE"
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/zk-1.service.keytab zookeeper/zk-1.zk-hs.default.svc.cluster.local@KAFKA.SECURE"
+kubectl exec $KERBEROSPODNAME -- kadmin.local -q "xst -kt /tmp/zk-2.service.keytab zookeeper/zk-2.zk-hs.default.svc.cluster.local@KAFKA.SECURE"
+
+
 
 kubectl cp default/$KERBEROSPODNAME:/tmp/kafka-0.service.keytab /tmp/kafka-0.service.keytab
 kubectl cp default/$KERBEROSPODNAME:/tmp/kafka-1.service.keytab /tmp/kafka-1.service.keytab
 kubectl cp default/$KERBEROSPODNAME:/tmp/kafka-2.service.keytab /tmp/kafka-2.service.keytab
 
+kubectl cp default/$KERBEROSPODNAME:/tmp/zk-0.service.keytab /tmp/zk-0.service.keytab
+kubectl cp default/$KERBEROSPODNAME:/tmp/zk-1.service.keytab /tmp/zk-1.service.keytab
+kubectl cp default/$KERBEROSPODNAME:/tmp/zk-2.service.keytab /tmp/zk-2.service.keytab
+
+
 kubectl create configmap kafka-0-service-keytab -n default --from-file=/tmp/kafka-0.service.keytab
 kubectl create configmap kafka-1-service-keytab -n default --from-file=/tmp/kafka-1.service.keytab
 kubectl create configmap kafka-2-service-keytab -n default --from-file=/tmp/kafka-2.service.keytab
 
+kubectl create configmap zk-0-service-keytab -n default --from-file=/tmp/zk-0.service.keytab
+kubectl create configmap zk-1-service-keytab -n default --from-file=/tmp/zk-1.service.keytab
+kubectl create configmap zk-2-service-keytab -n default --from-file=/tmp/zk-2.service.keytab
 
 
 }
