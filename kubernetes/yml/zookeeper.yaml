@@ -9,6 +9,7 @@ data:
         com.sun.security.auth.module.Krb5LoginModule required
         useKeyTab=true
         storeKey=true
+        debug=true
         keyTab="/opt/zookeeper/conf/zk.service.keytab"
         principal="zookeeper/{HOSTNAME_FQDN}@KAFKA.SECURE";
     };
@@ -95,12 +96,15 @@ spec:
         env:
         - name: "LOG_LEVEL"
           value: "DEBUG"
+        - name: "EXTRA_JAVA_ARGS"
+          value: "-Dsun.security.krb5.debug=true"
         - name: "JAAS_FILE_LOCATION"
           value: "/opt/zookeeper/conf/zookeeper_server_jaas.conf"
         - name: "JAAS_FILE_LOCATION_RO"
           value: "/opt/zookeeper/conf/zookeeper_server_jaas.conf_RO"        
         - name: "ZOOKEEPER_NODES"
-          value: "server.1=zk-0.zk-hs.default.svc.cluster.local:2888:3888;server.2=zk-1.zk-hs.default.svc.cluster.local:2888:3888;server.3=zk-2.zk-hs.default.svc.cluster.local:2888:3888"
+          #value: "server.1=zk-0.zk-hs.default.svc.cluster.local:2888:3888;server.2=zk-1.zk-hs.default.svc.cluster.local:2888:3888;server.3=zk-2.zk-hs.default.svc.cluster.local:2888:3888"
+          value: "server.1=zk-0.zk-hs.default.svc.cluster.local:2888:3888"
         #ustawia na wartość default 
         - name: "ZOOKEEPER_PARAM_tickTime"
           value: "2000"
