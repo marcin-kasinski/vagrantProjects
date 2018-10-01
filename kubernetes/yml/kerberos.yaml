@@ -104,10 +104,10 @@ metadata:
 spec:
   type: NodePort
   ports:
-  - port: 88
+  - name: krb
+    port: 88
     targetPort: 88
-    protocol: TCP
-    name: krb
+    #protocol: TCP
   - port: 9001
     targetPort: 9001
     protocol: TCP
