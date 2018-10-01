@@ -10,7 +10,7 @@ data:
         useKeyTab=true
         storeKey=true
         keyTab="/opt/kafka/config/kafka-0.service.keytab"
-        principal="kafka/kafka-0.k-hs.default.svc.cluster.local@KAFKA.SECURE";
+        principal="kafka/{HOSTNAME}@KAFKA.SECURE";
     };
 
     // ZooKeeper client authentication
