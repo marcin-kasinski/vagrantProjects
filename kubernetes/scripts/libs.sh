@@ -49,6 +49,14 @@ kubectl cp default/$KERBEROSPODNAME:/tmp/zk-1.service.keytab /tmp/zk-1.service.k
 kubectl cp default/$KERBEROSPODNAME:/tmp/zk-2.service.keytab /tmp/zk-2.service.keytab
 
 
+kubectl delete configmap kafka-0-service-keytab | true
+kubectl delete configmap kafka-1-service-keytab | true
+kubectl delete configmap kafka-2-service-keytab | true
+
+kubectl delete configmap zk-0-service-keytab | true
+kubectl delete configmap zk-1-service-keytab | true
+kubectl delete configmap zk-2-service-keytab | true
+
 kubectl create configmap kafka-0-service-keytab -n default --from-file=/tmp/kafka-0.service.keytab
 kubectl create configmap kafka-1-service-keytab -n default --from-file=/tmp/kafka-1.service.keytab
 kubectl create configmap kafka-2-service-keytab -n default --from-file=/tmp/kafka-2.service.keytab
