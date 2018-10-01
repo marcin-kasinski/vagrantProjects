@@ -32,9 +32,6 @@ kafkacluster marcinkasinski/kafkacluster \
 
 "
 
-
-
-
 klist -kt /opt/kafka/config/kafka-0.service.keytab
 kinit -kt /opt/kafka/config/kafka-0.service.keytab kafka/kafka-0.k-hs.default.svc.cluster.local@KAFKA.SECURE
 klist
@@ -43,10 +40,6 @@ klist
 klist -kt /opt/zookeeper/conf/zk.service.keytab
 kinit -kt /opt/zookeeper/conf/zk.service.keytab zookeeper/zk-0.zk-hs.default.svc.cluster.local@KAFKA.SECURE
 klist
-
-
-
-CLIENT_JVMFLAGS="-Djava.security.auth.login.config=/opt/zookeeper/conf/zookeeper_server_jaas.conf -Dsun.security.krb5.debug=true" /opt/zookeeper/bin/zkCli.sh  -server zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181
 
 CLIENT_JVMFLAGS="-Djava.security.auth.login.config=/opt/zookeeper/conf/zookeeper_server_jaas.conf" /opt/zookeeper/bin/zkCli.sh \
  -server zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181
