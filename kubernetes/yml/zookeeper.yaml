@@ -70,7 +70,8 @@ spec:
       containers:
       - name: zookeeper
         image: marcinkasinski/zookeepercluster
-        imagePullPolicy: Always        
+        #imagePullPolicy: Always
+        imagePullPolicy: Never
         ports:
         - containerPort: 2181
           name: client
