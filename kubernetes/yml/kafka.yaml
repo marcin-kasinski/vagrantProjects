@@ -137,8 +137,8 @@ spec:
         - name: "KAFKA_PARAM_sasl_mechanism_inter_broker_protocol"
           value: "GSSAPI"
         - name: "KAFKA_PARAM_sasl_enabled_mechanisms"
-          #value: "GSSAPI,PLAIN"
-          value: "GSSAPI"
+          value: "GSSAPI,PLAIN"
+          #value: "GSSAPI"
         - name: "KAFKA_PARAM_sasl_kerberos_service_name"
           value: "kafka"
         volumeMounts:
