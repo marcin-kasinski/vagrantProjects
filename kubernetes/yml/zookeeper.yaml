@@ -9,7 +9,7 @@ data:
         com.sun.security.auth.module.Krb5LoginModule required
         useKeyTab=true
         storeKey=true
-        keyTab="/opt/zookeeper/conf/zk.keytab"
+        keyTab="/opt/zookeeper/conf/zk.service.keytab"
         principal="zookeeper/{HOSTNAME_FQDN}@KAFKA.SECURE";
     };
 ---

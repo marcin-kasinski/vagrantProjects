@@ -38,3 +38,10 @@ kafkacluster marcinkasinski/kafkacluster \
 klist -kt /opt/kafka/config/kafka-0.service.keytab
 kinit -kt /opt/kafka/config/kafka-0.service.keytab kafka/kafka-0.k-hs.default.svc.cluster.local@KAFKA.SECURE
 klist
+
+
+klist -kt /opt/zookeeper/conf/zk.service.keytab
+kinit -kt /opt/zookeeper/conf/zk.service.keytab zookeeper/zk-0.zk-hs.default.svc.cluster.local@KAFKA.SECURE
+klist
+
+
