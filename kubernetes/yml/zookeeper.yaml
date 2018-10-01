@@ -110,7 +110,11 @@ spec:
         - name: "ZOOKEEPER_PARAM_authProvider_1"
           value: "org.apache.zookeeper.server.auth.SASLAuthenticationProvider"
         - name: "ZOOKEEPER_PARAM_jaasLoginRenew"
-          value: "3600000 "
+          value: "3600000"
+        - name: "ZOOKEEPER_PARAM_kerberos_removeHostFromPrincipal"
+          value: "true"
+        - name: "ZOOKEEPER_PARAM_kerberos_removeRealmFromPrincipal"
+          value: "true"
         volumeMounts:
         - name: zookeeper-logs
           mountPath: /datalog/zookeeper
