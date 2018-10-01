@@ -89,13 +89,13 @@ spec:
         - mountPath: /data/zookeeper
           name: zookeeper-data
         - name: config-volume-kafka-0-service-keytab
-          mountPath: /opt/kafka/config/kafka-0.service.keytab
+          mountPath: /opt/zookeeper/conf/kafka-0.service.keytab
           subPath: kafka-0.service.keytab
         - name: config-volume-kafka-1-service-keytab
-          mountPath: /opt/kafka/config/kafka-1.service.keytab
+          mountPath: /opt/zookeeper/conf/kafka-1.service.keytab
           subPath: kafka-1.service.keytab
         - name: config-volume-kafka-2-service-keytab
-          mountPath: /opt/kafka/config/kafka-2.service.keytab
+          mountPath: /opt/zookeeper/conf/kafka-2.service.keytab
           subPath: kafka-2.service.keytab
         - name: config-volume-zookeeper-server-jaas-conf-cm
           mountPath: /opt/zookeeper/conf/zookeeper_server_jaas.conf_RO
