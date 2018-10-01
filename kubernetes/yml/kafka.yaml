@@ -14,13 +14,13 @@ data:
     };
 
     // ZooKeeper client authentication
-    //Client {
-    //    com.sun.security.auth.module.Krb5LoginModule required
-    //    useKeyTab=true
-    //    storeKey=true
-    //    keyTab="/opt/kafka/config/kafka-0.service.keytab"
-    //    principal="kafka/kafka-0.k-hs.default.svc.cluster.local@KAFKA.SECURE";
-    //};    
+    Client {
+        com.sun.security.auth.module.Krb5LoginModule required
+        useKeyTab=true
+        storeKey=true
+        keyTab="/opt/kafka/config/kafka-0.service.keytab"
+        principal="kafka/{HOSTNAME_FQDN}@KAFKA.SECURE";
+    };    
 ---
 kind: ConfigMap
 metadata:
