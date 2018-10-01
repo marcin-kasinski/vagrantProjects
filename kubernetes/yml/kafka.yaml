@@ -119,6 +119,8 @@ spec:
           value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"
         - name: "JAAS_FILE_LOCATION"
           value: "/opt/kafka/config/kafka_server_jaas.conf"
+        - name: "JAAS_FILE_LOCATION_RO"
+          value: "/opt/kafka/config/kafka_server_jaas.conf_RO"
         # default 16kb we set to 64
         - name: "KAFKA_PARAM_BATCH_SIZE"
           value: "65536"
@@ -153,7 +155,7 @@ spec:
           mountPath: /opt/kafka/config/kafka-2.service.keytab
           subPath: kafka-2.service.keytab
         - name: config-volume-kafka-server-jaas-conf-cm
-          mountPath: /opt/kafka/config/kafka_server_jaas.conf
+          mountPath: /opt/kafka/config/kafka_server_jaas.conf_RO
           subPath: kafka_server_jaas.conf
         - name: kafka-logs
           mountPath: /opt/kafka/config/kafka-logs
