@@ -30,7 +30,7 @@ data:
         default_realm = KAFKA.SECURE
         kdc_timesync = 1
         ticket_lifetime = 24h
-        udp_preference_limit = 0
+        udp_preference_limit = 1
     [realms]
         KAFKA.SECURE = {
           admin_server = kerberos
