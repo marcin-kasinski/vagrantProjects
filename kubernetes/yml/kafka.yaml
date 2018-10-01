@@ -9,7 +9,7 @@ data:
         com.sun.security.auth.module.Krb5LoginModule required
         useKeyTab=true
         storeKey=true
-        keyTab="/opt/kafka/config/kafka-0.service.keytab"
+        keyTab="/opt/kafka/config/kafka.keytab"
         principal="kafka/{HOSTNAME_FQDN}@KAFKA.SECURE";
     };
 
