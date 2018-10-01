@@ -9,7 +9,17 @@ data:
         com.sun.security.auth.module.Krb5LoginModule required
         useKeyTab=true
         storeKey=true
-        keyTab="/opt/kafka/config/kafka.keytab"
+        debug=true
+        keyTab="/opt/kafka/config/kafka.service.keytab"
+        principal="kafka/{HOSTNAME_FQDN}@KAFKA.SECURE";
+    };
+
+    KafkaClient {
+        com.sun.security.auth.module.Krb5LoginModule required
+        useKeyTab=true
+        storeKey=true
+        debug=true
+        keyTab="/opt/kafka/config/kafka.service.keytab"
         principal="kafka/{HOSTNAME_FQDN}@KAFKA.SECURE";
     };
 
@@ -18,7 +28,8 @@ data:
         com.sun.security.auth.module.Krb5LoginModule required
         useKeyTab=true
         storeKey=true
-        keyTab="/opt/kafka/config/kafka.keytab"
+        debug=true
+        keyTab="/opt/kafka/config/kafka.service.keytab"
         principal="kafka/{HOSTNAME_FQDN}@KAFKA.SECURE";
     };    
 ---
@@ -38,7 +49,7 @@ data:
         default_realm = KAFKA.SECURE
         kdc_timesync = 1
         ticket_lifetime = 24h
-    
+        udp_preference_limit = 1
     [realms]
         KAFKA.SECURE = {
           admin_server = kerberos
@@ -83,7 +94,7 @@ metadata:
   name: kafka
 spec:
   serviceName: "k-hs"
-  replicas: 1
+  replicas: 3
   updateStrategy:
     type: RollingUpdate
   podManagementPolicy: Parallel
@@ -114,7 +125,9 @@ spec:
         - name: "POD_NAME"
           valueFrom:
             fieldRef:
-              fieldPath: metadata.name              
+              fieldPath: metadata.name
+        - name: "EXTRA_JAVA_ARGS"
+          value: "-Dsun.security.krb5.debug=true"
         - name: "BROKER_NODES"
           value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"
         - name: "JAAS_FILE_LOCATION"
@@ -136,9 +149,9 @@ spec:
           value: "SASL_PLAINTEXT"
         - name: "KAFKA_PARAM_sasl_mechanism_inter_broker_protocol"
           #value: "GSSAPI"
-          value: "PLAIN"
+          value: "GSSAPI"
         - name: "KAFKA_PARAM_sasl_enabled_mechanisms"
-          value: "GSSAPI,PLAIN"
+          value: "GSSAPI"
           #value: "GSSAPI"
         - name: "KAFKA_PARAM_sasl_kerberos_service_name"
           value: "kafka"

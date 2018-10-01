@@ -9,7 +9,7 @@ data:
         com.sun.security.auth.module.Krb5LoginModule required
         useKeyTab=true
         storeKey=true
-        debug=true
+        debugXXXXXXXXXX=true
         keyTab="/opt/zookeeper/conf/zk.service.keytab"
         principal="zookeeper/{HOSTNAME_FQDN}@KAFKA.SECURE";
     };
@@ -107,8 +107,8 @@ spec:
         env:
         - name: "LOG_LEVEL"
           value: "DEBUG"
-        - name: "EXTRA_JAVA_ARGS"
-          value: "-Dsun.security.krb5.debug=true"
+        #- name: "EXTRA_JAVA_ARGS"
+        #  value: "-Dsun.security.krb5.debug=true"
         - name: "JAAS_FILE_LOCATION"
           value: "/opt/zookeeper/conf/zookeeper_server_jaas.conf"
         - name: "JAAS_FILE_LOCATION_RO"
