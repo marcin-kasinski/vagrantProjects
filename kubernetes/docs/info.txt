@@ -45,3 +45,10 @@ kinit -kt /opt/zookeeper/conf/zk.service.keytab zookeeper/zk-0.zk-hs.default.svc
 klist
 
 
+
+CLIENT_JVMFLAGS="-Djava.security.auth.login.config=/opt/zookeeper/conf/zookeeper_server_jaas.conf -Dsun.security.krb5.debug=true" /opt/zookeeper/bin/zkCli.sh  -server zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181
+
+
+
+CLIENT_JVMFLAGS="-Djava.security.auth.login.config=/opt/zookeeper/conf/zookeeper_server_jaas.conf -Dsun.security.krb5.debug=true" \
+/opt/zookeeper/bin/zkCli.sh  -server localhost:2181
