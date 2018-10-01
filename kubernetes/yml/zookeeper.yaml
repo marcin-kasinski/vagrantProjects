@@ -4,7 +4,7 @@ metadata:
   namespace: default
 apiVersion: v1
 data:
-  kafka_server_jaas.conf: |-
+  zookeeper_server_jaas.conf: |-
     KafkaServer {
         com.sun.security.auth.module.Krb5LoginModule required
         useKeyTab=true
