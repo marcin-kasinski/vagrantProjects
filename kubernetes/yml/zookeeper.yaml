@@ -93,6 +93,8 @@ spec:
         - containerPort: 3888
           name: leader-election
         env:
+        - name: "LOG_LEVEL"
+          value: "DEBUG"
         - name: "JAAS_FILE_LOCATION"
           value: "/opt/zookeeper/conf/zookeeper_server_jaas.conf"
         - name: "JAAS_FILE_LOCATION_RO"
