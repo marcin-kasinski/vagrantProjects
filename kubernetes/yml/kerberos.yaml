@@ -69,8 +69,12 @@ spec:
         image: marcinkasinski/krb5-server
         imagePullPolicy: Always
         ports:
-        - name: http
+        - name: kdc-tcp
           containerPort: 88
+          protocol: TCP
+        - name: kdc-udp
+          containerPort: 88
+          protocol: UDP
         env:
         - name: REALM
           value: "KAFKA.SECURE"
@@ -104,14 +108,18 @@ metadata:
 spec:
   type: NodePort
   ports:
-  - name: krb
+  - name: kdc-tcp
     port: 88
     targetPort: 88
-    #protocol: TCP
-  - port: 9001
+    protocol: TCP
+  - name: kdc-udp
+    port: 88
+    targetPort: 88
+    protocol: TCP
+  - name: web
+    port: 9001
     targetPort: 9001
     protocol: TCP
-    name: web
   selector:
     app: kerberos
 ---
