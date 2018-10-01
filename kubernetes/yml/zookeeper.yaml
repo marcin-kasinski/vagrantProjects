@@ -88,15 +88,18 @@ spec:
           name: zookeeper-logs
         - mountPath: /data/zookeeper
           name: zookeeper-data
-        - name: config-volume-kafka-0-service-keytab
-          mountPath: /opt/zookeeper/conf/kafka-0.service.keytab
-          subPath: kafka-0.service.keytab
-        - name: config-volume-kafka-1-service-keytab
-          mountPath: /opt/zookeeper/conf/kafka-1.service.keytab
-          subPath: kafka-1.service.keytab
-        - name: config-volume-kafka-2-service-keytab
-          mountPath: /opt/zookeeper/conf/kafka-2.service.keytab
-          subPath: kafka-2.service.keytab
+
+        - name: config-volume-zookeeper-0-service-keytab
+          mountPath: /opt/zookeeper/conf/zookeeper-0.service.keytab
+          subPath: zookeeper-0.service.keytab
+        - name: config-volume-zookeeper-1-service-keytab
+          mountPath: /opt/zookeeper/conf/zookeeper-1.service.keytab
+          subPath: zookeeper-1.service.keytab
+        - name: config-volume-zookeeper-2-service-keytab
+          mountPath: /opt/zookeeper/conf/zookeeper-2.service.keytab
+          subPath: zookeeper-2.service.keytab
+
+
         - name: config-volume-zookeeper-server-jaas-conf-cm
           mountPath: /opt/zookeeper/conf/zookeeper_server_jaas.conf_RO
           subPath: zookeeper_server_jaas.conf
