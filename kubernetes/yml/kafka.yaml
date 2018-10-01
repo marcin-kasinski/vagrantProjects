@@ -10,8 +10,17 @@ data:
         useKeyTab=true
         storeKey=true
         keyTab="/opt/kafka/config/kafka-0.service.keytab"
-        principal="kafka/kerberos.default.svc.cluster.local@KAFKA.SECURE";
-    }; 
+        principal="kafka/kafka-0.k-hs.default.svc.cluster.local@KAFKA.SECURE";
+    };
+
+    // ZooKeeper client authentication
+    //Client {
+    //    com.sun.security.auth.module.Krb5LoginModule required
+    //    useKeyTab=true
+    //    storeKey=true
+    //    keyTab="/opt/kafka/config/kafka-0.service.keytab"
+    //    principal="kafka/kafka-0.k-hs.default.svc.cluster.local@KAFKA.SECURE";
+    //};    
 ---
 kind: ConfigMap
 metadata:
@@ -126,6 +135,7 @@ spec:
         - name: "KAFKA_PARAM_sasl_mechanism_inter_broker_protocol"
           value: "GSSAPI"
         - name: "KAFKA_PARAM_sasl_enabled_mechanisms"
+          #value: "GSSAPI,PLAIN"
           value: "GSSAPI"
         - name: "KAFKA_PARAM_sasl_kerberos_service_name"
           value: "kafka"
