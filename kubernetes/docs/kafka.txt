@@ -9,3 +9,33 @@ KAFKA_OPTS="" /opt/kafka/bin/kafka-topics.sh --list --zookeeper zk-0.zk-hs.defau
 ./kafka-consumer-groups.sh --bootstrap-server kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092 --list
 
 ./kafka-console-consumer.sh --bootstrap-server kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092 --topic mysql-foobar
+
+
+# Listing acls
+
+KAFKA_OPTS="" \
+/opt/kafka/bin/kafka-acls.sh \
+--authorizer-properties zookeeper.connect=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka \
+--list \
+--topic my-topic
+
+# Create ACLs
+
+1.) Allow users _reader_ and _writer_ to consumer from topic _acl-test_
+
+KAFKA_OPTS="" \
+/opt/kafka/bin/kafka-acls.sh \
+--authorizer-properties zookeeper.connect=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka --add \
+--allow-principal User:reader --allow-principal User:writer \
+--operation Read \
+--group=* \
+--topic my-topic
+
+2.) Allow user _writer_ to produce messages into topic _acl-test_
+```
+~/kafka/bin/kafka-acls.sh \
+--authorizer-properties zookeeper.connect=<<KAFKA-SERVER-PUBLIC-DNS>>:2181 --add \
+--allow-principal User:writer \
+--operation Write \
+--topic acl-test
+``` 
