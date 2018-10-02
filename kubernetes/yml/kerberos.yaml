@@ -108,14 +108,9 @@ metadata:
 spec:
   type: NodePort
   ports:
-  - name: kdc-tcp
+  - name: kdc
     port: 88
     targetPort: 88
-    protocol: TCP
-  - name: kdc-udp
-    port: 88
-    targetPort: 88
-    protocol: TCP
   - name: web
     port: 9001
     targetPort: 9001
