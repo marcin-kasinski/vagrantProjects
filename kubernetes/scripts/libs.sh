@@ -51,12 +51,13 @@ keytool -keystore /tmp/keystore-$host.jks -alias $host -import -file /tmp/cert-s
 keytool -list -keystore /tmp/keystore-$host.jks -v -storepass $CLIPASS | grep "Owner: \|Issuer: "
 keytool -list -keystore /tmp/truststore-$host.jks -v -storepass $CLIPASS | grep "Owner: \|Issuer: "
 
+host_shortname=`echo $host | cut -d "." -f 1`
 
-kubectl delete configmap keystore-$host.jks | true
-kubectl delete configmap truststore-$host.jks | true
+kubectl delete configmap keystore-$host_shortname.jks | true
+kubectl delete configmap truststore-$host_shortname.jks | true
 
-kubectl create configmap keystore-$host.jks -n default --from-file=/tmp/keystore-$host.jks
-kubectl create configmap truststore-$host.jks -n default --from-file=/tmp/truststore-$host.jks
+kubectl create configmap keystore-$host_shortname.jks -n default --from-file=/tmp/keystore-$host.jks
+kubectl create configmap truststore-$host_shortname.jks -n default --from-file=/tmp/truststore-$host.jks
 
 }
 
@@ -64,7 +65,9 @@ kubectl create configmap truststore-$host.jks -n default --from-file=/tmp/trusts
 setupSSL()
 {
 createCA
-createServerCert kafka-0.k-hs.default.svc.cluster.local 
+createServerCert kafka-0.k-hs.default.svc.cluster.local
+createServerCert kafka-1.k-hs.default.svc.cluster.local
+createServerCert kafka-2.k-hs.default.svc.cluster.local
 }
 
 setupkerberos()

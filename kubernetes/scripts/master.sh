@@ -13,6 +13,7 @@ sudo apt install -y openjdk-9-jre-headless
 configure_nfs
 init_kubernetes
 
+setupSSL
 install_cfssl
 
 showDashboardIP
@@ -81,7 +82,7 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
  
 configureGrafana
-setupMongodb
+#setupMongodb
 showCustomService
 showDashboardIP
  
