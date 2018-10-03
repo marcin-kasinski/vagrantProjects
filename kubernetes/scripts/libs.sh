@@ -1,3 +1,72 @@
+
+CLIPASS="secret"
+
+createCA()
+{
+openssl req -new -newkey rsa:4096 -days 3650 -x509 -subj "/CN=Kafka-CA/OU=it/O=itzone/C=PL" -keyout /tmp/ca-key -out /tmp/ca-cert -nodes -passin pass:$CLIPASS
+
+cat /tmp/ca-cert
+cat /tmp/ca-key
+keytool -printcert -v -file /tmp/ca-cert
+
+
+#test
+echo |
+  openssl s_client -connect www.google.com:443 2>/dev/null |
+  openssl x509 -noout -text -certopt no_header,no_version,no_serial,no_signame,no_pubkey,no_sigdump,no_aux -subject -nameopt multiline -issuer
+
+
+}
+
+createServerCert()
+{
+
+local host=$1
+
+#add ca to truststore
+keytool -keystore /tmp/keystore-$host.jks -alias CARoot -import -file /tmp/ca-cert -storepass $CLIPASS  -noprompt
+keytool -keystore /tmp/truststore-$host.jks -alias CARoot -import -file /tmp/ca-cert -storepass $CLIPASS  -noprompt
+keytool -list -keystore /tmp/truststore-$host.jks -v -storepass $CLIPASS | grep "Owner: "
+
+#create server keypair
+keytool -genkeypair -dname "cn=$host, ou=it, o=itzone, c=PL"  -keystore /tmp/keystore-$host.jks -alias $host -validity 3600 -storepass $CLIPASS -keypass $CLIPASS
+
+# create a certification request file, to be signed by the CA
+keytool -keystore /tmp/keystore-$host.jks -certreq -file /tmp/cert-sign-request-$host -alias $host -storepass $CLIPASS -keypass $CLIPASS
+
+#sign it with the CA:
+openssl x509 -req -CA /tmp/ca-cert -CAkey ca-key -in /tmp/cert-sign-request-$host -out /tmp/cert-sign-request-signed-$host -days 3650 -CAcreateserial -passin pass:$CLIPASS
+
+#print cert request
+openssl req -noout -text -in /tmp/cert-sign-request-$host
+
+#print cert
+keytool -printcert -v -file /tmp/cert-sign-request-signed-$host
+
+#import signed certificate into the keystore
+keytool -keystore /tmp/keystore-$host.jks -alias $host -import -file /tmp/cert-sign-request-signed-$host -storepass $CLIPASS
+
+
+#listing keys
+keytool -list -keystore /tmp/keystore-$host.jks -v -storepass $CLIPASS | grep "Owner: \|Issuer: "
+keytool -list -keystore /tmp/truststore-$host.jks -v -storepass $CLIPASS | grep "Owner: \|Issuer: "
+
+
+kubectl delete configmap keystore-$host.jks | true
+kubectl delete configmap truststore-$host.jks | true
+
+kubectl create configmap keystore-$host.jks -n default --from-file=/tmp/keystore-$host.jks
+kubectl create configmap truststore-$host.jks -n default --from-file=/tmp/truststore-$host.jks
+
+}
+
+
+setupSSL()
+{
+createCA
+createServerCert kafka-0.k-hs.default.svc.cluster.local 
+}
+
 setupkerberos()
 {
 POD_NAME="kerberos-"
@@ -174,7 +243,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/s
 configure_nfs()
 {
 # ----------------------------- nfs -----------------------------
-sudo apt-get install nfs-kernel-server
+sudo apt-get install -y nfs-kernel-server
 # katalog dla joina:
 
 sudo mkdir /var/nfs/kubernetes_share -p

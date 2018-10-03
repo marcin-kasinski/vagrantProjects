@@ -8,6 +8,8 @@ echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
 #ls | grep pattern | sed -e 's/^/prefix/' -e 's/$/suffix/'
 
 
+sudo apt install -y openjdk-9-jre-headless
+
 configure_nfs
 init_kubernetes
 

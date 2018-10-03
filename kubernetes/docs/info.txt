@@ -41,3 +41,48 @@ klist -kt /opt/zookeeper/conf/zk.service.keytab
 kinit -kt /opt/zookeeper/conf/zk.service.keytab zookeeper/zk-0.zk-hs.default.svc.cluster.local@KAFKA.SECURE
 klist
 
+-----------------------------------------------copile and run remotely--------------------------------------
+copy folder to pod:
+
+POD_NAME="springbootrabbitmqlistener-"
+
+#FULL_POD_NAME=`kubectl get po -n default -o wide | grep $POD_NAME | grep Running `
+FULL_POD_NAME=`kubectl get po -n default -o wide | grep $POD_NAME`
+FULL_POD_NAME=`echo $FULL_POD_NAME | cut -d " " -f 1`
+echo  $FULL_POD_NAME
+
+kubectl cp /home/vagrant/SpringBootWeb/ default/$FULL_POD_NAME:/usr/src/myapp/
+
+
+kubectl exec -it $FULL_POD_NAME -- /bin/bash -c "apt update && apt install -y maven"
+kubectl exec -it $FULL_POD_NAME -- /bin/bash -c "cd /usr/src/myapp/SpringBootWeb/ && mvn clean install"
+
+#compile and run
+kubectl exec -it $FULL_POD_NAME -- /bin/bash -c \
+"cd /usr/src/myapp/SpringBootWeb/ && ls -l && mvn install && cd /usr/src/myapp/SpringBootWeb/target && \
+java -jar -Dsun.security.krb5.debug=true -Dspring.profiles.active=prd -Djava.security.auth.login.config=/tmp/jaas.conf SpringBootWeb-0.0.1-SNAPSHOT.jar"
+
+#run
+kubectl exec -it $FULL_POD_NAME -- /bin/bash -c \
+"cd /usr/src/myapp/SpringBootWeb/target && \
+java -jar -Dsun.security.krb5.debug=true -Dspring.profiles.active=prd -Djava.security.auth.login.config=/tmp/jass.conf SpringBootWeb-0.0.1-SNAPSHOT.jar"
+
+
+KafkaClient {
+    com.sun.security.auth.module.Krb5LoginModule required
+    useKeyTab=true
+    storeKey=true
+    debug=true
+    keyTab="/opt/kafka/config/kafka.service.keytab"
+    principal="kafka/kafka-0.k-hs.default.svc.cluster.local@KAFKA.SECURE";
+};
+
+
+
+
+only run
+kubectl exec -it $FULL_POD_NAME -- /bin/bash -c \
+"cd /usr/src/myapp/SpringBootWeb/target && SPRING_PROFILE=prd java -jar -Dspring.profiles.active=$SPRING_PROFILE SpringBootWeb-0.0.1-SNAPSHOT.jar"
+
+
+-----------------------------------------------copile and run remotely--------------------------------------
