@@ -59,7 +59,7 @@ echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
  
 #configureGrafana
 #setupMongodb
-showCustomService
+#showCustomService
 showDashboardIP
  
 #kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/MKWEB_exec_time_seconds_max" | jq '.items[].value'
