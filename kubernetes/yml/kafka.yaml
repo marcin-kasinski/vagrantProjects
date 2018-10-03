@@ -94,7 +94,7 @@ metadata:
   name: kafka
 spec:
   serviceName: "k-hs"
-  replicas: 3
+  replicas: 1
   updateStrategy:
     type: RollingUpdate
   podManagementPolicy: Parallel
@@ -126,23 +126,18 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
-        - name: "EXTRA_JAVA_ARGS"
-          value: "-Dsun.security.krb5.debug=true"
         - name: "BROKER_NODES"
-          value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"
-        - name: "JAAS_FILE_LOCATION"
-          value: "/opt/kafka/config/kafka_server_jaas.conf"
-        - name: "JAAS_FILE_LOCATION_RO"
-          value: "/opt/kafka/config/kafka_server_jaas.conf_RO"
+        #  value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"
+          value: "kafka-0.k-hs.default.svc.cluster.local:9092"
         # default 16kb we set to 64
         - name: "KAFKA_PARAM_BATCH_SIZE"
           value: "65536"
         - name: "KAFKA_PARAM_listeners"
-          #value: "PLAINTEXT://0.0.0.0:9092,SSL://0.0.0.0:9093,SASL_SSL://0.0.0.0:9094"
-          value: "PLAINTEXT://0.0.0.0:9092,SASL_PLAINTEXT://0.0.0.0:9093,SSL://0.0.0.0:9094"
+       #   value: "PLAINTEXT://0.0.0.0:9092,SASL_PLAINTEXT://0.0.0.0:9093,SSL://0.0.0.0:9094"
+          value: "PLAINTEXT://0.0.0.0:9092,SSL://0.0.0.0:9094"
         - name: "KAFKA_PARAM_advertised_listeners"
-          #value: "PLAINTEXT://{HOSTNAME_FQDN}:9092,SASL_PLAINTEXT://{HOSTNAME_FQDN}:9093"
-          value: "PLAINTEXT://{HOSTNAME_FQDN}:9092,SASL_PLAINTEXT://{HOSTNAME_FQDN}:9093,SSL://{HOSTNAME_FQDN}:9094"
+        #  value: "PLAINTEXT://{HOSTNAME_FQDN}:9092,SASL_PLAINTEXT://{HOSTNAME_FQDN}:9093,SSL://{HOSTNAME_FQDN}:9094"
+          value: "PLAINTEXT://{HOSTNAME_FQDN}:9092,SSL://{HOSTNAME_FQDN}:9094"
         - name: "KAFKA_PARAM_ZOOKEEPER_CONNECT"
           value: "zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka"
         #--------------------------------- SSL --------------------------------- 
@@ -156,17 +151,27 @@ spec:
           value: "secret"
         - name: "KAFKA_PARAM_ssl_key_password"
           value: "secret"
-        #--------------------------------- SSL --------------------------------- 
         - name: "KAFKA_PARAM_security_inter_broker_protocol"
-          value: "SASL_PLAINTEXT"
-        - name: "KAFKA_PARAM_sasl_mechanism_inter_broker_protocol"
-          #value: "GSSAPI"
-          value: "GSSAPI"
-        - name: "KAFKA_PARAM_sasl_enabled_mechanisms"
-          value: "GSSAPI"
-          #value: "GSSAPI"
-        - name: "KAFKA_PARAM_sasl_kerberos_service_name"
-          value: "kafka"
+          value: "SSL"
+        #--------------------------------- SSL --------------------------------- 
+
+        #--------------------------------- SASL --------------------------------- 
+        #- name: "EXTRA_JAVA_ARGS"
+        #  value: "-Dsun.security.krb5.debug=true"
+        #- name: "JAAS_FILE_LOCATION"
+        #  value: "/opt/kafka/config/kafka_server_jaas.conf"
+        #- name: "JAAS_FILE_LOCATION_RO"
+        #  value: "/opt/kafka/config/kafka_server_jaas.conf_RO"
+        #- name: "KAFKA_PARAM_security_inter_broker_protocol"
+        #  value: "SASL_PLAINTEXT"
+        #- name: "KAFKA_PARAM_sasl_mechanism_inter_broker_protocol"
+        #  value: "GSSAPI"
+        #- name: "KAFKA_PARAM_sasl_enabled_mechanisms"
+        #  value: "GSSAPI"
+        #  #value: "GSSAPI"
+        #- name: "KAFKA_PARAM_sasl_kerberos_service_name"
+        #  value: "kafka"
+        #--------------------------------- SASL --------------------------------- 
         volumeMounts:
         - name: config-volume-krb5-conf-cm
           mountPath: /etc/krb5.conf
