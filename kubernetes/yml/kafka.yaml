@@ -147,11 +147,11 @@ spec:
           value: "zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka"
         #--------------------------------- SSL --------------------------------- 
         - name: "KAFKA_PARAM_ssl_truststore_location"
-          value: "/opt/kafka/config/truststore-{HOSTNAME_FQDN}.jks"
+          value: "/opt/kafka/config/truststore-{HOSTNAME}.jks"
         - name: "KAFKA_PARAM_ssl_truststore_password"
           value: "secret"
         - name: "KAFKA_PARAM_ssl_keystore_location"
-          value: "/opt/kafka/config/keystore-{HOSTNAME_FQDN}.jks"
+          value: "/opt/kafka/config/keystore-{HOSTNAME}.jks"
         - name: "KAFKA_PARAM_ssl_keystore_password"
           value: "secret"
         - name: "KAFKA_PARAM_ssl_key_password"
