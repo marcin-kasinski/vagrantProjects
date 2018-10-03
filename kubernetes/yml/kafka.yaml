@@ -153,6 +153,8 @@ spec:
           value: "secret"
         - name: "KAFKA_PARAM_security_inter_broker_protocol"
           value: "SSL"
+        - name: "KAFKA_PARAM_ssl_client_auth"
+          value: "required"
         #--------------------------------- SSL --------------------------------- 
 
         #--------------------------------- SASL --------------------------------- 
