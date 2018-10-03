@@ -139,12 +139,24 @@ spec:
           value: "65536"
         - name: "KAFKA_PARAM_listeners"
           #value: "PLAINTEXT://0.0.0.0:9092,SSL://0.0.0.0:9093,SASL_SSL://0.0.0.0:9094"
-          value: "PLAINTEXT://0.0.0.0:9092,SASL_PLAINTEXT://0.0.0.0:9093"
+          value: "PLAINTEXT://0.0.0.0:9092,SASL_PLAINTEXT://0.0.0.0:9093,SSL://0.0.0.0:9094"
         - name: "KAFKA_PARAM_advertised_listeners"
           #value: "PLAINTEXT://{HOSTNAME_FQDN}:9092,SASL_PLAINTEXT://{HOSTNAME_FQDN}:9093"
-          value: "PLAINTEXT://{HOSTNAME_FQDN}:9092,SASL_PLAINTEXT://{HOSTNAME_FQDN}:9093"
+          value: "PLAINTEXT://{HOSTNAME_FQDN}:9092,SASL_PLAINTEXT://{HOSTNAME_FQDN}:9093,SSL://{HOSTNAME_FQDN}:9094"
         - name: "KAFKA_PARAM_ZOOKEEPER_CONNECT"
           value: "zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka"
+        #--------------------------------- SSL --------------------------------- 
+        - name: "KAFKA_PARAM_ssl_truststore_location"
+          value: "/opt/kafka/config/truststore-{HOSTNAME_FQDN}.jks"
+        - name: "KAFKA_PARAM_ssl_truststore_password"
+          value: "secret"
+        - name: "KAFKA_PARAM_ssl_keystore_location"
+          value: "/opt/kafka/config/keystore-{HOSTNAME_FQDN}.jks"
+        - name: "KAFKA_PARAM_ssl_keystore_password"
+          value: "secret"
+        - name: "KAFKA_PARAM_ssl_key_password"
+          value: "secret"
+        #--------------------------------- SSL --------------------------------- 
         - name: "KAFKA_PARAM_security_inter_broker_protocol"
           value: "SASL_PLAINTEXT"
         - name: "KAFKA_PARAM_sasl_mechanism_inter_broker_protocol"
@@ -168,6 +180,24 @@ spec:
         - name: config-volume-kafka-2-service-keytab
           mountPath: /opt/kafka/config/kafka-2.service.keytab
           subPath: kafka-2.service.keytab
+        - name: config-volume-kafka-0-keystore-jks
+          mountPath: /opt/kafka/config/keystore-kafka-0.jks
+          subPath: keystore-kafka-0.jks
+        - name: config-volume-kafka-1-keystore-jks
+          mountPath: /opt/kafka/config/keystore-kafka-1.jks
+          subPath: keystore-kafka-1.jks
+        - name: config-volume-kafka-2-keystore-jks
+          mountPath: /opt/kafka/config/keystore-kafka-2.jks
+          subPath: keystore-kafka-2.jks
+        - name: config-volume-kafka-0-truststore-jks
+          mountPath: /opt/kafka/config/truststore-kafka-0.jks
+          subPath: truststore-kafka-0.jks
+        - name: config-volume-kafka-1-truststore-jks
+          mountPath: /opt/kafka/config/truststore-kafka-1.jks
+          subPath: truststore-kafka-1.jks
+        - name: config-volume-kafka-2-truststore-jks
+          mountPath: /opt/kafka/config/truststore-kafka-2.jks
+          subPath: truststore-kafka-2.jks
         - name: config-volume-kafka-server-jaas-conf-cm
           mountPath: /opt/kafka/config/kafka_server_jaas.conf_RO
           subPath: kafka_server_jaas.conf
@@ -186,6 +216,24 @@ spec:
         - name: config-volume-kafka-2-service-keytab
           configMap:
             name: kafka-2-service-keytab
+        - name: config-volume-kafka-0-keystore-jks
+          configMap:
+            name: keystore-kafka-0.jks
+        - name: config-volume-kafka-1-keystore-jks
+          configMap:
+            name: keystore-kafka-1.jks
+        - name: config-volume-kafka-2-keystore-jks
+          configMap:
+            name: keystore-kafka-2.jks
+        - name: config-volume-kafka-0-truststore-jks
+          configMap:
+            name: truststore-kafka-0.jks
+        - name: config-volume-kafka-1-truststore-jks
+          configMap:
+            name: truststore-kafka-1.jks
+        - name: config-volume-kafka-2-truststore-jks
+          configMap:
+            name: truststore-kafka-2.jks            
         - name: config-volume-kafka-server-jaas-conf-cm
           configMap:
             name: kafka-server-jaas-conf-cm
