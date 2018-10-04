@@ -25,25 +25,25 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kafka-connect.yaml?$(date +%s)"  | kubectl apply -f -
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kafka-connect-ui.yaml?$(date +%s)"  | kubectl apply -f -
 
-#createMyapps
+createMyapps
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kerberos.yaml?$(date +%s)"  | kubectl apply -f -
 
-#setupMYSQL
+setupMYSQL
 
 setupkerberos
 
-#setupkafka
+setupkafka
 #setupkafkaConnect
 
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fakesmtp.yaml?$(date +%s)"  | kubectl apply -f -
 
 
-#createMonitoring # grafana, prometheus , alertmanager, metric server and prometheus adapter
+createMonitoring # grafana, prometheus , alertmanager, metric server and prometheus adapter
 
-#createIngress	
+createIngress	
 
-#createHeapster
+createHeapster
 
 
    
@@ -51,15 +51,16 @@ setupkerberos
 curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/dashboard-service-ingress.yaml | kubectl apply -f -
 
 
-#curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/influxdb-ingress.yaml | kubectl apply -f -
-#curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/graphite.yaml | kubectl apply -f -
+curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/influxdb-ingress.yaml | kubectl apply -f -
+curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/graphite.yaml | kubectl apply -f -
 
 
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
  
-#configureGrafana
+configureGrafana
+#createMongo
 #setupMongodb
-#showCustomService
+showCustomService
 showDashboardIP
  
 #kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/MKWEB_exec_time_seconds_max" | jq '.items[].value'
