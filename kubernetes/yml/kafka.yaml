@@ -152,7 +152,7 @@ spec:
         - name: "KAFKA_PARAM_ssl_key_password"
           value: "secret"
         - name: "KAFKA_PARAM_security_inter_broker_protocol"
-          value: "SSL"
+          value: "PLAINTEXT"
         - name: "KAFKA_PARAM_ssl_client_auth"
           value: "required"
         #--------------------------------- SSL --------------------------------- 
