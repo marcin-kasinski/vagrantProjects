@@ -70,7 +70,8 @@ kafka-console-consumer.sh --bootstrap-server $brokers --consumer.config ./client
 
 openssl s_client -showcerts -connect kafka-0.k-hs.default.svc.cluster.local:9094
 
-
+apt install sslscan 
+sslscan kafka-0.k-hs.default.svc.cluster.local:9094
 
 
 ------------------------ SSL ------------------------
