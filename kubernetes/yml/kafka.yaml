@@ -127,8 +127,7 @@ spec:
             fieldRef:
               fieldPath: metadata.name
         - name: "EXTRA_JAVA_ARGS"
-        #  value: "-Djavax.net.debug=all -Dssl.debug=true"
-          value: "-Dssl.debug=true"
+          value: "-Djavax.net.debug=all -Dssl.debug=true"
         - name: "BROKER_NODES"
         #  value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"
           value: "kafka-0.k-hs.default.svc.cluster.local:9094"
