@@ -30,22 +30,22 @@ keytool -keystore /tmp/truststore-$host_shortname.jks -alias CARoot -import -fil
 keytool -list -keystore /tmp/truststore-$host_shortname.jks -v -storepass $CLIPASS | grep "Owner: "
 
 #create server keypair
-keytool -genkeypair -dname "cn=$host, ou=it, o=itzone, c=PL"  -keystore /tmp/keystore-$host_shortname.jks -alias $host -validity 3600 -storepass $CLIPASS -keypass $CLIPASS
+keytool -genkeypair -dname "cn=$host_shortname, ou=it, o=itzone, c=PL"  -keystore /tmp/keystore-$host_shortname.jks -alias $host_shortname -validity 3600 -storepass $CLIPASS -keypass $CLIPASS
 
 # create a certification request file, to be signed by the CA
-keytool -keystore /tmp/keystore-$host_shortname.jks -certreq -file /tmp/cert-sign-request-$host -alias $host -storepass $CLIPASS -keypass $CLIPASS
+keytool -keystore /tmp/keystore-$host_shortname.jks -certreq -file /tmp/cert-sign-request-$host_shortname -alias $host_shortname -storepass $CLIPASS -keypass $CLIPASS
 
 #sign it with the CA:
-openssl x509 -req -CA /tmp/ca-cert -CAkey ca-key -in /tmp/cert-sign-request-$host -out /tmp/cert-sign-request-signed-$host -days 3650 -CAcreateserial -passin pass:$CLIPASS
+openssl x509 -req -CA /tmp/ca-cert -CAkey ca-key -in /tmp/cert-sign-request-$host_shortname -out /tmp/cert-sign-request-signed-$host_shortname -days 3650 -CAcreateserial -passin pass:$CLIPASS
 
 #print cert request
-openssl req -noout -text -in /tmp/cert-sign-request-$host
+openssl req -noout -text -in /tmp/cert-sign-request-$host_shortname
 
 #print cert
-keytool -printcert -v -file /tmp/cert-sign-request-signed-$host
+keytool -printcert -v -file /tmp/cert-sign-request-signed-$host_shortname
 
 #import signed certificate into the keystore
-keytool -keystore /tmp/keystore-$host_shortname.jks -alias $host -import -file /tmp/cert-sign-request-signed-$host -storepass $CLIPASS
+keytool -keystore /tmp/keystore-$host_shortname.jks -alias $host_shortname -import -file /tmp/cert-sign-request-signed-$host_shortname -storepass $CLIPASS
 
 
 #listing keys
