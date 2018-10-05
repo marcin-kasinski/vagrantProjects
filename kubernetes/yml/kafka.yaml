@@ -131,7 +131,7 @@ spec:
           value: "-Djavax.net.debug=all"
         - name: "BROKER_NODES"
         #  value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"
-          value: "kafka-0.k-hs.default.svc.cluster.local:9094"
+          value: "kafka-0:9094"
         # default 16kb we set to 64
         - name: "KAFKA_PARAM_BATCH_SIZE"
           value: "65536"
