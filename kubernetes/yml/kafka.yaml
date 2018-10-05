@@ -11,6 +11,7 @@ data:
     ssl.keystore.location=/opt/kafka/config/keystore-kafka-0.jks
     ssl.keystore.password=secret
     ssl.key.password=secret 
+    group.id=group1
 ---
 kind: ConfigMap
 metadata:
