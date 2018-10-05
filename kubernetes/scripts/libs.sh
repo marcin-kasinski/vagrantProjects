@@ -49,7 +49,6 @@ keytool -printcert -v -file /tmp/cert-sign-request-signed-$shorthostname
 #import signed certificate into the keystore
 keytool -keystore /tmp/keystore-$shorthostname.jks -alias $serveralias -import -file /tmp/cert-sign-request-signed-$shorthostname -storepass $CLIPASS
 
-
 #listing keys
 keytool -list -keystore /tmp/keystore-$shorthostname.jks -v -storepass $CLIPASS | grep "Owner: \|Issuer: "
 
@@ -74,6 +73,7 @@ createCA
 createServerCert kafka-0.k-hs.default.svc.cluster.local
 createServerCert kafka-1.k-hs.default.svc.cluster.local
 createServerCert kafka-2.k-hs.default.svc.cluster.local
+createServerCert springbootweb-0.springbootweb-hs.default.svc.cluster.local
 }
 
 setupkerberos()

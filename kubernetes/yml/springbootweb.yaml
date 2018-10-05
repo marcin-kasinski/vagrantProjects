@@ -1,8 +1,128 @@
+kind: ConfigMap
+metadata:
+  name: springbootweb-bootstrap-yml-cm
+  namespace: default
+apiVersion: v1
+data:
+  bootstrap.yml: |-
+
+    #app.ajax_url: http://springbootmicroserviceingress:30080/api/get-by-email?email=ajax@ajax.com
+    app.ajax_url: ${APP_AJAX_URL:http://nginx:30080/api/get-by-email?email=ajax@ajax.com}
+    #app.rest_url: ${APP_REST_URL:http://springbootmicroservice:9191/api/get-by-email?email=x@x.com
+    #app.rest_url: ${APP_REST_URL:http://nginx/api/get-by-email?email=x@x.com}
+    app.rest_url: ${APP_REST_URL:http://nginx/api/adduser}
+    logging:
+      file: logs/application.log
+    server:
+      port: 7070
+    spring:
+      application:
+        name: SpringBootWeb
+    #spring.jpa.hibernate.ddl-auto=create
+      datasource:
+        url: jdbc:mysql://mysql:30306/test
+        username: root
+        password: secret
+    #spring.datasource.driver-class-name=Driver
+    # Allows Hibernate to generate SQL optimized for a particular DBMS
+      jpa:
+        properties:
+          hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
+          hibernate.show_sql: true
+      rabbitmq:
+        host: rabbitmq
+        password: guest
+        port: 5672
+      zipkin:
+        baseUrl: http://springbootzipkin:7777
+        sender:
+          type: web
+      sleuth:
+        sampler:
+          percentage: 1
+          probability: 1
+    #if you want to send spans via kafka...      
+    #  kafka:
+    #    bootstrap-servers: kafka-service:9092      
+      cloud:
+        consul:
+          discovery:
+            preferIpAddress: true
+            instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}
+          port: 8500    
+        stream:
+          defaultBinder: rabbit1
+          bindings:
+            worksChannel:
+              destination: my-topic
+              group: order
+              content-type: application/json
+              binder: rabbit1
+            worksChannelKafka:
+              destination: my-topic
+              group: order
+              content-type: application/json
+              binder: kafka
+          binders:
+            rabbit1:
+              type: rabbit
+              environment:
+                spring:
+                  rabbitmq:
+                    host: rabbitmq
+                    port: 5672
+                    username: guest
+                    password: guest
+                    virtual-host: /
+            kafka:
+              type: kafka
+              environment:
+                spring:
+                  cloud:
+                    stream:
+                      kafka:
+                        binder:
+                          brokers: kafka-0.k-hs.default.svc.cluster.local:9094,kafka-1.k-hs.default.svc.cluster.local:9094,kafka-2.k-hs.default.svc.cluster.local:9094
+                          configuration:
+                            security.protocol: SSL
+                            ssl.truststore.location: /usr/src/myapp/config/truststore-springbootweb-0.jks
+                            ssl.truststore.password: secret
+                            ssl.truststore.type: JKS
+                            ssl.keystore.location: /usr/src/myapp/config/truststore-springbootweb-0.jks
+                            ssl.keystore.password: secret
+                            ssl.keystore.type: JKS
+
+    endpoints:
+      prometheus:
+        enabled: true 
+    management:
+      security:
+        enabled: false
+      endpoint:
+        metrics:
+          enabled: true
+        prometheus:
+          enabled: true 
+      endpoints:
+        web:
+          exposure:
+            include: "info, health, prometheus"
+        metrics:
+          enabled: true
+      metrics:
+        export:
+          prometheus:
+            enabled: true      
+                
+---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: springbootweb
+  labels:
+    app: springbootweb
 spec:
+  serviceName: "springbootweb-hs"
   replicas: 1
   selector:
     matchLabels:
@@ -33,6 +153,41 @@ spec:
           value: "http://springbootmicroservice-cs.default.svc.cluster.local:9191/api/adduser"
         - name: KAFKA_BROKER_NODES
           value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"          
+        volumeMounts:
+        - name: config-springbootweb-bootstrap-yml-cm
+          mountPath: /usr/src/myapp/config/bootstrap.yml
+          subPath: bootstrap.yml
+        - name: config-volume-springbootweb-0-truststore-jks
+          mountPath: /usr/src/myapp/config/truststore-springbootweb-0.jks
+          subPath: truststore-springbootweb-0.jks
+        - name: config-volume-springbootweb-0-keystore-jks
+          mountPath: /usr/src/myapp/config/keystore-springbootweb-0.jks
+          subPath: keystore-springbootweb-0.jks
+      volumes:
+        - name: config-springbootweb-bootstrap-yml-cm
+          configMap:
+            name: springbootweb-bootstrap-yml-cm
+        - name: config-volume-springbootweb-0-truststore-jks
+          configMap:
+            name: truststore-springbootweb-0.jks
+        - name: config-volume-springbootweb-0-keystore-jks
+          configMap:
+            name: keystore-springbootweb-0.jks
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: springbootweb-hs
+  labels:
+    app: springbootweb
+spec:
+  ports:
+  - port: 9191
+    targetPort: 9191
+    name: server
+  clusterIP: None
+  selector:
+    app: springbootweb
 ---
 apiVersion: v1
 kind: Service

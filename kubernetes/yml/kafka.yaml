@@ -199,6 +199,8 @@ spec:
           value: "SSL"
         - name: "KAFKA_PARAM_ssl_client_auth"
           value: "required"
+        - name: "KAFKA_PARAM_super_users"
+          value: "User:admin;User:kafka-0.k-hs.default.svc.cluster.local;User:kafka-1.k-hs.default.svc.cluster.local;User:kafka-2.k-hs.default.svc.cluster.local"
         #--------------------------------- SSL --------------------------------- 
 
         #--------------------------------- SASL --------------------------------- 
