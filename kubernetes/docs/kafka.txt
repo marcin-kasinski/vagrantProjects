@@ -61,14 +61,22 @@ kafka-topics.sh  --delete --zookeeper $zookeeper --topic mktopic
 
 kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --list --topic mktopic
 
+
+#Producer
 kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
 User:CN=kafka-0.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL \
---operation Describe --operation Create --operation Read --operation Write --operation All \
+--operation Describe --operation Describe --operation Create --operation Write \
+--topic mktopic
+
+#Consumer
+kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
+User:CN=kafka-0.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL \
+--operation Describe --operation Describe --operation Create --operation Read \
 --topic mktopic
 
 kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
 User:CN=kafka-0.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL \
---operation ClusterAction \
+--operation ClusterAction --operation Create \
 --cluster kafka-cluster
 
 kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
