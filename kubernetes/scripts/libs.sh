@@ -22,41 +22,42 @@ createServerCert()
 {
 
 local host=$1
-host_shortname=`echo $host | cut -d "." -f 1`
+shorthostname=`echo $host | cut -d "." -f 1`
 
-#add ca to truststore
-keytool -keystore /tmp/keystore-$host_shortname.jks -alias CARoot -import -file /tmp/ca-cert -storepass $CLIPASS  -noprompt
-keytool -keystore /tmp/truststore-$host_shortname.jks -alias CARoot -import -file /tmp/ca-cert -storepass $CLIPASS  -noprompt
-keytool -list -keystore /tmp/truststore-$host_shortname.jks -v -storepass $CLIPASS | grep "Owner: "
+serveralias=$shorthostname
 
 #create server keypair
-keytool -genkeypair -dname "cn=$host_shortname, ou=it, o=itzone, c=PL"  -keystore /tmp/keystore-$host_shortname.jks -alias $host_shortname -validity 3600 -storepass $CLIPASS -keypass $CLIPASS
+keytool -genkeypair -dname "cn=$shorthostname, ou=it, o=itzone, c=PL"  -keystore /tmp/keystore-$shorthostname.jks -alias $serveralias -validity 3600 -storetype pkcs12 -storepass $CLIPASS -keypass $CLIPASS
+
+#add ca to truststore
+keytool -keystore /tmp/keystore-$shorthostname.jks -alias CARoot -import -file /tmp/ca-cert -storepass $CLIPASS  -noprompt
+keytool -keystore /tmp/truststore-$shorthostname.jks -alias CARoot -import -file /tmp/ca-cert -storepass $CLIPASS  -noprompt
+keytool -list -keystore /tmp/truststore-$shorthostname.jks -v -storepass $CLIPASS | grep "Owner: "
 
 # create a certification request file, to be signed by the CA
-keytool -keystore /tmp/keystore-$host_shortname.jks -certreq -file /tmp/cert-sign-request-$host_shortname -alias $host_shortname -storepass $CLIPASS -keypass $CLIPASS
+keytool -keystore /tmp/keystore-$shorthostname.jks -certreq -file /tmp/cert-sign-request-$shorthostname -alias $serveralias -storepass $CLIPASS -keypass $CLIPASS
 
 #sign it with the CA:
-openssl x509 -req -CA /tmp/ca-cert -CAkey ca-key -in /tmp/cert-sign-request-$host_shortname -out /tmp/cert-sign-request-signed-$host_shortname -days 3650 -CAcreateserial -passin pass:$CLIPASS
+openssl x509 -req -CA /tmp/ca-cert -CAkey ca-key -in /tmp/cert-sign-request-$shorthostname -out /tmp/cert-sign-request-signed-$shorthostname -days 3650 -CAcreateserial -passin pass:$CLIPASS
 
 #print cert request
-openssl req -noout -text -in /tmp/cert-sign-request-$host_shortname
+openssl req -noout -text -in /tmp/cert-sign-request-$shorthostname
 
 #print cert
-keytool -printcert -v -file /tmp/cert-sign-request-signed-$host_shortname
+keytool -printcert -v -file /tmp/cert-sign-request-signed-$shorthostname
 
 #import signed certificate into the keystore
-keytool -keystore /tmp/keystore-$host_shortname.jks -alias $host_shortname -import -file /tmp/cert-sign-request-signed-$host_shortname -storepass $CLIPASS
+keytool -keystore /tmp/keystore-$shorthostname.jks -alias $serveralias -import -file /tmp/cert-sign-request-signed-$shorthostname -storepass $CLIPASS
 
 
 #listing keys
-keytool -list -keystore /tmp/keystore-$host_shortname.jks -v -storepass $CLIPASS | grep "Owner: \|Issuer: "
-keytool -list -keystore /tmp/truststore-$host_shortname.jks -v -storepass $CLIPASS | grep "Owner: \|Issuer: "
+keytool -list -keystore /tmp/keystore-$shorthostname.jks -v -storepass $CLIPASS | grep "Owner: \|Issuer: "
 
-kubectl delete configmap keystore-$host_shortname.jks | true
-kubectl delete configmap truststore-$host_shortname.jks | true
+kubectl delete configmap keystore-$shorthostname.jks | true
+kubectl delete configmap truststore-$shorthostname.jks | true
 
-kubectl create configmap keystore-$host_shortname.jks -n default --from-file=/tmp/keystore-$host_shortname.jks
-kubectl create configmap truststore-$host_shortname.jks -n default --from-file=/tmp/truststore-$host_shortname.jks
+kubectl create configmap keystore-$shorthostname.jks -n default --from-file=/tmp/keystore-$shorthostname.jks
+kubectl create configmap truststore-$shorthostname.jks -n default --from-file=/tmp/truststore-$shorthostname.jks
 
 }
 
