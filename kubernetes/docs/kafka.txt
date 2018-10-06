@@ -129,8 +129,6 @@ do
  sleep 1
 done
 
-cp config/consumer-ssl-auth.properties config/consumer-nossl-auth.properties
-
 cp config/consumer-ssl-auth.properties config/consumer-ssl-auth.properties2
 
 #Consumer PLAINTEXT
