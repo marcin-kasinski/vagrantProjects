@@ -277,7 +277,7 @@ spec:
           mountPath: /opt/kafka/config/producer-ssl-auth.properties
           subPath: producer-ssl-auth.properties
         - name: kafka-logs
-          mountPath: /opt/kafka/config/kafka-logs
+          mountPath: /tmp/kafka-logs
       volumes:
         - name: config-volume-krb5-conf-cm
           configMap:
