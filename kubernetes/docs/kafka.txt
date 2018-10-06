@@ -69,13 +69,13 @@ kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --list --topi
 kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
 User:ANONYMOUS \
 --operation Describe --operation Describe --operation Create --operation Write \
---topic mktopic
+--topic logs
 
 #Consumer
 kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
 User:ANONYMOUS \
 --operation Describe --operation Describe --operation Create --operation Read \
---topic mktopic
+--topic  logs
 
 kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
 User:ANONYMOUS --operation ClusterAction --operation Create --cluster kafka-cluster
