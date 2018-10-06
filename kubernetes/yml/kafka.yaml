@@ -94,10 +94,18 @@ metadata:
 spec:
   type: NodePort
   ports:
-  - port: 9092
-    nodePort: 30092
+  - name: client
+    port: 9092
+    #nodePort: 30092
     targetPort: 9092
-    name: client
+  - name: client
+    port: 9093
+    #nodePort: 30093
+    targetPort: 9093
+  - name: client
+    port: 9094
+    #nodePort: 30094
+    targetPort: 9094    
   selector:
     app: kafka
 ---
@@ -110,7 +118,11 @@ metadata:
 spec:
   ports:
   - port: 9092
-    name: client
+    name: client2
+  - port: 9093
+    name: client3
+  - port: 9094
+    name: client4
   - port: 8080
     name: jmxagent
   clusterIP: None
@@ -148,8 +160,12 @@ spec:
         imagePullPolicy: Always        
         #imagePullPolicy: Never        
         ports:
-        - containerPort: 9092
-          name: client
+        - name: client2
+          containerPort: 9092
+        - name: client3
+          containerPort: 9093
+        - name: client4
+          containerPort: 9094
         env:
         - name: "POD_NAME"
           valueFrom:
