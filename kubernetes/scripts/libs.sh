@@ -310,6 +310,20 @@ echo $PODIP
 }
 
 
+waitForPODPort()
+{
+local POD_NAME=$1
+
+while true
+do
+  IP=$(getPodIP $POD_NAME)
+  echo "ip $IP"
+  
+  nc -z $IP 80
+  sleep 3  
+done
+
+}
 
 setupMongodb_rs0()
 {
