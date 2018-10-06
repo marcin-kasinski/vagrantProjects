@@ -183,7 +183,7 @@ spec:
         - name: "KAFKA_PARAM_authorizer_class_name"
           value: "kafka.security.auth.SimpleAclAuthorizer"
         - name: "KAFKA_PARAM_allow_everyone_if_no_acl_found"
-          value: "true"
+          value: "false"
         #--------------------------------- SSL --------------------------------- 
         - name: "KAFKA_PARAM_ssl_truststore_location"
           value: "/opt/kafka/config/truststore-{HOSTNAME}.jks"
