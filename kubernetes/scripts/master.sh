@@ -28,7 +28,7 @@ setupMYSQL
 
 setupkerberos
 
-setupkafka
+#setupkafka
 #setupkafkaConnect
 
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fakesmtp.yaml?$(date +%s)"  | kubectl apply -f -
