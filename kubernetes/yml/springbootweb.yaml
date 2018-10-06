@@ -85,10 +85,10 @@ data:
                           brokers: kafka-0.k-hs.default.svc.cluster.local:9094,kafka-1.k-hs.default.svc.cluster.local:9094,kafka-2.k-hs.default.svc.cluster.local:9094
                           configuration:
                             security.protocol: SSL
-                            ssl.truststore.location: /usr/src/myapp/config/truststore-springbootweb-0XXXXXXXXXX.jks
+                            ssl.truststore.location: /usr/src/myapp/config/truststore-springbootweb-0.jks
                             ssl.truststore.password: secret
                             ssl.truststore.type: JKS
-                            ssl.keystore.location: /usr/src/myapp/config/truststore-springbootweb-0XXXXXXXXXX.jks
+                            ssl.keystore.location: /usr/src/myapp/config/truststore-springbootweb-0.jks
                             ssl.keystore.password: secret
                             ssl.keystore.type: JKS
 
