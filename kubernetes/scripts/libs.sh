@@ -24,7 +24,9 @@ createServerCert()
 local host=$1
 shorthostname=`echo $host | cut -d "." -f 1`
 
-serveralias=$host
+#serveralias=$host
+#serveralias=$shorthostname
+serveralias=localhost
 
 #create server keypair
 keytool -genkeypair -dname "cn=$host, ou=it, o=itzone, c=PL"  -keystore /tmp/keystore-$shorthostname.jks -alias $serveralias -validity 3600 -storetype pkcs12  -keyalg RSA -storepass $CLIPASS -keypass $CLIPASS
@@ -64,10 +66,7 @@ kubectl create configmap truststore-$shorthostname.jks -n default --from-file=/t
 setupSSL()
 {
 
-sudo rm /tmp/key*
-sudo rm /tmp/tr*
-sudo rm /tmp/ce*
-sudo rm /tmp/ca*
+sudo rm /tmp/key* && sudo rm /tmp/tr* && sudo rm /tmp/ce* && sudo rm /tmp/ca*
 
 createCA
 createServerCert kafka-0.k-hs.default.svc.cluster.local
