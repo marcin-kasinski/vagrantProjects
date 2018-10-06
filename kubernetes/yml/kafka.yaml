@@ -94,15 +94,15 @@ metadata:
 spec:
   type: NodePort
   ports:
-  - name: client
+  - name: client2
     port: 9092
     #nodePort: 30092
     targetPort: 9092
-  - name: client
+  - name: client3
     port: 9093
     #nodePort: 30093
     targetPort: 9093
-  - name: client
+  - name: client4
     port: 9094
     #nodePort: 30094
     targetPort: 9094    
