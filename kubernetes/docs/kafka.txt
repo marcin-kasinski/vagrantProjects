@@ -47,7 +47,7 @@ ssl.key.password=secret
 
 
 KAFKA_OPTS="-Djavax.net.debug=ssl:handshake"
-#KAFKA_OPTS=""
+KAFKA_OPTS=""
 zookeeper=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka
 brokers=kafka-0.k-hs.default.svc.cluster.local:9094,kafka-1.k-hs.default.svc.cluster.local:9094,kafka-2.k-hs.default.svc.cluster.local:9094
 kafka-topics.sh --list --zookeeper $zookeeper
@@ -122,7 +122,7 @@ done
 
 while true
 do
- echo $(date) by SSL | kafka-console-producer.sh --broker-list $brokers --producer.config config/producer-ssl-auth.properties --topic mktopic
+ echo $(date) by SSL | kafka-console-producer.sh --broker-list $brokers --producer.config config/producer-ssl-auth.properties2 --topic mktopic
  sleep 1
 done
 
@@ -131,7 +131,7 @@ done
 kafka-console-consumer.sh --bootstrap-server $brokers --topic mktopic
 
 #Consumer SSL
-kafka-console-consumer.sh --bootstrap-server $brokers --consumer.config config/consumer-ssl-auth.properties --topic logs
+kafka-console-consumer.sh --bootstrap-server $brokers --consumer.config config/consumer-ssl-auth.properties2 --topic mktopic
 
 
 openssl s_client -showcerts -connect kafka-0.k-hs.default.svc.cluster.local:9094
