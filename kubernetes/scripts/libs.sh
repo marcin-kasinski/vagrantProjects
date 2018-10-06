@@ -38,7 +38,7 @@ keytool -list -keystore /tmp/truststore-$shorthostname.jks -v -storepass $CLIPAS
 keytool -keystore /tmp/keystore-$shorthostname.jks -certreq -file /tmp/cert-sign-request-$shorthostname -alias $serveralias -storepass $CLIPASS -keypass $CLIPASS
 
 #sign it with the CA:
-openssl x509 -req -CA /tmp/ca-cert -CAkey ca-key -in /tmp/cert-sign-request-$shorthostname -out /tmp/cert-sign-request-signed-$shorthostname -days 3650 -CAcreateserial -passin pass:$CLIPASS
+openssl x509 -req -CA /tmp/ca-cert -CAkey /tmp/ca-key -in /tmp/cert-sign-request-$shorthostname -out /tmp/cert-sign-request-signed-$shorthostname -days 3650 -CAcreateserial -passin pass:$CLIPASS
 
 #print cert request
 openssl req -noout -text -in /tmp/cert-sign-request-$shorthostname
@@ -297,6 +297,18 @@ sudo mv cfssljson_linux-amd64 /usr/local/bin/cfssljson
 cfssl version
 
 }
+
+
+getPodIP()
+{
+local POD_NAME=$1
+while ! kubectl get po -o wide | grep $POD_NAME | grep Running ; do   echo "waiting for pod $POD_NAME IP ..." ; sleep 20 ; done
+
+PODIP=`kubectl get po -o wide | grep $POD_NAME | grep Running `
+PODIP=`echo $PODIP | cut -d " " -f 6`
+echo $PODIP
+}
+
 
 
 setupMongodb_rs0()
