@@ -169,10 +169,10 @@ spec:
           mountPath: /usr/src/myapp/config/keystore-springbootweb-0.jks
           subPath: keystore-springbootweb-0.jks
         - name: config-volume-kafka-2-keystore-jks
-          mountPath: /opt/kafka/config/keystore-kafka-2.jks
+          mountPath: /usr/src/myapp/config/keystore-kafka-2.jks
           subPath: keystore-kafka-2.jks
         - name: config-volume-kafka-2-truststore-jks
-          mountPath: /opt/kafka/config/truststore-kafka-2.jks
+          mountPath: /usr/src/myapp/config/truststore-kafka-2.jks
           subPath: truststore-kafka-2.jks
       volumes:
         - name: config-springbootweb-bootstrap-yml-cm
