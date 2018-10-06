@@ -46,14 +46,13 @@ ssl.keystore.password=secret
 ssl.key.password=secret
 
 
-
-KAFKA_OPTS=""
+KAFKA_OPTS="-Djavax.net.debug=ssl:handshake"
+#KAFKA_OPTS=""
 zookeeper=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka
-#brokers=kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092
 brokers=kafka-0.k-hs.default.svc.cluster.local:9094,kafka-1.k-hs.default.svc.cluster.local:9094,kafka-2.k-hs.default.svc.cluster.local:9094
-
-
 kafka-topics.sh --list --zookeeper $zookeeper
+
+
 kafka-topics.sh  --create --zookeeper $zookeeper --partitions 1 --replication-factor 1 --topic mktopic
 kafka-topics.sh  --delete --zookeeper $zookeeper --topic mktopic
 
@@ -61,6 +60,30 @@ kafka-topics.sh  --delete --zookeeper $zookeeper --topic mktopic
 # Listing acls
 
 kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --list --topic mktopic
+
+
+
+
+#Producer
+kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
+User:ANONYMOUS \
+--operation Describe --operation Describe --operation Create --operation Write \
+--topic logs
+
+#Consumer
+kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
+User:ANONYMOUS \
+--operation Describe --operation Describe --operation Create --operation Read \
+--topic logs
+
+kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
+User:ANONYMOUS --operation ClusterAction --operation Create --cluster kafka-cluster
+
+kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
+User:ANONYMOUS \
+--operation All --group group1
+
+
 
 
 #Producer
@@ -108,13 +131,19 @@ done
 kafka-console-consumer.sh --bootstrap-server $brokers --topic mktopic
 
 #Consumer SSL
-kafka-console-consumer.sh --bootstrap-server $brokers --consumer.config config/consumer-ssl-auth.properties --topic mktopic
+kafka-console-consumer.sh --bootstrap-server $brokers --consumer.config config/consumer-ssl-auth.properties --topic logs
 
 
 openssl s_client -showcerts -connect kafka-0.k-hs.default.svc.cluster.local:9094
 
 openssl s_client -connect kafka-0.k-hs.default.svc.cluster.local:9094 2>/dev/null |
   openssl x509 -noout -text -certopt no_header,no_version,no_serial,no_signame,no_pubkey,no_sigdump,no_aux -subject -nameopt multiline -issuer
+
+
+openssl s_client -connect 10.47.0.9:9094 -state -debug
+
+
+
 
 apt install sslscan 
 sslscan kafka-0.k-hs.default.svc.cluster.local:9094

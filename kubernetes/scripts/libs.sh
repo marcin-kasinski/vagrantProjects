@@ -29,7 +29,8 @@ serveralias=$host
 #serveralias=localhost
 
 #create server keypair
-keytool -genkeypair -dname "cn=$host, ou=it, o=itzone, c=PL"  -keystore /tmp/keystore-$shorthostname.jks -alias $serveralias -validity 3600 -storetype pkcs12  -keyalg RSA -storepass $CLIPASS -keypass $CLIPASS
+#keytool -genkeypair -dname "cn=$host, ou=it, o=itzone, c=PL"  -keystore /tmp/keystore-$shorthostname.jks -alias $serveralias -validity 3600 -storetype pkcs12  -keyalg RSA -storepass $CLIPASS -keypass $CLIPASS
+keytool -genkeypair -dname "cn=$host, ou=it, o=itzone, c=PL"  -keystore /tmp/keystore-$shorthostname.jks -alias $serveralias -validity 3600 -storetype pkcs12 -storepass $CLIPASS -keypass $CLIPASS
 
 #add ca to truststore
 keytool -keystore /tmp/keystore-$shorthostname.jks -alias CARoot -import -file /tmp/ca-cert -storepass $CLIPASS  -noprompt
