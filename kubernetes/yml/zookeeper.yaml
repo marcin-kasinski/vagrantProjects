@@ -115,21 +115,21 @@ spec:
           value: "/opt/zookeeper/conf/zookeeper_server_jaas.conf_RO"        
         - name: "ZOOKEEPER_NODES"
           #value: "zk-0.zk-hs.default.svc.cluster.local:2888:3888,zk-1.zk-hs.default.svc.cluster.local:2888:3888,zk-2.zk-hs.default.svc.cluster.local:2888:3888"
-          value: "localhost:2888:3888"
+          value: "{HOSTNAME_FQDN}:2888:3888"
         #ustawia na wartość default 
         - name: "ZOOKEEPER_PARAM_tickTime"
           value: "2000"
         #ustawia na wartość default 
         - name: "ZOOKEEPER_PARAM_maxClientCnxns"
           value: "60"
-        - name: "ZOOKEEPER_PARAM_authProvider_1"
-          value: "org.apache.zookeeper.server.auth.SASLAuthenticationProvider"
-        - name: "ZOOKEEPER_PARAM_jaasLoginRenew"
-          value: "3600000"
-        - name: "ZOOKEEPER_PARAM_kerberos_removeHostFromPrincipal"
-          value: "true"
-        - name: "ZOOKEEPER_PARAM_kerberos_removeRealmFromPrincipal"
-          value: "true"
+        #- name: "ZOOKEEPER_PARAM_authProvider_1"
+        #  value: "org.apache.zookeeper.server.auth.SASLAuthenticationProvider"
+        #- name: "ZOOKEEPER_PARAM_jaasLoginRenew"
+        #  value: "3600000"
+        #- name: "ZOOKEEPER_PARAM_kerberos_removeHostFromPrincipal"
+        #  value: "true"
+        #- name: "ZOOKEEPER_PARAM_kerberos_removeRealmFromPrincipal"
+        #  value: "true"
         volumeMounts:
         - name: zookeeper-logs
           mountPath: /datalog/zookeeper
