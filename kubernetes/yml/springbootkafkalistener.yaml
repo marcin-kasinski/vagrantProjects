@@ -1,0 +1,112 @@
+kind: ConfigMap
+metadata:
+  name: springbootkafkalistener-bootstrap-yml-cm
+  namespace: default
+apiVersion: v1
+data:
+  bootstrap.yml: |-
+    logging:
+     file: logs/application.log
+    server:
+     port: 9191
+    spring:
+     application:
+      name: SpringBootKafkaListener
+    #spring.jpa.hibernate.ddl-auto=create
+     datasource:
+      url: jdbc:mysql://mysql:3306/test
+      username: root
+      password: secret
+    #spring.datasource.driver-class-name=Driver
+    # Allows Hibernate to generate SQL optimized for a particular DBMS
+     jpa:
+      properties:
+       hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
+       hibernate.show_sql: true
+     rabbitmq:
+      host:tools.local
+      password:guest
+      port:5672
+     zipkin:
+      baseUrl: http://springbootzipkin:7777
+      sender:
+       type: WEB
+     sleuth:
+      sampler:
+       percentage: 1
+     cloud:
+      stream:
+       defaultBinder: kafka
+       bindings:
+        worksChannel:
+         destination: my-topic
+         group: order
+         content-type: application/json
+         binder: kafka
+       binders:
+        kafka:
+         type: kafka
+         environment:
+          spring:
+           cloud:
+            stream:
+             kafka:
+              binder:
+               brokers: kafka-0.k-hs.default.svc.cluster.local,kafka-1.k-hs.default.svc.cluster.local,kafka-2.k-hs.default.svc.cluster.local
+               #zkNodes: zk-0.zk-hs.default.svc.cluster.local,zk-1.zk-hs.default.svc.cluster.local,zk-2.zk-hs.default.svc.cluster.local/kafka
+               defaultZkPort: 2181
+               #defaultBrokerPort: 9092
+               defaultBrokerPort: 9092
+       kafka:
+        bindings:
+         worksChannel:
+          consumer:
+           autoCommitOffset: false
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springbootkafkalistener-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: springbootkafkalistener
+  template:
+    metadata:
+      labels:
+        app: springbootkafkalistener
+    spec:
+      containers:
+      - name: springbootkafkalistener
+        image: marcinkasinski/springbootkafkalistener
+        imagePullPolicy: Always
+        ports:
+        - name: nodejs-port
+          containerPort: 9191
+        env:
+        - name: SPRING_PROFILE
+          value: "prd"
+        volumeMounts:
+        - name: config-springbootkafkalistener-bootstrap-yml-cm
+          mountPath: /usr/src/myapp/config/bootstrap.yml
+          subPath: bootstrap.yml
+      volumes:
+        - name: config-springbootkafkalistener-bootstrap-yml-cm
+          configMap:
+            name: springbootkafkalistener-bootstrap-yml-cm
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: springbootkafkalistener
+spec:
+  type: NodePort
+  ports:
+  - port: 9191
+    nodePort: 31091
+    targetPort: 9191
+    protocol: TCP
+    name: http
+  selector:
+    app: springbootkafkalistener

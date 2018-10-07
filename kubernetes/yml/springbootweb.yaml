@@ -113,8 +113,7 @@ data:
       metrics:
         export:
           prometheus:
-            enabled: true      
-                
+            enabled: true
 ---
 apiVersion: apps/v1
 kind: StatefulSet
