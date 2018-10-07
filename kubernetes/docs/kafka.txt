@@ -51,7 +51,7 @@ KAFKA_OPTS=""
 #zookeeper=zk-0.zk-hs.default.svc.cluster.local:2181/kafka
 zookeeper=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka
 brokers=kafka-0.k-hs.default.svc.cluster.local:9094,kafka-1.k-hs.default.svc.cluster.local:9094,kafka-2.k-hs.default.svc.cluster.local:9094
-brokers=kafka-0.k-hs.default.svc.cluster.local:9094
+#brokers=kafka-0.k-hs.default.svc.cluster.local:9094
 kafka-topics.sh --list --zookeeper $zookeeper
 
 kafka-topics.sh  --create --zookeeper $zookeeper --partitions 1 --replication-factor 1 --topic mktopic
@@ -124,6 +124,10 @@ cp config/producer-ssl-auth.properties config/producer-ssl-auth.properties2
 
 #Producer SSL
 
+KAFKA_OPTS=""
+zookeeper=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka
+brokers=kafka-0.k-hs.default.svc.cluster.local:9094,kafka-1.k-hs.default.svc.cluster.local:9094,kafka-2.k-hs.default.svc.cluster.local:9094
+
 while true
 do
  echo $(date) by SSL | kafka-console-producer.sh --broker-list $brokers --producer.config config/producer-ssl-auth.properties2 --topic mktopic
@@ -134,6 +138,10 @@ cp config/consumer-ssl-auth.properties config/consumer-ssl-auth.properties2
 
 #Consumer PLAINTEXT
 kafka-console-consumer.sh --bootstrap-server $brokers --consumer.config config/consumer-nossl-auth.properties --topic mktopic
+
+KAFKA_OPTS=""
+zookeeper=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka
+brokers=kafka-0.k-hs.default.svc.cluster.local:9094,kafka-1.k-hs.default.svc.cluster.local:9094,kafka-2.k-hs.default.svc.cluster.local:9094
 
 #Consumer SSL
 kafka-console-consumer.sh --bootstrap-server $brokers --consumer.config config/consumer-ssl-auth.properties --topic mktopic
