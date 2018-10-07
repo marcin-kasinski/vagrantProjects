@@ -33,19 +33,6 @@ KAFKA_OPTS="" \
 
 ------------------------ SSL ------------------------
 
-
-
-
-nano client-ssl-auth.properties
-
-security.protocol=SSL
-ssl.truststore.location=/opt/kafka/config/truststore-kafka-0.jks
-ssl.truststore.password=secret
-ssl.keystore.location=/opt/kafka/config/keystore-kafka-0.jks
-ssl.keystore.password=secret
-ssl.key.password=secret
-
-
 KAFKA_OPTS="-Djavax.net.debug=ssl:handshake"
 KAFKA_OPTS=""
 #zookeeper=zk-0.zk-hs.default.svc.cluster.local:2181/kafka
