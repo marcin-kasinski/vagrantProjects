@@ -130,7 +130,7 @@ brokers=kafka-0.k-hs.default.svc.cluster.local:9094,kafka-1.k-hs.default.svc.clu
 
 while true
 do
- echo $(date) by SSL | kafka-console-producer.sh --broker-list $brokers --producer.config config/producer-ssl-auth.properties2 --topic mktopic
+ echo $(date) by SSL | kafka-console-producer.sh --broker-list $brokers --producer.config config/producer-ssl-auth.properties --topic mktopic
  sleep 1
 done
 
