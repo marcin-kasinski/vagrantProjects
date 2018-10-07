@@ -52,7 +52,7 @@ curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/ku
 
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
  
-configureGrafana | tee ~/configureGrafana.log
+#configureGrafana | tee ~/configureGrafana.log
 #createMongo
 #setupMongodb | tee ~/setupMongodb.log
 showCustomService
