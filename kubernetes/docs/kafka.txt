@@ -135,8 +135,13 @@ do
 done
 
 cp config/consumer-ssl-auth.properties config/consumer-ssl-auth.properties2
+cp config/consumer-ssl-auth.properties config/consumer-nossl-auth.properties
 
 #Consumer PLAINTEXT
+KAFKA_OPTS=""
+zookeeper=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka
+brokers=kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092
+
 kafka-console-consumer.sh --bootstrap-server $brokers --consumer.config config/consumer-nossl-auth.properties --topic mktopic
 
 KAFKA_OPTS=""
