@@ -10,10 +10,10 @@ echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
 
 sudo apt install -y openjdk-9-jre-headless
 
-configure_nfs
-init_kubernetes
+configure_nfs 2>&1 | tee ~/configure_nfs.log
+init_kubernetes 2>&1 | tee ~/init_kubernetes.log
 
-setupSSL
+setupSSL 2>&1 | tee ~/configure_nfs.log
 #install_cfssl
 
 showDashboardIP
@@ -26,15 +26,15 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 
 setupMYSQL
 
-setupkerberos
+setupkerberos 2>&1 | tee ~/setupkerberos.log
 
-#setupkafka
-#setupkafkaConnect
+#setupkafka 2>&1 | tee ~/setupkafka.log
+#setupkafkaConnect 2>&1 | tee ~/setupkafkaConnect.log
 
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fakesmtp.yaml?$(date +%s)"  | kubectl apply -f -
 
 
-createMonitoring # grafana, prometheus , alertmanager, metric server and prometheus adapter
+createMonitoring 2>&1 | tee ~/createMonitoring.log # grafana, prometheus , alertmanager, metric server and prometheus adapter
 
 createIngress	
 
@@ -52,11 +52,11 @@ curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/ku
 
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
  
-configureGrafana
+configureGrafana | tee ~/configureGrafana.log
 #createMongo
-#setupMongodb
+#setupMongodb | tee ~/setupMongodb.log
 showCustomService
-showDashboardIP
+showDashboardIP | tee ~/showDashboardIP.log
  
 kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/MKWEB_exec_time_seconds_max" | jq '.items[].value'
 

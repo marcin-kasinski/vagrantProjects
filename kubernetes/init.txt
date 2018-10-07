@@ -1,7 +1,7 @@
 	
 cd /vagrantprojects/kubernetes/
 
-vagrant plugin install vagrant-disksize
+#vagrant plugin install vagrant-disksize
 vagrant halt
 vagrant box update
 vboxmanage unregistervm k8smaster --delete
