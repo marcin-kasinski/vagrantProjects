@@ -144,11 +144,10 @@ brokers=kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.clu
 
 kafka-console-consumer.sh --bootstrap-server $brokers --consumer.config config/consumer-nossl-auth.properties --topic mktopic
 
+#Consumer SSL
 KAFKA_OPTS=""
 zookeeper=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka
 brokers=kafka-0.k-hs.default.svc.cluster.local:9094,kafka-1.k-hs.default.svc.cluster.local:9094,kafka-2.k-hs.default.svc.cluster.local:9094
-
-#Consumer SSL
 kafka-console-consumer.sh --bootstrap-server $brokers --consumer.config config/consumer-ssl-auth.properties --topic mktopic
 
 
