@@ -13,7 +13,7 @@ sudo apt install -y openjdk-9-jre-headless
 configure_nfs 2>&1 | tee ~/configure_nfs.log
 init_kubernetes 2>&1 | tee ~/init_kubernetes.log
 
-setupSSL 2>&1 | tee ~/configure_nfs.log
+setupSSL 2>&1 | tee ~/setupSSL.log
 #install_cfssl
 
 showDashboardIP
