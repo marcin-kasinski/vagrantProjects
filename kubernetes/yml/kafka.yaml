@@ -189,8 +189,8 @@ spec:
         #  value: "zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka"
           value: "zk-{NODEINDEX}.zk-hs.default.svc.cluster.local:2181/kafka"
         #!!!!!!!!!!!!!!!!!!!!!!DEV ONLY!!!!!!!!!!!!!!!!!!!!
-        #- name: "KAFKA_PARAM_offsets_topic_replication_factor"
-        #  value: "1"
+        - name: "KAFKA_PARAM_offsets_topic_replication_factor"
+          value: "1"
         - name: "KAFKA_PARAM_delete_topic_enable"
           value: "true"
 
