@@ -48,9 +48,9 @@ ssl.key.password=secret
 
 KAFKA_OPTS="-Djavax.net.debug=ssl:handshake"
 KAFKA_OPTS=""
-zookeeper=zk-0.zk-hs.default.svc.cluster.local:2181/kafka
-#zookeeper=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka
-#brokers=kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092
+#zookeeper=zk-0.zk-hs.default.svc.cluster.local:2181/kafka
+zookeeper=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka
+brokers=kafka-0.k-hs.default.svc.cluster.local:9094,kafka-1.k-hs.default.svc.cluster.local:9094,kafka-2.k-hs.default.svc.cluster.local:9094
 brokers=kafka-0.k-hs.default.svc.cluster.local:9094
 kafka-topics.sh --list --zookeeper $zookeeper
 
