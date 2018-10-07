@@ -114,8 +114,8 @@ spec:
         - name: "JAAS_FILE_LOCATION_RO"
           value: "/opt/zookeeper/conf/zookeeper_server_jaas.conf_RO"        
         - name: "ZOOKEEPER_NODES"
-          #value: "zk-0.zk-hs.default.svc.cluster.local:2888:3888,zk-1.zk-hs.default.svc.cluster.local:2888:3888,zk-2.zk-hs.default.svc.cluster.local:2888:3888"
-          value: "{HOSTNAME_FQDN}:2888:3888"
+          value: "zk-0.zk-hs.default.svc.cluster.local:2888:3888,zk-1.zk-hs.default.svc.cluster.local:2888:3888,zk-2.zk-hs.default.svc.cluster.local:2888:3888"
+          #value: "{HOSTNAME_FQDN}:2888:3888"
         #ustawia na wartość default 
         - name: "ZOOKEEPER_PARAM_tickTime"
           value: "2000"

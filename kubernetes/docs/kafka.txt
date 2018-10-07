@@ -136,7 +136,7 @@ cp config/consumer-ssl-auth.properties config/consumer-ssl-auth.properties2
 kafka-console-consumer.sh --bootstrap-server $brokers --consumer.config config/consumer-nossl-auth.properties --topic mktopic
 
 #Consumer SSL
-kafka-console-consumer.sh --bootstrap-server $brokers --consumer.config config/consumer-ssl-auth.properties2 --topic mktopic
+kafka-console-consumer.sh --bootstrap-server $brokers --consumer.config config/consumer-ssl-auth.properties --topic mktopic
 
 
 openssl s_client -showcerts -connect kafka-0.k-hs.default.svc.cluster.local:9094
