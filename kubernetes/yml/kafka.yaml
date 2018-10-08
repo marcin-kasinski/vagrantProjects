@@ -5,7 +5,23 @@ metadata:
 apiVersion: v1
 data:
   template_server.properties: |-
-
+    
+    #advertised.listeners=PLAINTEXT://{HOSTNAME_FQDN}:9092,SASL_PLAINTEXT://{HOSTNAME_FQDN}:9093,SSL://{HOSTNAME_FQDN}:9094
+    advertised.listeners=PLAINTEXT://{HOSTNAME_FQDN}:9092,SSL://{HOSTNAME_FQDN}:9094
+    #listeners=PLAINTEXT://0.0.0.0:9092,SASL_PLAINTEXT://0.0.0.0:9093,SSL://0.0.0.0:9094
+    listeners=PLAINTEXT://0.0.0.0:9092,SSL://0.0.0.0:9094
+    
+    zookeeper.connect=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka
+    delete.topic.enable=true
+    batch.size=65536 # for dev only ?
+    
+    #SSL
+    ssl.truststore.location=/opt/kafka/config/truststore-{HOSTNAME}.jks
+    ssl.truststore.password=secret
+    ssl.keystore.location=/opt/kafka/config/keystore-{HOSTNAME}.jks
+    ssl.keystore.password=secret
+    ssl.key.password=secret
+    
 ---
 kind: ConfigMap
 metadata:
@@ -188,22 +204,22 @@ spec:
           value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"
         #  value: "kafka-0.k-hs.default.svc.cluster.local:9092"
         # default 16kb we set to 64
-        - name: "KAFKA_PARAM_BATCH_SIZE"
-          value: "65536"
-        - name: "KAFKA_PARAM_advertised_listeners"
+        #- name: "KAFKA_PARAM_BATCH_SIZE"
+        #  value: "65536"
+       # - name: "KAFKA_PARAM_advertised_listeners"
        #   value: "PLAINTEXT://{HOSTNAME_FQDN}:9092,SASL_PLAINTEXT://{HOSTNAME_FQDN}:9093,SSL://{HOSTNAME_FQDN}:9094"
-          value: "PLAINTEXT://{HOSTNAME_FQDN}:9092"
-        - name: "KAFKA_PARAM_listeners"
+        #  value: "PLAINTEXT://{HOSTNAME_FQDN}:9092"
+        #- name: "KAFKA_PARAM_listeners"
         #  value: "PLAINTEXT://0.0.0.0:9092,SASL_PLAINTEXT://0.0.0.0:9093,SSL://0.0.0.0:9094"
-          value: "PLAINTEXT://0.0.0.0:9092"
-        - name: "KAFKA_PARAM_ZOOKEEPER_CONNECT"
-          value: "zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka"
+        #  value: "PLAINTEXT://0.0.0.0:9092"
+        #- name: "KAFKA_PARAM_ZOOKEEPER_CONNECT"
+        #  value: "zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka"
         #  value: "zk-{NODEINDEX}.zk-hs.default.svc.cluster.local:2181/kafka"
         #!!!!!!!!!!!!!!!!!!!!!!DEV ONLY!!!!!!!!!!!!!!!!!!!!
         #- name: "KAFKA_PARAM_offsets_topic_replication_factor"
         #  value: "1"
-        - name: "KAFKA_PARAM_delete_topic_enable"
-          value: "true"
+        #- name: "KAFKA_PARAM_delete_topic_enable"
+        #  value: "true"
 
         # #### Enable ACLs ####
 

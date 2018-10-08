@@ -38,15 +38,12 @@ brokers=kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.clu
 kafka-topics.sh --list --zookeeper $zookeeper
 
 #create
-kubectl exec kafka-0 -- bash -c "KAFKA_OPTS=\"\" PATH=/opt/kafka/bin:$PATH \
-kafka-topics.sh --create --zookeeper zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka --partitions 1 --replication-factor 1 --topic mktopic"
+kafka-topics.sh --create --zookeeper zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka --partitions 1 --replication-factor 1 --topic mktopic
 
 #describe
-kubectl exec kafka-0 -- bash -c "KAFKA_OPTS="" PATH="/opt/kafka/bin:$PATH" \
-kafka-topics.sh --describe --zookeeper zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka --topic mktopic"
+kafka-topics.sh --describe --zookeeper zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka --topic mktopic
 
 # Listing acls
-
 kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --list --topic mktopic
 
 
@@ -137,6 +134,10 @@ cp config/consumer-ssl-auth.properties config/consumer-ssl-auth.properties2
 cp config/consumer-ssl-auth.properties config/consumer-nossl-auth.properties
 
 #Consumer PLAINTEXT
+KAFKA_OPTS=""
+zookeeper=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka
+#brokers=kafka-0.k-hs.default.svc.cluster.local:9094,kafka-1.k-hs.default.svc.cluster.local:9094,kafka-2.k-hs.default.svc.cluster.local:9094
+brokers=kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092
 
 kafka-console-consumer.sh --bootstrap-server kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092 --topic mktopic
 
