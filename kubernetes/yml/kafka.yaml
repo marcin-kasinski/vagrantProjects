@@ -333,7 +333,7 @@ spec:
         - name: config-volume-producer-ssl-auth-cm
           configMap:
             name: producer-ssl-auth-cm
-  - name: volume-template-server-properties-cm
+        - name: volume-template-server-properties-cm
           configMap:
             name: template-server-properties-cm
         - name: kafka-logs
