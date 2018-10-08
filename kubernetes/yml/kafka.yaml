@@ -10,10 +10,19 @@ data:
     advertised.listeners=PLAINTEXT://{HOSTNAME_FQDN}:9092,SSL://{HOSTNAME_FQDN}:9094
     #listeners=PLAINTEXT://0.0.0.0:9092,SASL_PLAINTEXT://0.0.0.0:9093,SSL://0.0.0.0:9094
     listeners=PLAINTEXT://0.0.0.0:9092,SSL://0.0.0.0:9094
-    
     zookeeper.connect=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka
+    inter.broker.listener.name=PLAINTEXT
     delete.topic.enable=true
     batch.size=65536 # for dev only ?
+    
+    #ACL
+    
+    # username builder
+    #principal.builder.class=CustomizedPrincipalBuilderClass
+    authorizer.class.name=kafka.security.auth.SimpleAclAuthorizer
+    allow.everyone.if.no.acl.found=false
+    #super.users=User:admin;User:CN=kafka-0.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL;User:CN=kafka-1.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL;User:CN=kafka-2.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL
+    super.users=User:admin
     
     #SSL
     ssl.truststore.location=/opt/kafka/config/truststore-{HOSTNAME}.jks
@@ -21,7 +30,7 @@ data:
     ssl.keystore.location=/opt/kafka/config/keystore-{HOSTNAME}.jks
     ssl.keystore.password=secret
     ssl.key.password=secret
-    
+    ssl.client.auth=required
 ---
 kind: ConfigMap
 metadata:
@@ -196,8 +205,8 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
-        #- name: "EXTRA_JAVA_ARGS"
-        #  value: "-Djavax.net.debug=ssl:handshake"
+        - name: "EXTRA_JAVA_ARGS"
+          value: "-Djavax.net.debug=ssl:handshake"
         - name: "CONF_TEMPLATE"
           value: "/opt/kafka/config/template_server.properties"
         - name: "BROKER_NODES"

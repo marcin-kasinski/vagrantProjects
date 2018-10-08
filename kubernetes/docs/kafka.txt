@@ -48,6 +48,9 @@ kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --list --topi
 
 
 
+# ----------------- SET ACL -----------------
+KAFKA_OPTS=""
+zookeeper=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka
 
 #Producer
 kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
@@ -66,22 +69,22 @@ User:ANONYMOUS --operation ClusterAction --operation Create --cluster kafka-clus
 
 kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
 User:ANONYMOUS \
---operation All --group group1
+--operation All --group '*'
 
-
-
+KAFKA_OPTS=""
+zookeeper=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka
 
 #Producer
 kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
 User:CN=kafka-0.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL \
 --operation Describe --operation Describe --operation Create --operation Write \
---topic mktopic
+--topic logs
 
 #Consumer
 kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
 User:CN=kafka-0.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL \
 --operation Describe --operation Describe --operation Create --operation Read \
---topic mktopic
+--topic logs
 
 kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
 User:CN=kafka-0.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL \
@@ -95,57 +98,39 @@ User:CN=kafka-0.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL \
 
 
 #Producer PLAINTEXT
+KAFKA_OPTS=""
+brokers=kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092
 
 while true
 do
- echo $(date) | kafka-console-producer.sh --broker-list $brokers --topic mktopic
+ echo $(date) | kafka-console-producer.sh --broker-list $brokers --topic logs
  sleep 1
 done
 
 #Producer SSL
-
 KAFKA_OPTS=""
-zookeeper=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka
-#brokers=kafka-0.k-hs.default.svc.cluster.local:9094,kafka-1.k-hs.default.svc.cluster.local:9094,kafka-2.k-hs.default.svc.cluster.local:9094
-brokers=kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092
-
-cp config/producer-ssl-auth.properties config/producer-ssl-auth.properties2
+KAFKA_OPTS="-Djavax.net.debug=ssl:handshake"
+brokers=kafka-0.k-hs.default.svc.cluster.local:9094,kafka-1.k-hs.default.svc.cluster.local:9094,kafka-2.k-hs.default.svc.cluster.local:9094
 
 while true
 do
- echo $(date) by SSL | kafka-console-producer.sh --broker-list $brokers --producer.config config/producer-ssl-auth.properties --topic mktopic
+ echo $(date) by SSL | kafka-console-producer.sh --broker-list $brokers --producer.config config/producer-ssl-auth.properties --topic logs
  sleep 1
 done
-
-
-kubectl exec kafka-0 -- bash -c "KAFKA_OPTS="" PATH="/opt/kafka/bin:$PATH" \
-
-while true
-do
- echo $(date) by SSL | kafka-console-producer.sh --broker-list $brokers --producer.config config/producer-ssl-auth.properties --topic mktopic
- sleep 1
-done
-
-"
-
-
 
 cp config/consumer-ssl-auth.properties config/consumer-ssl-auth.properties2
 cp config/consumer-ssl-auth.properties config/consumer-nossl-auth.properties
 
 #Consumer PLAINTEXT
 KAFKA_OPTS=""
-zookeeper=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka
-#brokers=kafka-0.k-hs.default.svc.cluster.local:9094,kafka-1.k-hs.default.svc.cluster.local:9094,kafka-2.k-hs.default.svc.cluster.local:9094
 brokers=kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092
-
-kafka-console-consumer.sh --bootstrap-server kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092 --topic mktopic
+kafka-console-consumer.sh --bootstrap-server $brokers --topic logs
 
 #Consumer SSL
+KAFKA_OPTS="-Djavax.net.debug=ssl:handshake"
 KAFKA_OPTS=""
-zookeeper=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka
 brokers=kafka-0.k-hs.default.svc.cluster.local:9094,kafka-1.k-hs.default.svc.cluster.local:9094,kafka-2.k-hs.default.svc.cluster.local:9094
-kafka-console-consumer.sh --bootstrap-server $brokers --consumer.config config/consumer-ssl-auth.properties --topic mktopic
+kafka-console-consumer.sh --bootstrap-server $brokers --consumer.config config/consumer-ssl-auth.properties --topic logs
 
 
 openssl s_client -showcerts -connect kafka-0.k-hs.default.svc.cluster.local:9094
