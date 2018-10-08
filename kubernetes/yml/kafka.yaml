@@ -1,5 +1,14 @@
 kind: ConfigMap
 metadata:
+  name: template-server-properties-cm
+  namespace: default
+apiVersion: v1
+data:
+  template_server.properties: |-
+
+---
+kind: ConfigMap
+metadata:
   name: consumer-ssl-auth-cm
   namespace: default
 apiVersion: v1
@@ -277,6 +286,9 @@ spec:
         - name: config-volume-producer-ssl-auth-cm
           mountPath: /opt/kafka/config/producer-ssl-auth.properties
           subPath: producer-ssl-auth.properties
+        - name: volume-template-server-properties-cm
+          mountPath: /opt/kafka/config/template_server.properties
+          subPath: template_server.properties
         - name: kafka-logs
           mountPath: /tmp/kafka-logs
       volumes:
@@ -319,6 +331,9 @@ spec:
         - name: config-volume-producer-ssl-auth-cm
           configMap:
             name: producer-ssl-auth-cm
+  - name: volume-template-server-properties-cm
+          configMap:
+            name: template-server-properties-cm
         - name: kafka-logs
           emptyDir: {}
           
