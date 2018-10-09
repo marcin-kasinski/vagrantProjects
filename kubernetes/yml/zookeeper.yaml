@@ -71,6 +71,8 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: zk
+  labels:
+    app: zookeeper  
 spec:
   serviceName: "zk-hs"
   replicas: 3

@@ -18,6 +18,8 @@ kind: StatefulSet
 metadata:
   name: mongodb-configdb
   namespace: default
+  labels:
+    app: mongodb-configdb
 spec:
   selector:
     matchLabels:

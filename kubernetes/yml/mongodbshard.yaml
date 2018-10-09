@@ -18,6 +18,8 @@ kind: StatefulSet
 metadata:
   name: mongodb-shard-rs-0x
   namespace: default
+  labels:
+    app: mongodb-shard  
 spec:
   selector:
     matchLabels:

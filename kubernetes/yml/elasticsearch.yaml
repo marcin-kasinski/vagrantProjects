@@ -50,6 +50,8 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: es
+  labels:
+    app: elasticsearch
 spec:
   serviceName: es-hs
   replicas: 3

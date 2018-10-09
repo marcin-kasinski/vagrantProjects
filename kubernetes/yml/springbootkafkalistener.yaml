@@ -12,7 +12,7 @@ data:
       port:  9191
     spring:
       application:
-        name:  SpringBootKafkaListenerXXXXXXXXXXXX
+        name:  SpringBootKafkaListener
     #spring.jpa.hibernate.ddl-auto=create
       datasource:
         url:  jdbc:mysql://mysql:3306/test
@@ -59,10 +59,10 @@ data:
                           #brokers: kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092
                           configuration:
                             security.protocol: SSL
-                            ssl.truststore.location: /usr/src/myapp/config/truststore-springbootweb-0.jks
+                            ssl.truststore.location: /usr/src/myapp/config/truststore-springbootkafkalistener-0.jks
                             ssl.truststore.password: secret
                             ssl.truststore.type: JKS
-                            ssl.keystore.location: /usr/src/myapp/config/keystore-springbootweb-0.jks
+                            ssl.keystore.location: /usr/src/myapp/config/keystore-springbootkafkalistener-0.jks
                             ssl.keystore.password: secret
                             ssl.keystore.type: JKS
 ---

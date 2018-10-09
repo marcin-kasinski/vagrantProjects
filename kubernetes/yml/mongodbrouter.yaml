@@ -34,6 +34,8 @@ kind: StatefulSet
 metadata:
   name: mongodb-router
   namespace: default
+  labels:
+    app: mongodb-router
 spec:
   selector:
     matchLabels:
