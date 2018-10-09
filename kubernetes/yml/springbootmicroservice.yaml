@@ -207,7 +207,7 @@ metadata:
   name: springbootmicroservice
 spec:
   maxReplicas: 12
-  minReplicas: 3
+  minReplicas: 1
   scaleTargetRef:
     apiVersion: apps/v1
     kind: StatefulSet
