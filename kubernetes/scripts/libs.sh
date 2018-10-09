@@ -552,13 +552,15 @@ setKafkaGroupACL "CN=springbootkafkalistener-0.springbootkafkalistener-hs.defaul
 setKafkaTopicACL "CN=springbootkafkalistener-0.springbootkafkalistener-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL" "__consumer_offsets" "--operation Describe"
 
 setKafkaTopicACL "ANONYMOUS" "__consumer_offsets" "--operation Describe"
+setKafkaGroupACL "ANONYMOUS" "glogstashelk" "--operation Describe --operation Read"
+setKafkaTopicACL "ANONYMOUS" "my-topic" "--operation Describe" # nie mam pojecia czemu te uprawnienie jest potrzebnez weba
+setKafkaTopicACL "ANONYMOUS" "logs" "--operation Create --operation Describe --operation Read --operation Write"
 
 setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL "my-topic" "--operation Describe --operation Create --operation Write"
 setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL "__consumer_offsets" "--operation Describe"
+setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL "logs" "--operation Describe --operation Create --operation Write"
 
-#setKafkaTopicACL ANONYMOUS "logs" "--operation Describe --operation Create --operation Write --operation Read"
 #setKafkaClusterACL ANONYMOUS "kafka-cluster" "--operation Create"
-#setKafkaGroupACL ANONYMOUS "group1" "--operation Describe"
 
 
 #------------------------------- kafka init ------------------------------- 
