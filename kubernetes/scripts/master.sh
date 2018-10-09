@@ -28,7 +28,7 @@ setupMYSQL
 
 setupkerberos 2>&1 | tee ~/setupkerberos.log
 
-#setupkafka 2>&1 | tee ~/setupkafka.log
+setupkafka 2>&1 | tee ~/setupkafka.log
 #setupkafkaConnect 2>&1 | tee ~/setupkafkaConnect.log
 
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fakesmtp.yaml?$(date +%s)"  | kubectl apply -f -
@@ -53,8 +53,8 @@ curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/ku
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
  
 configureGrafana | tee ~/configureGrafana.log
-#createMongo
-#setupMongodb | tee ~/setupMongodb.log
+createMongo
+setupMongodb | tee ~/setupMongodb.log
 showCustomService
 showDashboardIP | tee ~/showDashboardIP.log
  

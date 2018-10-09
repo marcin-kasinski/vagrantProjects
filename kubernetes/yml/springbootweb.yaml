@@ -8,7 +8,7 @@ data:
 
     #app.ajax_url: http://springbootmicroserviceingress:30080/api/get-by-email?email=ajax@ajax.com
     app.ajax_url: ${APP_AJAX_URL:http://nginx:30080/api/get-by-email?email=ajax@ajax.com}
-    #app.rest_url: ${APP_REST_URL:http://springbootmicroservice:9191/api/get-by-email?email=x@x.com
+    #app.rest_url: ${APP_REST_URL:http://springbootmicroservice-cs:9191/api/get-by-email?email=x@x.com
     #app.rest_url: ${APP_REST_URL:http://nginx/api/get-by-email?email=x@x.com}
     app.rest_url: ${APP_REST_URL:http://nginx/api/adduser}
     logging:
@@ -152,7 +152,7 @@ spec:
         - name: APP_AJAX_URL
           value: "http://springbootmicroservice:30080/api/get-by-email?email=ajax@ajax.com"          
         - name: APP_REST_URL
-          value: "http://springbootmicroservice.default.svc.cluster.local:9191/api/adduser"
+          value: "http://springbootmicroservice-cs.default.svc.cluster.local:9191/api/adduser"
         - name: KAFKA_BROKER_NODES
           value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"          
         volumeMounts:

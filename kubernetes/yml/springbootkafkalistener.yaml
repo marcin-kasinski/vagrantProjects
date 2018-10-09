@@ -52,11 +52,16 @@ data:
             stream:
              kafka:
               binder:
-               brokers: kafka-0.k-hs.default.svc.cluster.local,kafka-1.k-hs.default.svc.cluster.local,kafka-2.k-hs.default.svc.cluster.local
-               #zkNodes: zk-0.zk-hs.default.svc.cluster.local,zk-1.zk-hs.default.svc.cluster.local,zk-2.zk-hs.default.svc.cluster.local/kafka
-               defaultZkPort: 2181
-               #defaultBrokerPort: 9092
-               defaultBrokerPort: 9092
+               brokers: kafka-0.k-hs.default.svc.cluster.local:9094,kafka-1.k-hs.default.svc.cluster.local:9094,kafka-2.k-hs.default.svc.cluster.local:9094
+               #brokers: kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092
+               configuration:
+                 security.protocol: SSL
+                 ssl.truststore.location: /usr/src/myapp/config/truststore-springbootkafkalistener-0.jks
+                 ssl.truststore.password: secret
+                 ssl.truststore.type: JKS
+                 ssl.keystore.location: /usr/src/myapp/config/keystore-springbootkafkalistener-0.jks
+                 ssl.keystore.password: secret
+                 ssl.keystore.type: JKS
        kafka:
         bindings:
          worksChannel:
@@ -64,10 +69,13 @@ data:
            autoCommitOffset: false
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: springbootkafkalistener-deployment
+  name: springbootkafkalistener
+  labels:
+    app: springbootkafkalistener
 spec:
+  serviceName: "springbootkafkalistener-hs"
   replicas: 1
   selector:
     matchLabels:
@@ -91,10 +99,37 @@ spec:
         - name: config-springbootkafkalistener-bootstrap-yml-cm
           mountPath: /usr/src/myapp/config/bootstrap.yml
           subPath: bootstrap.yml
+        - name: config-volume-springbootkafkalistener-0-truststore-jks
+          mountPath: /usr/src/myapp/config/truststore-springbootkafkalistener-0.jks
+          subPath: truststore-springbootkafkalistener-0.jks
+        - name: config-volume-springbootkafkalistener-0-keystore-jks
+          mountPath: /usr/src/myapp/config/keystore-springbootkafkalistener-0.jks
+          subPath: keystore-springbootkafkalistener-0.jks
       volumes:
         - name: config-springbootkafkalistener-bootstrap-yml-cm
           configMap:
             name: springbootkafkalistener-bootstrap-yml-cm
+        - name: config-volume-springbootkafkalistener-0-truststore-jks
+          configMap:
+            name: truststore-springbootkafkalistener-0.jks
+        - name: config-volume-springbootkafkalistener-0-keystore-jks
+          configMap:
+            name: keystore-springbootkafkalistener-0.jks            
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: springbootkafkalistener-hs
+  labels:
+    app: springbootkafkalistener
+spec:
+  ports:
+  - port: 9191
+    targetPort: 9191
+    name: server
+  clusterIP: None
+  selector:
+    app: springbootkafkalistener
 ---
 apiVersion: v1
 kind: Service

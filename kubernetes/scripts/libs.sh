@@ -74,6 +74,7 @@ createServerCert kafka-0.k-hs.default.svc.cluster.local
 createServerCert kafka-1.k-hs.default.svc.cluster.local
 createServerCert kafka-2.k-hs.default.svc.cluster.local
 createServerCert springbootweb-0.springbootweb-hs.default.svc.cluster.local
+createServerCert springbootkafkalistener-0.springbootkafkalistener-hs.default.svc.cluster.local
 }
 
 setupkerberos()
@@ -458,6 +459,18 @@ echo  $INGRESSPODPORT
 
 }
 
+
+setKafkaTopicACL()
+{
+
+local user=$1
+local topic=$2
+local operation=$3
+
+kubectl exec kafka-0 -- bash -c "KAFKA_OPTS="" /opt/kafka/bin/kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
+User:$user $operation --operation Write --topic $topic"
+}
+
 setupkafka()
 {
 
@@ -473,9 +486,14 @@ echo $KAFKAPODIP
 
 while ! nc -z $KAFKAPODIP 9092; do   echo "waiting kafka to launch ..." ; sleep 20 ; done
 
-cd /tmp
-curl http://ftp.ps.pl/pub/apache/kafka/1.0.0/kafka_2.11-1.0.0.tgz | tar xvz
-/tmp/kafka_2.11-1.0.0/bin/kafka-topics.sh --list --zookeeper $KAFKAPODIP:2181
+#cd /tmp
+#curl http://ftp.ps.pl/pub/apache/kafka/1.0.0/kafka_2.11-1.0.0.tgz | tar xvz
+#/tmp/kafka_2.11-1.0.0/bin/kafka-topics.sh --list --zookeeper $KAFKAPODIP:2181
+
+
+setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL "my-topic" "--operation Describe --operation Describe --operation Create --operation Write"
+setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL "__consumer_offsets" "--operation Describe"
+
 
 
 #------------------------------- kafka init ------------------------------- 
