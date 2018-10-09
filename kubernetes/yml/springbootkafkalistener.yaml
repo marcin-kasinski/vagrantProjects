@@ -44,8 +44,6 @@ data:
               group:  order
               content-type:  application/json
               binder:  kafka
-              consumer:
-                autoCommitOffset:  false
           binders:                
             kafka:
               type: kafka
@@ -65,6 +63,11 @@ data:
                             ssl.keystore.location: /usr/src/myapp/config/keystore-springbootkafkalistener-0.jks
                             ssl.keystore.password: secret
                             ssl.keystore.type: JKS
+          kafka:
+            bindings:
+              worksChannel:
+                consumer:
+                  autoCommitOffset:  false
 ---
 apiVersion: apps/v1
 kind: StatefulSet
