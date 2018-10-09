@@ -93,7 +93,7 @@ User:CN=kafka-0.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL \
 
 kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
 User:CN=kafka-0.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL \
---operation All --group group1
+--operation All --group "*"
 
 
 
@@ -108,8 +108,8 @@ do
 done
 
 #Producer SSL
-KAFKA_OPTS=""
 KAFKA_OPTS="-Djavax.net.debug=ssl:handshake"
+KAFKA_OPTS=""
 brokers=kafka-0.k-hs.default.svc.cluster.local:9094,kafka-1.k-hs.default.svc.cluster.local:9094,kafka-2.k-hs.default.svc.cluster.local:9094
 
 while true
