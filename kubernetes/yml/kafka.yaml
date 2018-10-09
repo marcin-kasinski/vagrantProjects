@@ -11,7 +11,7 @@ data:
     #listeners=PLAINTEXT://0.0.0.0:9092,SASL_PLAINTEXT://0.0.0.0:9093,SSL://0.0.0.0:9094
     listeners=PLAINTEXT://0.0.0.0:9092,SSL://0.0.0.0:9094
     zookeeper.connect=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka
-    inter.broker.listener.name=PLAINTEXT
+    security.inter.broker.protocol=SSL
     delete.topic.enable=true
     batch.size=65536 # for dev only ?
     
@@ -205,8 +205,8 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
-        - name: "EXTRA_JAVA_ARGS"
-          value: "-Djavax.net.debug=ssl:handshake"
+        #- name: "EXTRA_JAVA_ARGS"
+        #  value: "-Djavax.net.debug=ssl:handshake"
         - name: "CONF_TEMPLATE"
           value: "/opt/kafka/config/template_server.properties"
         - name: "BROKER_NODES"

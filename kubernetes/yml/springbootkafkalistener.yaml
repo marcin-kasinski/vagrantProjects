@@ -5,68 +5,66 @@ metadata:
 apiVersion: v1
 data:
   bootstrap.yml: |-
+
     logging:
-     file: logs/application.log
+      file:  logs/application.log
     server:
-     port: 9191
+      port:  9191
     spring:
-     application:
-      name: SpringBootKafkaListener
+      application:
+        name:  SpringBootKafkaListenerXXXXXXXXXXXX
     #spring.jpa.hibernate.ddl-auto=create
-     datasource:
-      url: jdbc:mysql://mysql:3306/test
-      username: root
-      password: secret
+      datasource:
+        url:  jdbc:mysql://mysql:3306/test
+        username:  root
+        password:  secret
     #spring.datasource.driver-class-name=Driver
-    # Allows Hibernate to generate SQL optimized for a particular DBMS
-     jpa:
-      properties:
-       hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
-       hibernate.show_sql: true
-     rabbitmq:
-      host:tools.local
-      password:guest
-      port:5672
-     zipkin:
-      baseUrl: http://springbootzipkin:7777
-      sender:
-       type: WEB
-     sleuth:
-      sampler:
-       percentage: 1
-     cloud:
-      stream:
-       defaultBinder: kafka
-       bindings:
-        worksChannel:
-         destination: my-topic
-         group: order
-         content-type: application/json
-         binder: kafka
-       binders:
-        kafka:
-         type: kafka
-         environment:
-          spring:
-           cloud:
-            stream:
-             kafka:
-              binder:
-               brokers: kafka-0.k-hs.default.svc.cluster.local:9094,kafka-1.k-hs.default.svc.cluster.local:9094,kafka-2.k-hs.default.svc.cluster.local:9094
-               #brokers: kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092
-               configuration:
-                 security.protocol: SSL
-                 ssl.truststore.location: /usr/src/myapp/config/truststore-springbootkafkalistener-0.jks
-                 ssl.truststore.password: secret
-                 ssl.truststore.type: JKS
-                 ssl.keystore.location: /usr/src/myapp/config/keystore-springbootkafkalistener-0.jks
-                 ssl.keystore.password: secret
-                 ssl.keystore.type: JKS
-       kafka:
-        bindings:
-         worksChannel:
-          consumer:
-           autoCommitOffset: false
+    #  Allows  Hibernate  to  generate  SQL  optimized  for  a  particular  DBMS
+      jpa:
+        properties:
+          hibernate.dialect:  org.hibernate.dialect.MySQL5Dialect
+          hibernate.show_sql:  true
+      rabbitmq:
+        host:tools.local
+        password:guest
+        port:5672
+      zipkin:
+        baseUrl:  http://springbootzipkin:7777
+        sender:
+          type:  WEB
+      sleuth:
+        sampler:
+          percentage:  1
+      cloud:
+        stream:
+          defaultBinder:  kafka
+          bindings:
+            worksChannel:
+              destination:  my-topic
+              group:  order
+              content-type:  application/json
+              binder:  kafka
+              consumer:
+                autoCommitOffset:  false
+          binders:                
+            kafka:
+              type: kafka
+              environment:
+                spring:
+                  cloud:
+                    stream:
+                      kafka:
+                        binder:
+                          brokers: kafka-0.k-hs.default.svc.cluster.local:9094,kafka-1.k-hs.default.svc.cluster.local:9094,kafka-2.k-hs.default.svc.cluster.local:9094
+                          #brokers: kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092
+                          configuration:
+                            security.protocol: SSL
+                            ssl.truststore.location: /usr/src/myapp/config/truststore-springbootweb-0.jks
+                            ssl.truststore.password: secret
+                            ssl.truststore.type: JKS
+                            ssl.keystore.location: /usr/src/myapp/config/keystore-springbootweb-0.jks
+                            ssl.keystore.password: secret
+                            ssl.keystore.type: JKS
 ---
 apiVersion: apps/v1
 kind: StatefulSet

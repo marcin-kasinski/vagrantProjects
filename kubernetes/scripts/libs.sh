@@ -456,20 +456,70 @@ INGRESSPODPORT=`echo $INGRESSPODPORT | cut -d ":" -f 2`
 INGRESSPODPORT=`echo $INGRESSPODPORT | cut -d "/" -f 1`
 echo  $INGRESSPODPORT
 
-
 }
 
 
-setKafkaTopicACL()
+setKafkaACL()
 {
 
+local user=$1
+local objectName=$2
+local objectType=$3
+local operation=$4
+objectTypeCmd='--'$objectType
+
+echo  -------------------------------------------------------------------------------
+echo setKafkaACL : user=$user, objectName=$objectName, objectType=$objectType, operation=$operation
+echo  -------------------------------------------------------------------------------
+
+echo kubectl exec kafka-0 -- bash -c "KAFKA_OPTS="" /opt/kafka/bin/kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
+User:$user $operation $objectTypeCmd $objectName"
+
+
+kubectl exec kafka-0 -- bash -c "KAFKA_OPTS="" /opt/kafka/bin/kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
+User:$user $operation $objectTypeCmd $objectName"
+}
+
+setKafkaTopicACL()
+{
 local user=$1
 local topic=$2
 local operation=$3
 
-kubectl exec kafka-0 -- bash -c "KAFKA_OPTS="" /opt/kafka/bin/kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
-User:$user $operation --operation Write --topic $topic"
+echo  -------------------------------------------------------------------------------
+echo setKafkaTopicACL : user=$user, topic=$topic, operation=$operation
+echo  -------------------------------------------------------------------------------
+
+setKafkaACL "$user" "$topic" "topic" "$operation"
 }
+
+setKafkaGroupACL()
+{
+local user=$1
+local group=$2
+local operation=$3
+
+echo  -------------------------------------------------------------------------------
+echo setKafkaGroupACL : user=$user, group=$group, operation=$operation
+echo  -------------------------------------------------------------------------------
+
+setKafkaACL "$user" "$group" "group" "$operation"
+}
+
+setKafkaClusterACL()
+{
+local user=$1
+local cluster=$2
+local operation=$3
+
+echo  -------------------------------------------------------------------------------
+echo setKafkaClusterACL : user=$user, cluster=$cluster, operation=$operation
+echo  -------------------------------------------------------------------------------
+
+setKafkaACL "$user" "$cluster" "cluster" "$operation"
+}
+
+
 
 setupkafka()
 {
@@ -491,9 +541,16 @@ while ! nc -z $KAFKAPODIP 9092; do   echo "waiting kafka to launch ..." ; sleep 
 #/tmp/kafka_2.11-1.0.0/bin/kafka-topics.sh --list --zookeeper $KAFKAPODIP:2181
 
 
-setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL "my-topic" "--operation Describe --operation Describe --operation Create --operation Write"
-setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL "__consumer_offsets" "--operation Describe"
+zookeeper=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka
 
+setKafkaClusterACL "CN=kafka-1.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL" "kafka-cluster" "--operation ClusterAction"
+
+#setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL "my-topic" "--operation Describe --operation Create --operation Write"
+#setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL "__consumer_offsets" "--operation Describe"
+
+#setKafkaTopicACL ANONYMOUS "logs" "--operation Describe --operation Create --operation Write --operation Read"
+#setKafkaClusterACL ANONYMOUS "kafka-cluster" "--operation Create"
+#setKafkaGroupACL ANONYMOUS "group1" "--operation Describe"
 
 
 #------------------------------- kafka init ------------------------------- 
