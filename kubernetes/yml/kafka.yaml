@@ -167,6 +167,8 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: kafka
+  labels:
+    app: kafka
 spec:
   serviceName: "k-hs"
   replicas: 1
