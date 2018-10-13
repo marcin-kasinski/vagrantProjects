@@ -198,13 +198,11 @@ do
   sleep 10
 done
 
-
 }
 
 init_kubernetes()
 {
 #sudo rm -rf ~/.kube && sudo kubeadm reset && 
-
 
 IP=$( ifconfig enp0s8 | grep "inet addr:" | cut -d: -f2 | awk '{ print $1}' )
 
@@ -217,24 +215,22 @@ sudo cp master_IP /var/nfs/kubernetes_share/master_IP
 sudo cp join_command /var/nfs/kubernetes_share/join_command
 JOIN_COMMAND="$( sudo cat /var/nfs/kubernetes_share/join_command )"
  
- echo "sudo "$JOIN_COMMAND > join_command_sudo
+echo "sudo "$JOIN_COMMAND > join_command_sudo
 
 sudo cp join_command_sudo /var/nfs/kubernetes_share/join_command_sudo
 
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>CREATING CONF "
 
- mkdir -p $HOME/.kube
- sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
- sudo chown $(id -u):$(id -g) $HOME/.kube/config
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 mkdir -p /home/vagrant/.kube
 sudo cp -i /etc/kubernetes/admin.conf /home/vagrant/.kube/config
 sudo chown vagrant:vagrant /home/vagrant/.kube/config
 
-
 #copy to NFS
 sudo cp -i /etc/kubernetes/admin.conf /var/nfs/kubernetes_share/
-
 
 #taint pods on master nodes
 kubectl taint nodes --all node-role.kubernetes.io/master-
