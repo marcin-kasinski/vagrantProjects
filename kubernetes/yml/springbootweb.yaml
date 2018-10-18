@@ -16,6 +16,8 @@ data:
     server:
       port: 7070
     spring:
+      profiles:
+        active: prd
       application:
         name: SpringBootWeb
     #spring.jpa.hibernate.ddl-auto=create
