@@ -89,6 +89,9 @@ data:
             export:
                 prometheus:
                     enabled: true
+    #common tags for all metrics
+    management.metrics.tags.commonregion: us-east-1
+    management.metrics.tags.commonstack: ${SPRING_PROFILE:"unknown"}
 ---
 apiVersion: apps/v1
 kind: StatefulSet
