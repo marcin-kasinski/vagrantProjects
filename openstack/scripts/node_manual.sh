@@ -4,7 +4,8 @@
 IP=$1
 
 #DEV_BRANCH="stable/pike"
-DEV_BRANCH="stable/queens"
+#DEV_BRANCH="stable/queens"
+DEV_BRANCH="stable/rocky"
 #DEV_BRANCH="master"
 
 
