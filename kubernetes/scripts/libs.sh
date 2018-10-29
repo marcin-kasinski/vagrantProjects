@@ -214,7 +214,9 @@ IP=$( ifconfig enp0s8 | grep "inet addr:" | cut -d: -f2 | awk '{ print $1}' )
 #sudo kubeadm init --pod-network-cidr 10.244.0.0/16 --apiserver-advertise-address $IP  >kubeadm_join
 
 #for weave networking
-sudo kubeadm init --pod-network-cidr 10.32.0.0/12 --apiserver-advertise-address $IP  >kubeadm_join
+#sudo kubeadm init --pod-network-cidr 10.32.0.0/12 --apiserver-advertise-address $IP  >kubeadm_join
+
+sudo kubeadm init --apiserver-advertise-address $IP  >kubeadm_join
 
 cat kubeadm_join
 cat kubeadm_join |  grep "kubeadm join"  >join_command
