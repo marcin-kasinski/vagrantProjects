@@ -150,9 +150,9 @@ spec:
         - name: config-fluent-kafka-cm
           mountPath: /fluentd/etc/kafka.conf
           subPath: kafka.conf        
-        - name: config-fluent-kubernetes-cm
-          mountPath: /fluentd/etc/kubernetes.conf
-          subPath: kubernetes.conf
+        #- name: config-fluent-kubernetes-cm
+        #  mountPath: /fluentd/etc/kubernetes.conf
+        #  subPath: kubernetes.conf
         - name: config-fluent-cm
           mountPath: /fluentd/etc/fluent.conf
           subPath: fluent.conf
