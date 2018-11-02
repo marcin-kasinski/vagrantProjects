@@ -252,6 +252,20 @@ sudo cp -i /etc/kubernetes/admin.conf /var/nfs/kubernetes_share/
 #kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 
+curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fluentd?$(date +%s)"  | kubectl apply -f -
+
+#kubectl apply -f https://raw.githubusercontent.com/fluent/fluentd-kubernetes-daemonset/master/fluentd-daemonset-elasticsearch-rbac.yaml
+
+#kubectl patch ds fluentd -n kube-system -p='spec:
+#  template:
+#    spec:
+#      containers:
+#      - name: fluentd
+#        env:
+#        - name: FLUENT_UID
+#          value: "0"          
+#          '
+
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
 
 }
@@ -562,9 +576,12 @@ setKafkaGroupACL "CN=springbootkafkalistener-0.springbootkafkalistener-hs.defaul
 setKafkaTopicACL "CN=springbootkafkalistener-0.springbootkafkalistener-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL" "__consumer_offsets" "--operation Describe"
 
 setKafkaTopicACL "ANONYMOUS" "__consumer_offsets" "--operation Describe"
+setKafkaGroupACL "ANONYMOUS" "group1" "--operation Describe --operation Read"
 setKafkaGroupACL "ANONYMOUS" "glogstashelk" "--operation Describe --operation Read"
 #setKafkaTopicACL "ANONYMOUS" "my-topic" "--operation Describe" # nie mam pojecia czemu te uprawnienie jest potrzebnez weba
 setKafkaTopicACL "ANONYMOUS" "logs" "--operation Create --operation Describe --operation Read --operation Write"
+
+setKafkaTopicACL "ANONYMOUS" "fluentd-logs" "--operation Create --operation Describe --operation Read --operation Write"
 
 setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL "my-topic" "--operation Describe --operation Create --operation Write"
 setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL "__consumer_offsets" "--operation Describe"

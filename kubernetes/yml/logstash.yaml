@@ -13,7 +13,8 @@ data:
         #bootstrap_servers => ["hdp1.local:6667,hdp2.local:6667,hdp2.local:6667"]  
         #bootstrap_servers => ["kafka-service:9092"]
         bootstrap_servers => '${KAFKA_BROKER_NODES:"host1:9092,host2:9092,host3:9092"}'   
-        topics => ["logs"]
+        #topics => ["logs"]
+        topics => ["fluentd-logs"]
         client_id => "logstashelk"
         group_id => "glogstashelk"
   
