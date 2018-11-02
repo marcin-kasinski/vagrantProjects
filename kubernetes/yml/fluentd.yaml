@@ -6,17 +6,18 @@ apiVersion: v1
 data:
   fluent.conf: |-
     #@include systemd.conf
-    @include kubernetes.conf
+    #@include kubernetes.conf
+    #@include myapps.conf
     @include kafka.conf
 
 ---
 kind: ConfigMap
 metadata:
-  name: fluent-kubernetes-cm
+  name: fluent-myapps-cm
   namespace: kube-system
 apiVersion: v1
 data:
-  kubernetes.conf: |-
+  myapps.conf: |-
     <match fluent.**>
       @type null
     </match>
@@ -25,7 +26,7 @@ data:
       @type tail
       @id in_tail_container_logs
       #path /var/log/containers/*.log
-      path /var/log/containers/springbootweb-*.log
+      path /var/log/containers/springbootweb-*.log,/var/log/containers/springbootmicroservice-*.log,/var/log/containers/springbootrabbitmqlistener-*.log,/var/log/containers/springbootkafkalistener-*.log,/var/log/containers/springbootzipkin-*.log
       pos_file /var/log/fluentd-containers.log.pos
       tag kubernetes.*
       read_from_head true
@@ -150,9 +151,9 @@ spec:
         - name: config-fluent-kafka-cm
           mountPath: /fluentd/etc/kafka.conf
           subPath: kafka.conf        
-        #- name: config-fluent-kubernetes-cm
-        #  mountPath: /fluentd/etc/kubernetes.conf
-        #  subPath: kubernetes.conf
+        - name: config-fluent-myapps-cm
+          mountPath: /fluentd/etc/myapps.conf
+          subPath: myapps.conf
         - name: config-fluent-cm
           mountPath: /fluentd/etc/fluent.conf
           subPath: fluent.conf
@@ -166,9 +167,9 @@ spec:
       - name: config-fluent-kafka-cm
         configMap:
           name: fluent-kafka-cm
-      - name: config-fluent-kubernetes-cm
+      - name: config-fluent-myapps-cm
         configMap:
-          name: fluent-kubernetes-cm
+          name: fluent-myapps-cm
       - name: config-fluent-cm
         configMap:
           name: fluent-cm
