@@ -22,11 +22,11 @@ createKafka
 
 createMyapps
 
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kerberos.yaml?$(date +%s)"  | kubectl apply -f -
+#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kerberos.yaml?$(date +%s)"  | kubectl apply -f -
 
 setupMYSQL
 
-setupkerberos 2>&1 | tee ~/setupkerberos.log
+#setupkerberos 2>&1 | tee ~/setupkerberos.log
 
 setupkafka 2>&1 | tee ~/setupkafka.log
 #setupkafkaConnect 2>&1 | tee ~/setupkafkaConnect.log
