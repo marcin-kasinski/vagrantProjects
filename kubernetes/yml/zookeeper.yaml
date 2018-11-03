@@ -140,15 +140,15 @@ spec:
         - name: config-volume-krb5-conf-cm
           mountPath: /etc/krb5.conf
           subPath: krb5.conf
-        - name: config-volume-zk-0-service-keytab
-          mountPath: /opt/zookeeper/conf/zk-0.service.keytab
-          subPath: zk-0.service.keytab
-        - name: config-volume-zk-1-service-keytab
-          mountPath: /opt/zookeeper/conf/zk-1.service.keytab
-          subPath: zk-1.service.keytab
-        - name: config-volume-zk-2-service-keytab
-          mountPath: /opt/zookeeper/conf/zk-2.service.keytab
-          subPath: zk-2.service.keytab
+        #- name: config-volume-zk-0-service-keytab
+        #  mountPath: /opt/zookeeper/conf/zk-0.service.keytab
+        #  subPath: zk-0.service.keytab
+        #- name: config-volume-zk-1-service-keytab
+        #  mountPath: /opt/zookeeper/conf/zk-1.service.keytab
+        #  subPath: zk-1.service.keytab
+        #- name: config-volume-zk-2-service-keytab
+        #  mountPath: /opt/zookeeper/conf/zk-2.service.keytab
+        #  subPath: zk-2.service.keytab
         - name: config-volume-zookeeper-server-jaas-conf-cm
           mountPath: /opt/zookeeper/conf/zookeeper_server_jaas.conf_RO
           subPath: zookeeper_server_jaas.conf
@@ -156,15 +156,15 @@ spec:
         - name: config-volume-krb5-conf-cm
           configMap:
             name: zookeeper-krb5-conf-cm      
-        - name: config-volume-zk-0-service-keytab
-          configMap:
-            name: zk-0-service-keytab
-        - name: config-volume-zk-1-service-keytab
-          configMap:
-            name: zk-1-service-keytab
-        - name: config-volume-zk-2-service-keytab
-          configMap:
-            name: zk-2-service-keytab      
+        #- name: config-volume-zk-0-service-keytab
+        #  configMap:
+        #    name: zk-0-service-keytab
+        #- name: config-volume-zk-1-service-keytab
+        #  configMap:
+        #    name: zk-1-service-keytab
+        #- name: config-volume-zk-2-service-keytab
+        #  configMap:
+        #    name: zk-2-service-keytab      
         - name: config-volume-zookeeper-server-jaas-conf-cm
           configMap:
             name: zookeeper-server-jaas-conf-cm      
