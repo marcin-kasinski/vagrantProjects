@@ -71,6 +71,18 @@ spec:
             value: "9200"
           - name: FLUENT_ELASTICSEARCH_SCHEME
             value: "http"
+          - name: FLUENT_ELASTICSEARCH_LOGSTASH_PREFIX
+            value: "fluent"
+          - name: FLUENT_ELASTICSEARCH_BUFFER_FLUSH_THREAD_COUNT
+            value: "8"
+          - name: FLUENT_ELASTICSEARCH_BUFFER_FLUSH_INTERVAL
+            value: "5s"
+          - name: FLUENT_ELASTICSEARCH_BUFFER_CHUNK_LIMIT_SIZE
+            value: "2M"
+          - name: FLUENT_ELASTICSEARCH_BUFFER_QUEUE_LIMIT_LENGTH
+            value: "32"
+          - name: FLUENT_ELASTICSEARCH_BUFFER_RETRY_MAX_INTERVAL
+            value: "30"
           # Option to configure elasticsearch plugin with self signed certs
           # ================================================================
           #- name: FLUENT_ELASTICSEARCH_SSL_VERIFY
