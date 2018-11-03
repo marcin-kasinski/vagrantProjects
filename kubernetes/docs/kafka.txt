@@ -124,13 +124,13 @@ cp config/consumer-ssl-auth.properties config/consumer-nossl-auth.properties
 #Consumer PLAINTEXT
 KAFKA_OPTS=""
 brokers=kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092
-kafka-console-consumer.sh --bootstrap-server $brokers --consumer.config config/consumer-nossl-auth.properties  --topic logs
+kafka-console-consumer.sh --bootstrap-server $brokers --consumer.config config/consumer-nossl-auth.properties  --topic fluentd-logs
 
 #Consumer SSL
 KAFKA_OPTS="-Djavax.net.debug=ssl:handshake"
 KAFKA_OPTS=""
 brokers=kafka-0.k-hs.default.svc.cluster.local:9094,kafka-1.k-hs.default.svc.cluster.local:9094,kafka-2.k-hs.default.svc.cluster.local:9094
-kafka-console-consumer.sh --bootstrap-server $brokers --consumer.config config/consumer-ssl-auth.properties --topic logs
+kafka-console-consumer.sh --bootstrap-server $brokers --consumer.config config/consumer-ssl-auth.properties --topic fluentd-logs
 
 
 openssl s_client -showcerts -connect kafka-0.k-hs.default.svc.cluster.local:9094

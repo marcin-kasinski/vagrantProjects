@@ -1,20 +1,20 @@
 kind: ConfigMap
 metadata:
-  name: fluent-cm
-  namespace: kube-system
+  name: fluentd-shipper-cm
+  namespace: default
 apiVersion: v1
 data:
   fluent.conf: |-
     #@include systemd.conf
     #@include kubernetes.conf
-    #@include myapps.conf
+    @include myapps.conf
     @include kafka.conf
 
 ---
 kind: ConfigMap
 metadata:
-  name: fluent-myapps-cm
-  namespace: kube-system
+  name: fluentd-shipper-myapps-cm
+  namespace: default
 apiVersion: v1
 data:
   myapps.conf: |-
@@ -27,7 +27,7 @@ data:
       @id in_tail_container_logs
       #path /var/log/containers/*.log
       path /var/log/containers/springbootweb-*.log,/var/log/containers/springbootmicroservice-*.log,/var/log/containers/springbootrabbitmqlistener-*.log,/var/log/containers/springbootkafkalistener-*.log,/var/log/containers/springbootzipkin-*.log
-      pos_file /var/log/fluentd-containers.log.pos
+      pos_file /var/log/fluentd-shipper-containers.log.pos
       tag kubernetes.*
       read_from_head true
       <parse>
@@ -38,8 +38,8 @@ data:
 ---
 kind: ConfigMap
 metadata:
-  name: fluent-kafka-cm
-  namespace: kube-system
+  name: fluentd-shipper-kafka-cm
+  namespace: default
 apiVersion: v1
 data:
   kafka.conf: |-
@@ -71,15 +71,15 @@ data:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: fluentd
-  namespace: kube-system
+  name: fluentd-shipper
+  namespace: default
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
-  name: fluentd
-  namespace: kube-system
+  name: fluentd-shipper
+  namespace: default
 rules:
 - apiGroups:
   - ""
@@ -95,40 +95,40 @@ rules:
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
-  name: fluentd
+  name: fluentd-shipper
 roleRef:
   kind: ClusterRole
-  name: fluentd
+  name: fluentd-shipper
   apiGroup: rbac.authorization.k8s.io
 subjects:
 - kind: ServiceAccount
-  name: fluentd
-  namespace: kube-system
+  name: fluentd-shipper
+  namespace: default
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: fluentd
-  namespace: kube-system
+  name: fluentd-shipper
+  namespace: default
   labels:
-    k8s-app: fluentd-logging
+    k8s-app: fluentd-shipper-logging
     version: v1
     kubernetes.io/cluster-service: "true"
 spec:
   template:
     metadata:
       labels:
-        k8s-app: fluentd-logging
+        k8s-app: fluentd-shipper-logging
         version: v1
         kubernetes.io/cluster-service: "true"
     spec:
-      serviceAccount: fluentd
-      serviceAccountName: fluentd
+      serviceAccount: fluentd-shipper
+      serviceAccountName: fluentd-shipper
       tolerations:
       - key: node-role.kubernetes.io/master
         effect: NoSchedule
       containers:
-      - name: fluentd
+      - name: fluentd-shipper
         image: fluent/fluentd-kubernetes-daemonset:v1.2-debian-kafka
         env:
           - name: FLUENT_UID
@@ -138,7 +138,7 @@ spec:
           - name: FLUENT_KAFKA_MAX_SEND_LIMIT_BYTES
             value: "1000000"
           - name: FLUENT_KAFKA_DEFAULT_TOPIC
-            value: "fluentd-logs"
+            value: "fluentd-shipper-logs"
           - name: FLUENT_KAFKA_BROKERS
             value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"
         resources:
@@ -148,14 +148,14 @@ spec:
             cpu: 100m
             memory: 200Mi
         volumeMounts:
-        - name: config-fluent-kafka-cm
-          mountPath: /fluentd/etc/kafka.conf
+        - name: config-fluentd-shipper-kafka-cm
+          mountPath: /fluentd-shipper/etc/kafka.conf
           subPath: kafka.conf        
-        - name: config-fluent-myapps-cm
-          mountPath: /fluentd/etc/myapps.conf
+        - name: config-fluentd-shipper-myapps-cm
+          mountPath: /fluentd-shipper/etc/myapps.conf
           subPath: myapps.conf
-        - name: config-fluent-cm
-          mountPath: /fluentd/etc/fluent.conf
+        - name: config-fluentd-shipper-cm
+          mountPath: /fluentd-shipper/etc/fluent.conf
           subPath: fluent.conf
         - name: varlog
           mountPath: /var/log
@@ -164,15 +164,15 @@ spec:
           readOnly: true
       terminationGracePeriodSeconds: 30
       volumes:
-      - name: config-fluent-kafka-cm
+      - name: config-fluentd-shipper-kafka-cm
         configMap:
-          name: fluent-kafka-cm
-      - name: config-fluent-myapps-cm
+          name: fluentd-shipper-kafka-cm
+      - name: config-fluentd-shipper-myapps-cm
         configMap:
-          name: fluent-myapps-cm
-      - name: config-fluent-cm
+          name: fluentd-shipper-myapps-cm
+      - name: config-fluentd-shipper-cm
         configMap:
-          name: fluent-cm
+          name: fluentd-shipper-cm
       - name: varlog
         hostPath:
           path: /var/log
