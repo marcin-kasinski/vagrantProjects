@@ -60,8 +60,8 @@ spec:
       containers:
       - name: fluentd
         #image: fluent/fluentd-kubernetes-daemonset:elasticsearch
-        #image: fluent/fluentd-kubernetes-daemonset:v1.2-debian-elasticsearch
-        image: fluent/fluentd-kubernetes-daemonset:v0.12-alpine-elasticsearch
+        image: fluent/fluentd-kubernetes-daemonset:v1.2-debian-elasticsearch
+        #image: fluent/fluentd-kubernetes-daemonset:v0.12-alpine-elasticsearch
         env:
           - name: FLUENT_UID
             value: "0"
