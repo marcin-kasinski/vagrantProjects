@@ -276,18 +276,18 @@ spec:
         #  value: "kafka"
         #--------------------------------- SASL --------------------------------- 
         volumeMounts:
-        - name: config-volume-krb5-conf-cm
-          mountPath: /etc/krb5.conf
-          subPath: krb5.conf        
-        - name: config-volume-kafka-0-service-keytab
-          mountPath: /opt/kafka/config/kafka-0.service.keytab
-          subPath: kafka-0.service.keytab
-        - name: config-volume-kafka-1-service-keytab
-          mountPath: /opt/kafka/config/kafka-1.service.keytab
-          subPath: kafka-1.service.keytab
-        - name: config-volume-kafka-2-service-keytab
-          mountPath: /opt/kafka/config/kafka-2.service.keytab
-          subPath: kafka-2.service.keytab
+        #- name: config-volume-krb5-conf-cm
+        #  mountPath: /etc/krb5.conf
+        #  subPath: krb5.conf        
+        #- name: config-volume-kafka-0-service-keytab
+        #  mountPath: /opt/kafka/config/kafka-0.service.keytab
+        #  subPath: kafka-0.service.keytab
+        #- name: config-volume-kafka-1-service-keytab
+        #  mountPath: /opt/kafka/config/kafka-1.service.keytab
+        #  subPath: kafka-1.service.keytab
+        #- name: config-volume-kafka-2-service-keytab
+        #  mountPath: /opt/kafka/config/kafka-2.service.keytab
+        #  subPath: kafka-2.service.keytab
         - name: config-volume-kafka-0-keystore-jks
           mountPath: /opt/kafka/config/keystore-kafka-0.jks
           subPath: keystore-kafka-0.jks
@@ -321,18 +321,18 @@ spec:
         - name: kafka-logs
           mountPath: /tmp/kafka-logs
       volumes:
-        - name: config-volume-krb5-conf-cm
-          configMap:
-            name: kafka-krb5-conf-cm
-        - name: config-volume-kafka-0-service-keytab
-          configMap:
-            name: kafka-0-service-keytab
-        - name: config-volume-kafka-1-service-keytab
-          configMap:
-            name: kafka-1-service-keytab
-        - name: config-volume-kafka-2-service-keytab
-          configMap:
-            name: kafka-2-service-keytab
+        #- name: config-volume-krb5-conf-cm
+        #  configMap:
+        #    name: kafka-krb5-conf-cm
+        #- name: config-volume-kafka-0-service-keytab
+        #  configMap:
+        #    name: kafka-0-service-keytab
+        #- name: config-volume-kafka-1-service-keytab
+        #  configMap:
+        #    name: kafka-1-service-keytab
+        #- name: config-volume-kafka-2-service-keytab
+        #  configMap:
+        #    name: kafka-2-service-keytab
         - name: config-volume-kafka-0-keystore-jks
           configMap:
             name: keystore-kafka-0.jks
