@@ -133,7 +133,7 @@ spec:
             httpHeaders:
             - name: X-Custom-Header
               value: Awesome
-          initialDelaySeconds: 30
+          initialDelaySeconds: 300
           periodSeconds: 10
         ports:
         - name: http-port
