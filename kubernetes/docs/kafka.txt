@@ -119,7 +119,7 @@ do
 done
 
 cp config/consumer-ssl-auth.properties config/consumer-ssl-auth.properties2
-cp config/consumer-ssl-auth.properties config/consumer-nossl-auth.properties
+cp config/consumer-ssl-auth.properties config/consumer-nossl-auth.properties && apt install nano && nano config/consumer-nossl-auth.properties 
 
 #Consumer PLAINTEXT
 KAFKA_OPTS=""
