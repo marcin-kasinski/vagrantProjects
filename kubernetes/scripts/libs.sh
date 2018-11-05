@@ -581,6 +581,9 @@ setKafkaTopicACL "CN=springbootkafkalistener-0.springbootkafkalistener-hs.defaul
 setKafkaGroupACL "CN=springbootkafkalistener-0.springbootkafkalistener-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL" "order" "--operation Describe --operation Read"
 setKafkaTopicACL "CN=springbootkafkalistener-0.springbootkafkalistener-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL" "__consumer_offsets" "--operation Describe"
 
+
+setKafkaClusterACL "ANONYMOUS" "kafka-cluster" "--operation Create"
+
 setKafkaTopicACL "ANONYMOUS" "__consumer_offsets" "--operation Describe"
 setKafkaGroupACL "ANONYMOUS" "group1" "--operation Describe --operation Read"
 setKafkaGroupACL "ANONYMOUS" "fluent_group" "--operation Describe --operation Read"
@@ -592,10 +595,8 @@ setKafkaTopicACL "ANONYMOUS" "fluentd-logs" "--operation Create --operation Desc
 
 setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL "my-topic" "--operation Describe --operation Create --operation Write"
 setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL "__consumer_offsets" "--operation Describe"
-setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL "logs" "--operation Describe --operation Create --operation Write"
-
-#setKafkaClusterACL ANONYMOUS "kafka-cluster" "--operation Create"
-
+#setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL "logs" "--operation Describe --operation Create --operation Write"
+#setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL "fluentd-logs" "--operation Describe --operation Create --operation Write"
 
 #------------------------------- kafka init ------------------------------- 
 
