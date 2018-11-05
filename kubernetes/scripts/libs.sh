@@ -583,6 +583,7 @@ setKafkaTopicACL "CN=springbootkafkalistener-0.springbootkafkalistener-hs.defaul
 
 setKafkaTopicACL "ANONYMOUS" "__consumer_offsets" "--operation Describe"
 setKafkaGroupACL "ANONYMOUS" "group1" "--operation Describe --operation Read"
+setKafkaGroupACL "ANONYMOUS" "fluent_group" "--operation Describe --operation Read"
 setKafkaGroupACL "ANONYMOUS" "glogstashelk" "--operation Describe --operation Read"
 #setKafkaTopicACL "ANONYMOUS" "my-topic" "--operation Describe" # nie mam pojecia czemu te uprawnienie jest potrzebnez weba
 setKafkaTopicACL "ANONYMOUS" "logs" "--operation Create --operation Describe --operation Read --operation Write"
