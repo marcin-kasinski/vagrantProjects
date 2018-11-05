@@ -138,7 +138,7 @@ spec:
           - name: FLUENT_KAFKA_MAX_SEND_LIMIT_BYTES
             value: "1000000"
           - name: FLUENT_KAFKA_DEFAULT_TOPIC
-            value: "fluentd-shipper-logs"
+            value: "fluentd-logs"
           - name: FLUENT_KAFKA_BROKERS
             value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"
         resources:
@@ -149,13 +149,13 @@ spec:
             memory: 200Mi
         volumeMounts:
         - name: config-fluentd-shipper-kafka-cm
-          mountPath: /fluentd-shipper/etc/kafka.conf
+          mountPath: /fluentd/etc/kafka.conf
           subPath: kafka.conf        
         - name: config-fluentd-shipper-myapps-cm
-          mountPath: /fluentd-shipper/etc/myapps.conf
+          mountPath: /fluentd/etc/myapps.conf
           subPath: myapps.conf
         - name: config-fluentd-shipper-cm
-          mountPath: /fluentd-shipper/etc/fluent.conf
+          mountPath: /fluentd/etc/fluent.conf
           subPath: fluent.conf
         - name: varlog
           mountPath: /var/log

@@ -12,6 +12,30 @@ data:
 ---
 kind: ConfigMap
 metadata:
+  name: fluentd-indexer-entrypoint-cm
+  namespace: default
+apiVersion: v1
+data:
+  entrypoint.sh: |-
+    #!/usr/bin/dumb-init /bin/sh
+    
+    
+    echo "MK !!!!!!!!!!!!!!!"
+    
+    set -e
+    
+    if [ -z ${FLUENT_ELASTICSEARCH_USER} ] ; then
+       sed -i  '/FLUENT_ELASTICSEARCH_USER/d' /fluentd/etc/${FLUENTD_CONF}
+    fi
+    
+    if [ -z ${FLUENT_ELASTICSEARCH_PASSWORD} ] ; then
+       sed -i  '/FLUENT_ELASTICSEARCH_PASSWORD/d' /fluentd/etc/${FLUENTD_CONF}
+    fi
+    
+    exec fluentd -c /fluentd/etc/${FLUENTD_CONF} -p /fluentd/plugins --gemfile /fluentd/Gemfile ${FLUENTD_OPT}
+---
+kind: ConfigMap
+metadata:
   name: fluentd-indexer-elasticsearch-cm
   namespace: default
 apiVersion: v1
@@ -133,13 +157,15 @@ spec:
       containers:
       - name: fluentd-indexer
         image: fluent/fluentd-kubernetes-daemonset:v1.2-debian-kafka
+        command: ["/bin/sh"]
+        args: ["-c", "echo MK;gem install fluent-plugin-elasticsearch;/fluentd/entrypoint.sh"]
         env:
           - name: FLUENT_KAFKA_COMPRESSION_CODEC
             value: "gzip"
           - name: FLUENT_KAFKA_MAX_SEND_LIMIT_BYTES
             value: "1000000"
           - name: FLUENT_KAFKA_DEFAULT_TOPIC
-            value: "fluentd-indexer-logs"
+            value: "fluentd-logs"
           - name: FLUENT_KAFKA_BROKERS
             value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"
 
@@ -180,6 +206,9 @@ spec:
         - name: config-fluentd-indexer-cm
           mountPath: /fluentd/etc/fluent.conf
           subPath: fluent.conf
+        - name: config-fluentd-indexer-entrypoint-cm
+          mountPath: /fluentd/entrypoint2.sh
+          subPath: entrypoint2.sh
         - name: varlog
           mountPath: /var/log
         - name: varlibdockercontainers
@@ -196,6 +225,9 @@ spec:
       - name: config-fluentd-indexer-cm
         configMap:
           name: fluentd-indexer-cm
+      - name: config-fluentd-indexer-entrypoint-cm
+        configMap:
+          name: fluentd-indexer-entrypoint-cm
       - name: varlog
         hostPath:
           path: /var/log
