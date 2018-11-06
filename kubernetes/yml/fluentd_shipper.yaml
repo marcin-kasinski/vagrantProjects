@@ -6,8 +6,8 @@ apiVersion: v1
 data:
   fluent.conf: |-
     #@include systemd.conf
-    @include kubernetes.conf
-    #@include myapps.conf
+    #@include kubernetes.conf
+    @include myapps.conf
     @include kafka.conf
 
 ---
@@ -22,13 +22,14 @@ data:
       @type null
     </match>
     
+
     <source>
       @type tail
       @id in_tail_container_logs
-      path /var/log/containers/*.log
-      #path /var/log/containers/springbootweb-*.log,/var/log/containers/springbootmicroservice-*.log,/var/log/containers/springbootrabbitmqlistener-*.log,/var/log/containers/springbootkafkalistener-*.log,/var/log/containers/springbootzipkin-*.log
+      #path /var/log/containers/*.log
+      path /var/log/containers/springbootweb-*.log,/var/log/containers/springbootmicroservice-*.log,/var/log/containers/springbootrabbitmqlistener-*.log,/var/log/containers/springbootkafkalistener-*.log,/var/log/containers/springbootzipkin-*.log
       pos_file /var/log/fluentd-containers.log.pos
-      tag kubernetes.*
+      tag springboot.*
       read_from_head true
       <parse>
         @type json
@@ -36,7 +37,7 @@ data:
       </parse>
     </source>
     
-    <filter kubernetes.**>
+    <filter springboot.**>
       @type kubernetes_metadata
       @id filter_kube_metadata
     </filter>
@@ -49,7 +50,14 @@ metadata:
 apiVersion: v1
 data:
   kafka.conf: |-
-    <match **>
+    <match springboot.**>
+       @type copy
+      <store>
+        @type stdout
+      </store>    
+    
+      <store>
+    
       @type kafka_buffered
       @id out_kafka
     
@@ -72,6 +80,9 @@ data:
       compression_codec "#{ENV['FLUENT_KAFKA_COMPRESSION_CODEC'] || nil}"
       max_send_limit_bytes "#{ENV['FLUENT_KAFKA_MAX_SEND_LIMIT_BYTES'] || nil}"
       discard_kafka_delivery_failed "#{ENV['FLUENT_KAFKA_DISCARD_KAFKA_DELIVERY_FAILED'] || false}"
+      
+      </store>
+      
     </match>
 ---
 apiVersion: v1
