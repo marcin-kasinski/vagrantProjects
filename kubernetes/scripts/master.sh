@@ -31,7 +31,7 @@ setupMYSQL
 setupkafka 2>&1 | tee ~/setupkafka.log
 #setupkafkaConnect 2>&1 | tee ~/setupkafkaConnect.log
 
-#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fakesmtp.yaml?$(date +%s)"  | kubectl apply -f -
+curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fakesmtp.yaml?$(date +%s)"  | kubectl apply -f -
 
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fluentd.yaml?$(date +%s)"  | kubectl apply -f -
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fluentd_elasticsearch.yaml?$(date +%s)"  | kubectl apply -f -
