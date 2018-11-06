@@ -6,8 +6,8 @@ apiVersion: v1
 data:
   fluent.conf: |-
     #@include systemd.conf
-    #@include kubernetes.conf
-    @include myapps.conf
+    @include kubernetes.conf
+    #@include myapps.conf
     @include kafka.conf
 
 ---
@@ -25,16 +25,22 @@ data:
     <source>
       @type tail
       @id in_tail_container_logs
-      #path /var/log/containers/*.log
-      path /var/log/containers/springbootweb-*.log,/var/log/containers/springbootmicroservice-*.log,/var/log/containers/springbootrabbitmqlistener-*.log,/var/log/containers/springbootkafkalistener-*.log,/var/log/containers/springbootzipkin-*.log
-      pos_file /var/log/fluentd-shipper-containers.log.pos
+      path /var/log/containers/*.log
+      #path /var/log/containers/springbootweb-*.log,/var/log/containers/springbootmicroservice-*.log,/var/log/containers/springbootrabbitmqlistener-*.log,/var/log/containers/springbootkafkalistener-*.log,/var/log/containers/springbootzipkin-*.log
+      pos_file /var/log/fluentd-containers.log.pos
       tag kubernetes.*
       read_from_head true
       <parse>
         @type json
         time_format %Y-%m-%dT%H:%M:%S.%NZ
       </parse>
-    </source>    
+    </source>
+    
+    <filter kubernetes.**>
+      @type kubernetes_metadata
+      @id filter_kube_metadata
+    </filter>
+    
 ---
 kind: ConfigMap
 metadata:
