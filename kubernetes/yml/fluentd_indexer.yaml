@@ -5,34 +5,44 @@ metadata:
 apiVersion: v1
 data:
   fluent.conf: |-
+
+    <match fluent.**>
+      @type null
+    </match>
+
     #@include systemd.conf
     #@include kubernetes.conf
-    @include elasticsearch.conf
     @include kafka.conf
+    @include grok.conf
+    @include elasticsearch.conf
+    
+
 ---
 kind: ConfigMap
 metadata:
-  name: fluentd-indexer-entrypoint-cm
+  name: fluentd-indexer-grok-cm
   namespace: default
 apiVersion: v1
 data:
-  entrypoint.sh: |-
-    #!/usr/bin/dumb-init /bin/sh
-    
-    
-    echo "MK !!!!!!!!!!!!!!!"
-    
-    set -e
-    
-    if [ -z ${FLUENT_ELASTICSEARCH_USER} ] ; then
-       sed -i  '/FLUENT_ELASTICSEARCH_USER/d' /fluentd/etc/${FLUENTD_CONF}
-    fi
-    
-    if [ -z ${FLUENT_ELASTICSEARCH_PASSWORD} ] ; then
-       sed -i  '/FLUENT_ELASTICSEARCH_PASSWORD/d' /fluentd/etc/${FLUENTD_CONF}
-    fi
-    
-    exec fluentd -c /fluentd/etc/${FLUENTD_CONF} -p /fluentd/plugins --gemfile /fluentd/Gemfile ${FLUENTD_OPT}
+  grok.conf: |-
+
+    <filter kafka.fluentd-logs>
+      @type parser
+      key_name log
+      reserve_data true
+      reserve_time true
+      <parse>
+        @type grok
+        grok_failure_key grokfailure
+        <grok>
+          pattern %{DATE:date} %{TIME:time} %{SPACE}?%{LOGLEVEL:loglevel} \[%{DATA:appname},%{WORD:zipkintraceid}?,%{WORD:zipkinspanid}?,%{WORD:zipkinsend}?\] %{NUMBER:pid} --- \[%{DATA:thread}\] %{JAVACLASS:classname} %{GREEDYDATA:message}
+        </grok>
+        <grok>
+          pattern %{GREEDYDATA:message}
+        </grok>
+        
+      </parse>
+    </filter>
 ---
 kind: ConfigMap
 metadata:
@@ -41,7 +51,12 @@ metadata:
 apiVersion: v1
 data:
   elasticsearch.conf: |-
-    <match **>
+    <match kafka.fluentd-logs>
+       @type copy
+      <store>
+        @type stdout
+      </store>    
+      <store>    
        @type elasticsearch
        @id out_es
        @log_level info
@@ -62,8 +77,9 @@ data:
          retry_max_interval "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_RETRY_MAX_INTERVAL'] || '30'}"
          retry_forever true
        </buffer>
+      </store>    
+       
     </match>
-
 ---
 kind: ConfigMap
 metadata:
@@ -74,13 +90,13 @@ data:
   kafka.conf: |-
     <source>
       @type kafka_group
-  
+      tag springboot.*
       brokers "#{ENV['FLUENT_KAFKA_BROKERS']}"
       consumer_group fluent_group
       topics "#{ENV['FLUENT_KAFKA_DEFAULT_TOPIC'] || nil}"
       #format <input text type (text|json|ltsv|msgpack)> :default => json
       #message_key <key (Optional, for text format only, default is message)>
-      #add_prefix <tag prefix (Optional)>
+      add_prefix kafka #kafka.fluentd-logs = kafka + topicname
       #add_suffix <tag suffix (Optional)>
       #retry_emit_limit <Wait retry_emit_limit x 1s when BuffereQueueLimitError happens. The default is nil and it means waiting until BufferQueueLimitError is resolved>
       #use_record_time <If true, replace event time with contents of 'time' field of fetched record>
@@ -95,45 +111,8 @@ data:
       #start_from_beginning    (bool)    :default => true
     </source>
 ---
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: fluentd-indexer
-  namespace: default
-
----
-apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: ClusterRole
-metadata:
-  name: fluentd-indexer
-  namespace: default
-rules:
-- apiGroups:
-  - ""
-  resources:
-  - pods
-  - namespaces
-  verbs:
-  - get
-  - list
-  - watch
-
----
-kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
-metadata:
-  name: fluentd-indexer
-roleRef:
-  kind: ClusterRole
-  name: fluentd-indexer
-  apiGroup: rbac.authorization.k8s.io
-subjects:
-- kind: ServiceAccount
-  name: fluentd-indexer
-  namespace: default
----
 apiVersion: extensions/v1beta1
-kind: DaemonSet
+kind: Deployment
 metadata:
   name: fluentd-indexer
   namespace: default
@@ -142,6 +121,7 @@ metadata:
     version: v1
     kubernetes.io/cluster-service: "true"
 spec:
+  replicas: 1
   template:
     metadata:
       labels:
@@ -149,8 +129,6 @@ spec:
         version: v1
         kubernetes.io/cluster-service: "true"
     spec:
-      serviceAccount: fluentd-indexer
-      serviceAccountName: fluentd-indexer
       tolerations:
       - key: node-role.kubernetes.io/master
         effect: NoSchedule
@@ -158,8 +136,10 @@ spec:
       - name: fluentd-indexer
         image: fluent/fluentd-kubernetes-daemonset:v1.2-debian-kafka
         command: ["/bin/sh"]
-        args: ["-c", "echo MK;gem install fluent-plugin-elasticsearch;/fluentd/entrypoint.sh"]
+        args: ["-c", "echo MK;gem install fluent-plugin-elasticsearch fluent-plugin-grok-parser;  /fluentd/entrypoint.sh"]
         env:
+          - name: FLUENTD_OPT
+            value: ""
           - name: FLUENT_KAFKA_COMPRESSION_CODEC
             value: "gzip"
           - name: FLUENT_KAFKA_MAX_SEND_LIMIT_BYTES
@@ -184,7 +164,8 @@ spec:
           - name: FLUENT_ELASTICSEARCH_BUFFER_FLUSH_INTERVAL
             value: "5s"
           - name: FLUENT_ELASTICSEARCH_BUFFER_CHUNK_LIMIT_SIZE
-            value: "2M"
+            #value: "2M"
+            value: "6M"
           - name: FLUENT_ELASTICSEARCH_BUFFER_QUEUE_LIMIT_LENGTH
             value: "32"
           - name: FLUENT_ELASTICSEARCH_BUFFER_RETRY_MAX_INTERVAL
@@ -200,15 +181,15 @@ spec:
         - name: config-fluentd-indexer-kafka-cm
           mountPath: /fluentd/etc/kafka.conf
           subPath: kafka.conf        
+        - name: config-fluentd-indexer-grok-cm
+          mountPath: /fluentd/etc/grok.conf
+          subPath: grok.conf
         - name: config-fluentd-indexer-elasticsearch-cm
           mountPath: /fluentd/etc/elasticsearch.conf
           subPath: elasticsearch.conf
         - name: config-fluentd-indexer-cm
           mountPath: /fluentd/etc/fluent.conf
           subPath: fluent.conf
-        - name: config-fluentd-indexer-entrypoint-cm
-          mountPath: /fluentd/entrypoint2.sh
-          subPath: entrypoint2.sh
         - name: varlog
           mountPath: /var/log
         - name: varlibdockercontainers
@@ -216,6 +197,9 @@ spec:
           readOnly: true
       terminationGracePeriodSeconds: 30
       volumes:
+      - name: config-fluentd-indexer-grok-cm
+        configMap:
+          name: fluentd-indexer-grok-cm
       - name: config-fluentd-indexer-kafka-cm
         configMap:
           name: fluentd-indexer-kafka-cm
@@ -225,9 +209,6 @@ spec:
       - name: config-fluentd-indexer-cm
         configMap:
           name: fluentd-indexer-cm
-      - name: config-fluentd-indexer-entrypoint-cm
-        configMap:
-          name: fluentd-indexer-entrypoint-cm
       - name: varlog
         hostPath:
           path: /var/log

@@ -147,6 +147,8 @@ spec:
       containers:
       - name: fluentd-shipper
         image: fluent/fluentd-kubernetes-daemonset:v1.2-debian-kafka
+        #command: ["/bin/sh"]
+        #args: ["-c", "echo MK;gem install fluent-plugin-grok-parser;  /fluentd/entrypoint.sh"]
         env:
           - name: FLUENT_UID
             value: "0"

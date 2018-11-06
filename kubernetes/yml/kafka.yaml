@@ -171,7 +171,7 @@ metadata:
     app: kafka
 spec:
   serviceName: "k-hs"
-  replicas: 1
+  replicas: 3
   updateStrategy:
     type: RollingUpdate
   podManagementPolicy: Parallel
