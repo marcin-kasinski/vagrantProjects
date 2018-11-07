@@ -564,8 +564,9 @@ while ! nc -z $KAFKAPODIP 9092; do   echo "waiting kafka to launch ..." ; sleep 
 #curl http://ftp.ps.pl/pub/apache/kafka/1.0.0/kafka_2.11-1.0.0.tgz | tar xvz
 #/tmp/kafka_2.11-1.0.0/bin/kafka-topics.sh --list --zookeeper $KAFKAPODIP:2181
 
-
 zookeeper=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka
+
+kafka-topics.sh --create --zookeeper $zookeeper --partitions 6 --replication-factor 3 --topic fluentd-springboot-logs
 
 setKafkaClusterACL "CN=kafka-0.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL" "kafka-cluster" "--operation ClusterAction"
 setKafkaClusterACL "CN=kafka-1.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL" "kafka-cluster" "--operation ClusterAction"
