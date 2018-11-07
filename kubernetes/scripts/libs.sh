@@ -592,8 +592,8 @@ setKafkaGroupACL "ANONYMOUS" "fluent_group" "--operation Describe --operation Re
 setKafkaGroupACL "ANONYMOUS" "glogstashelk" "--operation Describe --operation Read"
 #setKafkaTopicACL "ANONYMOUS" "my-topic" "--operation Describe" # nie mam pojecia czemu te uprawnienie jest potrzebnez weba
 setKafkaTopicACL "ANONYMOUS" "logs" "--operation Create --operation Describe --operation Read --operation Write"
-
 setKafkaTopicACL "ANONYMOUS" "fluentd-springboot-logs" "--operation Create --operation Describe --operation Read --operation Write"
+setKafkaTopicACL "ANONYMOUS" "fluentd-kubernetes-logs" "--operation Create --operation Describe --operation Read --operation Write"
 
 setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL "my-topic" "--operation Describe --operation Create --operation Write"
 setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL "__consumer_offsets" "--operation Describe"
