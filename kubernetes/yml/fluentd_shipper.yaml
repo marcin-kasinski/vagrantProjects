@@ -270,7 +270,8 @@ data:
     
       <store>
     
-      @type kafka_buffered
+      #@type kafka_buffered
+      @type kafka2
       @id out_kafka_springboot
     
       brokers "#{ENV['FLUENT_KAFKA_BROKERS']}"
@@ -284,6 +285,18 @@ data:
       exclude_topic_key "#{ENV['FLUENT_KAFKA_EXCLUDE_TOPIC_KEY'] || false}"
       exclude_partition_key "#{ENV['FLUENT_KAFKA_EXCLUDE_PARTITION_KEY'] || false}"
       get_kafka_client_log "#{ENV['FLUENT_KAFKA_GET_KAFKA_CLIENT_LOG'] || false}"
+
+      <format>
+        @type json
+      </format>
+
+
+      # See fluentd document for buffer related parameters: http://docs.fluentd.org/articles/buffer-plugin-overview
+      # Buffer chunk key should be same with topic_key. If value is not found in the record, default_topic is used.
+      <buffer topic>
+        flush_interval 10s
+      </buffer>
+
     
       # ruby-kafka producer options
       max_send_retries "#{ENV['FLUENT_KAFKA_MAX_SEND_RETRIES'] || 1}"
@@ -384,14 +397,15 @@ metadata:
   name: fluentd-shipper
   namespace: default
   labels:
-    k8s-app: fluentd-shipper-logging
+    k8s-app: fluentd-shipper
+    app: fluentd-shipper
     version: v1
     kubernetes.io/cluster-service: "true"
 spec:
   template:
     metadata:
       labels:
-        k8s-app: fluentd-shipper-logging
+        k8s-app: fluentd-shipper
         version: v1
         kubernetes.io/cluster-service: "true"
     spec:
