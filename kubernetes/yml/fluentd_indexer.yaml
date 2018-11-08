@@ -117,7 +117,7 @@ metadata:
   name: fluentd-indexer
   namespace: default
   labels:
-    k8s-app: fluentd-indexer-logging
+    k8s-app: fluentd-indexer
     version: v1
     kubernetes.io/cluster-service: "true"
 spec:
@@ -125,7 +125,8 @@ spec:
   template:
     metadata:
       labels:
-        k8s-app: fluentd-indexer-logging
+        k8s-app: fluentd-indexer
+        app: fluentd-indexer
         version: v1
         kubernetes.io/cluster-service: "true"
     spec:
