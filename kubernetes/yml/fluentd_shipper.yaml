@@ -237,7 +237,7 @@ data:
       @log_level debug
       multiline_flush_interval 5s
       format multiline
-      format1 /(?<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3})  (?<level>INFO|ERROR|WARN|TRACE|DEBUG|FATAL)\s+\[(?<app>[^\,]+),(?<zipkintraceid>[^\,]+),(?<zipkinspanid>[^\,]+),(?<zipkinsent>[^\]]+)] (?<someid>\d{1}) --- \[(?<thread>[^\]]+)] (?<classname>[^\ ]+)\s+\: (?<text>.*)/
+      format1 /(?<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3})  (?<level>INFO|ERROR|WARN|TRACE|DEBUG|FATAL)\s+\[(?<app>[^\,]+),(?<zipkintraceid>[^\,]*),(?<zipkinspanid>[^\,]*),(?<zipkinsent>[^\]]*)] (?<someid>[0-9]+) --- \[(?<thread>[^\]]+)] (?<classname>[^\ ]+)\s+\: (?<text>.*)/
       format_firstline /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3}/
       tag springboot.*
       read_from_head true
