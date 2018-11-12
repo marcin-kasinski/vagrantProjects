@@ -235,7 +235,7 @@ data:
       path /var/log/containers/springbootrabbitmqlistener-*.log
       pos_file /var/log/fluentd-springboot-containers.log.pos
       #add path to record
-      path_key tailed_path
+      #path_key tailed_path
       #format1 /(?<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3})  (?<level>INFO|ERROR|WARN|TRACE|DEBUG|FATAL)\s+\[(?<app>[^\,]+),(?<zipkintraceid>[^\,]*),(?<zipkinspanid>[^\,]*),(?<zipkinsent>[^\]]*)] (?<someid>[0-9]+) --- \[(?<thread>[^\]]+)] (?<classname>[^\ ]+)\s+\: (?<text>.*)/
       #format_firstline /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3}/
       tag springboot.*
