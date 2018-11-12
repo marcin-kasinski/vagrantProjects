@@ -7,7 +7,7 @@ data:
   fluent.conf: |-
     #@include systemd.conf
     @include myapps.conf
-    @include kubernetes.conf
+    #@include kubernetes.conf
     @include kafka.conf
 ---
 kind: ConfigMap
@@ -223,22 +223,21 @@ metadata:
 apiVersion: v1
 data:
   myapps.conf: |-
-    <match fluent.**>
-      @type null
-    </match>
+    #<match fluent.**>
+    #  @type null
+    #</match>
 
     <source>
       @type tail
       @id in_tail_springboot_container_logs
       #path /var/log/containers/*.log
-      path /var/log/containers/springbootweb-*.log,/var/log/containers/springbootmicroservice-*.log,/var/log/containers/springbootrabbitmqlistener-*.log,/var/log/containers/springbootkafkalistener-*.log,/var/log/containers/springbootzipkin-*.log
-      #path /var/log/containers/springbootrabbitmqlistener-*.log
+      #path /var/log/containers/springbootweb-*.log,/var/log/containers/springbootmicroservice-*.log,/var/log/containers/springbootrabbitmqlistener-*.log,/var/log/containers/springbootkafkalistener-*.log,/var/log/containers/springbootzipkin-*.log
+      path /var/log/containers/springbootrabbitmqlistener-*.log
       pos_file /var/log/fluentd-springboot-containers.log.pos
-      @log_level debug
-      multiline_flush_interval 5s
-      format multiline
-      format1 /(?<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3})  (?<level>INFO|ERROR|WARN|TRACE|DEBUG|FATAL)\s+\[(?<app>[^\,]+),(?<zipkintraceid>[^\,]*),(?<zipkinspanid>[^\,]*),(?<zipkinsent>[^\]]*)] (?<someid>[0-9]+) --- \[(?<thread>[^\]]+)] (?<classname>[^\ ]+)\s+\: (?<text>.*)/
-      format_firstline /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3}/
+      #add path to record
+      path_key tailed_path
+      #format1 /(?<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3})  (?<level>INFO|ERROR|WARN|TRACE|DEBUG|FATAL)\s+\[(?<app>[^\,]+),(?<zipkintraceid>[^\,]*),(?<zipkinspanid>[^\,]*),(?<zipkinsent>[^\]]*)] (?<someid>[0-9]+) --- \[(?<thread>[^\]]+)] (?<classname>[^\ ]+)\s+\: (?<text>.*)/
+      #format_firstline /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3}/
       tag springboot.*
       read_from_head true
       <parse>
@@ -251,6 +250,16 @@ data:
       @type kubernetes_metadata
       @id filter_springboot_kube_metadata
     </filter>
+    
+    
+    #for debug only
+    #<match springboot.**>
+    #   @type copy
+    #  <store>
+    #    @type stdout
+    #  </store>    
+    #</match>
+    
     
 ---
 kind: ConfigMap
