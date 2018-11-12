@@ -13,7 +13,7 @@ data:
     #@include systemd.conf
     #@include kubernetes.conf
     @include kafka.conf
-    #@include grok.conf
+    @include grok.conf
     
       <filter kafka.fluentd-springboot-logs>
         @type concat
@@ -44,7 +44,8 @@ data:
         @type grok
         grok_failure_key grokfailure
         <grok>
-          pattern %{DATE:date} %{TIME:time} %{SPACE}?%{LOGLEVEL:loglevel} \[%{DATA:appname},%{WORD:zipkintraceid}?,%{WORD:zipkinspanid}?,%{WORD:zipkinsend}?\] %{NUMBER:pid} --- \[%{DATA:thread}\] %{JAVACLASS:classname} %{GREEDYDATA:message}
+          #pattern %{DATE:logdate} %{TIME:logtime} %{SPACE}?%{LOGLEVEL:loglevel} \[%{DATA:appname},%{WORD:zipkintraceid}?,%{WORD:zipkinspanid}?,%{WORD:zipkinsend}?\] %{NUMBER:pid} --- \[%{DATA:thread}\] %{JAVACLASS:classname} %{GREEDYDATA:message}
+          pattern %{TIMESTAMP_ISO8601:logtimestamp} %{SPACE}?%{LOGLEVEL:loglevel} \[%{DATA:appname},%{WORD:zipkintraceid}?,%{WORD:zipkinspanid}?,%{WORD:zipkinsend}?\] %{NUMBER:pid} --- \[%{DATA:thread}\] %{JAVACLASS:classname} %{GREEDYDATA:message}
         </grok>
         #<grok>
         #  pattern %{GREEDYDATA:message}
@@ -78,6 +79,8 @@ data:
        logstash_prefix "#{ENV['FLUENT_ELASTICSEARCH_LOGSTASH_PREFIX'] || 'logstash'}"
        logstash_format true
        type_name fluentd
+       #time key get from log record
+       time_key logtimestamp
        <buffer>
          flush_thread_count "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_FLUSH_THREAD_COUNT'] || '8'}"
          flush_interval "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_FLUSH_INTERVAL'] || '5s'}"
@@ -106,6 +109,9 @@ data:
       #format <input text type (text|json|ltsv|msgpack)> :default => json
       #message_key <key (Optional, for text format only, default is message)>
       add_prefix kafka #kafka.fluentd-springboot-logs = kafka + topicname
+      
+      #@label @INPUT
+      
       #add_suffix <tag suffix (Optional)>
       #retry_emit_limit <Wait retry_emit_limit x 1s when BuffereQueueLimitError happens. The default is nil and it means waiting until BufferQueueLimitError is resolved>
       #use_record_time <If true, replace event time with contents of 'time' field of fetched record>
