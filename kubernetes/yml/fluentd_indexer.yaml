@@ -13,7 +13,16 @@ data:
     #@include systemd.conf
     #@include kubernetes.conf
     @include kafka.conf
-    @include grok.conf
+    #@include grok.conf
+    
+      <filter kafka.fluentd-springboot-logs>
+        @type concat
+        key log
+        multiline_start_regexp /(?<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3})  (?<level>INFO|ERROR|WARN|TRACE|DEBUG|FATAL)\s+\[(?<app>[^\,]+),(?<zipkintraceid>[^\,]*),(?<zipkinspanid>[^\,]*),(?<zipkinsent>[^\]]*)] (?<someid>[0-9]+) --- \[(?<thread>[^\]]+)] (?<classname>[^\ ]+)\s+\: (?<text>.*)/
+        flush_interval 3s
+      </filter>    
+    
+    
     @include elasticsearch.conf
     
 
@@ -137,7 +146,7 @@ spec:
       - name: fluentd-indexer
         image: fluent/fluentd-kubernetes-daemonset:v1.2-debian-kafka
         command: ["/bin/sh"]
-        args: ["-c", "echo MK;gem install fluent-plugin-elasticsearch fluent-plugin-grok-parser;  /fluentd/entrypoint.sh"]
+        args: ["-c", "echo MK;gem install fluent-plugin-elasticsearch fluent-plugin-concat fluent-plugin-grok-parser;  /fluentd/entrypoint.sh"]
         env:
           - name: FLUENTD_OPT
             value: ""
