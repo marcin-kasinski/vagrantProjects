@@ -366,6 +366,7 @@ done
 createRedis()
 {
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/redis.yaml?$(date +%s)" | kubectl apply -f -
+curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/phpredisadmin.yaml?$(date +%s)" | kubectl apply -f -
 }
 
 setupRedis()
