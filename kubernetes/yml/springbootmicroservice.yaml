@@ -5,6 +5,11 @@ metadata:
 apiVersion: v1
 data:
   bootstrap.yml: |-
+    hystrix.command.addUser.execution.isolation.thread.timeoutInMilliseconds: 5000
+    hystrix.command.addUser.circuitBreaker.errorThresholdPercentage: 60
+    hystrix.command.addUser.circuitBreaker.sleepWindowInMilliseconds: 60000
+    #ile requestów ma obsłużyć zanim uzna, że jest błąd
+    hystrix.command.addUser.circuitBreaker.requestVolumeThreshold: 1
     logging:
         file: logs/application.log
         level:
