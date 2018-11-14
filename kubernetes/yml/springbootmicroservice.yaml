@@ -5,6 +5,8 @@ metadata:
 apiVersion: v1
 data:
   bootstrap.yml: |-
+    
+
     hystrix.command.addUser.execution.isolation.thread.timeoutInMilliseconds: 5000
     hystrix.command.addUser.circuitBreaker.errorThresholdPercentage: 60
     hystrix.command.addUser.circuitBreaker.sleepWindowInMilliseconds: 60000
@@ -29,6 +31,9 @@ data:
     #management.metrics.export.influx:
     #    uri: http://monitoring-influxdb:30080
     spring:
+        cache.cache-names: cache1,cache2
+        cache.redis.time-to-live: 600000
+    
         application:
             name: SpringBootMicroservice
             
