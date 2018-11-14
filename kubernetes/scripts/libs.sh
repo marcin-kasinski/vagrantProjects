@@ -332,21 +332,56 @@ while ! kubectl get po -o wide | grep $POD_NAME | grep Running ; do   echo "wait
 PODIP=`kubectl get po -o wide | grep $POD_NAME | grep Running `
 PODIP=`echo $PODIP | cut -d " " -f 6`
 echo $PODIP
+retval=$PODIP
 }
-
 
 waitForPODPort()
 {
 local POD_NAME=$1
+local PORT=$2
+
+echo "waitForPODPort POD_NAME $POD_NAME, PORT $PORT"
 
 while true
 do
-  IP=$(getPodIP $POD_NAME)
-  echo "ip $IP"
-  
-  nc -z $IP 80
+  #IP=$(getPodIP $POD_NAME)
+  getPodIP $POD_NAME
+  IP=$retval
+  echo "ip $IP"  
+  nc -z $IP $PORT
   sleep 3  
+  
+  echo "nc exit code = $?"
+
+  if [ $? != 0 ]; then
+     echo  "nc Error "
+     #exit $ERROR_CODE
+  else break   
+  fi  
+
 done
+
+}
+
+createRedis()
+{
+curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/redis.yaml?$(date +%s)" | kubectl apply -f -
+}
+
+setupRedis()
+{
+
+POD_NAME="redis-0"
+#IP=$(getPodIP $POD_NAME)
+getPodIP $POD_NAME
+IP=$retval
+echo "IP = $IP"
+
+waitForPODPort $IP 6379
+
+
+echo "yes" | kubectl exec -it $POD_NAME -- redis-cli --cluster create --cluster-replicas 1 \
+$(kubectl get pods -l app=redis -o jsonpath='{range.items[*]}{.status.podIP}:6379 ')
 
 }
 
