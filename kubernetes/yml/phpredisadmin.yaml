@@ -24,7 +24,27 @@ spec:
         - name: REDIS_1_HOST
           value: "redis-0.redis-hs.default.svc.cluster.local"
         - name: REDIS_1_NAME
-          value: "MyRedis"
+          value: "MyRedis0"
+        - name: REDIS_2_HOST
+          value: "redis-1.redis-hs.default.svc.cluster.local"
+        - name: REDIS_2_NAME
+          value: "MyRedis1"
+        - name: REDIS_3_HOST
+          value: "redis-2.redis-hs.default.svc.cluster.local"
+        - name: REDIS_3_NAME
+          value: "MyRedis2"
+        - name: REDIS_4_HOST
+          value: "redis-3.redis-hs.default.svc.cluster.local"
+        - name: REDIS_4_NAME
+          value: "MyRedis3"
+        - name: REDIS_5_HOST
+          value: "redis-4.redis-hs.default.svc.cluster.local"
+        - name: REDIS_5_NAME
+          value: "MyRedis4"
+        - name: REDIS_6_HOST
+          value: "redis-5.redis-hs.default.svc.cluster.local"
+        - name: REDIS_6_NAME
+          value: "MyRedis5"
 ---
 apiVersion: v1
 kind: Service

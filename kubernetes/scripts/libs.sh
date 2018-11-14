@@ -384,6 +384,10 @@ waitForPODPort $IP 6379
 echo "yes" | kubectl exec -it $POD_NAME -- redis-cli --cluster create --cluster-replicas 1 \
 $(kubectl get pods -l app=redis -o jsonpath='{range.items[*]}{.status.podIP}:6379 ')
 
+
+kubectl exec $POD_NAME -- redis-cli --cluster rebalance --cluster-use-empty-masters \
+$(kubectl get pod $POD_NAME -o jsonpath='{.status.podIP}'):6379
+
 }
 
 setupMongodb_rs0()
