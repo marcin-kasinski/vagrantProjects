@@ -331,7 +331,7 @@ while ! kubectl get po -o wide | grep $POD_NAME | grep Running ; do   echo "wait
 
 PODIP=`kubectl get po -o wide | grep $POD_NAME | grep Running `
 PODIP=`echo $PODIP | cut -d " " -f 6`
-echo $PODIP
+#echo $PODIP
 retval=$PODIP
 }
 
@@ -347,11 +347,11 @@ do
   #IP=$(getPodIP $POD_NAME)
   getPodIP $POD_NAME
   IP=$retval
-  echo "ip $IP"  
+  #echo "ip $IP"  
   nc -z $IP $PORT
   sleep 3  
   
-  echo "nc exit code = $?"
+  #echo "nc exit code = $?"
 
   if [ $? != 0 ]; then
      echo  "nc Error "
@@ -373,13 +373,32 @@ setupRedis()
 {
 
 POD_NAME="redis-0"
-#IP=$(getPodIP $POD_NAME)
-getPodIP $POD_NAME
-IP=$retval
-echo "IP = $IP"
 
-waitForPODPort $IP 6379
+getPodIP redis-0
+IP_0=$retval
 
+getPodIP redis-1
+IP_1=$retval
+
+getPodIP redis-2
+IP_2=$retval
+
+getPodIP redis-3
+IP_3=$retval
+
+getPodIP redis-4
+IP_4=$retval
+
+getPodIP redis-5
+IP_5=$retval
+
+
+waitForPODPort $IP_0 6379
+waitForPODPort $IP_1 6379
+waitForPODPort $IP_2 6379
+waitForPODPort $IP_3 6379
+waitForPODPort $IP_4 6379
+waitForPODPort $IP_5 6379
 
 echo "yes" | kubectl exec -it $POD_NAME -- redis-cli --cluster create --cluster-replicas 1 \
 $(kubectl get pods -l app=redis -o jsonpath='{range.items[*]}{.status.podIP}:6379 ')
