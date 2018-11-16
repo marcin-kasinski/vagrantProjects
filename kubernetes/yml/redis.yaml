@@ -110,14 +110,16 @@ spec:
         - name: conf
           mountPath: /conf
           readOnly: false
-#        - name: data
-#          mountPath: /data
-#          readOnly: false
+        - name: data
+          mountPath: /data
+          readOnly: false
       volumes:
       - name: conf
         configMap:
           name: redis
           defaultMode: 0755
+      - name: data
+        emptyDir: {}
       - name: sys
         hostPath:
           path: /sys          
