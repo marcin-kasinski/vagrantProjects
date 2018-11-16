@@ -371,9 +371,6 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 
 setupRedis()
 {
-
-POD_NAME="redis-0"
-
 getPodIP redis-0
 IP_0=$retval
 
@@ -399,6 +396,8 @@ waitForPODPort $IP_2 6379
 waitForPODPort $IP_3 6379
 waitForPODPort $IP_4 6379
 waitForPODPort $IP_5 6379
+
+POD_NAME="redis-0"
 
 echo "yes" | kubectl exec -it $POD_NAME -- redis-cli --cluster create --cluster-replicas 1 \
 $(kubectl get pods -l app=redis -o jsonpath='{range.items[*]}{.status.podIP}:6379 ')
