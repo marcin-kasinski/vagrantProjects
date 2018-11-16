@@ -62,16 +62,29 @@ spec:
       labels:
         app: redis
     spec:
+      initContainers:
+      - name: disable-thp
+        image: busybox
+        command: ["sh", "-c", "echo never > /rootfs/sys/kernel/mm/transparent_hugepage/enabled;echo never > /sys/kernel/mm/transparent_hugepage/defrag;sysctl -w net.core.somaxconn=65535"]
+        volumeMounts:
+        - name: sys
+          mountPath: /rootfs/sys
+        securityContext:
+          privileged: true
       containers:
       - name: redis
         #image: redis:5.0-rc
         image: redis:5.0-alpine
+        securityContext:
+          privileged: true        
         ports:
         - containerPort: 6379
           name: client
         - containerPort: 16379
           name: gossip
         command: ["/conf/fix-ip.sh", "redis-server", "/conf/redis.conf"]
+        #command: ["/bin/sh"]
+        #args: ["-c", "echo never > /rootfs/sys/kernel/mm/transparent_hugepage/enabled;/conf/fix-ip.sh redis-server /conf/redis.conf"]
         readinessProbe:
           exec:
             command:
@@ -105,6 +118,9 @@ spec:
         configMap:
           name: redis
           defaultMode: 0755
+      - name: sys
+        hostPath:
+          path: /sys          
 #  volumeClaimTemplates:
 #  - metadata:
 #      name: data
