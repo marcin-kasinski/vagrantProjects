@@ -16,8 +16,8 @@
   "editable": true,
   "gnetId": 763,
   "graphTooltip": 0,
-  "id": 10,
-  "iteration": 1542396426768,
+  "id": 7,
+  "iteration": 1542476904520,
   "links": [],
   "panels": [
     {
@@ -1142,5 +1142,5 @@
   "timezone": "",
   "title": "Redis",
   "uid": "redis",
-  "version": 3
+  "version": 1
 }
