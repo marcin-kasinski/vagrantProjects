@@ -324,6 +324,18 @@ cfssl version
 }
 
 
+getPodName()
+{
+local POD_NAME=$1
+while ! kubectl get po -o wide | grep $POD_NAME | grep Running ; do   echo "waiting for pod $POD_NAME IP ..." ; sleep 20 ; done
+
+REALPODNAME=`kubectl get po -o wide | grep $POD_NAME | grep Running `
+REALPODNAME=`echo $REALPODNAME | cut -d " " -f 1`
+echo $REALPODNAME
+retval=$REALPODNAME
+}
+
+
 getPodIP()
 {
 local POD_NAME=$1
@@ -883,7 +895,7 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 createMyapps()
 {
 # moje aplikacje
-curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/jenkins_dp_and_service.yaml | kubectl apply -f -
+curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/jenkins.yaml | kubectl apply -f -
 curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/artifactory.yaml | kubectl apply -f -
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/phpmyadmin_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -
