@@ -34,7 +34,8 @@ data:
       path /var/log/containers/*.log
       pos_file /var/log/fluentd-containers.log.pos
       # exclude my custom logs
-      exclude_path /var/log/containers/springbootweb-*.log,/var/log/containers/springbootmicroservice-*.log,/var/log/containers/springbootrabbitmqlistener-*.log,/var/log/containers/springbootkafkalistener-*.log,/var/log/containers/springbootzipkin-*.log
+      #exclude_path /var/log/containers/springbootweb-*.log,/var/log/containers/springbootmicroservice-*.log,/var/log/containers/springbootrabbitmqlistener-*.log,/var/log/containers/springbootkafkalistener-*.log,/var/log/containers/springbootzipkin-*.log
+      exclude_path /var/log/containers/springboot*.log
       tag kubernetes.*
       read_from_head true
       <parse>
@@ -232,7 +233,7 @@ data:
       @id in_tail_springboot_container_logs
       #path /var/log/containers/*.log
       #path /var/log/containers/springbootweb-*.log,/var/log/containers/springbootmicroservice-*.log,/var/log/containers/springbootrabbitmqlistener-*.log,/var/log/containers/springbootkafkalistener-*.log,/var/log/containers/springbootzipkin-*.log
-      path /var/log/containers/springbootrabbitmqlistener-*.log
+      path /var/log/containers/springboot*.log
       pos_file /var/log/fluentd-springboot-containers.log.pos
       #add path to record
       #path_key tailed_path
