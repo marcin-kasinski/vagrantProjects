@@ -78,6 +78,17 @@ ssh cephuser@cephosd1 "sudo chmod 644 /etc/ceph/ceph.client.admin.keyring"
 ssh cephuser@cephosd2 "sudo chmod 644 /etc/ceph/ceph.client.admin.keyring"
 ssh cephuser@cephosd3 "sudo chmod 644 /etc/ceph/ceph.client.admin.keyring"
 
+hostname=$(hostname)
+
+sudo apt install -y nginx
+
 ceph health
 ceph -s
 
+ceph --cluster ceph auth get-key client.admin
+
+sudo -H -u root bash -c 'ceph --cluster ceph auth get-key client.admin > /var/www/html/key.html' 
+
+curl localhost/key.html && echo""
+
+echo "$hostname configured ..." 
