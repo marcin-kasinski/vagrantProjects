@@ -1,0 +1,23 @@
+Host cephadmin
+        Hostname cephadmin
+        User cephuser
+ 
+Host cephmon1
+        Hostname cephmon1
+        User cephuser
+ 
+Host cephosd1
+        Hostname cephosd1
+        User cephuser
+ 
+Host cephosd2
+        Hostname cephosd2
+        User cephuser
+ 
+Host cephosd3
+        Hostname cephosd3
+        User cephuser
+ 
+Host cephclient
+        Hostname cephclient
+        User cephuser

@@ -1,0 +1,309 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+
+
+Vagrant.require_version ">= 1.6.0"
+
+
+$initscript = <<SCRIPT
+
+
+		IP=$1
+		SCRIPT=$2
+		echo $IP
+		echo $SCRIPT
+
+
+echo "Executing"
+		#win2linux
+		sed -i -e 's/\r//g' /vagrant/scripts/*.sh
+
+		chmod u+x /vagrant/scripts/*.sh
+		/vagrant/scripts/init.sh $IP
+
+SCRIPT
+
+$runscript = <<SCRIPT
+
+
+		IP=$1
+		SCRIPT=$2
+		echo $IP
+		echo $SCRIPT
+
+		/vagrant/scripts/$SCRIPT $IP
+
+
+SCRIPT
+
+
+
+$masterscript = <<SCRIPT
+
+echo "Executing"
+		#win2linux
+		sed -i -e 's/\r//g' /vagrant/scripts/master.sh
+
+		chmod u+x /vagrant/scripts/master.sh
+		/vagrant/scripts/master.sh $IP
+
+
+       
+SCRIPT
+
+$nodescript = <<SCRIPT
+  
+
+
+echo "Executing"
+		#win2linux
+		sed -i -e 's/\r//g' /vagrant/scripts/node.sh
+
+		chmod u+x /vagrant/scripts/node.sh
+		/vagrant/scripts/node.sh $IP
+
+SCRIPT
+
+
+boxes = [
+    {
+        :name => "cephadmin",
+        :initscript => "master.sh",
+        :interface => "enp3s0",
+        :mac=> "5CA1AB1E0001",
+        :ip => "192.168.1.21",
+        :lvm_enable => false,
+        :lvm_size => 30000,
+        :lvm_filename => "",
+        :mem => "3072",
+        :cpu => "1"
+    },
+    {
+        :name => "cephosd1",
+        :initscript => "osd.sh",
+        :interface => "enp3s0",
+        :mac=> "5CA1AB1E0002",
+        :ip => "192.168.1.22",
+        :lvm_enable => true,
+        :lvm_size => 30000,
+        :lvm_filename => "/vagrantprojects/cephosd1_additiona_disc.vdi",
+        :mem => "3072",
+        :cpu => "1"
+    },
+    {
+        :name => "cephosd2",
+        :initscript => "osd.sh",
+        :interface => "enp3s0",
+        :mac=> "5CA1AB1E0003",
+        :ip => "192.168.1.23",
+        :lvm_enable => true,
+        :lvm_size => 30000,
+        :lvm_filename => "/vagrantprojects/cephosd2_additiona_disc.vdi",
+        :mem => "3072",
+        :cpu => "1"
+    },
+    {
+        :name => "cephosd3",
+        :initscript => "osd.sh",
+        :interface => "enp3s0",
+        :mac=> "5CA1AB1E0004",
+        :ip => "192.168.1.24",
+        :lvm_enable => true,
+        :lvm_size => 30000,
+        :lvm_filename => "/vagrantprojects/cephosd3_additiona_disc.vdi",
+        :mem => "3072",
+        :cpu => "1"
+    },
+    {
+        :name => "cephmon1",
+        :initscript => "node.sh",
+        :interface => "enp3s0",
+        :mac=> "5CA1AB1E0005",
+        :ip => "192.168.1.25",
+        :lvm_enable => false,        
+        :lvm_size => 30000,
+        :lvm_filename => "",
+        :mem => "3072",
+        :cpu => "1"
+    }
+]
+
+Vagrant.configure(2) do |config|
+
+  config.vm.box = "ubuntu/xenial64"
+#  config.vm.box = "ubuntu/trusty64"
+#  config.vm.box = "bento/ubuntu-16.04"
+  
+  config.disksize.size = '10GB'
+  
+  #config.vm.box_version = "20181109.0.0"
+
+  boxes.each do |opts|
+      config.vm.define opts[:name] do |config|
+        config.vm.hostname = opts[:name]
+        #config.vm.network :forwarded_port, host: 2222, guest: 22
+        #config.ssh.username = "ubuntu"
+        #config.ssh.password = "379a8188cba8c5e64b9a429f"
+        
+        #config.ssh.forward_agent    = true
+        #config.ssh.insert_key       = false
+        #config.ssh.private_key_path =  ["/vagrantprojects/private_key"]
+        
+        #config.vm.provision "file", source: "/vagrantprojects/public_key", destination: "/home/vagrant/.ssh/authorized_keys"
+        
+        
+        config.vm.provider "virtualbox" do |v|
+          v.customize ["modifyvm", :id, "--memory", opts[:mem]]
+          v.customize ["modifyvm", :id, "--cpus", opts[:cpu]]
+          v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+          v.name = opts[:name]
+        end
+
+        config.vm.network "public_network", bridge: opts[:interface], type: "dhcp" , mac: opts[:mac]        
+        #config.vm.network "public_network", bridge: opts[:interface] , mac: opts[:mac], ip: opts[:ip]
+        #config.vm.network "private_network" ,  bridge: opts[:interface], ip: opts[:ip]
+
+
+		# configure a persistent storage for mysql data
+        config.persistent_storage.enabled = opts[:lvm_enable]
+        #config.persistent_storage.location = "/vagrantprojects/openstackmaster.vdi"
+        config.persistent_storage.location = opts[:lvm_filename]
+        #config.persistent_storage.size = 30000 # 30GB
+        config.persistent_storage.size = opts[:lvm_size]
+        #config.persistent_storage.mountname = 'mysql'
+        config.persistent_storage.filesystem = 'ext4'
+        #config.persistent_storage.mountpoint = '/var/lib/mysql'
+        config.persistent_storage.volgroupname = 'MKmyvolgroup'
+        config.persistent_storage.partition = false
+        # sdb dla piko sdc dla ubuntu
+		config.persistent_storage.diskdevice = '/dev/sdc'
+
+
+
+        
+      end
+  end
+
+
+
+
+
+
+  boxes.each do |opts|
+    config.vm.define opts[:name] do |config|    
+    
+    
+    
+          config.vm.provision :shell, privileged: false do |s|
+          #ssh_pub_key = File.readlines("/vagrantprojects/public_key").first.strip
+          ssh_pub_key = File.readlines("/vagrantprojects/public_key_cephuser").first.strip
+          ssh_private_key = File.read("/vagrantprojects/private_key_cephuser")
+          s.inline = <<-SHELL
+          echo "showing public key "
+          echo #{ssh_pub_key} 
+          echo #{ssh_pub_key} >> /home/vagrant/.ssh/authorized_keys
+
+          echo #{ssh_pub_key} >> /tmp/ssh_pub_key
+          echo "#{ssh_private_key}"
+          echo "#{ssh_private_key}" >> /tmp/ssh_private_key
+
+          sudo bash -c "echo #{ssh_pub_key} >> /root/.ssh/authorized_keys"
+          SHELL
+          end
+    
+    
+    
+    
+      config.vm.provision "shell" do |s|
+        s.inline = $initscript
+#        s.args = opts[:ip]
+        s.args = [opts[:ip] , opts[:initscript]]
+        
+      end
+
+
+
+
+
+
+ # default router
+  config.vm.provision "shell",
+    run: "always",
+    inline: "sudo route add default gw 192.168.1.1"
+
+  # default router ipv6
+  config.vm.provision "shell",
+    run: "always",
+    inline: "#sudo route -A inet6 add default gw fe80::5ea1:abff:fe1e:1 dev enp0s8"
+
+  # delete default gw on enp0s3 
+  config.vm.provision "shell",
+    run: "always",
+    inline: "sudo route del default gw 10.0.2.2"
+
+
+
+    end
+  end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  boxes.each do |opts|
+    config.vm.define opts[:name] do |config|    
+      config.vm.provision "shell" do |s|
+        s.inline = $runscript
+#        s.args = opts[:ip]
+        s.args = [opts[:ip] , opts[:initscript]]
+        
+      end
+
+
+    end
+  end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+end

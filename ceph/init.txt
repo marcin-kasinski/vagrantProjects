@@ -1,0 +1,29 @@
+
+#eval `ssh-agent -s`
+#ssh-add -k ~/.vagrant.d/insecure_private_key
+	
+cd /vagrantprojects/ceph/
+
+#vagrant plugin install vagrant-disksize
+#vagrant plugin install vagrant-persistent-storage
+  
+vagrant halt
+vagrant box update
+vboxmanage unregistervm cephadmin --delete
+vboxmanage unregistervm cephosd1 --delete
+vboxmanage unregistervm cephosd2 --delete
+vboxmanage unregistervm cephosd3 --delete
+vboxmanage unregistervm cephmon1 --delete
+
+rm /vagrantprojects/cephosd1_additiona_disc.vdi
+rm /vagrantprojects/cephosd2_additiona_disc.vdi
+rm /vagrantprojects/cephosd3_additiona_disc.vdi
+vboxmanage list vms
+
+vagrant up cephosd1 --provision &
+vagrant up cephosd2 --provision &
+	
+vagrant up cephosd3 --provision &
+vagrant up cephmon1 --provision &
+
+vagrant up cephadmin --provision 	
