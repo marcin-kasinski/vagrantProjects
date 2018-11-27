@@ -15,6 +15,9 @@ vboxmanage unregistervm cephosd2 --delete
 vboxmanage unregistervm cephosd3 --delete
 vboxmanage unregistervm cephmon1 --delete
 
+
+#VBoxManage closemedium disk c153f127-8fd9-4dc2-bc8b-8e39a8bb8238
+
 rm /vagrantprojects/cephosd1_additiona_disc.vdi
 rm /vagrantprojects/cephosd2_additiona_disc.vdi
 rm /vagrantprojects/cephosd3_additiona_disc.vdi

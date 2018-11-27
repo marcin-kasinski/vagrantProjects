@@ -1,5 +1,30 @@
 #!/bin/bash
 
+
+# create a separate Ceph pool for Kubernetes and the new client key as this Ceph cluster has cephx authentication enabled:
+createPoolForKubernetes()
+{
+
+#list rules
+ceph osd crush rule list 
+ceph osd tree
+ceph --cluster ceph osd pool create kube 250 250 replicated replicated_rule 1000000
+
+
+#list pools
+ceph osd lspools
+
+
+ceph --cluster ceph auth get-or-create client.kube mon 'allow r' osd 'allow rwx pool=kube'
+sudo -H -u root bash -c 'ceph --cluster ceph auth get-key client.kube > /var/www/html/client.kube.html' 
+curl cephadmin/client.kube.html && echo ""
+
+sudo -H -u root bash -c 'ceph --cluster ceph auth get-key client.admin > /var/www/html/client.admin.html' 
+
+curl cephadmin/client.admin.html && echo ""
+
+}
+
 echo "cephuser command"
 echo "I am $USER, with uid $UID"
 
@@ -29,10 +54,14 @@ mkdir cluster
 cd cluster/
 ceph-deploy new cephmon1
 
-echo "public network = 192.168.1.0/24" >> cluster/ceph.conf
-echo "osd pool default size = 2" >> cluster/ceph.conf
+#echo "public network = 192.168.1.0/24" >> cluster/ceph.conf
 
-cat cluster/ceph.conf
+
+cat ceph.conf /vagrant/conf/ceph_template.conf > /tmp/ceph.conf
+cp /tmp/ceph.conf ceph.conf
+
+cat ceph.conf
+
 #Now install Ceph on all nodes from the ceph-admin node with a single command.
 ceph-deploy install cephadmin cephosd1 cephosd2 cephosd3 cephmon1
 
@@ -85,10 +114,6 @@ sudo apt install -y nginx
 ceph health
 ceph -s
 
-ceph --cluster ceph auth get-key client.admin
-
-sudo -H -u root bash -c 'ceph --cluster ceph auth get-key client.admin > /var/www/html/key.html' 
-
-curl localhost/key.html && echo""
+createPoolForKubernetes | tee ~/createPoolForKubernetes.log
 
 echo "$hostname configured ..." 
