@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-with-ceph-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-with-ceph
+  template:
+    metadata:
+      labels:
+        app: nginx-with-ceph
+    spec:
+      containers:
+      - name: nginx-with-ceph
+        image: nginx
+        #image: ilagnev/alpine-nginx-lua
+        #image: firesh/nginx-lua
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 80
+        env:
+        - name: SPRING_PROFILE
+          value: "prd"
+        volumeMounts:
+        #- name: nginx-with-ceph-config
+        #  mountPath: /etc/nginx/nginx.conf
+        #  subPath: nginx.conf
+        - name: nginx-with-ceph-index
+          mountPath: /usr/share/nginx/html/index.html
+          subPath: index.html
+      volumes:
+        - name: nginx-with-ceph-index
+          persistentVolumeClaim:
+            claimName: myclaim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-with-ceph
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+#    nodePort: 30080
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: nginx-with-ceph
