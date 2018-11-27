@@ -16,6 +16,8 @@ sudo swapoff -a
 sudo sed -i -r '/swap/ s/^(.*)$/#\1/g' /etc/fstab
 sudo sed -i -r '/cdrom/ s/^(.*)$/#\1/g' /etc/apt/sources.list
 sudo apt -y update
+
+sudo apt-get install -y ceph-common
 sudo apt -y install -y docker.io
 sudo apt install -y curl jq
 sudo apt install -y apt-transport-https
