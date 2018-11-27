@@ -927,3 +927,21 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 }
 
 
+createCeph()
+{
+
+while ! nc -z cephadmin 80; do   echo "waiting for ceph ..." ; sleep 20 ; done
+
+client_kube=$(curl cephadmin/client.kube.html)
+client_admin=$(curl cephadmin/client.admin.html)
+
+echo "client_kube $client_kube client_admin $client_admin"
+
+
+kubectl create secret generic ceph-secret --type="kubernetes.io/rbd" --from-literal=key=$client_admin --namespace=kube-system
+kubectl create secret generic ceph-secret-kube --type="kubernetes.io/rbd" --from-literal=key=$client_kube --namespace=kube-system
+
+curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/ceph.yaml?$(date +%s)" | kubectl apply -f -
+curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/ceph_pvc.yaml?$(date +%s)" | kubectl apply -f -
+
+}
