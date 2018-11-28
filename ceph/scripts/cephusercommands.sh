@@ -62,6 +62,7 @@ cp /tmp/ceph.conf ceph.conf
 
 cat ceph.conf
 
+
 #Now install Ceph on all nodes from the ceph-admin node with a single command.
 ceph-deploy install cephadmin cephosd1 cephosd2 cephosd3 cephmon1
 
