@@ -23,7 +23,7 @@ sudo -H -u cephuser bash -c 'echo "I am $USER, with uid $UID"'
 
 cp /vagrant/scripts/cephusercommands.sh /home/cephuser/cephusercommands.sh
 chown cephuser:cephuser -R /home/cephuser/
-sudo -H -u cephuser bash -c '/home/cephuser/cephusercommands.sh' 
+sudo -H -u cephuser bash -c '/home/cephuser/cephusercommands.sh | tee ~/cephusercommands.log'
 
 end=$(date +%s)
 
