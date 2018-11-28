@@ -64,9 +64,10 @@ createRedis | tee ~/createRedis.log
 setupRedis | tee ~/setupRedis.log
 
 showCustomService
-showDashboardIP | tee ~/showDashboardIP.log
  
 createCeph | tee ~/createCeph.log 
+
+showDashboardIP | tee ~/showDashboardIP.log
  
 kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/MKWEB_exec_time_seconds_max" | jq '.items[].value'
 
