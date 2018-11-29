@@ -12,6 +12,9 @@ ceph --cluster ceph osd pool create kube 250 250 replicated replicated_rule 1000
 ceph osd pool application enable kube  rbd
 #use 'ceph osd pool application enable <pool-name> <app-name>', where <app-name> is 'cephfs', 'rbd', 'rgw', or freeform for custom applications.
 
+#generate keyringfile
+ceph-authtool -C -n client.kube --gen-key ceph.client.kube.keyring --mode 0600
+
 #list pools
 ceph osd lspools
 
