@@ -116,11 +116,11 @@ hostname=$(hostname)
 
 sudo apt install -y nginx
 
+createPoolForKubernetes | tee ~/createPoolForKubernetes.log
+
 ceph health
 
 ceph health detail
 ceph -s
-
-createPoolForKubernetes | tee ~/createPoolForKubernetes.log
 
 echo "$hostname configured ..." 
