@@ -9,13 +9,14 @@ createPoolForKubernetes()
 ceph osd crush rule list 
 ceph osd tree
 ceph --cluster ceph osd pool create kube 250 250 replicated replicated_rule 1000000
-
+ceph osd pool application enable kube  rbd
+#use 'ceph osd pool application enable <pool-name> <app-name>', where <app-name> is 'cephfs', 'rbd', 'rgw', or freeform for custom applications.
 
 #list pools
 ceph osd lspools
 
-
 ceph --cluster ceph auth get-or-create client.kube mon 'allow r' osd 'allow rwx pool=kube'
+
 sudo -H -u root bash -c 'ceph --cluster ceph auth get-key client.kube > /var/www/html/client.kube.html' 
 curl cephadmin/client.kube.html && echo ""
 
@@ -113,6 +114,8 @@ hostname=$(hostname)
 sudo apt install -y nginx
 
 ceph health
+
+ceph health detail
 ceph -s
 
 createPoolForKubernetes | tee ~/createPoolForKubernetes.log
