@@ -17,7 +17,7 @@ sudo sed -i -r '/swap/ s/^(.*)$/#\1/g' /etc/fstab
 sudo sed -i -r '/cdrom/ s/^(.*)$/#\1/g' /etc/apt/sources.list
 sudo apt -y update
 
-#sudo apt-get install -y ceph-common
+sudo apt-get install -y ceph-common
 sudo apt -y install -y docker.io
 sudo apt install -y curl jq
 sudo apt install -y apt-transport-https
@@ -54,3 +54,11 @@ echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
 
 # nfs biblioteki klienckie
 sudo apt-get install -y nfs-common
+
+
+#get ceph conf from ceph server
+
+chmod 400 /root/.ssh/private_key_cephuser
+scp -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key_cephuser cephuser@cephadmin:/etc/ceph/ceph.conf /etc/ceph/ceph.conf
+scp -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key_cephuser cephuser@cephadmin:/etc/ceph/ceph.client.admin.keyring /etc/ceph/ceph.client.admin.keyring
+scp -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key_cephuser cephuser@cephadmin:/home/cephuser/cluster/ceph.client.kube.keyring /etc/ceph/ceph.client.kube.keyring
