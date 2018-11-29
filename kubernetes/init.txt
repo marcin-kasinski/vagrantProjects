@@ -11,8 +11,7 @@ vboxmanage unregistervm k8snode3 --delete
 vboxmanage list vms
 
 vagrant up k8snode1 --provision &
-vagrant up k8snode2 --provision &
-	
+vagrant up k8snode2 --provision &	
 vagrant up k8snode3 --provision &
 
 vagrant up k8smaster --provision 	
