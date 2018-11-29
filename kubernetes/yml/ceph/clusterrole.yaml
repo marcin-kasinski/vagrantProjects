@@ -14,7 +14,7 @@ rules:
     verbs: ["get", "list", "watch"]
   - apiGroups: [""]
     resources: ["events"]
-    verbs: ["list", "create", "update", "patch"]
+    verbs: ["list", "create", "update", "patch", "watch", "get"]
   - apiGroups: [""]
     resources: ["services"]
     resourceNames: ["kube-dns","coredns"]
