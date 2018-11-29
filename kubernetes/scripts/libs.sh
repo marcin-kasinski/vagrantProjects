@@ -937,11 +937,17 @@ client_admin=$(curl cephadmin/client.admin.html)
 
 echo "client_kube $client_kube client_admin $client_admin"
 
+NAMESPACE=default # change this if you want to deploy it in another namespace
 
-kubectl create secret generic ceph-secret --type="kubernetes.io/rbd" --from-literal=key=$client_admin --namespace=kube-system
-kubectl create secret generic ceph-secret-kube --type="kubernetes.io/rbd" --from-literal=key=$client_kube --namespace=kube-system
+kubectl create secret generic ceph-secret --type="kubernetes.io/rbd" --from-literal=key=$client_admin --namespace=$NAMESPACE
+kubectl create secret generic ceph-secret-kube --type="kubernetes.io/rbd" --from-literal=key=$client_kube --namespace=$NAMESPACE
 
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/ceph.yaml?$(date +%s)" | kubectl apply -f -
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/ceph_pvc.yaml?$(date +%s)" | kubectl apply -f -
+
+sed -r -i "s/namespace: [^ ]+/namespace: $NAMESPACE/g" /vagrant/yml/ceph/clusterrolebinding.yaml /vagrant/yml/ceph/rolebinding.yaml
+kubectl -n $NAMESPACE apply -f /vagrant/yml/ceph
+
+#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/ceph_pvc.yaml?$(date +%s)" | kubectl apply -f -
+
+curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/ceph_nginx_with_pvc.yaml?$(date +%s)" | kubectl apply -f -
 
 }
