@@ -2,7 +2,7 @@
 #eval `ssh-agent -s`
 #ssh-add -k ~/.vagrant.d/insecure_private_key
 	
-cd /vagrantprojects/ceph/
+cd /tools/vagrantprojects/ceph/
 
 #vagrant plugin install vagrant-disksize
 #vagrant plugin install vagrant-persistent-storage
@@ -18,9 +18,9 @@ vboxmanage unregistervm cephmon1 --delete
 
 #VBoxManage closemedium disk c153f127-8fd9-4dc2-bc8b-8e39a8bb8238
 
-rm /vagrantprojects/cephosd1_additiona_disc.vdi
-rm /vagrantprojects/cephosd2_additiona_disc.vdi
-rm /vagrantprojects/cephosd3_additiona_disc.vdi
+rm /tools/vagrantprojects/cephosd1_additiona_disc.vdi
+rm /tools/vagrantprojects/cephosd2_additiona_disc.vdi
+rm /tools/vagrantprojects/cephosd3_additiona_disc.vdi
 vboxmanage list vms
 
 vagrant up cephosd1 --provision &

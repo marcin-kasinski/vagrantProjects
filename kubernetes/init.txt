@@ -1,5 +1,5 @@
 	
-cd /vagrantprojects/kubernetes/
+cd /tools/vagrantprojects/kubernetes/
 
 #vagrant plugin install vagrant-disksize
 vagrant halt
