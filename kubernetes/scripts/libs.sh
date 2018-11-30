@@ -1,6 +1,14 @@
 
 CLIPASS="secret"
 
+
+setupJava()
+{
+sudo apt install -y openjdk-9-jre-headless
+
+java -version
+}
+
 createCA()
 {
 openssl req -new -newkey rsa:4096 -days 3650 -x509 -subj "/CN=Kafka-CA/OU=it/O=itzone/C=PL" -keyout /tmp/ca-key -out /tmp/ca-cert -nodes -passin pass:$CLIPASS
@@ -204,7 +212,13 @@ init_kubernetes()
 {
 #sudo rm -rf ~/.kube && sudo kubeadm reset && 
 
-IP=$( ifconfig enp0s8 | grep "inet addr:" | cut -d: -f2 | awk '{ print $1}' )
+# for ubuntu 16
+#IP=$( ifconfig enp0s8 | grep "inet " | cut -d: -f2 | awk '{ print $1}' )
+
+# for ubuntu 18
+IP=$(ifconfig enp0s8 | sed -n '/inet /s/.*inet  *\([^[:space:]]\+\).*/\1/p' )
+
+echo  "IP $IP"
 
 #sudo kubeadm init --pod-network-cidr 10.244.0.0/16 --apiserver-advertise-address $IP  --kubernetes-version stable-1.11 --ignore-preflight-errors all|  grep "kubeadm join"  >join_command
 
@@ -307,6 +321,7 @@ sudo sh -c "echo '/var/nfs/mysql *(rw,sync,no_subtree_check,no_root_squash)' >> 
 sudo sh -c "echo '/var/nfs/jenkins *(rw,sync,no_subtree_check,no_root_squash)' >> /etc/exports"
 sudo exportfs -ra
 
+service nfs-kernel-server status
 # ----------------------------- nfs -----------------------------
 
 }
