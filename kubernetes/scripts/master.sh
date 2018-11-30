@@ -1,8 +1,8 @@
 #!/bin/bash
 source /vagrant/scripts/libs.sh
 
-sudo apt install -y openjdk-9-jdk
-
+#sudo apt install -y openjdk-9-jdk
+sudo apt install -y default-jdk
 
 echo I am provisioning...
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
