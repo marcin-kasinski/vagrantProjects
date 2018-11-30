@@ -55,7 +55,6 @@ echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
 # nfs biblioteki klienckie
 sudo apt-get install -y nfs-common
 
-
 #get ceph conf from ceph server
 
 chmod 400 /root/.ssh/private_key_cephuser
