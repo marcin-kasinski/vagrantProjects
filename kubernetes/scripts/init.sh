@@ -57,7 +57,7 @@ sudo apt-get install -y nfs-common
 
 #get ceph conf from ceph server
 
-chmod 400 /root/.ssh/private_key_cephuser
+#chmod 400 /root/.ssh/private_key_cephuser
 scp -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key_cephuser cephuser@cephadmin:/etc/ceph/ceph.conf /etc/ceph/ceph.conf
 scp -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key_cephuser cephuser@cephadmin:/etc/ceph/ceph.client.admin.keyring /etc/ceph/ceph.client.admin.keyring
 scp -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key_cephuser cephuser@cephadmin:/home/cephuser/cluster/ceph.client.kube.keyring /etc/ceph/ceph.client.kube.keyring
