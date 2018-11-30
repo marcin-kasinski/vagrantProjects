@@ -22,10 +22,18 @@ sudo apt -y install -y docker.io
 sudo apt install -y curl jq
 sudo apt install -y apt-transport-https
 sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+
+
+
+UBUNTU_CODENAME=`cat /etc/os-release | grep UBUNTU_CODENAME | cut -d "=" -f 2`
+echo "UBUNTU_CODENAME $UBUNTU_CODENAME"
+
 sudo echo "deb http://apt.kubernetes.io/ kubernetes-xenial main"> ~/kubernetes.list 
+#sudo echo "deb http://apt.kubernetes.io/ kubernetes-$UBUNTU_CODENAME main"> ~/kubernetes.list 
 sudo mv ~/kubernetes.list /etc/apt/sources.list.d/kubernetes.list
 sudo apt update
 
+sudo systemctl enable docker.service
 sudo service docker start
 
 # get kubernetes stable version
