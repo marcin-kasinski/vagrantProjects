@@ -6,7 +6,13 @@
 
       # ----------------------------- nfs -----------------------------
 
-	  while ! nc -z k8smaster.local 111; do   echo "waiting NFS to launch ..." ; sleep 20 ; done
+	  #while ! nc -z k8smaster.local 111; do   echo "waiting NFS to launch ..." ; sleep 20 ; done
+
+
+      while nc -z k8smaster.local 111; do
+      echo "waiting NFS to launch ..." 
+	  sleep 20 
+      done
 
       sudo mkdir -p /nfs/kubernetes_share
 
