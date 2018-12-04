@@ -6,10 +6,10 @@ sudo sh -c "echo 'export PATH=$PATH:/vagrant/scripts' >> /home/vagrant/.bashrc"
 
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
 
-sudo sh -c "echo '192.168.1.11 k8smaster.local' >> /etc/hosts"
-sudo sh -c "echo '192.168.1.12 k8snode1.local' >> /etc/hosts"
-sudo sh -c "echo '192.168.1.13 k8snode2.local' >> /etc/hosts"
-sudo sh -c "echo '192.168.1.14 k8snode3.local' >> /etc/hosts"
+sudo sh -c "echo '192.168.1.11 k8smaster' >> /etc/hosts"
+sudo sh -c "echo '192.168.1.12 k8snode1' >> /etc/hosts"
+sudo sh -c "echo '192.168.1.13 k8snode2' >> /etc/hosts"
+sudo sh -c "echo '192.168.1.14 k8snode3' >> /etc/hosts"
 sudo sh -c "echo '192.168.1.12 springbootmicroserviceingress' >> /etc/hosts"
 
 sudo swapoff -a  
