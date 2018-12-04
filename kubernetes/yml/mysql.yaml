@@ -82,15 +82,15 @@ spec:
             fieldRef:
               fieldPath: status.podIP
         volumeMounts:
-        - name: nfsmysql
-          mountPath: /var/lib/mysql
+        #- name: nfsmysql
+        #  mountPath: /var/lib/mysql
         #- name: mysql-conf-cm-my-cnf
         #  mountPath: /etc/mysql/my.cnf
         #  subPath: my.cnf
       volumes:
-      - name: nfsmysql
-        persistentVolumeClaim:
-          claimName: nfsmysql
+      #- name: nfsmysql
+      #  persistentVolumeClaim:
+      #    claimName: nfsmysql
       - name: mysql-conf-cm-my-cnf
         configMap:
           name: mysql-conf-cm	
