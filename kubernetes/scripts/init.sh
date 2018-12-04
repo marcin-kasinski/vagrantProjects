@@ -10,6 +10,12 @@ sudo sh -c "echo '192.168.1.11 k8smaster' >> /etc/hosts"
 sudo sh -c "echo '192.168.1.12 k8snode1' >> /etc/hosts"
 sudo sh -c "echo '192.168.1.13 k8snode2' >> /etc/hosts"
 sudo sh -c "echo '192.168.1.14 k8snode3' >> /etc/hosts"
+sudo sh -c "echo '192.168.1.21 cephadmin' >> /etc/hosts"
+sudo sh -c "echo '192.168.1.22 cephosd1' >> /etc/hosts"
+sudo sh -c "echo '192.168.1.23 cephosd2' >> /etc/hosts"
+sudo sh -c "echo '192.168.1.24 cephosd3' >> /etc/hosts"
+sudo sh -c "echo '192.168.1.25 cephmon1' >> /etc/hosts"
+
 sudo sh -c "echo '192.168.1.12 springbootmicroserviceingress' >> /etc/hosts"
 
 sudo swapoff -a  
