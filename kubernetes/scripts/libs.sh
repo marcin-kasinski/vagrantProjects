@@ -235,6 +235,10 @@ sudo kubeadm init --apiserver-advertise-address $IP  >kubeadm_join
 cat kubeadm_join
 cat kubeadm_join |  grep "kubeadm join"  >join_command
 
+echo "sudo "$JOIN_COMMAND > join_command_sudo
+
+sudo cp join_command_sudo join_command_sudo
+
 
 sudo apt install -y nginx
 sudo -H -u root bash -c 'cat join_command_sudo > /var/www/html/join_command_sudo' 
@@ -248,9 +252,6 @@ sudo -H -u root bash -c 'cat join_command_sudo > /var/www/html/join_command_sudo
 sudo cp join_command /var/nfs/kubernetes_share/join_command
 JOIN_COMMAND="$( sudo cat /var/nfs/kubernetes_share/join_command )"
  
-echo "sudo "$JOIN_COMMAND > join_command_sudo
-
-sudo cp join_command_sudo /var/nfs/kubernetes_share/join_command_sudo
 
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>CREATING CONF "
 
