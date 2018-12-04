@@ -235,14 +235,21 @@ sudo kubeadm init --apiserver-advertise-address $IP  >kubeadm_join
 cat kubeadm_join
 cat kubeadm_join |  grep "kubeadm join"  >join_command
 
-echo "sudo "$JOIN_COMMAND > join_command_sudo
 
-sudo cp join_command_sudo join_command_sudo
+JOIN_COMMAND="$( cat join_command )"
+
+echo "sudo $JOIN_COMMAND" > join_command_sudo
+
+cat join_command_sudo
+
 
 
 sudo apt install -y nginx
 sudo -H -u root bash -c 'cat join_command_sudo > /var/www/html/join_command_sudo' 
-	
+
+echo "curl k8smaster/join_command_sudo"	
+
+curl k8smaster/join_command_sudo
 
 #--------
 
