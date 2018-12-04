@@ -61,7 +61,7 @@ rc=$?
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
 
 # nfs biblioteki klienckie
-sudo apt-get install -y nfs-common
+#sudo apt-get install -y nfs-common
 
 #get ceph conf from ceph server
 

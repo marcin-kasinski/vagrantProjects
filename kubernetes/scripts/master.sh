@@ -12,7 +12,7 @@ echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
 
 setupJava 2>&1 | tee ~/setupJava.log
 
-configure_nfs 2>&1 | tee ~/configure_nfs.log
+#configure_nfs 2>&1 | tee ~/configure_nfs.log
 init_kubernetes 2>&1 | tee ~/init_kubernetes.log
 
 setupSSL 2>&1 | tee ~/setupSSL.log

@@ -246,13 +246,6 @@ sudo -H -u root bash -c 'cat join_command_sudo > /var/www/html/join_command_sudo
 
 #--------
 
-#echo $IP >master_IP
-#sudo cp master_IP /var/nfs/kubernetes_share/master_IP
-
-sudo cp join_command /var/nfs/kubernetes_share/join_command
-JOIN_COMMAND="$( sudo cat /var/nfs/kubernetes_share/join_command )"
- 
-
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>CREATING CONF "
 
 mkdir -p $HOME/.kube
@@ -262,9 +255,6 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 mkdir -p /home/vagrant/.kube
 sudo cp -i /etc/kubernetes/admin.conf /home/vagrant/.kube/config
 sudo chown vagrant:vagrant /home/vagrant/.kube/config
-
-#copy to NFS
-sudo cp -i /etc/kubernetes/admin.conf /var/nfs/kubernetes_share/
 
 #taint pods on master nodes
 #kubectl taint nodes --all node-role.kubernetes.io/master-
