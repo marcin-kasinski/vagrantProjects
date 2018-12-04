@@ -8,6 +8,14 @@ sudo sh -c "echo 'export PATH=$PATH:/vagrant/scripts' >> /home/vagrant/.bashrc"
 
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
 
+
+sudo sh -c "echo '192.168.1.21 cephadmin' >> /etc/hosts"
+sudo sh -c "echo '192.168.1.22 cephosd1' >> /etc/hosts"
+sudo sh -c "echo '192.168.1.23 cephosd2' >> /etc/hosts"
+sudo sh -c "echo '192.168.1.24 cephosd3' >> /etc/hosts"
+sudo sh -c "echo '192.168.1.25 cephmon1' >> /etc/hosts"
+
+
 sudo swapoff -a  
 sudo sed -i -r '/swap/ s/^(.*)$/#\1/g' /etc/fstab
 sudo sed -i -r '/cdrom/ s/^(.*)$/#\1/g' /etc/apt/sources.list
