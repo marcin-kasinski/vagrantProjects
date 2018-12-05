@@ -28,7 +28,7 @@ createKafka 2>&1 | tee ~/createKafka.log
 
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kerberos.yaml?$(date +%s)"  | kubectl apply -f -
 
-setupMYSQL
+#setupMYSQL
 
 #setupkerberos 2>&1 | tee ~/setupkerberos.log
 
