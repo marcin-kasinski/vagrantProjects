@@ -24,7 +24,7 @@ showDashboardIP
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mysql.yaml?$(date +%s)"  | kubectl apply -f -
 
-createKafka 2>&1 | tee ~/createKafka.log
+#createKafka 2>&1 | tee ~/createKafka.log
 
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kerberos.yaml?$(date +%s)"  | kubectl apply -f -
 
@@ -32,7 +32,7 @@ createKafka 2>&1 | tee ~/createKafka.log
 
 #setupkerberos 2>&1 | tee ~/setupkerberos.log
 
-setupkafka 2>&1 | tee ~/setupkafka.log
+#setupkafka 2>&1 | tee ~/setupkafka.log
 #setupkafkaConnect 2>&1 | tee ~/setupkafkaConnect.log
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fakesmtp.yaml?$(date +%s)"  | kubectl apply -f -
