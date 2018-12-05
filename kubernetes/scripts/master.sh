@@ -57,19 +57,20 @@ curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/ku
 
 
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
- 
-configureGrafana | tee ~/configureGrafana.log
-createMongo | tee ~/createMongo.log
-setupMongodb | tee ~/setupMongodb.log
 
+createMonitoring 2>&1 | tee ~/createMonitoring.log # grafana, prometheus , alertmanager, metric server and prometheus adapter
+ 
+createMongo | tee ~/createMongo.log
 createRedis | tee ~/createRedis.log
+
+setupMongodb | tee ~/setupMongodb.log
 setupRedis | tee ~/setupRedis.log
 
 showCustomService
  
 #createCeph | tee ~/createCeph.log 
 
-createMonitoring 2>&1 | tee ~/createMonitoring.log # grafana, prometheus , alertmanager, metric server and prometheus adapter
+configureGrafana | tee ~/configureGrafana.log
 
 showDashboardIP | tee ~/showDashboardIP.log
  
