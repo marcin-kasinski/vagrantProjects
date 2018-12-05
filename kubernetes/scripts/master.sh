@@ -69,7 +69,7 @@ setupRedis | tee ~/setupRedis.log
 
 showCustomService
  
-createCeph | tee ~/createCeph.log 
+#createCeph | tee ~/createCeph.log 
 
 showDashboardIP | tee ~/showDashboardIP.log
  
