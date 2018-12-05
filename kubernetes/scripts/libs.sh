@@ -9,7 +9,7 @@ installHelm()
 
 sudo snap install helm --classic
 
-sudo -H -u root bash -c 'helm init' 
+sudo -H -u vagrant bash -c 'helm init' 
 
 
 }
