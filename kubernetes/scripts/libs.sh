@@ -1,6 +1,16 @@
 
 CLIPASS="secret"
 
+installHelm()
+{
+#wget https://storage.googleapis.com/kubernetes-helm/helm-v2.12.0-rc.1-linux-arm64.tar.gz
+
+#tar -xvzf helm-v2.12.0-rc.1-linux-arm64.tar.gz
+
+sudo snap install helm --classic
+helm init
+
+}
 
 setupJava()
 {
@@ -940,6 +950,37 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/springbootmicroservice.yaml?$(date +%s)"  | kubectl apply -f -
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/springbootweb.yaml?$(date +%s)"  | kubectl apply -f -
 
+
+}
+
+getConfFromCephServer()
+{
+
+#get ceph conf from ceph server
+scp -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key_cephuser cephuser@cephadmin:/etc/ceph/ceph.conf /etc/ceph/ceph.conf
+scp -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key_cephuser cephuser@cephadmin:/etc/ceph/ceph.client.admin.keyring /etc/ceph/ceph.client.admin.keyring
+scp -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key_cephuser cephuser@cephadmin:/home/cephuser/cluster/ceph.client.kube.keyring /etc/ceph/ceph.client.kube.keyring
+}
+
+
+createCephRook()
+{
+helm repo add rook-master https://charts.rook.io/master
+
+helm search rook
+helm repo update
+
+# Create a ServiceAccount for Tiller in the `kube-system` namespace
+kubectl --namespace kube-system create sa tiller
+
+# Create a ClusterRoleBinding for Tiller
+kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
+
+# Patch Tiller's Deployment to use the new ServiceAccount
+kubectl --namespace kube-system patch deploy/tiller-deploy -p '{"spec": {"template": {"spec": {"serviceAccountName": "tiller"}}}}'
+
+
+helm install --name rook rook-master/rook --namespace kube-system --version v0.7.0-136.gd13bc83 --set rbacEnable=true
 
 }
 
