@@ -8,7 +8,9 @@ installHelm()
 #tar -xvzf helm-v2.12.0-rc.1-linux-arm64.tar.gz
 
 sudo snap install helm --classic
-helm init
+
+sudo -H -u root bash -c 'helm init' 
+
 
 }
 
