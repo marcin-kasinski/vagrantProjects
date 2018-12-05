@@ -960,6 +960,13 @@ scp -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key_cephuser cep
 }
 
 
+createCephHelm()
+{
+
+sudo -H -u vagrant bash -c '/vagrant/scripts/createceph.sh' 
+
+}
+
 createCephRook()
 {
 helm repo add rook-master https://charts.rook.io/master

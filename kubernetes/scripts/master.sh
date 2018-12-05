@@ -46,7 +46,7 @@ createIngress
 
 createHeapster
 
-createMyapps
+#createMyapps
    
 # moje poprawki : dashboard
 curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/dashboard-service-ingress.yaml | kubectl apply -f -
@@ -58,21 +58,24 @@ curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/ku
 
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
 
-createMonitoring 2>&1 | tee ~/createMonitoring.log # grafana, prometheus , alertmanager, metric server and prometheus adapter
+#createMonitoring 2>&1 | tee ~/createMonitoring.log # grafana, prometheus , alertmanager, metric server and prometheus adapter
  
-createMongo | tee ~/createMongo.log
-createRedis | tee ~/createRedis.log
+#createMongo | tee ~/createMongo.log
+#createRedis | tee ~/createRedis.log
 
-setupMongodb | tee ~/setupMongodb.log
-setupRedis | tee ~/setupRedis.log
+#setupMongodb | tee ~/setupMongodb.log
+#setupRedis | tee ~/setupRedis.log
 
 showCustomService
  
 #createCeph | tee ~/createCeph.log 
 
-configureGrafana | tee ~/configureGrafana.log
+#configureGrafana | tee ~/configureGrafana.log
+
+createCephHelm | tee ~/createCephHelm.log
 
 showDashboardIP | tee ~/showDashboardIP.log
+
  
 kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/MKWEB_exec_time_seconds_max" | jq '.items[].value'
 
