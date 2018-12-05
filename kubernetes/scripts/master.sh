@@ -66,7 +66,7 @@ echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
 #setupMongodb | tee ~/setupMongodb.log
 #setupRedis | tee ~/setupRedis.log
 
-showCustomService
+#showCustomService
  
 #createCeph | tee ~/createCeph.log 
 
