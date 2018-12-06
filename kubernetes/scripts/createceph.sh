@@ -1,6 +1,11 @@
 helm serve &
 
-sleep 5 
+sleep 1
+
+while ! nc -z localhost 8879; do   echo "waiting for local charts ..." ; sleep 5 ; done
+
+sleep 1
+
 helm repo add local http://localhost:8879/charts
 
 git clone https://github.com/ceph/ceph-helm
