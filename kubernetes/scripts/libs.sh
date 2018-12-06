@@ -3,6 +3,11 @@ CLIPASS="secret"
 
 remove_LVM_logical_volume(){
 
+#list partitions
+lsblk
+
+#delete sdc disk
+sudo dd if=/dev/zero of=/dev/sdc bs=512 count=1
 
 #vagrant plugin creates logical volume.
 
@@ -14,7 +19,6 @@ sudo lvscan
 sudo lvremove -f /dev/MKmyvolgroup/vps
 sudo lvscan
 }
-
 
 installHelm()
 {
