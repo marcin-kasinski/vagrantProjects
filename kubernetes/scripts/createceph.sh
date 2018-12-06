@@ -1,3 +1,7 @@
+createceph()
+{
+
+
 helm serve &
 
 sleep 1
@@ -34,3 +38,8 @@ helm install --name=ceph local/ceph --namespace=ceph -f ~/ceph-overrides.yaml
 #kubectl -n ceph exec -ti ceph-mon-q7t9l -c ceph-mon -- ceph -s
 
 #kubectl logs -f -n ceph ceph-osd-dev-sdc-ms5ml -c osd-prepare-pod
+
+
+}
+
+createceph | tee ~/createceph.log

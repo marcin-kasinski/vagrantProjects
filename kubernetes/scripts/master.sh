@@ -73,6 +73,9 @@ echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
 #configureGrafana | tee ~/configureGrafana.log
 
 sudo -H -u vagrant bash -c '/vagrant/scripts/createceph.sh' 
+sudo -H -u vagrant bash -c '/vagrant/scripts/createfnproject.sh'
+
+
 
 showDashboardIP | tee ~/showDashboardIP.log
 
