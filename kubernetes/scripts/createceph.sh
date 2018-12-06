@@ -22,3 +22,8 @@ kubectl label node k8snode2 ceph-osd=enabled ceph-osd-device-dev-sdc=enabled --o
 kubectl label node k8snode3 ceph-osd=enabled ceph-osd-device-dev-sdc=enabled --overwrite
 
 helm install --name=ceph local/ceph --namespace=ceph -f ~/ceph-overrides.yaml
+
+
+#kubectl -n ceph exec -ti ceph-mon-q7t9l -c ceph-mon -- ceph -s
+
+#kubectl logs -f -n ceph ceph-osd-dev-sdc-ms5ml -c osd-prepare-pod
