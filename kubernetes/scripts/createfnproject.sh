@@ -22,4 +22,4 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 
 
 
-createfnproject | tee ~/createfnproject.log
+createfnproject

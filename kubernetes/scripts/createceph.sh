@@ -42,4 +42,4 @@ helm install --name=ceph local/ceph --namespace=ceph -f ~/ceph-overrides.yaml
 
 }
 
-createceph | tee ~/createceph.log
+createceph
