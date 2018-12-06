@@ -68,7 +68,7 @@ setupRedis | tee ~/setupRedis.log
 
 #showCustomService
 
-configureGrafana | tee ~/configureGrafana.log
+#configureGrafana | tee ~/configureGrafana.log
 
 sudo -H -u vagrant bash -c '/vagrant/scripts/createceph.sh' 
 sudo -H -u vagrant bash -c '/vagrant/scripts/createfnproject.sh'
