@@ -1,6 +1,21 @@
 
 CLIPASS="secret"
 
+remove_LVM_logical_volume(){
+
+
+#vagrant plugin creates logical volume.
+
+#We have to remove it
+lsblk -o NAME,FSTYPE,SIZE,MOUNTPOINT,LABEL
+sudo lvmdiskscan
+sudo lvscan
+#umount /dev/MKmyvolgroup/vps
+sudo lvremove -f /dev/MKmyvolgroup/vps
+sudo lvscan
+}
+
+
 installHelm()
 {
 #wget https://storage.googleapis.com/kubernetes-helm/helm-v2.12.0-rc.1-linux-arm64.tar.gz
