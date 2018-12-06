@@ -17,11 +17,11 @@ kubectl create namespace ceph
 kubectl create -f ~/ceph-helm/ceph/rbac.yaml
 
 
-kubectl label node k8smaster ceph-mon=enabled ceph-mgr=enabled ceph-mds=enabled  --overwrite
+kubectl label node k8smaster ceph-mon=enabled ceph-mgr=enabled ceph-mds=enabled ceph-rgw=enabled --overwrite
 
-kubectl label node k8snode1 ceph-osd=enabled ceph-osd-device-dev-sdc=enabled --overwrite
-kubectl label node k8snode2 ceph-osd=enabled ceph-osd-device-dev-sdc=enabled --overwrite
-kubectl label node k8snode3 ceph-osd=enabled ceph-osd-device-dev-sdc=enabled --overwrite
+kubectl label node k8snode1 ceph-osd=enabled ceph-osd-device-dev-sdc=enabled ceph-rgw=enabled --overwrite
+kubectl label node k8snode2 ceph-osd=enabled ceph-osd-device-dev-sdc=enabled ceph-rgw=enabled --overwrite
+kubectl label node k8snode3 ceph-osd=enabled ceph-osd-device-dev-sdc=enabled ceph-rgw=enabled--overwrite
 
 helm install --name=ceph local/ceph --namespace=ceph -f ~/ceph-overrides.yaml
 
