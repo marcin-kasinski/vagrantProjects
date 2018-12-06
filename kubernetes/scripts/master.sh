@@ -24,15 +24,15 @@ showDashboardIP
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mysql.yaml?$(date +%s)"  | kubectl apply -f -
 
-#createKafka 2>&1 | tee ~/createKafka.log
+createKafka 2>&1 | tee ~/createKafka.log
 
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kerberos.yaml?$(date +%s)"  | kubectl apply -f -
 
-#setupMYSQL
+setupMYSQL
 
 #setupkerberos 2>&1 | tee ~/setupkerberos.log
 
-#setupkafka 2>&1 | tee ~/setupkafka.log
+setupkafka 2>&1 | tee ~/setupkafka.log
 #setupkafkaConnect 2>&1 | tee ~/setupkafkaConnect.log
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fakesmtp.yaml?$(date +%s)"  | kubectl apply -f -
@@ -46,7 +46,7 @@ createIngress
 
 createHeapster
 
-#createMyapps
+createMyapps
    
 # moje poprawki : dashboard
 curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/dashboard-service-ingress.yaml | kubectl apply -f -
@@ -58,27 +58,22 @@ curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/ku
 
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
 
-#createMonitoring 2>&1 | tee ~/createMonitoring.log # grafana, prometheus , alertmanager, metric server and prometheus adapter
+createMonitoring 2>&1 | tee ~/createMonitoring.log # grafana, prometheus , alertmanager, metric server and prometheus adapter
  
-#createMongo | tee ~/createMongo.log
-#createRedis | tee ~/createRedis.log
+createMongo | tee ~/createMongo.log
+createRedis | tee ~/createRedis.log
 
-#setupMongodb | tee ~/setupMongodb.log
-#setupRedis | tee ~/setupRedis.log
+setupMongodb | tee ~/setupMongodb.log
+setupRedis | tee ~/setupRedis.log
 
 #showCustomService
- 
-#createCeph | tee ~/createCeph.log 
 
-#configureGrafana | tee ~/configureGrafana.log
+configureGrafana | tee ~/configureGrafana.log
 
 sudo -H -u vagrant bash -c '/vagrant/scripts/createceph.sh' 
 sudo -H -u vagrant bash -c '/vagrant/scripts/createfnproject.sh'
 
-
-
 showDashboardIP | tee ~/showDashboardIP.log
-
  
 kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/MKWEB_exec_time_seconds_max" | jq '.items[].value'
 

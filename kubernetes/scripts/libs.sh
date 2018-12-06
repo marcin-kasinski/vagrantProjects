@@ -586,27 +586,6 @@ kubectl exec mongodb-router-0 -c mongodb-router-container -- mongo localhost:270
 
 }
 
-
-forwardingressport()
-{
-
-while ! kubectl get po -n ingress-nginx -o wide | grep nginx | grep k8snode1 | grep Running ; do   echo "waiting for ingress-nginx IP..." ; sleep 20 ; done
-
-INGRESSPODNAME=`kubectl get po -n ingress-nginx -o wide | grep nginx | grep k8snode1 | grep Running `
-
-echo  $INGRESSPODNAME
-
-INGRESSPODNAME=`echo $INGRESSPODNAME | cut -d " " -f 1`
-echo  $INGRESSPODNAME
-
-INGRESSPODPORT=`kubectl get svc -n ingress-nginx ingress-nginx|grep ingress-nginx `
-INGRESSPODPORT=`echo $INGRESSPODPORT | cut -d ":" -f 2`
-INGRESSPODPORT=`echo $INGRESSPODPORT | cut -d "/" -f 1`
-echo  $INGRESSPODPORT
-
-}
-
-
 setKafkaACL()
 {
 
