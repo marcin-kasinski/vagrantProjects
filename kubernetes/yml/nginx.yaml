@@ -24,6 +24,7 @@ data:
     <a href="http://jenkins:30080">http://jenkins:30080/</a><br>
     <a href="http://phpredisadmin:30080">http://phpredisadmin:30080/</a><br>
     <a href="http://artifactory:30080">http://artifactory:30080/</a><br>
+    <a href="http://fn-ui:30080">http://fn-ui:30080</a><br>
      <br>
     
     Inne:<br>
