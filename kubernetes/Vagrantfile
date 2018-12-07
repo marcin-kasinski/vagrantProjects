@@ -41,31 +41,9 @@ SCRIPT
 
 
 
-$masterscript = <<SCRIPT
-
-echo "Executing"
-		#win2linux
-		sed -i -e 's/\r//g' /vagrant/scripts/master.sh
-
-		chmod u+x /vagrant/scripts/master.sh
-		/vagrant/scripts/master.sh $IP
 
 
-       
-SCRIPT
 
-$nodescript = <<SCRIPT
-  
-
-
-echo "Executing"
-		#win2linux
-		sed -i -e 's/\r//g' /vagrant/scripts/node.sh
-
-		chmod u+x /vagrant/scripts/node.sh
-		/vagrant/scripts/node.sh $IP
-
-SCRIPT
 
 
 boxes = [
@@ -264,7 +242,7 @@ Vagrant.configure(2) do |config|
 
   boxes.each do |opts|
     config.vm.define opts[:name] do |config|    
-      config.vm.provision "shell" do |s|
+      config.vm.provision "shell", privileged: false do |s|
         s.inline = $runscript
 #        s.args = opts[:ip]
         s.args = [opts[:ip] , opts[:initscript]]

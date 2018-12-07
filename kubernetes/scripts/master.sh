@@ -17,41 +17,40 @@ init_kubernetes 2>&1 | tee ~/init_kubernetes.log
 
 installHelm 2>&1 | tee ~/installHelm.log
 
-setupSSL 2>&1 | tee ~/setupSSL.log
+#setupSSL 2>&1 | tee ~/setupSSL.log
 #install_cfssl
 
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mysql.yaml?$(date +%s)"  | kubectl apply -f -
+#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mysql.yaml?$(date +%s)"  | kubectl apply -f -
 
-createKafka 2>&1 | tee ~/createKafka.log
+#createKafka 2>&1 | tee ~/createKafka.log
 
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kerberos.yaml?$(date +%s)"  | kubectl apply -f -
 
-setupMYSQL
+#setupMYSQL
 
 #setupkerberos 2>&1 | tee ~/setupkerberos.log
 
-setupkafka 2>&1 | tee ~/setupkafka.log
+#setupkafka 2>&1 | tee ~/setupkafka.log
 #setupkafkaConnect 2>&1 | tee ~/setupkafkaConnect.log
 
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fakesmtp.yaml?$(date +%s)"  | kubectl apply -f -
+#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fakesmtp.yaml?$(date +%s)"  | kubectl apply -f -
 
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fluentd.yaml?$(date +%s)"  | kubectl apply -f -
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fluentd_elasticsearch.yaml?$(date +%s)"  | kubectl apply -f -
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fluentd_shipper.yaml?$(date +%s)"  | kubectl apply -f -
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fluentd_indexer.yaml?$(date +%s)"  | kubectl apply -f -
+#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fluentd_shipper.yaml?$(date +%s)"  | kubectl apply -f -
+#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fluentd_indexer.yaml?$(date +%s)"  | kubectl apply -f -
 
 createIngress	
 
 createHeapster
 
-createMyapps
+#createMyapps
    
 # moje poprawki : dashboard
 curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/dashboard-service-ingress.yaml | kubectl apply -f -
 
-
 #curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/influxdb-ingress.yaml | kubectl apply -f -
-curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/graphite.yaml | kubectl apply -f -
+#curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/graphite.yaml | kubectl apply -f -
 
 
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
@@ -68,12 +67,19 @@ createMonitoring 2>&1 | tee ~/createMonitoring.log # grafana, prometheus , alert
 
 #configureGrafana | tee ~/configureGrafana.log
 
-sudo -H -u vagrant bash -c '/vagrant/scripts/createceph.sh'
-sudo -H -u vagrant bash -c '/vagrant/scripts/createfnproject.sh'
+#sudo -H -u vagrant bash -c '/vagrant/scripts/createceph.sh'
+#sudo -H -u vagrant bash -c '/vagrant/scripts/createfnproject.sh'
+
+#/vagrant/scripts/createceph.sh | tee ~/createceph.log
+#/vagrant/scripts/createfnproject.sh | tee ~/createfnproject.log
+
+#createceph
+
+#createfnproject
 
 showDashboardIP | tee ~/showDashboardIP.log
  
-kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/MKWEB_exec_time_seconds_max" | jq '.items[].value'
+#kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/MKWEB_exec_time_seconds_max" | jq '.items[].value'
 
 start=$(cat ~/start_time)
 

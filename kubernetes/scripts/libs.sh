@@ -1,6 +1,85 @@
 
 CLIPASS="secret"
 
+installfnApp()
+{
+
+APP=appmktxt2
+
+kubectl get svc --namespace default fm-release-fn-api
+#export FN_API_URL=http://$(kubectl get svc --namespace default fm-release-fn-api -o jsonpath='{.status.loadBalancer.ingress[0].ip}'):80
+export FN_API_URL=http://$(kubectl get svc --namespace default fm-release-fn-api -o jsonpath='{.spec.clusterIP}'):80
+echo $FN_API_URL
+
+
+#https://fnproject.io/tutorials/JavaFDKIntroduction/
+#firstfunction
+
+echo "fn initializing"
+
+fn init --runtime java --trigger http $APP
+cd $APP
+cat func.yaml
+export FN_REGISTRY=marcinkasinski
+#docker login
+
+echo "fn building"
+
+fn --verbose build
+fn --verbose deploy --registry marcinkasinski --app $APP
+fn list triggers #APP
+
+
+#Updating function appmktxt using image marcinkasinski/appmktxt:0.0.2...
+#Successfully created app:  appmktxt
+#Successfully created function: appmktxt with marcinkasinski/appmktxt:0.0.2
+#Successfully created trigger: appmktxt-trigger
+#Trigger Endpoint: http://10.98.153.28:80/t/appmktxt/appmktxt-trigger
+
+
+curl http://10.98.153.28:80/t/appmktxt/appmktxt-trigger
+
+}
+
+createfnproject()
+{
+
+kubectl create clusterrolebinding fnproject --clusterrole=cluster-admin --serviceaccount kube-system:default
+
+git clone https://github.com/fnproject/fn-helm.git
+cd fn-helm
+#Install chart dependencies (from requirements.yaml):
+helm dep build fn
+
+#Then install the chart. I chose the release name fm-release:
+echo "Installing fn"
+
+helm install --name fm-release fn
+#patch ui service
+
+echo "patching fn"
+
+kubectl patch svc fm-release-fn-ui --type=json -p='[{"op": "replace", "path": "/spec/type", "value": "NodePort"}]'
+kubectl patch svc fm-release-fn-api --type=json -p='[{"op": "replace", "path": "/spec/type", "value": "NodePort"}]'
+
+echo "kubectl fn"
+
+curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fnproject.yaml?$(date +%s)"  | kubectl apply -f -
+
+echo "Install fn on local nachine"
+
+# install fn on local nachine
+sudo curl -LSs https://raw.githubusercontent.com/fnproject/cli/master/install | sh
+#wget https://raw.githubusercontent.com/fnproject/cli/master/install | sh
+#chmod u+x install
+#./install
+
+fn version
+
+fn list contexts
+
+}
+
 
 
 remove_LVM_logical_volume(){
@@ -30,9 +109,8 @@ installHelm()
 
 sudo snap install helm --classic
 
-sudo -H -u vagrant bash -c 'helm init' 
-
-
+#sudo -H -u vagrant bash -c 'helm init' 
+helm init
 }
 
 setupJava()
@@ -980,28 +1058,51 @@ helm install --name rook rook-master/rook --namespace kube-system --version v0.7
 
 }
 
-
-createCeph()
+createceph()
 {
 
-while ! nc -z cephadmin 80; do   echo "waiting for ceph ..." ; sleep 20 ; done
 
-client_kube=$(curl cephadmin/client.kube.html)
-client_admin=$(curl cephadmin/client.admin.html)
+helm serve &
 
-echo "client_kube $client_kube client_admin $client_admin"
+sleep 1
 
-NAMESPACE=default # change this if you want to deploy it in another namespace
+while ! nc -z localhost 8879; do   echo "waiting for local charts ..." ; sleep 5 ; done
 
-kubectl create secret generic ceph-secret --type="kubernetes.io/rbd" --from-literal=key=$client_admin --namespace=$NAMESPACE
-kubectl create secret generic ceph-secret-kube --type="kubernetes.io/rbd" --from-literal=key=$client_kube --namespace=$NAMESPACE
+sleep 1
+
+helm repo add local http://localhost:8879/charts
+
+git clone https://github.com/ceph/ceph-helm
+
+cd ceph-helm/ceph
+sudo apt install -y make
+
+make
+
+cp /vagrant/conf/ceph/ceph-overrides.yaml /home/vagrant/ceph-overrides.yaml
+
+kubectl create namespace ceph
+
+kubectl create -f ~/ceph-helm/ceph/rbac.yaml
 
 
-sed -r -i "s/namespace: [^ ]+/namespace: $NAMESPACE/g" /vagrant/yml/ceph/clusterrolebinding.yaml /vagrant/yml/ceph/rolebinding.yaml
-kubectl -n $NAMESPACE apply -f /vagrant/yml/ceph
+kubectl label node k8smaster ceph-mon=enabled ceph-mgr=enabled ceph-mds=enabled ceph-rgw=enabled --overwrite
 
-#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/ceph_pvc.yaml?$(date +%s)" | kubectl apply -f -
+kubectl label node k8snode1 ceph-osd=enabled ceph-osd-device-dev-sdc=enabled ceph-rgw=enabled --overwrite
+kubectl label node k8snode2 ceph-osd=enabled ceph-osd-device-dev-sdc=enabled ceph-rgw=enabled --overwrite
+kubectl label node k8snode3 ceph-osd=enabled ceph-osd-device-dev-sdc=enabled ceph-rgw=enabled--overwrite
 
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/ceph_nginx_with_pvc.yaml?$(date +%s)" | kubectl apply -f -
+echo "Helm installing ceph"
+
+helm install --name=ceph local/ceph --namespace=ceph -f ~/ceph-overrides.yaml
+
+
+#kubectl -n ceph exec -ti ceph-mon-q7t9l -c ceph-mon -- ceph -s
+
+#kubectl logs -f -n ceph ceph-osd-dev-sdc-ms5ml -c osd-prepare-pod
+
+echo "createceph end"
+
 
 }
+
