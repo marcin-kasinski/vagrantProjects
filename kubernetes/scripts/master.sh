@@ -20,8 +20,6 @@ installHelm 2>&1 | tee ~/installHelm.log
 setupSSL 2>&1 | tee ~/setupSSL.log
 #install_cfssl
 
-showDashboardIP
-
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mysql.yaml?$(date +%s)"  | kubectl apply -f -
 
 createKafka 2>&1 | tee ~/createKafka.log
