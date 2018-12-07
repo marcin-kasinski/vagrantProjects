@@ -35,7 +35,7 @@ sudo apt install -y curl jq
 sudo apt install -y apt-transport-https
 sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 
-
+sudo usermod -aG docker $USER
 
 UBUNTU_CODENAME=`cat /etc/os-release | grep UBUNTU_CODENAME | cut -d "=" -f 2`
 echo "UBUNTU_CODENAME $UBUNTU_CODENAME"
