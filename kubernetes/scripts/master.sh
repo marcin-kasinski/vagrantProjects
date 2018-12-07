@@ -58,17 +58,17 @@ echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
 
 createMonitoring 2>&1 | tee ~/createMonitoring.log # grafana, prometheus , alertmanager, metric server and prometheus adapter
  
-createMongo | tee ~/createMongo.log
-createRedis | tee ~/createRedis.log
+#createMongo | tee ~/createMongo.log
+#createRedis | tee ~/createRedis.log
 
-setupMongodb | tee ~/setupMongodb.log
-setupRedis | tee ~/setupRedis.log
+#setupMongodb | tee ~/setupMongodb.log
+#setupRedis | tee ~/setupRedis.log
 
 #showCustomService
 
 #configureGrafana | tee ~/configureGrafana.log
 
-sudo -H -u vagrant bash -c '/vagrant/scripts/createceph.sh' 
+sudo -H -u vagrant bash -c '/vagrant/scripts/createceph.sh'
 sudo -H -u vagrant bash -c '/vagrant/scripts/createfnproject.sh'
 
 showDashboardIP | tee ~/showDashboardIP.log

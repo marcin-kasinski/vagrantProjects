@@ -37,7 +37,7 @@ fn list contexts
 fn init --runtime java --trigger http javafnmktst
 cd javafnmktst
 cat func.yaml
-export FN_REGISTRY=marcinkasinski
+#export FN_REGISTRY=marcinkasinski
 #docker login
 fn --verbose build
 #fn --verbose deploy --registry marcinkasinski --app java-app
