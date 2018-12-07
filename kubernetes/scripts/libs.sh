@@ -21,7 +21,7 @@ fn init --runtime java --trigger http $APP
 cd $APP
 cat func.yaml
 export FN_REGISTRY=marcinkasinski
-#docker login
+docker login
 
 echo "fn building"
 
