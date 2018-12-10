@@ -1,39 +1,84 @@
 
 CLIPASS="secret"
 
-createOpenFaas()
+createOpenFaasFunction()
 {
-
-git clone https://github.com/openfaas/faas-netes
-kubectl apply -f https://raw.githubusercontent.com/openfaas/faas-netes/master/namespaces.yml
-cd faas-netes
-kubectl apply -f ./yaml
-
-#install cli
-sudo curl -sL https://cli.openfaas.com | sudo sh
-
 #samples
 #git clone https://github.com/openfaas/faas-cli
-
 #edit stack.yml
-
 #pull templates
 #faas template pull
 #deploy samples
 #faas-cli deploy -f stack.yml
 
-#CREATE FUNCTION
-#faas-cli new --lang java8 hello-java8
-#nano hello-java8.yml
+functionName=hello-java8unc
 
+export FAASGATEWAYIP=$(kubectl get svc --namespace openfaas gateway -o jsonpath='{.spec.clusterIP}')
+echo FAASGATEWAYIP=$FAASGATEWAYIP
+
+#CREATE FUNCTION
+faas-cli new --lang java8 $functionName --prefix=marcinkasinski
+
+sed -i -e 's/gateway: http:\/\/127.0.0.1/'"gateway: http:\/\/$FAASGATEWAYIP"'/g' $functionName.yml
+#sed -i -e "s/image: $functionName:latest/image: marcinkasinski\/$functionName:latest/g" $functionName.yml
+
+cat $functionName.yml
+
+cp /vagrant/conf/openfaas/Handler.java hello-java8unc/src/main/java/com/openfaas/function/Handler.java
 
 #build 
-#faas-cli build -f ./hello-java8.yml
+faas-cli build -f ./$functionName.yml
  
 #push
-#faas-cli push -f ./hello-java8.yml
+docker login
+faas-cli push -f ./$functionName.yml
 #deploy
-#faas-cli deploy -f ./hello-java8.yml
+faas-cli deploy -f ./$functionName.yml
+#URL: http://10.98.78.32:8080/function/hello-java8unc
+
+kubectl -n openfaas-fn get functions
+
+#curl -XPOST --data "Marcin" -H "Content-Type:text/plain" http://$FAASGATEWAYIP:8080/metrics
+curl -XPOST --data "Marcin" -H "Content-Type:text/plain" http://$FAASGATEWAYIP:8080/function/$functionName
+
+#for i in {1..50} ;do curl -XPOST --data "Marcin" -H "Content-Type:text/plain" http://$FAASGATEWAYIP:8080/function/$functionName &;   sleep 0.1 ;done
+
+}
+
+createOpenFaas()
+{
+kubectl create clusterrolebinding fnproject --clusterrole=cluster-admin --serviceaccount kube-system:default
+
+kubectl apply -f https://raw.githubusercontent.com/openfaas/faas-netes/master/namespaces.yml
+
+#git clone https://github.com/openfaas/faas-netes
+#cd faas-netes
+#kubectl apply -f ./yaml
+
+helm repo add openfaas https://openfaas.github.io/faas-netes/
+
+helm upgrade openfaas --install openfaas/openfaas \
+    --namespace openfaas  \
+    --set functionNamespace=openfaas-fn \
+    --set serviceType=NodePort \
+    --set basic_auth=false \
+    --set operator.create=true
+
+#install cli
+sudo curl -sL https://cli.openfaas.com | sudo sh
+
+curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/openfaas.yaml?$(date +%s)"  | kubectl apply -f -
+
+#kubectl patch deployment -n openfaas gateway -p='[{"op": "add", "path": "/metadata/labels", "value": "xx=xxxxx"}]'
+
+kubectl patch deployment -n openfaas gateway  -p "$(cat /vagrant/conf/openfaas/gateway.path)"
+
+kubectl delete svc -n openfaas prometheus
+kubectl delete svc -n openfaas alertmanager
+
+kubectl delete deployment -n openfaas prometheus
+kubectl delete deployment -n openfaas alertmanager
+
 }
 
 createKubeless()
