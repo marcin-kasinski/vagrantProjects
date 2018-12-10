@@ -44,7 +44,7 @@ createIngress
 
 createHeapster
 
-#createMyapps
+createMyapps
    
 # moje poprawki : dashboard
 curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/dashboard-service-ingress.yaml | kubectl apply -f -
