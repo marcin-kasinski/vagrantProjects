@@ -77,6 +77,9 @@ createMonitoring 2>&1 | tee ~/createMonitoring.log # grafana, prometheus , alert
 
 #createfnproject
 
+#createKubeless
+createOpenFaas
+
 showDashboardIP | tee ~/showDashboardIP.log
  
 #kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/MKWEB_exec_time_seconds_max" | jq '.items[].value'
@@ -85,7 +88,7 @@ start=$(cat ~/start_time)
 
 end=$(date +%s)
 
-echo $end> ~/end_time
+echo $end> /tmp/end_time
 
 runtime_seconds=$((end-start))
 runtime_minutes=$((runtime_seconds/ 60 ))

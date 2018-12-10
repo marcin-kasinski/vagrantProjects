@@ -1,6 +1,76 @@
 
 CLIPASS="secret"
 
+createOpenFaas()
+{
+
+git clone https://github.com/openfaas/faas-netes
+kubectl apply -f https://raw.githubusercontent.com/openfaas/faas-netes/master/namespaces.yml
+cd faas-netes
+kubectl apply -f ./yaml
+
+#install cli
+sudo curl -sL https://cli.openfaas.com | sudo sh
+
+#samples
+#git clone https://github.com/openfaas/faas-cli
+
+#edit stack.yml
+
+#pull templates
+#faas template pull
+#deploy samples
+#faas-cli deploy -f stack.yml
+
+#CREATE FUNCTION
+#faas-cli new --lang java8 hello-java8
+#nano hello-java8.yml
+
+
+#build 
+#faas-cli build -f ./hello-java8.yml
+ 
+#push
+#faas-cli push -f ./hello-java8.yml
+#deploy
+#faas-cli deploy -f ./hello-java8.yml
+}
+
+createKubeless()
+{
+export RELEASE=$(curl -s https://api.github.com/repos/kubeless/kubeless/releases/latest | grep tag_name | cut -d '"' -f 4)
+
+kubectl create ns kubeless
+kubectl create -f https://github.com/kubeless/kubeless/releases/download/$RELEASE/kubeless-$RELEASE.yaml
+
+kubectl get pods -n kubeless
+kubectl get deployment -n kubeless
+kubectl get customresourcedefinition
+
+#install cli
+
+sudo apt install -y unzip
+export OS=$(uname -s| tr '[:upper:]' '[:lower:]')
+
+curl -OL https://github.com/kubeless/kubeless/releases/download/$RELEASE/kubeless_$OS-amd64.zip && \
+unzip kubeless_$OS-amd64.zip && \
+sudo mv bundles/kubeless_$OS-amd64/kubeless /usr/local/bin/
+
+kubeless function ls
+
+kubectl get pods -l function=hellomkfunction
+ 
+#deploy function
+
+#kubeless function deploy foo --from-file HelloGet.java --handler hello.foo --runtime java1.8
+
+#kubeless function deploy hello --runtime python2.7 \
+#                                --from-file test.py \
+#                                --handler test.hello
+ 
+kubectl apply -f https://raw.githubusercontent.com/kubeless/kubeless-ui/master/k8s.yaml
+}
+
 installfnApp()
 {
 
