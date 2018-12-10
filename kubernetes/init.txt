@@ -10,6 +10,11 @@ vboxmanage unregistervm k8snode2 --delete
 vboxmanage unregistervm k8snode3 --delete
 vboxmanage list vms
 
+rm /tools/vagrantprojects/k8smaster_additiona_disc.vdi
+rm /tools/vagrantprojects/k8snode1_additiona_disc.vdi
+rm /tools/vagrantprojects/k8snode2_additiona_disc.vdi
+rm /tools/vagrantprojects/k8snode3_additiona_disc.vdi
+
 vagrant up k8snode1 --provision &
 vagrant up k8snode2 --provision &	
 vagrant up k8snode3 --provision &
