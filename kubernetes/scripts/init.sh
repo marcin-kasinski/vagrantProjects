@@ -3,7 +3,7 @@ source /vagrant/scripts/libs.sh
 
 start=$(date +%s)
 
-echo $start > /home/vagrant/start_time
+echo $start > /tmp/start_time
 
 sudo sh -c "echo 'export PATH=$PATH:/vagrant/scripts' >> /home/vagrant/.bashrc"
 
