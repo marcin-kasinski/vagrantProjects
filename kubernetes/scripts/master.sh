@@ -70,7 +70,7 @@ createMonitoring 2>&1 | tee ~/createMonitoring.log # grafana, prometheus , alert
 #/vagrant/scripts/createceph.sh | tee ~/createceph.log
 #/vagrant/scripts/createfnproject.sh | tee ~/createfnproject.log
 
-createceph | tee ~/createceph.log
+createceph
 
 #createfnproject
 
