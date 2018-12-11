@@ -254,8 +254,8 @@ spec:
         - name: JAVA_OPTS
           value: "-Xmx2048m -XX:MaxPermSize=512m -Djenkins.install.runSetupWizard=false"
         volumeMounts:
-        - name: nfsjenkins
-          mountPath: /var/jenkins_home
+        #- name: nfsjenkins
+        #  mountPath: /var/jenkins_home
         - name: config-jenkins-plugins-cm
           mountPath: /plugins.txt
           subPath: plugins.txt
@@ -275,9 +275,9 @@ spec:
           mountPath: /init/jenkins.model.ArtifactManagerConfiguration.xml
           subPath: jenkins.model.ArtifactManagerConfiguration.xml
       volumes:
-      - name: nfsjenkins
-        persistentVolumeClaim:
-          claimName: nfsjenkins
+      #- name: nfsjenkins
+      #  persistentVolumeClaim:
+      #    claimName: nfsjenkins
       - name: config-jenkins-plugins-cm
         configMap:
           name: jenkins-plugins-cm          
