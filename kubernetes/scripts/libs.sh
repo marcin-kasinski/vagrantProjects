@@ -53,8 +53,6 @@ createOpenFaas()
 {
 functionNamespace=openfaas
 
-kubectl create clusterrolebinding fnproject --clusterrole=cluster-admin --serviceaccount kube-system:default
-
 kubectl apply -f https://raw.githubusercontent.com/openfaas/faas-netes/master/namespaces.yml
 
 helm repo add openfaas https://openfaas.github.io/faas-netes/
