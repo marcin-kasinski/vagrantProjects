@@ -1,17 +1,9 @@
 
-CLIPASS="secret"
-
 createOpenFaasFunction()
 {
-#samples
-#git clone https://github.com/openfaas/faas-cli
-#edit stack.yml
-#pull templates
-#faas template pull
-#deploy samples
-#faas-cli deploy -f stack.yml
 
-functionName=hello-java8unc
+functionName=hello-java8func
+functionNamespace=openfaas
 
 export FAASGATEWAYIP=$(kubectl get svc --namespace openfaas gateway -o jsonpath='{.spec.clusterIP}')
 echo FAASGATEWAYIP=$FAASGATEWAYIP
@@ -24,7 +16,7 @@ sed -i -e 's/gateway: http:\/\/127.0.0.1/'"gateway: http:\/\/$FAASGATEWAYIP"'/g'
 
 cat $functionName.yml
 
-cp /vagrant/conf/openfaas/Handler.java hello-java8unc/src/main/java/com/openfaas/function/Handler.java
+cp /vagrant/conf/openfaas/Handler.java $functionName/src/main/java/com/openfaas/function/Handler.java
 
 #build 
 faas-cli build -f ./$functionName.yml
@@ -36,10 +28,22 @@ faas-cli push -f ./$functionName.yml
 faas-cli deploy -f ./$functionName.yml
 #URL: http://10.98.78.32:8080/function/hello-java8unc
 
-kubectl -n openfaas-fn get functions
+kubectl -n $functionNamespace get functions
 
-#curl -XPOST --data "Marcin" -H "Content-Type:text/plain" http://$FAASGATEWAYIP:8080/metrics
 curl -XPOST --data "Marcin" -H "Content-Type:text/plain" http://$FAASGATEWAYIP:8080/function/$functionName
+
+curl http://$FAASGATEWAYIP:8080/metrics | grep java
+
+kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/$functionNamespace/pods/*/gateway_functions_seconds_count" | jq '.items[].value'
+kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/$functionNamespace/pods/*/gateway_functions_seconds_sum" | jq '.items[].value'
+
+kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/$functionNamespace/pods/*/gateway_service_count" | jq '.items[].value'
+
+kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/MKWEB_exec_time_seconds_max"
+
+curl http://10.44.0.10:8080/metrics | grep java
+curl http://localhost:8080/apis/custom.metrics.k8s.io/v1beta1 | grep java
+
 
 #for i in {1..50} ;do curl -XPOST --data "Marcin" -H "Content-Type:text/plain" http://$FAASGATEWAYIP:8080/function/$functionName &;   sleep 0.1 ;done
 
@@ -47,19 +51,19 @@ curl -XPOST --data "Marcin" -H "Content-Type:text/plain" http://$FAASGATEWAYIP:8
 
 createOpenFaas()
 {
+functionNamespace=openfaas
+
 kubectl create clusterrolebinding fnproject --clusterrole=cluster-admin --serviceaccount kube-system:default
 
 kubectl apply -f https://raw.githubusercontent.com/openfaas/faas-netes/master/namespaces.yml
 
-#git clone https://github.com/openfaas/faas-netes
-#cd faas-netes
-#kubectl apply -f ./yaml
-
 helm repo add openfaas https://openfaas.github.io/faas-netes/
+
+#    functionNamespace has to be in the same namespace because of hpa
 
 helm upgrade openfaas --install openfaas/openfaas \
     --namespace openfaas  \
-    --set functionNamespace=openfaas-fn \
+    --set functionNamespace=$functionNamespace \
     --set serviceType=NodePort \
     --set basic_auth=false \
     --set operator.create=true
@@ -79,6 +83,7 @@ kubectl delete svc -n openfaas alertmanager
 kubectl delete deployment -n openfaas prometheus
 kubectl delete deployment -n openfaas alertmanager
 
+kubectl delete namespace openfaas-fn
 }
 
 createKubeless()
@@ -234,6 +239,8 @@ sudo apt install -y openjdk-9-jre-headless
 
 java -version
 }
+
+CLIPASS="secret"
 
 createCA()
 {
@@ -1045,7 +1052,6 @@ curl "https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/mast
 
 kubectl apply -f /vagrant/yml/monitoring/namespaces.yaml
 
-
 #kubectl create secret generic key -n monitoring --from-file=/vagrant/conf/certs/prometheusadapter.key
 kubectl create configmap key -n custom-metrics --from-file=/vagrant/conf/certs/prometheusadapter.key
 kubectl create configmap crt -n custom-metrics --from-file=/vagrant/conf/certs/prometheusadapter.crt
@@ -1194,12 +1200,11 @@ sudo apt install -y make
 
 make
 
-cp /vagrant/conf/ceph/ceph-overrides.yaml /home/vagrant/ceph-overrides.yaml
+cp /vagrant/conf/ceph/ceph-overrides.yaml ~/ceph-overrides.yaml
 
 kubectl create namespace ceph
 
 kubectl create -f ~/ceph-helm/ceph/rbac.yaml
-
 
 kubectl label node k8smaster ceph-mon=enabled ceph-mgr=enabled ceph-mds=enabled ceph-rgw=enabled --overwrite
 
@@ -1211,13 +1216,9 @@ echo "Helm installing ceph"
 
 helm install --name=ceph local/ceph --namespace=ceph -f ~/ceph-overrides.yaml
 
-
 #kubectl -n ceph exec -ti ceph-mon-q7t9l -c ceph-mon -- ceph -s
 
 #kubectl logs -f -n ceph ceph-osd-dev-sdc-ms5ml -c osd-prepare-pod
 
 echo "createceph end"
-
-
 }
-
