@@ -65,7 +65,7 @@ createMonitoring 2>&1 | tee ~/createMonitoring.log # grafana, prometheus , alert
 #configureGrafana 2>&1  | tee ~/configureGrafana.log
 
 #createceph 2>&1 | tee ~/createceph.log
-kubectl get po --all-namespaces | grep -v Run | grep -v Completed
+kubectl get po --all-namespaces | grep -v Running | grep -v Completed
 
 createceph
 #createcephObjects
@@ -74,7 +74,7 @@ createceph
 #createKubeless
 createOpenFaas 2>&1 | tee ~/createOpenFaas.log
 
-kubectl get po --all-namespaces | grep -v Run | grep -v Completed
+kubectl get po --all-namespaces | grep -v Running | grep -v Completed
 
 showDashboardIP | tee ~/showDashboardIP.log
  
