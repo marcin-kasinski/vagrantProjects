@@ -1219,5 +1219,7 @@ helm install --name=ceph local/ceph --namespace=ceph -f ~/ceph-overrides.yaml
 
 #kubectl logs -f -n ceph ceph-osd-dev-sdc-ms5ml -c osd-prepare-pod
 
+
+
 echo "createceph end"
 }
