@@ -1177,6 +1177,60 @@ helm install --name rook rook-master/rook --namespace kube-system --version v0.7
 
 }
 
+
+createcephObjects()
+{
+CEPH_MON_POD=$(kubectl get pod -l component=mon,application=ceph -n ceph -o jsonpath="{.items[0].metadata.name}")
+echo CEPH_MON_POD $CEPH_MON_POD
+kubectl -n ceph exec -ti $CEPH_MON_POD -c ceph-mon -- ceph -s
+
+#Create a keyring for the k8s user
+#kubectl -n ceph exec -ti $CEPH_MON_POD -c ceph-mon -- ceph auth get-or-create-key client.k8s mon 'allow r' osd 'allow rwx pool=rbd'  | base64
+
+
+CEPH_MON_SECRET=$(kubectl -n ceph exec -ti $CEPH_MON_POD -c ceph-mon -- ceph auth get-or-create-key client.k8s mon 'allow r' osd 'allow rwx pool=rbd'  | base64)
+echo CEPH_MON_SECRET $CEPH_MON_SECRET
+
+#echo key=$CEPH_MON_SECRET > keyring.txt
+
+#kubectl create secret generic -n ceph pvc-ceph-client-key --from-file=keyring.txt
+
+kubectl -n ceph get secrets/pvc-ceph-client-key -o yaml >keyring.yaml
+
+
+sed -i -e "s/  key: \"\"/  key: $CEPH_MON_SECRET/g" keyring.yaml
+
+kubectl apply -n ceph -f keyring.yaml
+
+kubectl -n ceph get secrets
+
+# create secret in default for client
+
+kubectl -n ceph get secrets/pvc-ceph-client-key -o json | jq '.metadata.namespace = "default"' | kubectl create -f -
+
+#Create and initialize the RBD pool
+#Original produces error: 
+#Error ERANGE:  pg_num 256 size 3 would mean 912 total pgs, which exceeds max 600 (mon_max_pg_per_osd 200 * num_in_osds 3)
+
+#kubectl -n ceph exec -ti $CEPH_MON_POD -c ceph-mon -- ceph osd pool create rbd 256
+#changet to
+kubectl -n ceph exec -ti $CEPH_MON_POD -c ceph-mon -- ceph osd pool create rbd 128
+kubectl -n ceph exec -ti $CEPH_MON_POD -c ceph-mon -- rbd pool init rbd
+
+curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/ceph_pvc.yaml?$(date +%s)"  | kubectl apply -f -
+
+#check that the RBD has been created on your cluster
+#kubectl -n ceph exec -ti $CEPH_MON_POD -c ceph-mon -- rbd ls
+
+CEPH_RBD=$(kubectl -n ceph exec -ti $CEPH_MON_POD -c ceph-mon -- rbd ls)
+CEPH_RBD="${CEPH_RBD##*( )}"
+echo $CEPH_RBD
+
+kubectl -n ceph exec -ti $CEPH_MON_POD -c ceph-mon -- rbd info $CEPH_RBD
+
+
+}
+
 createceph()
 {
 kubectl create clusterrolebinding defaultdminrolebinding --clusterrole=cluster-admin --serviceaccount kube-system:default
@@ -1214,8 +1268,6 @@ kubectl label node k8snode3 ceph-osd=enabled ceph-osd-device-dev-sdc=enabled cep
 echo "Helm installing ceph"
 
 helm install --name=ceph local/ceph --namespace=ceph -f ~/ceph-overrides.yaml
-
-#kubectl -n ceph exec -ti ceph-mon-q7t9l -c ceph-mon -- ceph -s
 
 #kubectl logs -f -n ceph ceph-osd-dev-sdc-ms5ml -c osd-prepare-pod
 
