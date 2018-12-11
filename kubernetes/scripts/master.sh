@@ -68,7 +68,7 @@ createMonitoring 2>&1 | tee ~/createMonitoring.log # grafana, prometheus , alert
 kubectl get po --all-namespaces | grep -v Run | grep -v Completed
 
 createceph
-createcephObjects
+#createcephObjects
 #createfnproject
 
 #createKubeless
