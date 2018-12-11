@@ -516,7 +516,7 @@ kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl versio
 
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
 
-add defalt to admin
+#add defalt to admin
 kubectl create clusterrolebinding defaultdminrolebinding --clusterrole=cluster-admin --serviceaccount kube-system:default
 
 
