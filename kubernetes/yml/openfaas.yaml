@@ -16,8 +16,8 @@ spec:
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: openfaas
-  namespace: openfaas-fn
+  name: openfaas-hello-java8func
+  namespace: openfaas
 spec:
   scaleTargetRef:
     apiVersion: apps/v1beta2
@@ -26,11 +26,27 @@ spec:
   minReplicas: 2
   maxReplicas: 10
   metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      targetAverageUtilization: 50
-  - type: Resource
-    resource:
-      name: memory
-      targetAverageValue: 400Mi          
+  - type: Pods
+    pods:
+      metricName: "gateway_service_count"
+      targetAverageValue: 1
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: openfaas-gateway
+  namespace: openfaas
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1beta2
+    kind: Deployment
+    name: gateway
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Pods
+    pods:
+      metricName: "gateway_service_count"
+      targetAverageValue: 1
+
+
