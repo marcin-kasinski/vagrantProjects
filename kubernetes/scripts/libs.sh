@@ -1202,9 +1202,24 @@ helm install --name rook rook-master/rook --namespace kube-system --version v0.7
 
 }
 
-
 createcephObjects()
 {
+
+getPodIP ceph-osd-dev ceph "application=ceph,component=osd"
+getPodIP ceph-mon ceph "application=ceph,component=mon"
+
+OSD_POD1_NAME=$(kubectl get daemonset -n ceph -l component=osd -o jsonpath="{.items[0].metadata.name}")
+#OSD_POD2_NAME=$(kubectl get daemonset -n ceph -l component=osd -o jsonpath="{.items[1].metadata.name}")
+#OSD_POD3_NAME=$(kubectl get daemonset -n ceph -l component=osd -o jsonpath="{.items[2].metadata.name}")
+
+
+OSD_STATUS=$(kubectl get daemonset -n ceph -l component=osd -o jsonpath="{.items[0].status.numberReady}")
+
+echo "OSD_POD1_NAME $OSD_POD1_NAME";
+echo "OSD_POD2_NAME $OSD_POD2_NAME";
+echo "OSD_POD3_NAME $OSD_POD3_NAME";
+echo "OSD_STATUS $OSD_STATUS";
+
 CEPH_MON_POD=$(kubectl get pod -l component=mon,application=ceph -n ceph -o jsonpath="{.items[0].metadata.name}")
 echo CEPH_MON_POD $CEPH_MON_POD
 kubectl -n ceph exec -ti $CEPH_MON_POD -c ceph-mon -- ceph -s
