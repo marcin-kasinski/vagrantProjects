@@ -1234,9 +1234,7 @@ getPodIP ceph-osd-dev ceph "application=ceph,component=osd"
 getPodIP ceph-mon ceph "application=ceph,component=mon"
 
 OSD_POD1_NAME=$(kubectl get daemonset -n ceph -l component=osd -o jsonpath="{.items[0].metadata.name}")
-#OSD_POD2_NAME=$(kubectl get daemonset -n ceph -l component=osd -o jsonpath="{.items[1].metadata.name}")
-#OSD_POD3_NAME=$(kubectl get daemonset -n ceph -l component=osd -o jsonpath="{.items[2].metadata.name}")
-
+echo OSD_POD1_NAME $OSD_POD1_NAME
 
 OSD_STATUS=$(kubectl get daemonset -n ceph -l component=osd -o jsonpath="{.items[0].status.numberReady}")
 
@@ -1300,12 +1298,10 @@ waitForPVC ceph-pvc
 createceph()
 {
 
-cd /root/
 echo "createceph"
+cd /root/
 
-id
-
-helm serve &
+nohup helm serve &
 
 sleep 1
 

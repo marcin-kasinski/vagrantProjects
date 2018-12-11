@@ -69,14 +69,13 @@ kubectl get po --all-namespaces | grep -v Running | grep -v Completed
 
 echo "before createceph"
 
-id
-
 createceph
-createcephObjects
+createcephObjects 2>&1 | tee ~/createcephObjects.log
+
 #createfnproject
 
 #createKubeless
-#createOpenFaas 2>&1 | tee ~/createOpenFaas.log
+createOpenFaas 2>&1 | tee ~/createOpenFaas.log
 
 kubectl get po --all-namespaces | grep -v Running | grep -v Completed
 
