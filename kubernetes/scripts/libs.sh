@@ -1179,7 +1179,7 @@ helm install --name rook rook-master/rook --namespace kube-system --version v0.7
 
 createceph()
 {
-kubectl create clusterrolebinding fnproject --clusterrole=cluster-admin --serviceaccount kube-system:default
+kubectl create clusterrolebinding defaultdminrolebinding --clusterrole=cluster-admin --serviceaccount kube-system:default
 
 
 helm serve &
