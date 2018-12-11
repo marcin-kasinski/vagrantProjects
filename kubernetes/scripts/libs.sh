@@ -1274,6 +1274,11 @@ kubectl get pvc
 createceph()
 {
 
+cd /root/
+echo "createceph"
+
+id
+
 helm serve &
 
 sleep 1
