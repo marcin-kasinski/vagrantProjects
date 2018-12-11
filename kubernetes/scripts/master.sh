@@ -71,9 +71,8 @@ echo "before createceph"
 
 id
 
-
 createceph
-#createcephObjects
+createcephObjects
 #createfnproject
 
 #createKubeless

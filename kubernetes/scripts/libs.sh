@@ -621,6 +621,31 @@ PODIP=`echo $PODIP | cut -d " " -f 6`
 retval=$PODIP
 }
 
+waitForPVC()
+{
+
+echo "waitForPVC"
+local PVC_NAME=$1
+local PVC_NAMESPACE=$2
+
+OPTS="";
+
+if [ ! -z "$PVC_NAMESPACE" ]; then 
+  #there is PVC_NAMESPACE
+  OPTS=" -n $PVC_NAMESPACE ";
+  echo "namespace $PVC_NAMESPACE "
+fi
+
+echo "OPTS [$OPTS]" 
+
+while ! kubectl get pvc $OPTS | grep $PVC_NAME | grep Bound ; do   echo "waiting for pod $PVC_NAME IP ..." ; sleep 20 ; done
+
+PODIP=`kubectl get pvc $OPTS | grep $PVC_NAME | grep Bound `
+PODIP=`echo $PODIP | cut -d " " -f 6`
+#echo $PODIP
+retval=$PODIP
+}
+
 waitForPODPort()
 {
 local POD_NAME=$1
@@ -1224,7 +1249,7 @@ CEPH_MON_POD=$(kubectl get pod -l component=mon,application=ceph -n ceph -o json
 echo CEPH_MON_POD $CEPH_MON_POD
 kubectl -n ceph exec -ti $CEPH_MON_POD -c ceph-mon -- ceph -s
 
-#Create a keyring for the k8s user
+echo Create a keyring for the k8s user
 #kubectl -n ceph exec -ti $CEPH_MON_POD -c ceph-mon -- ceph auth get-or-create-key client.k8s mon 'allow r' osd 'allow rwx pool=rbd'  | base64
 
 
@@ -1268,6 +1293,7 @@ echo $CEPH_RBD
 kubectl -n ceph exec -ti $CEPH_MON_POD -c ceph-mon -- rbd info $CEPH_RBD
 
 kubectl get pvc
+waitForPVC ceph-pvc
 
 }
 
