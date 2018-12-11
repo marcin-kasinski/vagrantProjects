@@ -589,13 +589,33 @@ echo $REALPODNAME
 retval=$REALPODNAME
 }
 
-
 getPodIP()
 {
-local POD_NAME=$1
-while ! kubectl get po -o wide | grep $POD_NAME | grep Running ; do   echo "waiting for pod $POD_NAME IP ..." ; sleep 20 ; done
 
-PODIP=`kubectl get po -o wide | grep $POD_NAME | grep Running `
+echo "getPodIP"
+local POD_NAME=$1
+local POD_NAMESPACE=$2
+local POD_LABEL=$3
+
+OPTS="";
+
+if [ ! -z "$POD_NAMESPACE" ]; then 
+  #there is POD_NAMESPACE
+  OPTS=" -n $POD_NAMESPACE ";
+  echo "namespace $POD_NAMESPACE "
+fi
+
+if [ ! -z "$POD_LABEL" ]; then 
+  #there is POD_LABEL
+  OPTS=$OPTS" -l $POD_LABEL ";
+  echo "label $POD_LABEL "
+fi
+
+echo "OPTS [$OPTS]" 
+
+while ! kubectl get po $OPTS -o wide | grep $POD_NAME | grep Running ; do   echo "waiting for pod $POD_NAME IP ..." ; sleep 20 ; done
+
+PODIP=`kubectl get po $OPTS -o wide | grep $POD_NAME | grep Running `
 PODIP=`echo $PODIP | cut -d " " -f 6`
 #echo $PODIP
 retval=$PODIP
@@ -1228,11 +1248,11 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 #kubectl -n ceph exec -ti $CEPH_MON_POD -c ceph-mon -- rbd ls
 
 CEPH_RBD=$(kubectl -n ceph exec -ti $CEPH_MON_POD -c ceph-mon -- rbd ls)
-CEPH_RBD="${CEPH_RBD##*( )}"
 echo $CEPH_RBD
 
 kubectl -n ceph exec -ti $CEPH_MON_POD -c ceph-mon -- rbd info $CEPH_RBD
 
+kubectl get pvc
 
 }
 
