@@ -29,7 +29,7 @@ createKafka 2>&1 | tee ~/createKafka.log
 
 #setupkerberos 2>&1 | tee ~/setupkerberos.log
 
-setupkafka 2>&1 | tee ~/setupkafka.log
+#setupkafka 2>&1 | tee ~/setupkafka.log
 #setupkafkaConnect 2>&1 | tee ~/setupkafkaConnect.log
 
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fakesmtp.yaml?$(date +%s)"  | kubectl apply -f -
@@ -41,7 +41,7 @@ createIngress
 
 createHeapster
 
-createMyapps
+#createMyapps
    
 # moje poprawki : dashboard
 curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/dashboard-service-ingress.yaml | kubectl apply -f -
@@ -52,7 +52,7 @@ curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/ku
 
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
 
-createMonitoring 2>&1 | tee ~/createMonitoring.log # grafana, prometheus , alertmanager, metric server and prometheus adapter
+#createMonitoring 2>&1 | tee ~/createMonitoring.log # grafana, prometheus , alertmanager, metric server and prometheus adapter
  
 #createMongo 2>&1 | tee ~/createMongo.log
 #createRedis 2>&1 | tee ~/createRedis.log
@@ -67,12 +67,17 @@ createMonitoring 2>&1 | tee ~/createMonitoring.log # grafana, prometheus , alert
 #createceph 2>&1 | tee ~/createceph.log
 kubectl get po --all-namespaces | grep -v Running | grep -v Completed
 
+echo "before createceph"
+
+id
+
+
 createceph
 #createcephObjects
 #createfnproject
 
 #createKubeless
-createOpenFaas 2>&1 | tee ~/createOpenFaas.log
+#createOpenFaas 2>&1 | tee ~/createOpenFaas.log
 
 kubectl get po --all-namespaces | grep -v Running | grep -v Completed
 
