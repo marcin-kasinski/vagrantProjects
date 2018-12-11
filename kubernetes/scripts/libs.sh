@@ -1230,13 +1230,23 @@ helm install --name rook rook-master/rook --namespace kube-system --version v0.7
 createcephObjects()
 {
 
-getPodIP ceph-osd-dev ceph "application=ceph,component=osd"
+OSD_POD1_NAME=$(kubectl get po -n ceph -l component=osd -o jsonpath="{.items[0].metadata.name}")
+OSD_POD2_NAME=$(kubectl get po -n ceph -l component=osd -o jsonpath="{.items[1].metadata.name}")
+OSD_POD3_NAME=$(kubectl get po -n ceph -l component=osd -o jsonpath="{.items[2].metadata.name}")
+
+echo OSD_POD1_NAME $OSD_POD1_NAME
+echo OSD_POD2_NAME $OSD_POD2_NAME
+echo OSD_POD3_NAME $OSD_POD3_NAME
+
 getPodIP ceph-mon ceph "application=ceph,component=mon"
 
-OSD_POD1_NAME=$(kubectl get daemonset -n ceph -l component=osd -o jsonpath="{.items[0].metadata.name}")
-echo OSD_POD1_NAME $OSD_POD1_NAME
+getPodIP $OSD_POD1_NAME ceph "application=ceph,component=osd"
+getPodIP $OSD_POD2_NAME ceph "application=ceph,component=osd"
+getPodIP $OSD_POD3_NAME ceph "application=ceph,component=osd"
 
-OSD_STATUS=$(kubectl get daemonset -n ceph -l component=osd -o jsonpath="{.items[0].status.numberReady}")
+OSD_NUMBER_READY=$(kubectl get daemonset -n ceph -l component=osd -o jsonpath="{.items[0].status.numberReady}")
+
+echo OSD_NUMBER_READY $OSD_NUMBER_READY
 
 echo "OSD_POD1_NAME $OSD_POD1_NAME";
 echo "OSD_POD2_NAME $OSD_POD2_NAME";
