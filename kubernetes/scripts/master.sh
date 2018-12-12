@@ -71,6 +71,7 @@ createcephObjects 2>&1 | tee ~/createcephObjects.log
 
 #createKubeless
 createOpenFaas 2>&1 | tee ~/createOpenFaas.log
+createOpenFaasFunction 2>&1 | tee ~/createOpenFaasFunction.log
 
 kubectl get po --all-namespaces | grep -v Running | grep -v Completed
 

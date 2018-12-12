@@ -22,7 +22,7 @@ cp /vagrant/conf/openfaas/Handler.java $functionName/src/main/java/com/openfaas/
 faas-cli build -f ./$functionName.yml
  
 #push
-docker login
+#docker login
 faas-cli push -f ./$functionName.yml
 #deploy
 faas-cli deploy -f ./$functionName.yml
@@ -39,7 +39,9 @@ kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/$functionNames
 
 kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/$functionNamespace/pods/*/gateway_service_count" | jq '.items[].value'
 
-kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/MKWEB_exec_time_seconds_max"
+kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/MKWEB_exec_time_seconds_max" | jq '.items[].value'
+
+kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/MKWEB_exec_time_seconds_avg" | jq '.items[].value'
 
 curl http://10.44.0.10:8080/metrics | grep java
 curl http://localhost:8080/apis/custom.metrics.k8s.io/v1beta1 | grep java
@@ -1098,14 +1100,14 @@ curl "https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/mast
         - --v=5\
         imagePullPolicy: Always	/g'   | kubectl apply -f -
 
-kubectl apply -f /vagrant/yml/monitoring/namespaces.yaml
+#kubectl apply -f /vagrant/yml/monitoring/namespaces.yaml
 
-#kubectl create secret generic key -n monitoring --from-file=/vagrant/conf/certs/prometheusadapter.key
-kubectl create configmap key -n custom-metrics --from-file=/vagrant/conf/certs/prometheusadapter.key
-kubectl create configmap crt -n custom-metrics --from-file=/vagrant/conf/certs/prometheusadapter.crt
+#kubectl create configmap key -n custom-metrics --from-file=/vagrant/conf/certs/prometheusadapter.key
+#kubectl create configmap crt -n custom-metrics --from-file=/vagrant/conf/certs/prometheusadapter.crt
 
-#kubectl apply -f /vagrant/yml/monitoring/custom-metrics-api
-kubectl apply -f /vagrant/yml/monitoring/manifests
+#kubectl apply -f /vagrant/yml/monitoring/manifests
+
+helm install --name prometheus-adapter stable/prometheus-adapter --namespace=prometheus-adapter -f /vagrant/conf/prometheus_adapter/prometheus_adapter-overrides.yaml
 
 kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1" | jq .
 kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/MK_6_received_messages" | jq  '.items[].value'
