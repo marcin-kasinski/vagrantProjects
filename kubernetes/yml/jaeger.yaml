@@ -11,4 +11,4 @@ spec:
       - path: /
         backend:
           serviceName: jaeger
-          servicePort: 80
+          servicePort: 5778
