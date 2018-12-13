@@ -187,9 +187,9 @@ metadata:
     app: springbootweb
 spec:
   ports:
-  - port: 9191
-    targetPort: 9191
-    name: server
+  - port: 7070
+    targetPort: 7070
+    name: http
   clusterIP: None
   selector:
     app: springbootweb
@@ -202,7 +202,7 @@ spec:
   type: NodePort
   ports:
   - port: 7070
-    nodePort: 30070
+    #nodePort: 30070
     targetPort: 7070
     protocol: TCP
     name: http
