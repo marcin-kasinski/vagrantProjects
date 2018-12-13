@@ -1,9 +1,36 @@
 
+setupIstio()
+{
+curl -L https://git.io/getLatestIstio | sh -
+
+ISTIO_VERSION=$(ls -l | grep istio- | cut -d ' ' -f 10)
+
+echo "ISTIO_VERSION $ISTIO_VERSION"
+
+cd $ISTIO_VERSION
+#Add the istioctl client to your PATH environment variable,
+export PATH=$PWD/bin:$PATH
+#Install Istio’s Custom Resource Definitions via
+kubectl apply -f install/kubernetes/helm/istio/templates/crds.yaml
+
+#before clean
+#kubectl delete -f install/kubernetes/helm/istio/templates/crds.yaml -n istio-system
+#helm del --purge istio
+
+#helm install install/kubernetes/helm/istio --name istio --namespace istio-system  -f install/kubernetes/helm/istio/values-istio-galley.yaml
+helm install install/kubernetes/helm/istio --name istio --namespace istio-system 
+
+#If you are using a cluster with automatic sidecar injection enabled, label the default namespace with istio-injection=enabled
+kubectl label namespace default istio-injection=enabled
+
+}
+
+
 createOpenFaasFunction()
 {
 
 functionName=hello-java8func
-functionNamespace=openfaas
+functionNamespace=openfaas-fn
 
 export FAASGATEWAYIP=$(kubectl get svc --namespace openfaas gateway -o jsonpath='{.spec.clusterIP}')
 echo FAASGATEWAYIP=$FAASGATEWAYIP
@@ -53,7 +80,7 @@ curl http://localhost:8080/apis/custom.metrics.k8s.io/v1beta1 | grep java
 
 createOpenFaas()
 {
-functionNamespace=openfaas
+functionNamespace=openfaas-fn
 
 kubectl apply -f https://raw.githubusercontent.com/openfaas/faas-netes/master/namespaces.yml
 
