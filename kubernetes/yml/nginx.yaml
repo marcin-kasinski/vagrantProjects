@@ -27,6 +27,7 @@ data:
     <!--<a href="http://fn-ui:30080">http://fn-ui:30080</a><br>-->
     <a href="http://faasgateway:30080">http://faasgateway:30080</a><br>
     <a href="http://kiali:30080">http://kiali:30080</a><br>
+    <a href="http://jaeger:30080">http://jaeger:30080</a><br>
     
      <br>
     
