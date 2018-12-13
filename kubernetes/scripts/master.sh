@@ -49,7 +49,10 @@ createIngress
 
 createHeapster
 
-createMyapps
+istioDisableInjection 
+createMyBackendServers 2>&1 | tee ~/createMyBackendServers.log
+istioEnableInjection
+createMyapps 2>&1 | tee ~/createMyapps.log
    
 # moje poprawki : dashboard
 curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/dashboard-service-ingress.yaml | kubectl apply -f -
@@ -67,7 +70,7 @@ createRedis 2>&1 | tee ~/createRedis.log
 istioEnableInjection
 
 setupMongodb 2>&1 | tee ~/setupMongodb.log
-#setupRedis 2>&1 | tee ~/setupRedis.log
+setupRedis 2>&1 | tee ~/setupRedis.log
 
 #showCustomService
 
