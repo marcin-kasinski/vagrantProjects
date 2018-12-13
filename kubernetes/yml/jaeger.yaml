@@ -12,3 +12,9 @@ spec:
         backend:
           serviceName: jaeger
           servicePort: 5778
+---
+apiVersion: io.jaegertracing/v1alpha1
+kind: Jaeger
+metadata:
+  name: simplest
+
