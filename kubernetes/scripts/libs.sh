@@ -289,6 +289,10 @@ sudo snap install helm --classic
 
 #sudo -H -u vagrant bash -c 'helm init' 
 helm init
+helm repo update
+
+getPodIP tiller-deploy- kube-system
+
 }
 
 setupJava()
