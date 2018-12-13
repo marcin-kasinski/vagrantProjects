@@ -10,8 +10,8 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: jaeger
-          servicePort: 5778
+          serviceName: jaeger-query
+          servicePort: 16686
 ---
 apiVersion: io.jaegertracing/v1alpha1
 kind: Jaeger
