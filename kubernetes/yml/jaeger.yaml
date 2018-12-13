@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: jaeger-ingress
-  namespace: openfaas
+  namespace: default
 spec:
   rules:
   - host: jaeger
