@@ -14,6 +14,9 @@ setupJava 2>&1 | tee ~/setupJava.log
 #configure_nfs 2>&1 | tee ~/configure_nfs.log
 init_kubernetes 2>&1 | tee ~/init_kubernetes.log
 
+setupIstio 2>&1 | tee ~/setupIstio.log
+createKiali 2>&1 | tee ~/createKiali.log
+
 installHelm 2>&1 | tee ~/installHelm.log
 
 setupSSL 2>&1 | tee ~/setupSSL.log
