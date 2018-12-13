@@ -51,6 +51,9 @@ helm install install/kubernetes/helm/istio --name istio --namespace istio-system
 kubectl label namespace default istio-injection=enabled
 
 kubectl get svc -n istio-system
+kubectl get po -n istio-system
+
+getPodIP istio-sidecar-injector- istio-system
 
 }
 
