@@ -1,10 +1,32 @@
 
+createJaeger()
+{
+#kubectl create -f https://raw.githubusercontent.com/jaegertracing/jaeger-kubernetes/master/all-in-one/jaeger-all-in-one-template.yml
+
+
+
+kubectl create -f https://raw.githubusercontent.com/jaegertracing/jaeger-operator/master/deploy/crds/io_v1alpha1_jaeger_crd.yaml
+kubectl create -f https://raw.githubusercontent.com/jaegertracing/jaeger-operator/master/deploy/service_account.yaml
+kubectl create -f https://raw.githubusercontent.com/jaegertracing/jaeger-operator/master/deploy/role.yaml
+kubectl create -f https://raw.githubusercontent.com/jaegertracing/jaeger-operator/master/deploy/role_binding.yaml
+kubectl create -f https://raw.githubusercontent.com/jaegertracing/jaeger-operator/master/deploy/operator.yaml
+
+curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/jaeger.yaml?$(date +%s)"  | kubectl apply -f -
+
+kubectl get jaeger
+kubectl get pods -l jaeger=simplest
+
+}
+
 #https://www.kiali.io/gettingstarted/#_getting_started_on_kubernetes
 createKiali()
 {
 
 JAEGER_URL="http://jaeger-query-istio-system.127.0.0.1.nip.io"
-GRAFANA_URL="http://grafana-istio-system.127.0.0.1.nip.io"
+JAEGER_URL="http://simplest-query.default.svc.cluster.local"
+#GRAFANA_URL="http://grafana-istio-system.127.0.0.1.nip.io"
+GRAFANA_URL="http://grafana.default.svc.cluster.local:3000"
+
 VERSION_LABEL="v0.10.0"
 
 curl https://raw.githubusercontent.com/kiali/kiali/${VERSION_LABEL}/deploy/kubernetes/kiali-configmap.yaml | \
@@ -26,6 +48,22 @@ curl https://raw.githubusercontent.com/kiali/kiali/${VERSION_LABEL}/deploy/kuber
 
 }
 
+
+
+istioEnableInjection()
+{
+#to disable injection
+#kubectl label namespace default istio-injection-
+}
+
+
+istioDisableInjection()
+{
+#to disable injection
+#kubectl label namespace default istio-injection-
+}
+
+
 setupIstio()
 {
 curl -L https://git.io/getLatestIstio | sh -
@@ -36,7 +74,7 @@ echo "ISTIO_VERSION $ISTIO_VERSION"
 
 cd $ISTIO_VERSION
 #Add the istioctl client to your PATH environment variable,
-export PATH=$PWD/bin:$PATH
+#export PATH=$PWD/bin:$PATH
 #Install Istio’s Custom Resource Definitions via
 #kubectl apply -f install/kubernetes/helm/istio/templates/crds.yaml
 
@@ -47,8 +85,7 @@ export PATH=$PWD/bin:$PATH
 #helm install install/kubernetes/helm/istio --name istio --namespace istio-system  -f install/kubernetes/helm/istio/values-istio-galley.yaml
 helm install install/kubernetes/helm/istio --name istio --namespace istio-system 
 
-#If you are using a cluster with automatic sidecar injection enabled, label the default namespace with istio-injection=enabled
-kubectl label namespace default istio-injection=enabled
+istioEnableInjection
 
 kubectl get svc -n istio-system
 kubectl get po -n istio-system

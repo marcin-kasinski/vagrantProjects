@@ -17,6 +17,8 @@ setupJava 2>&1 | tee ~/setupJava.log
 init_kubernetes 2>&1 | tee ~/init_kubernetes.log
 installHelm 2>&1 | tee ~/installHelm.log
 
+createJaeger 2>&1 | tee ~/createJaeger.log
+
 setupIstio 2>&1 | tee ~/setupIstio.log
 createKiali 2>&1 | tee ~/createKiali.log
 
@@ -25,11 +27,13 @@ setupSSL 2>&1 | tee ~/setupSSL.log
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mysql.yaml?$(date +%s)"  | kubectl apply -f -
 
+istioDisableInjection
 createKafka 2>&1 | tee ~/createKafka.log
+istioEnableInjection
 
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kerberos.yaml?$(date +%s)"  | kubectl apply -f -
 
-setupMYSQL
+setupMYSQL 2>&1 | tee ~/setupMYSQL.log
 
 #setupkerberos 2>&1 | tee ~/setupkerberos.log
 
@@ -62,7 +66,7 @@ createMongo 2>&1 | tee ~/createMongo.log
 createRedis 2>&1 | tee ~/createRedis.log
 
 setupMongodb 2>&1 | tee ~/setupMongodb.log
-setupRedis 2>&1 | tee ~/setupRedis.log
+#setupRedis 2>&1 | tee ~/setupRedis.log
 
 #showCustomService
 
