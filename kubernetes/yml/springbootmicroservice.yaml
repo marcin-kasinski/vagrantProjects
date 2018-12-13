@@ -151,7 +151,7 @@ spec:
           initialDelaySeconds: 300
           periodSeconds: 10
         ports:
-        - name: http-port
+        - name: http
           containerPort: 9191
         env:
         - name: SPRING_PROFILE
@@ -182,7 +182,7 @@ spec:
   ports:
   - port: 9191
     targetPort: 9191
-    name: client
+    name: http
   selector:
     app: springbootmicroservice
 ---
@@ -196,7 +196,7 @@ spec:
   ports:
   - port: 9191
     targetPort: 9191
-    name: server
+    name: http
   clusterIP: None
   selector:
     app: springbootmicroservice
