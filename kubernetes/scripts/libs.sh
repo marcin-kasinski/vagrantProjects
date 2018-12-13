@@ -22,8 +22,8 @@ kubectl get pods -l jaeger=simplest
 createKiali()
 {
 
-JAEGER_URL="http://jaeger-query-istio-system.127.0.0.1.nip.io"
-JAEGER_URL="http://simplest-query.default.svc.cluster.local"
+#JAEGER_URL="http://jaeger-query-istio-system.127.0.0.1.nip.io"
+JAEGER_URL="http://jaeger-query.default.svc.cluster.local"
 #GRAFANA_URL="http://grafana-istio-system.127.0.0.1.nip.io"
 GRAFANA_URL="http://grafana.default.svc.cluster.local:3000"
 
