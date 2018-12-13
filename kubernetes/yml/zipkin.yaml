@@ -14,7 +14,7 @@ spec:
 #        image: marcinkasinski/springbootzipkin
         image: openzipkin/zipkin        
         ports:
-        - name: web-port
+        - name: http
           containerPort: 9411
         env:
         - name: JAVA_OPTS
