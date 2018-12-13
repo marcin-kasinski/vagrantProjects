@@ -1,4 +1,31 @@
 
+#https://www.kiali.io/gettingstarted/#_getting_started_on_kubernetes
+createKiali()
+{
+
+JAEGER_URL="http://jaeger-query-istio-system.127.0.0.1.nip.io"
+GRAFANA_URL="http://grafana-istio-system.127.0.0.1.nip.io"
+VERSION_LABEL="v0.10.0"
+
+curl https://raw.githubusercontent.com/kiali/kiali/${VERSION_LABEL}/deploy/kubernetes/kiali-configmap.yaml | \
+  VERSION_LABEL=${VERSION_LABEL} \
+  JAEGER_URL=${JAEGER_URL}  \
+  ISTIO_NAMESPACE=istio-system  \
+  GRAFANA_URL=${GRAFANA_URL} envsubst | kubectl create -n istio-system -f -
+
+curl https://raw.githubusercontent.com/kiali/kiali/${VERSION_LABEL}/deploy/kubernetes/kiali-secrets.yaml | \
+  VERSION_LABEL=${VERSION_LABEL} envsubst | kubectl create -n istio-system -f -
+
+curl https://raw.githubusercontent.com/kiali/kiali/${VERSION_LABEL}/deploy/kubernetes/kiali.yaml | \
+  VERSION_LABEL=${VERSION_LABEL}  \
+  IMAGE_NAME=kiali/kiali \
+  IMAGE_VERSION=${VERSION_LABEL}  \
+  NAMESPACE=istio-system  \
+  VERBOSE_MODE=4  \
+  IMAGE_PULL_POLICY_TOKEN="imagePullPolicy: Always" envsubst | kubectl create -n istio-system -f -
+
+}
+
 setupIstio()
 {
 curl -L https://git.io/getLatestIstio | sh -
@@ -11,7 +38,7 @@ cd $ISTIO_VERSION
 #Add the istioctl client to your PATH environment variable,
 export PATH=$PWD/bin:$PATH
 #Install Istio’s Custom Resource Definitions via
-kubectl apply -f install/kubernetes/helm/istio/templates/crds.yaml
+#kubectl apply -f install/kubernetes/helm/istio/templates/crds.yaml
 
 #before clean
 #kubectl delete -f install/kubernetes/helm/istio/templates/crds.yaml -n istio-system
@@ -22,6 +49,8 @@ helm install install/kubernetes/helm/istio --name istio --namespace istio-system
 
 #If you are using a cluster with automatic sidecar injection enabled, label the default namespace with istio-injection=enabled
 kubectl label namespace default istio-injection=enabled
+
+kubectl get svc -n istio-system
 
 }
 
@@ -1213,15 +1242,14 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kibana.yaml?$(date +%s)" | kubectl apply -f -
 
-curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/rabbitmq_dp_and_service.yaml | kubectl apply -f -
+curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/rabbitmq.yaml | kubectl apply -f -
 
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootZipkin_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -
+curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/zipkin.yaml?$(date +%s)"  | kubectl apply -f -
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/SpringBootRabbitMQListener_dp_and_service.yaml?$(date +%s)"  | kubectl apply -f -
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/springbootkafkalistener.yaml?$(date +%s)"  | kubectl apply -f -
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/springbootmicroservice.yaml?$(date +%s)"  | kubectl apply -f -
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/springbootweb.yaml?$(date +%s)"  | kubectl apply -f -
-
 
 }
 
