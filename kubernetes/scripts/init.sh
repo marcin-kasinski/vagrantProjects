@@ -6,6 +6,7 @@ start=$(date +%s)
 echo $start > /tmp/start_time
 
 sudo sh -c "echo 'export PATH=$PATH:/vagrant/scripts' >> /home/vagrant/.bashrc"
+sudo sh -c "echo 'export PATH=$PATH:/vagrant/scripts' >> /root/.bashrc"
 
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
 
