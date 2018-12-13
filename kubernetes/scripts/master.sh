@@ -9,6 +9,8 @@ echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
 
 #ls | grep pattern | sed -e 's/^/prefix/' -e 's/$/suffix/'
 
+cd ~
+
 setupJava 2>&1 | tee ~/setupJava.log
 
 #configure_nfs 2>&1 | tee ~/configure_nfs.log
