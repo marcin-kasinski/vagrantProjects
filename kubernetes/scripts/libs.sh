@@ -98,7 +98,7 @@ helm upgrade openfaas --install openfaas/openfaas \
 #install cli
 sudo curl -sL https://cli.openfaas.com | sudo sh
 
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/openfaas.yaml?$(date +%s)"  | kubectl apply -f -
+#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/openfaas.yaml?$(date +%s)"  | kubectl apply -f -
 
 #kubectl patch deployment -n openfaas gateway -p='[{"op": "add", "path": "/metadata/labels", "value": "xx=xxxxx"}]'
 
@@ -110,7 +110,6 @@ kubectl delete svc -n openfaas alertmanager
 kubectl delete deployment -n openfaas prometheus
 kubectl delete deployment -n openfaas alertmanager
 
-kubectl delete namespace openfaas-fn
 }
 
 createKubeless()
