@@ -23,8 +23,9 @@ spec:
         env:
         - name: GF_SECURITY_ADMIN_PASSWORD
           value: "admin"
-        - name: GF_INSTALL_PLUGINS
-          value: "marcuscalidus-svg-panel"
+        # removed because of tcp problem
+        #- name: GF_INSTALL_PLUGINS
+        #  value: "marcuscalidus-svg-panel"
 ---
 apiVersion: v1
 kind: Service
