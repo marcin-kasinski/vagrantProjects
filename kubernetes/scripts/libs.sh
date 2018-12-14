@@ -540,6 +540,15 @@ done
 
 }
 
+createWeave()
+{
+kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+
+#weave scope
+kubectl apply -f "https://cloud.weave.works/k8s/scope.yaml?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+}
+
+
 init_kubernetes()
 {
 #sudo rm -rf ~/.kube && sudo kubeadm reset && 
@@ -599,7 +608,6 @@ sudo chown vagrant:vagrant /home/vagrant/.kube/config
 kubectl taint nodes --all node-role.kubernetes.io/master-
 
 #kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 
 #kubectl apply -f https://raw.githubusercontent.com/fluent/fluentd-kubernetes-daemonset/master/fluentd-daemonset-elasticsearch-rbac.yaml
 
