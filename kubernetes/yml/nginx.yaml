@@ -28,7 +28,7 @@ data:
     <a href="http://faasgateway:30080">http://faasgateway:30080</a><br>
     <a href="http://kiali:30080">http://kiali:30080</a><br>
     <a href="http://jaeger:30080">http://jaeger:30080</a><br>
-    
+    <a href="http://rabbitmq:30080">http://rabbitmq:30080</a><br>
      <br>
     
     Inne:<br>
