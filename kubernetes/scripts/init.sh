@@ -57,12 +57,10 @@ K8S_VERSION=${K8S_VERSION//v}
 echo $K8S_VERSION
 
 #static
-K8S_VERSION=1.13.0
+K8S_VERSION=1.12.3
 
 sudo apt install -y kubelet=${K8S_VERSION}-00 kubeadm=${K8S_VERSION}-00  kubectl=${K8S_VERSION}-00   kubernetes-cni 
 #sudo apt install -y kubelet kubeadm kubectl kubernetes-cni 
-
-
 
 #sudo apt install -y kubelet kubeadm kubectl kubernetes-cni=0.6.0-00 
 
