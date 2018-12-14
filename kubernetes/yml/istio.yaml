@@ -1,16 +1,30 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: httpbin-ext
+  name: mongodb-router-cs.default.svc.cluster.local
 spec:
   hosts:
-  - httpbin.org
+  - mongodb-router-cs.default.svc.cluster.local
   ports:
-  - number: 80
-    name: http
-    protocol: HTTP
+  - number: 27017
+    name: tcp
+    protocol: TCP
   resolution: DNS
-  location: MESH_EXTERNAL
+  location: MESH_INTERNAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: rabbitmq.default.svc.cluster.local
+spec:
+  hosts:
+  - rabbitmq.default.svc.cluster.local
+  ports:
+  - number: 5672
+    name: tcp
+    protocol: TCP
+  resolution: DNS
+  location: MESH_INTERNAL
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
@@ -41,6 +55,72 @@ spec:
     route:
     - destination:
         host: api.rubygems.org
+        port:
+          number: 443
+      weight: 100
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: grafana.com
+spec:
+  hosts:
+  - grafana.com
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+  resolution: DNS
+  location: MESH_EXTERNAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: grafana.com
+spec:
+  hosts:
+  - grafana.com
+  tls:
+  - match:
+    - port: 443
+      sni_hosts:
+      - grafana.com
+    route:
+    - destination:
+        host: grafana.com
+        port:
+          number: 443
+      weight: 100      
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: codeload.github.com
+spec:
+  hosts:
+  - codeload.github.com
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+  resolution: DNS
+  location: MESH_EXTERNAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: codeload.github.com
+spec:
+  hosts:
+  - codeload.github.com
+  tls:
+  - match:
+    - port: 443
+      sni_hosts:
+      - codeload.github.com
+    route:
+    - destination:
+        host: codeload.github.com
         port:
           number: 443
       weight: 100
