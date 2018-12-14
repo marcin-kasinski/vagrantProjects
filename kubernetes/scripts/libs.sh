@@ -48,11 +48,9 @@ curl https://raw.githubusercontent.com/kiali/kiali/${VERSION_LABEL}/deploy/kuber
 
 }
 
-
-
 istioEnableInjection()
 {
-#to disable injection
+#to enable injection
 kubectl label namespace default istio-injection=enabled
 }
 
@@ -62,7 +60,6 @@ istioDisableInjection()
 #to disable injection
 kubectl label namespace default "istio-injection-"
 }
-
 
 setupIstio()
 {
