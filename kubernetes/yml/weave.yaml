@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: weave-ingress
+  namespace: weave
+  annotations:
+spec:
+  rules:
+  - host: weave
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: springbootweb
+          servicePort: 80
+---
