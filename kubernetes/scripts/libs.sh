@@ -92,6 +92,7 @@ kubectl get po -n istio-system
 
 getPodIP istio-sidecar-injector- istio-system
 
+curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/istio.yaml?$(date +%s)"  | kubectl apply -f -
 }
 
 
