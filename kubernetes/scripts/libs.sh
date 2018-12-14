@@ -698,12 +698,14 @@ local POD_NAME=$1
 local POD_NAMESPACE=$2
 local POD_LABEL=$3
 
+  echo "name $POD_NAME"
+
 OPTS="";
 
 if [ ! -z "$POD_NAMESPACE" ]; then 
   #there is POD_NAMESPACE
   OPTS=" -n $POD_NAMESPACE ";
-  echo "namespace $POD_NAMESPACE "
+  echo "namespace $POD_NAMESPACE"
 fi
 
 if [ ! -z "$POD_LABEL" ]; then 
