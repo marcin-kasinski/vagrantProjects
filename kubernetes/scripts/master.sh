@@ -15,6 +15,9 @@ setupJava 2>&1 | tee ~/setupJava.log
 
 #configure_nfs 2>&1 | tee ~/configure_nfs.log
 init_kubernetes 2>&1 | tee ~/init_kubernetes.log
+
+createWeave 2>&1 | tee ~/createWeave.log
+
 installHelm 2>&1 | tee ~/installHelm.log
 
 createJaeger 2>&1 | tee ~/createJaeger.log
