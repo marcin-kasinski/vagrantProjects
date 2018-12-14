@@ -70,7 +70,6 @@ istioDisableInjection
 createMonitoring 2>&1 | tee ~/createMonitoring.log # grafana, prometheus , alertmanager, metric server and prometheus adapter
 createMongo 2>&1 | tee ~/createMongo.log
 createRedis 2>&1 | tee ~/createRedis.log
-istioEnableInjection
 
 setupMongodb 2>&1 | tee ~/setupMongodb.log
 setupRedis 2>&1 | tee ~/setupRedis.log
@@ -85,7 +84,7 @@ createcephObjects 2>&1 | tee ~/createcephObjects.log
 #createfnproject
 
 #createKubeless
-istioDisableInjection 
+
 
 createOpenFaas 2>&1 | tee ~/createOpenFaas.log
 createOpenFaasFunction 2>&1 | tee ~/createOpenFaasFunction.log
