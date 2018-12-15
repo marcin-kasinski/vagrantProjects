@@ -582,9 +582,9 @@ echo  "IP $IP"
 #sudo kubeadm init --pod-network-cidr 10.244.0.0/16 --apiserver-advertise-address $IP  >kubeadm_join
 
 #for weave networking
-#sudo kubeadm init --pod-network-cidr 10.32.0.0/12 --apiserver-advertise-address $IP  >kubeadm_join
+sudo kubeadm init --pod-network-cidr 10.32.0.0/12 --apiserver-advertise-address $IP  2>&1 | tee kubeadm_join
 
-sudo kubeadm init --apiserver-advertise-address $IP --kubernetes-version stable-1.12  2>&1 | tee kubeadm_join
+#sudo kubeadm init --apiserver-advertise-address $IP --kubernetes-version stable-1.12  2>&1 | tee kubeadm_join
 
 cat kubeadm_join
 cat kubeadm_join |  grep "kubeadm join"  >join_command
