@@ -1,27 +1,7 @@
 #!/bin/bash
 source /vagrant/scripts/libs.sh
 
-#sudo apt install -y openjdk-9-jdk
-sudo apt install -y default-jdk
 
-echo I am provisioning...
-echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
-
-#ls | grep pattern | sed -e 's/^/prefix/' -e 's/$/suffix/'
-
-cd ~
-
-setupJava 2>&1 | tee ~/setupJava.log
-
-#configure_nfs 2>&1 | tee ~/configure_nfs.log
-init_kubernetes 2>&1 | tee ~/init_kubernetes.log
-
-createWeave 2>&1 | tee ~/createWeave.log
-
-installHelm 2>&1 | tee ~/installHelm.log
-
-/vagrant/scripts/testistio.sh
-exit
 
 createJaeger 2>&1 | tee ~/createJaeger.log
 
@@ -62,36 +42,6 @@ createMyapps 2>&1 | tee ~/createMyapps.log
    
 # moje poprawki : dashboard
 curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/dashboard-service-ingress.yaml | kubectl apply -f -
-
-#curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/influxdb-ingress.yaml | kubectl apply -f -
-#curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/graphite.yaml | kubectl apply -f -
-
-
-echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
-
-istioDisableInjection 
-createMonitoring 2>&1 | tee ~/createMonitoring.log # grafana, prometheus , alertmanager, metric server and prometheus adapter
-createMongo 2>&1 | tee ~/createMongo.log
-createRedis 2>&1 | tee ~/createRedis.log
-
-setupMongodb 2>&1 | tee ~/setupMongodb.log
-setupRedis 2>&1 | tee ~/setupRedis.log
-
-#showCustomService
-
-#configureGrafana 2>&1  | tee ~/configureGrafana.log
-
-createceph
-createcephObjects 2>&1 | tee ~/createcephObjects.log
-
-#createfnproject
-
-#createKubeless
-
-
-createOpenFaas 2>&1 | tee ~/createOpenFaas.log
-createOpenFaasFunction 2>&1 | tee ~/createOpenFaasFunction.log
-istioEnableInjection
 
 kubectl get po --all-namespaces | grep -v Running | grep -v Completed
 
