@@ -22,7 +22,7 @@ createVistio()
 {
 git clone https://github.com/nmnellis/vistio.git
 cd vistio
-#helm install helm/vistio --name vistio --namespace default -f helm/vistio/values-mesh-only.yaml 
+helm install helm/vistio --name vistio --namespace default -f helm/vistio/values-mesh-only.yaml 
 
 
 #helm install helm/vistio --name vistio --namespace default -f helm/vistio/values-with-ingress.yaml
@@ -1266,7 +1266,7 @@ curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/rb
 #curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/with-rbac.yaml | kubectl apply -f -
 
 #set 3 replicas
-curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/with-rbac.yaml | sed -e 's/  replicas: 1/  replicas: 3/g' | kubectl apply -f -
+curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/with-rbac.yaml | sed -e 's/  replicas: 1/  replicas: 4/g' | kubectl apply -f -
 
 curl "https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/provider/baremetal/service-nodeport.yaml?$(date +%s)"  | kubectl apply -f -
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/ingress-service-nodeport.yaml?$(date +%s)"  | kubectl apply -f -
