@@ -29,6 +29,9 @@ data:
     <a href="http://kiali:30080">http://kiali:30080</a><br>
     <a href="http://jaeger:30080">http://jaeger:30080</a><br>
     <a href="http://rabbitmq:30080">http://rabbitmq:30080</a><br>
+    <a href="http://vistio:30080">http://vistio:30080</a><br>
+    
+    
      <br>
     
     Inne:<br>

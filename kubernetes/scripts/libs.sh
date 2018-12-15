@@ -18,6 +18,19 @@ kubectl get pods -l jaeger=simplest
 
 }
 
+createVistio()
+{
+git clone https://github.com/nmnellis/vistio.git
+cd vistio
+#helm install helm/vistio --name vistio --namespace default -f helm/vistio/values-mesh-only.yaml 
+
+
+#helm install helm/vistio --name vistio --namespace default -f helm/vistio/values-with-ingress.yaml
+curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/vistio.yaml?$(date +%s)"  | kubectl apply -f -
+
+cd ~
+}
+
 #https://www.kiali.io/gettingstarted/#_getting_started_on_kubernetes
 createKiali()
 {
@@ -51,14 +64,14 @@ curl https://raw.githubusercontent.com/kiali/kiali/${VERSION_LABEL}/deploy/kuber
 istioEnableInjection()
 {
 #to enable injection
-kubectl label namespace default istio-injection=enabled
+kubectl label namespace apps istio-injection=enabled
 }
 
 
 istioDisableInjection()
 {
 #to disable injection
-kubectl label namespace default "istio-injection-"
+kubectl label namespace apps "istio-injection-"
 }
 
 setupIstio()
@@ -627,6 +640,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/s
 kubectl create clusterrolebinding defaultdminrolebinding --clusterrole=cluster-admin --serviceaccount kube-system:default
 
 
+kubectl create namespace apps
 
 }
 
