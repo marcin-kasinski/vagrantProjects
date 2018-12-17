@@ -1,7 +1,6 @@
 kind: ConfigMap
 metadata:
   name: springbootkafkalistener-bootstrap-yml-cm
-  namespace: default
 apiVersion: v1
 data:
   bootstrap.yml: |-
