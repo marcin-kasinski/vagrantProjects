@@ -447,8 +447,8 @@ createCA
 createServerCert kafka-0.k-hs.default.svc.cluster.local default
 createServerCert kafka-1.k-hs.default.svc.cluster.local default
 createServerCert kafka-2.k-hs.default.svc.cluster.local default
-createServerCert springbootweb-0.springbootweb-hs.default.svc.cluster.local $NAMESPACE
-createServerCert springbootkafkalistener-0.springbootkafkalistener-hs.default.svc.cluster.local $NAMESPACE
+createServerCert springbootweb-0.springbootweb-hs.$NAMESPACE.svc.cluster.local $NAMESPACE
+createServerCert springbootkafkalistener-0.springbootkafkalistener-hs.$NAMESPACE.svc.cluster.local $NAMESPACE
 }
 
 setupkerberos()
