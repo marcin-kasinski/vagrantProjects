@@ -443,9 +443,10 @@ echo setupSSL $NAMESPACE
 sudo rm /tmp/key* && sudo rm /tmp/tr* && sudo rm /tmp/ce* && sudo rm /tmp/ca*
 
 createCA
-createServerCert kafka-0.k-hs.default.svc.cluster.local $NAMESPACE
-createServerCert kafka-1.k-hs.default.svc.cluster.local $NAMESPACE
-createServerCert kafka-2.k-hs.default.svc.cluster.local $NAMESPACE
+# kafka certs in default namespace
+createServerCert kafka-0.k-hs.default.svc.cluster.local default
+createServerCert kafka-1.k-hs.default.svc.cluster.local default
+createServerCert kafka-2.k-hs.default.svc.cluster.local default
 createServerCert springbootweb-0.springbootweb-hs.default.svc.cluster.local $NAMESPACE
 createServerCert springbootkafkalistener-0.springbootkafkalistener-hs.default.svc.cluster.local $NAMESPACE
 }
