@@ -20,12 +20,13 @@ createWeave 2>&1 | tee ~/createWeave.log
 
 installHelm 2>&1 | tee ~/installHelm.log
 
-/vagrant/scripts/testistio.sh
+/vagrant/scripts/test.sh
 exit
 
 createJaeger 2>&1 | tee ~/createJaeger.log
 
 setupIstio 2>&1 | tee ~/setupIstio.log
+createVistio 2>&1 | tee ~/createVistio.log
 createKiali 2>&1 | tee ~/createKiali.log
 
 createAmbassador 2>&1 | tee ~/createAmbassador.log

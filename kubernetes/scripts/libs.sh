@@ -76,8 +76,11 @@ createVistio()
 {
 git clone https://github.com/nmnellis/vistio.git
 cd vistio
-helm install helm/vistio --name vistio --namespace default -f helm/vistio/values-mesh-only.yaml 
 
+removed storageclass
+cp /vagrant/conf/vistio/statefulset.yaml helm/vistio/templates/statefulset.yaml
+
+helm install helm/vistio --name vistio --namespace default -f helm/vistio/values-mesh-only.yaml  --set web.env.updateURL=http://vistio-api:30080/graph
 
 #helm install helm/vistio --name vistio --namespace default -f helm/vistio/values-with-ingress.yaml
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/vistio.yaml?$(date +%s)"  | kubectl apply -f -
