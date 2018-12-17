@@ -30,7 +30,7 @@ createVistio 2>&1 | tee ~/createVistio.log
 createKiali 2>&1 | tee ~/createKiali.log
 
 createAmbassador 2>&1 | tee ~/createAmbassador.log
-setupSSL 2>&1 | tee ~/setupSSL.log
+setupSSL apps 2>&1 | tee ~/setupSSL.log
 #install_cfssl
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mysql.yaml?$(date +%s)"  | kubectl apply -f -

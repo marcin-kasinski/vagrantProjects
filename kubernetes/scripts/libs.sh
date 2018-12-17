@@ -387,8 +387,12 @@ echo |
 
 createServerCert()
 {
-
 local host=$1
+local NAMESPACE=$2
+
+echo createServerCert $host $NAMESPACE
+
+
 shorthostname=`echo $host | cut -d "." -f 1`
 
 serveralias=$host
@@ -422,26 +426,28 @@ keytool -keystore /tmp/keystore-$shorthostname.jks -alias $serveralias -import -
 #listing keys
 keytool -list -keystore /tmp/keystore-$shorthostname.jks -v -storepass $CLIPASS | grep "Owner: \|Issuer: "
 
-kubectl delete configmap keystore-$shorthostname.jks | true
-kubectl delete configmap truststore-$shorthostname.jks | true
+kubectl delete configmap keystore-$shorthostname.jks -n $NAMESPACE | true
+kubectl delete configmap truststore-$shorthostname.jks -n $NAMESPACE | true
 
-kubectl create configmap keystore-$shorthostname.jks -n default --from-file=/tmp/keystore-$shorthostname.jks
-kubectl create configmap truststore-$shorthostname.jks -n default --from-file=/tmp/truststore-$shorthostname.jks
+kubectl create configmap keystore-$shorthostname.jks -n $NAMESPACE --from-file=/tmp/keystore-$shorthostname.jks
+kubectl create configmap truststore-$shorthostname.jks -n $NAMESPACE --from-file=/tmp/truststore-$shorthostname.jks
 
 }
 
 
 setupSSL()
 {
+local NAMESPACE=$1
 
+echo setupSSL $NAMESPACE
 sudo rm /tmp/key* && sudo rm /tmp/tr* && sudo rm /tmp/ce* && sudo rm /tmp/ca*
 
 createCA
-createServerCert kafka-0.k-hs.default.svc.cluster.local
-createServerCert kafka-1.k-hs.default.svc.cluster.local
-createServerCert kafka-2.k-hs.default.svc.cluster.local
-createServerCert springbootweb-0.springbootweb-hs.default.svc.cluster.local
-createServerCert springbootkafkalistener-0.springbootkafkalistener-hs.default.svc.cluster.local
+createServerCert kafka-0.k-hs.default.svc.cluster.local $NAMESPACE
+createServerCert kafka-1.k-hs.default.svc.cluster.local $NAMESPACE
+createServerCert kafka-2.k-hs.default.svc.cluster.local $NAMESPACE
+createServerCert springbootweb-0.springbootweb-hs.default.svc.cluster.local $NAMESPACE
+createServerCert springbootkafkalistener-0.springbootkafkalistener-hs.default.svc.cluster.local $NAMESPACE
 }
 
 setupkerberos()
