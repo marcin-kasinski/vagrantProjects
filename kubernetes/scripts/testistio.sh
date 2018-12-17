@@ -3,7 +3,7 @@ source /vagrant/scripts/libs.sh
 
 createJaeger 2>&1 | tee ~/createJaeger.log
 
-#setupIstio 2>&1 | tee ~/setupIstio.log
+setupIstio 2>&1 | tee ~/setupIstio.log
 createKiali 2>&1 | tee ~/createKiali.log
 
 createAmbassador 2>&1 | tee ~/createAmbassador.log
