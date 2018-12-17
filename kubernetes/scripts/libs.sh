@@ -1,4 +1,3 @@
-
 createJaeger()
 {
 #kubectl create -f https://raw.githubusercontent.com/jaegertracing/jaeger-kubernetes/master/all-in-one/jaeger-all-in-one-template.yml
@@ -16,19 +15,6 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 kubectl get jaeger
 kubectl get pods -l jaeger=simplest
 
-}
-
-createVistio()
-{
-git clone https://github.com/nmnellis/vistio.git
-cd vistio
-helm install helm/vistio --name vistio --namespace default -f helm/vistio/values-mesh-only.yaml 
-
-
-#helm install helm/vistio --name vistio --namespace default -f helm/vistio/values-with-ingress.yaml
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/vistio.yaml?$(date +%s)"  | kubectl apply -f -
-
-cd ~
 }
 
 #https://www.kiali.io/gettingstarted/#_getting_started_on_kubernetes
@@ -74,6 +60,31 @@ istioDisableInjection()
 kubectl label namespace apps "istio-injection-"
 }
 
+createAmbassador()
+{
+
+#helm repo add datawire https://www.getambassador.io
+#helm upgrade --install --wait my-release datawire/ambassador
+kubectl cluster-info dump --namespace kube-system | grep authorization-mode
+
+kubectl apply -f https://getambassador.io/yaml/ambassador/ambassador-rbac.yaml
+curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/ambassador.yaml?$(date +%s)"  | kubectl apply -f -
+
+}
+
+createVistio()
+{
+git clone https://github.com/nmnellis/vistio.git
+cd vistio
+helm install helm/vistio --name vistio --namespace default -f helm/vistio/values-mesh-only.yaml 
+
+
+#helm install helm/vistio --name vistio --namespace default -f helm/vistio/values-with-ingress.yaml
+curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/vistio.yaml?$(date +%s)"  | kubectl apply -f -
+
+cd ~
+}
+
 setupIstio()
 {
 curl -L https://git.io/getLatestIstio | sh -
@@ -94,6 +105,8 @@ cd $ISTIO_VERSION
 
 #helm install install/kubernetes/helm/istio --name istio --namespace istio-system  -f install/kubernetes/helm/istio/values-istio-galley.yaml
 helm install install/kubernetes/helm/istio --name istio --namespace istio-system 
+
+#kubectl apply -f install/kubernetes/istio-demo-auth.yaml
 
 istioEnableInjection
 
@@ -639,6 +652,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/s
 #add defalt to admin
 kubectl create clusterrolebinding defaultdminrolebinding --clusterrole=cluster-admin --serviceaccount kube-system:default
 
+kubectl create clusterrolebinding kubernetes-dashboard-rolebinding --clusterrole=cluster-admin --serviceaccount kube-system:kubernetes-dashboard
 
 kubectl create namespace apps
 

@@ -30,6 +30,7 @@ data:
     <a href="http://jaeger:30080">http://jaeger:30080</a><br>
     <a href="http://rabbitmq:30080">http://rabbitmq:30080</a><br>
     <a href="http://vistio:30080">http://vistio:30080</a><br>
+    <a href="http://ambassador:30080/ambassador/v0/diag/">http://ambassador:30080/ambassador/v0/diag/</a><br>
     
     
      <br>
