@@ -62,9 +62,20 @@ kubectl label namespace apps "istio-injection-"
 
 createConcourse()
 {
+
+mkdir /tmp1
+ssh -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key vagrant@k8snode1 sudo mkdir /tmp1
+ssh -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key vagrant@k8snode2 sudo mkdir /tmp1
+ssh -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key vagrant@k8snode3 sudo mkdir /tmp1
+
+curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/concourse.yaml?$(date +%s)"  | kubectl apply -f -
+
 helm install stable/concourse --name concourse --set persistence.worker.storageClass=standard
 # helm del --purge concourse
 # kubectl delete namespace "concourse-main"
+
+
+
 } 
 
 createAmbassador()
