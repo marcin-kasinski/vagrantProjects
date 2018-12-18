@@ -32,7 +32,8 @@ data:
     <a href="http://vistio:30080">http://vistio:30080</a><br>
     <a href="http://vistio-api:30080/graph">http://vistio-api:30080/graph</a><br>
     <a href="http://ambassador:30080/ambassador/v0/diag/">http://ambassador:30080/ambassador/v0/diag/</a><br>
-    <a href="http://concourse:30080/">http://concourse:30080/</a><br>
+    <a href="http://concourse:30080/">http://concourse:30080/</a> CI TOOL<br>
+    <a href="http://weave:30080/">http://weave:30080/</a><br>    
      <br>
     
     Inne:<br>

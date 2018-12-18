@@ -2,7 +2,6 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: weave-ingress
-  namespace: weave
   annotations:
 spec:
   rules:
@@ -11,6 +10,6 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: springbootweb
+          serviceName: weave-scope-app
           servicePort: 80
 ---
