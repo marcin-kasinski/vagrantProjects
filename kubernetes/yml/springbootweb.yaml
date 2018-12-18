@@ -204,8 +204,7 @@ metadata:
       kind:  Mapping
       name:  springbootweb_mapping
       prefix: /springbootweb/
-      service: springbootweb:7070
-      host_rewrite: springbootweb  
+      service: springbootweb.apps
 spec:
   type: NodePort
   ports:

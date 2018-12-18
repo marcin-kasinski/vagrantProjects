@@ -85,7 +85,11 @@ createAmbassador()
 #helm upgrade --install --wait my-release datawire/ambassador
 kubectl cluster-info dump --namespace kube-system | grep authorization-mode
 
-kubectl apply -f https://getambassador.io/yaml/ambassador/ambassador-rbac.yaml
+#kubectl apply -f https://getambassador.io/yaml/ambassador/ambassador-rbac.yaml
+
+helm repo add datawire https://www.getambassador.io
+helm upgrade --install --wait my-release datawire/ambassador
+
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/ambassador.yaml?$(date +%s)"  | kubectl apply -f -
 
 }
