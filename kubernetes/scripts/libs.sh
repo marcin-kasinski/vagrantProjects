@@ -93,6 +93,7 @@ setupIstio()
 curl -L https://git.io/getLatestIstio | sh -
 
 ISTIO_VERSION=$(ls -l | grep istio- | cut -d ' ' -f 10)
+ISTIO_VERSION=$(ls | grep istio- )
 
 echo "ISTIO_VERSION $ISTIO_VERSION"
 
