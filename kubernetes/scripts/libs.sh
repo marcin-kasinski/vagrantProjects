@@ -108,9 +108,8 @@ cd $ISTIO_VERSION
 #helm del --purge istio
 
 #helm install install/kubernetes/helm/istio --name istio --namespace istio-system  -f install/kubernetes/helm/istio/values-istio-galley.yaml
-helm install install/kubernetes/helm/istio --name istio --namespace istio-system --set global.proxy.includeIPRanges="10.32.0.0/12"
-
-#kubectl apply -f install/kubernetes/istio-demo-auth.yaml
+#helm install install/kubernetes/helm/istio --name istio --namespace istio-system --set global.proxy.includeIPRanges="10.32.0.0/12"
+kubectl apply -f install/kubernetes/istio-demo-auth.yaml
 
 istioEnableInjection
 
