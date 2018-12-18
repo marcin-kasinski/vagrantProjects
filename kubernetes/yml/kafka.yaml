@@ -207,8 +207,8 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
-        #- name: "EXTRA_JAVA_ARGS"
-        #  value: "-Djavax.net.debug=ssl:handshake"
+        - name: "EXTRA_JAVA_ARGS"
+          value: "-Djavax.net.debug=ssl:handshake"
         - name: "CONF_TEMPLATE"
           value: "/opt/kafka/config/template_server.properties"
         - name: "BROKER_NODES"
