@@ -18,7 +18,7 @@ spec:
           containerPort: 9411
         env:
         - name: JAVA_OPTS
-          value: "-Dlogging.level.zipkin=DEBUG -Dlogging.level.zipkin2=DEBUG -Dlogging.level.=DEBUG -Dlogging.level.root=DEBUG"          
+          value: "-Dlogging.level.zipkin=DEBUG -Dlogging.level.zipkin2=DEBUG -Dlogging.level.=DEBUG -Dlogging.level.root=DEBUG -Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager"          
           
 ---
 apiVersion: v1
