@@ -60,6 +60,13 @@ istioDisableInjection()
 kubectl label namespace apps "istio-injection-"
 }
 
+createConcourse()
+{
+helm install stable/concourse --name concourse --set persistence.worker.storageClass=standard
+# helm del --purge concourse
+# kubectl delete namespace "concourse-main"
+} 
+
 createAmbassador()
 {
 
@@ -1072,9 +1079,9 @@ setKafkaClusterACL "CN=kafka-0.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=P
 setKafkaClusterACL "CN=kafka-1.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL" "kafka-cluster" "--operation ClusterAction"
 setKafkaClusterACL "CN=kafka-2.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL" "kafka-cluster" "--operation ClusterAction"
 
-setKafkaTopicACL "CN=springbootkafkalistener-0.springbootkafkalistener-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL" "my-topic" "--operation Create --operation Describe --operation Read"
-setKafkaGroupACL "CN=springbootkafkalistener-0.springbootkafkalistener-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL" "order" "--operation Describe --operation Read"
-setKafkaTopicACL "CN=springbootkafkalistener-0.springbootkafkalistener-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL" "__consumer_offsets" "--operation Describe"
+setKafkaTopicACL "CN=springbootkafkalistener-0.springbootkafkalistener-hs.apps.svc.cluster.local,OU=it,O=itzone,C=PL" "my-topic" "--operation Create --operation Describe --operation Read"
+setKafkaGroupACL "CN=springbootkafkalistener-0.springbootkafkalistener-hs.apps.svc.cluster.local,OU=it,O=itzone,C=PL" "order" "--operation Describe --operation Read"
+setKafkaTopicACL "CN=springbootkafkalistener-0.springbootkafkalistener-hs.apps.svc.cluster.local,OU=it,O=itzone,C=PL" "__consumer_offsets" "--operation Describe"
 
 
 setKafkaClusterACL "ANONYMOUS" "kafka-cluster" "--operation Create"
@@ -1088,10 +1095,10 @@ setKafkaTopicACL "ANONYMOUS" "logs" "--operation Create --operation Describe --o
 setKafkaTopicACL "ANONYMOUS" "fluentd-springboot-logs" "--operation Create --operation Describe --operation Read --operation Write"
 setKafkaTopicACL "ANONYMOUS" "fluentd-kubernetes-logs" "--operation Create --operation Describe --operation Read --operation Write"
 
-setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL "my-topic" "--operation Describe --operation Create --operation Write"
-setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL "__consumer_offsets" "--operation Describe"
-#setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL "logs" "--operation Describe --operation Create --operation Write"
-#setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL "fluentd-logs" "--operation Describe --operation Create --operation Write"
+setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.apps.svc.cluster.local,OU=it,O=itzone,C=PL "my-topic" "--operation Describe --operation Create --operation Write"
+setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.apps.svc.cluster.local,OU=it,O=itzone,C=PL "__consumer_offsets" "--operation Describe"
+#setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.apps.svc.cluster.local,OU=it,O=itzone,C=PL "logs" "--operation Describe --operation Create --operation Write"
+#setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.apps.svc.cluster.local,OU=it,O=itzone,C=PL "fluentd-logs" "--operation Describe --operation Create --operation Write"
 
 #------------------------------- kafka init ------------------------------- 
 
