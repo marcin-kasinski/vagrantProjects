@@ -89,7 +89,7 @@ kubectl cluster-info dump --namespace kube-system | grep authorization-mode
 
 helm repo add datawire https://www.getambassador.io
 #helm upgrade --install --wait my-release datawire/ambassador --set service.type=NodePort
-helm upgrade --install my-release datawire/ambassador --set adminService.type=NodePort
+helm install --name ambassador datawire/ambassador --set service.type=NodePort
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/ambassador.yaml?$(date +%s)"  | kubectl apply -f -
 
