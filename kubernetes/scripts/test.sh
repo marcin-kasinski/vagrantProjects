@@ -1,7 +1,7 @@
 #!/bin/bash
 source /vagrant/scripts/libs.sh
 
-createJaeger 2>&1 | tee ~/createJaeger.log
+#createJaeger 2>&1 | tee ~/createJaeger.log
 
 setupIstio 2>&1 | tee ~/setupIstio.log
 createVistio 2>&1 | tee ~/createVistio.log
