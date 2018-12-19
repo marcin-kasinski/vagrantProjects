@@ -28,11 +28,22 @@ data:
     <a href="http://kiali:30080">http://kiali:30080</a><br>
     <a href="http://jaeger:30080">http://jaeger:30080</a><br>
     <a href="http://rabbitmq:30080">http://rabbitmq:30080</a><br>
+    <br>ISTIO 
+    <a href="http://servicegraph:30080/force/forcegraph.html">http://servicegraph:30080/force/forcegraph.html</a><br>    
+    <a href="http://servicegraph:30080/dotviz">http://servicegraph:30080/dotviz</a><br>    
+    <a href="http://servicegraph:30080/dotgraph">http://servicegraph:30080/dotgraph</a><br>    
+    <a href="http://servicegraph:30080/graph">http://servicegraph:30080/graph</a><br>    
+    
     <a href="http://vistio:30080">http://vistio:30080</a><br>
     <a href="http://vistio-api:30080/graph">http://vistio-api:30080/graph</a><br>
+    <br>
     <a href="http://ambassador:30080/ambassador/v0/diag/">http://ambassador:30080/ambassador/v0/diag/</a><br>
     <a href="http://concourse:30080/">http://concourse:30080/</a> CI TOOL<br>
     <a href="http://weave:30080/">http://weave:30080/</a><br>    
+
+    
+    
+    
      <br>
     
     Inne:<br>

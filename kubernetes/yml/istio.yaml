@@ -138,3 +138,21 @@ spec:
         port:
           number: 443
       weight: 100
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: servicegraph-ingress
+  namespace: istio-system
+  annotations:
+spec:
+  rules:
+  - host: servicegraph
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: servicegraph
+          servicePort: 8088
+---
+      
