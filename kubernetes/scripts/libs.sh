@@ -146,6 +146,27 @@ kubectl get po -n istio-system
 getPodIP istio-sidecar-injector- istio-system
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/istio.yaml?$(date +%s)"  | kubectl apply -f -
+
+#install example
+curl https://raw.githubusercontent.com/istio/istio/master/samples/bookinfo/platform/kube/bookinfo.yaml | kubectl apply -f -
+curl https://raw.githubusercontent.com/istio/istio/master/samples/bookinfo/networking/bookinfo-gateway.yaml | kubectl apply -f -
+
+
+#for load balancer
+export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.clusterIP}')
+
+export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].port}')
+export INGRESS_NODEPORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
+export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].port}')
+export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
+
+echo INGRESS $INGRESS_HOST $INGRESS_PORT
+echo INGRESS_NODEPORT $INGRESS_NODEPORT
+echo GATEWAY_URL $GATEWAY_URL
+
+curl -o /dev/null -s -w "%{http_code}\n" http://${GATEWAY_URL}/productpage
+
 }
 
 
