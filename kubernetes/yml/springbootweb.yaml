@@ -190,7 +190,7 @@ metadata:
       name:  springbootweb_mapping
       prefix: /springbootweb
       timeout_ms: 10000
-      service: springbootweb.apps
+      service: springbootweb.apps:7070
 spec:
   type: NodePort
   ports:
