@@ -188,7 +188,8 @@ metadata:
       apiVersion: ambassador/v0
       kind:  Mapping
       name:  springbootweb_mapping
-      prefix: /springbootweb/
+      prefix: /springbootweb
+      timeout_ms: 10000
       service: springbootweb.apps
 spec:
   type: NodePort
