@@ -381,7 +381,7 @@ helm repo update
 
 getPodIP tiller-deploy- kube-system
 IP_TILLER=$retval
-waitForPODPort $IP_TILLER 44134
+waitForIPPort $IP_TILLER 44134 
 }
 
 setupJava()
@@ -818,17 +818,39 @@ PODIP=`echo $PODIP | cut -d " " -f 6`
 retval=$PODIP
 }
 
+
+waitForIPPort()
+{
+local IP=$1
+local PORT=$2
+
+echo "waitForIPPort IP $IP, PORT $PORT"
+
+while true
+do
+  nc -z $IP $PORT
+  sleep 3  
+
+  if [ $? != 0 ]; then
+     echo  "nc Error "
+     #exit $ERROR_CODE
+  else break   
+  fi
+done
+}
+
 waitForPODPort()
 {
 local POD_NAME=$1
 local PORT=$2
+local NAMESPACE=$3
 
 echo "waitForPODPort POD_NAME $POD_NAME, PORT $PORT"
 
 while true
 do
   #IP=$(getPodIP $POD_NAME)
-  getPodIP $POD_NAME
+  getPodIP $POD_NAME $NAMESPACE
   IP=$retval
   #echo "ip $IP"  
   nc -z $IP $PORT
@@ -875,13 +897,12 @@ IP_4=$retval
 getPodIP redis-5
 IP_5=$retval
 
-
-waitForPODPort $IP_0 6379
-waitForPODPort $IP_1 6379
-waitForPODPort $IP_2 6379
-waitForPODPort $IP_3 6379
-waitForPODPort $IP_4 6379
-waitForPODPort $IP_5 6379
+waitForIPPort $IP_0 6379
+waitForIPPort $IP_1 6379
+waitForIPPort $IP_2 6379
+waitForIPPort $IP_3 6379
+waitForIPPort $IP_4 6379
+waitForIPPort $IP_5 6379
 
 POD_NAME="redis-0"
 
