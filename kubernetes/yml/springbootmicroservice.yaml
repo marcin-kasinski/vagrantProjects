@@ -78,6 +78,8 @@ data:
             port:5672
         zipkin:
             baseUrl: http://springbootzipkin:7777
+            sender:
+                type: web            
         sleuth:
             sampler:
                 percentage: 1
