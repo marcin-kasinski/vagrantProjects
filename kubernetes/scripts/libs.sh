@@ -380,7 +380,8 @@ helm init
 helm repo update
 
 getPodIP tiller-deploy- kube-system
-
+IP_TILLER=$retval
+waitForPODPort $IP_TILLER 44134
 }
 
 setupJava()
