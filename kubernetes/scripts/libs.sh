@@ -132,6 +132,7 @@ cd $ISTIO_VERSION
 
 #helm install install/kubernetes/helm/istio --name istio --namespace istio-system  -f install/kubernetes/helm/istio/values-istio-galley.yaml
 #helm install install/kubernetes/helm/istio --name istio --namespace istio-system --set global.proxy.includeIPRanges="10.32.0.0/12"
+#helm install install/kubernetes/helm/istio --name istio --namespace istio-system --set gateways.istio-ingressgateway.type=ClusterIP
 #kubectl apply -f install/kubernetes/istio-demo-auth.yaml
 kubectl apply -f install/kubernetes/istio-demo.yaml
 
