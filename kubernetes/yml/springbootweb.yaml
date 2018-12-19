@@ -13,6 +13,12 @@ data:
     app.rest_url: ${APP_REST_URL:http://nginx/api/adduser}
     logging:
         file: logs/application.log
+        level.zipkin: TRACE
+        level.zipkin2: TRACE
+        #level.org.springframework.web: DEBUG
+        level.org.springframework.cloud.sleuth.zipkin: TRACE
+        level.org.springframework.cloud.sleuth.zipkin2: TRACE
+        level.org.springframework.cloud.sleuth.log: TRACE
     server:
         port: 7070
     spring:
@@ -153,6 +159,8 @@ spec:
         #- name: "EXTRA_JAVA_ARGS"
         #  value: "-Djavax.net.debug=all -Dssl.debug=true"
           #value: "-Djavax.net.debug=ssl:handshake"
+        - name: JAVA_OPTS
+          value: "-Dlogging.level.zipkin=DEBUG -Dlogging.level.zipkin2=DEBUG"          
         - name: APP_AJAX_URL
           value: "http://springbootmicroservice:30080/api/get-by-email?email=ajax@ajax.com"          
         - name: APP_REST_URL
