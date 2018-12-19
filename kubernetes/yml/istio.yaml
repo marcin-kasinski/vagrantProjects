@@ -1,6 +1,20 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
+  name: springbootzipkin.apps.svc.cluster.local
+spec:
+  hosts:
+  - springbootzipkin.apps.svc.cluster.local
+  ports:
+  - number: 7777
+    name: tcp
+    protocol: TCP
+  resolution: DNS
+  location: MESH_INTERNAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
   name: mongodb-router-cs.default.svc.cluster.local
 spec:
   hosts:
