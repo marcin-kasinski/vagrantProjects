@@ -41,29 +41,38 @@ kubectl logs -f $PODNAME $OPTS
 kubeexec(){
 
 SEARCH=$1
-BASHCOMMAND=$2
+POD_NAMESPACE=$2
+BASHCOMMAND=$3
 echo "Searching $SEARCH"
 
-PODNAME=`kubectl get po | grep $SEARCH| grep Running | cut -d " " -f 1`
+
+OPTS="";
+
+if [ ! -z "$POD_NAMESPACE" ]; then 
+  #there is POD_NAMESPACE
+  OPTS=$OPTS" -n $POD_NAMESPACE ";
+  echo "namespace $POD_NAMESPACE"
+fi
+
+
+
+PODNAME=`kubectl get po $OPTS | grep $SEARCH| grep Running | cut -d " " -f 1`
 
 echo "Pod name:"
 
 echo "$PODNAME"
 
-echo "BASHCOMMAND [$BASHCOMMAND]"
+OPTS2=" -- bash ";
 
-#if [ -z ${BASHCOMMAND+x} ]; then 
-if [ -z "$BASHCOMMAND" ]; then 
-  #there is no bash command
-  echo "there is no bash command"
-  kubectl exec -it $PODNAME -- bash 
-else 
-  #there is bash command 
-  echo "there is bash command"
-  kubectl exec -it $PODNAME -- bash -c "$BASHCOMMAND"
-  
+if [ ! -z "$BASHCOMMAND" ]; then 
+  #there is BASHCOMMAND
+  OPTS2=$OPTS2" -c \"$BASHCOMMAND\"";
 fi
 
+echo executing : kubectl exec -it $OPTS $PODNAME $OPTS2
+
+
+kubectl exec -it $OPTS $PODNAME $OPTS2
 
 }
 
