@@ -20,8 +20,8 @@ createWeave 2>&1 | tee ~/createWeave.log
 
 installHelm 2>&1 | tee ~/installHelm.log
 
-/vagrant/scripts/test.sh
-exit
+#/vagrant/scripts/test.sh
+#exit
 
 #createJaeger 2>&1 | tee ~/createJaeger.log
 
