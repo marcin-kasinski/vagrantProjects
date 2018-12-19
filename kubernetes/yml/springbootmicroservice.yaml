@@ -19,6 +19,9 @@ data:
                     graphite: DEBUG
             org.springframework.data.redis: DEBUG
             root: INFO
+        level.org.springframework.cloud.sleuth.zipkin: TRACE
+        level.org.springframework.cloud.sleuth.zipkin2: TRACE
+        level.org.springframework.cloud.sleuth.log: TRACE            
     server:
         port: 9191
     #    influxdbeserver: monitoring-influxdb.kube-system.svc.cluster.local                
