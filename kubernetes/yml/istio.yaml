@@ -203,3 +203,25 @@ spec:
         host: ambassador
         port:
           number: 80
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: springbootzipkin
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - itzone-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /springbootzipkin
+    - uri:
+        prefix: /zipkin
+    route:
+    - destination:
+        host: ambassador
+        port:
+          number: 80
+          

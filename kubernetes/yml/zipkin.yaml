@@ -17,8 +17,8 @@ spec:
         - name: http
           containerPort: 9411
         env:
-        - name: JAVA_OPTS
-          value: "-Dlogging.level.zipkin=TRACE -Dlogging.level.zipkin2=TRACE -Dlogging.level.=TRACE -Dlogging.level.root=TRACE -Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager"
+        #- name: JAVA_OPTS
+        #  value: "-Dlogging.level.zipkin=TRACE -Dlogging.level.zipkin2=TRACE -Dlogging.level.=TRACE -Dlogging.level.root=TRACE -Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager"
           
 ---
 apiVersion: v1
@@ -33,6 +33,23 @@ metadata:
       name: tracing
       service: springbootzipkin:7777
       driver: zipkin
+      ---
+      apiVersion: ambassador/v0
+      kind:  Mapping
+      name:  springbootzipkin_mapping
+      prefix: /springbootzipkin
+      timeout_ms: 10000
+      service: springbootzipkin.apps:7777
+      ---
+      apiVersion: ambassador/v0
+      kind:  Mapping
+      name:  zipkin_redirect_mapping
+      prefix: /zipkin/
+      timeout_ms: 10000
+      service: ambassador:31380
+      host_redirect: true
+      path_redirect: /springbootzipkin/zipkin
+      ---
 spec:
   type: NodePort
   ports:
