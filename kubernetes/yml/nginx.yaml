@@ -190,7 +190,7 @@ metadata:
       apiVersion: ambassador/v0
       kind:  Mapping
       name:  nginx_mapping
-      prefix: /nginx/
+      prefix: /nginx
       service: nginx  
 spec:
   type: NodePort
@@ -220,3 +220,23 @@ spec:
         backend:
           serviceName: nginx
           servicePort: 80
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: nginx
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - itzone-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /nginx
+    route:
+    - destination:
+        host: ambassador
+        port:
+          number: 80
+          
