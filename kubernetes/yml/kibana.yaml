@@ -62,12 +62,12 @@ metadata:
   annotations:
     getambassador.io/config: |
       ---
-      apiVersion: ambassador/v0
-      kind:  Mapping
-      name:  kibana_mapping
-      prefix: /kibana
-      timeout_ms: 10000
-      service: kibana-logging.default:5601    
+      #apiVersion: ambassador/v0
+      #kind:  Mapping
+      #name:  kibana_mapping
+      #prefix: /kibana
+      #timeout_ms: 10000
+      #service: kibana-logging.default:5601    
       ---
       #apiVersion: ambassador/v0
       #kind:  Mapping
