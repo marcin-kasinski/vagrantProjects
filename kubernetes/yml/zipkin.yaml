@@ -40,16 +40,6 @@ metadata:
       prefix: /springbootzipkin
       timeout_ms: 10000
       service: springbootzipkin.apps:7777
-      ---
-      #apiVersion: ambassador/v0
-      #kind:  Mapping
-      #name:  zipkin_redirect_mapping
-      #prefix: /zipkin/
-      #timeout_ms: 10000
-      #service: ambassador:31380
-      #host_redirect: true
-      #path_redirect: /springbootzipkin/zipkin
-      ---
 spec:
   type: NodePort
   ports:
