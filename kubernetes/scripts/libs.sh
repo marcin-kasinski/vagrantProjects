@@ -54,7 +54,14 @@ istioEnableInjection()
 {
 #to enable injection
 kubectl label namespace apps istio-injection=enabled
-kubectl label namespace default istio-injection=enabled
+#kubectl label namespace default istio-injection=enabled
+}
+
+istioDisableInjection()
+{
+#to disable injection
+kubectl label namespace apps "istio-injection-"
+#kubectl label namespace default "istio-injection-"
 }
 
 #
@@ -85,13 +92,6 @@ cat /tmp/"$SERVICE".patch
 
 echo executing kubectl patch service -n $NAMESPACE $SERVICE -p "$(cat /tmp/"$SERVICE".patch)"
 kubectl patch service -n $NAMESPACE $SERVICE -p "$(cat /tmp/"$SERVICE".patch)"
-}
-
-istioDisableInjection()
-{
-#to disable injection
-kubectl label namespace apps "istio-injection-"
-kubectl label namespace default "istio-injection-"
 }
 
 createConcourse()
