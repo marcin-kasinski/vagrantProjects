@@ -51,6 +51,7 @@ istioEnableInjection()
 {
 #to enable injection
 kubectl label namespace apps istio-injection=enabled
+kubectl label namespace default istio-injection=enabled
 }
 
 
@@ -58,6 +59,7 @@ istioDisableInjection()
 {
 #to disable injection
 kubectl label namespace apps "istio-injection-"
+kubectl label namespace default "istio-injection-"
 }
 
 createConcourse()
@@ -89,6 +91,7 @@ kubectl cluster-info dump --namespace kube-system | grep authorization-mode
 
 helm repo add datawire https://www.getambassador.io
 #helm upgrade --install --wait my-release datawire/ambassador --set service.type=NodePort
+#helm del --purge ambassador
 helm install --name ambassador datawire/ambassador --set service.type=NodePort
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/ambassador.yaml?$(date +%s)"  | kubectl apply -f -
@@ -153,7 +156,7 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 
 
 #for load balancer
-export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+#export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.clusterIP}')
 
 export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].port}')
@@ -161,7 +164,7 @@ export INGRESS_NODEPORT=$(kubectl -n istio-system get service istio-ingressgatew
 export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].port}')
 export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
 
-echo INGRESS_HOST $INGRESS_HOST $INGRESS_PORT
+echo INGRESS_HOST $INGRESS_HOST
 echo INGRESS_PORT $INGRESS_PORT
 echo INGRESS_NODEPORT $INGRESS_NODEPORT
 echo GATEWAY_URL $GATEWAY_URL
@@ -248,7 +251,7 @@ sudo curl -sL https://cli.openfaas.com | sudo sh
 
 #kubectl patch deployment -n openfaas gateway -p='[{"op": "add", "path": "/metadata/labels", "value": "xx=xxxxx"}]'
 
-kubectl patch deployment -n openfaas gateway  -p "$(cat /vagrant/conf/openfaas/gateway.path)"
+kubectl patch deployment -n openfaas gateway  -p "$(cat /vagrant/conf/openfaas/gateway.patch)"
 
 kubectl delete svc -n openfaas prometheus
 kubectl delete svc -n openfaas alertmanager
