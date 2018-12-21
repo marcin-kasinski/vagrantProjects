@@ -743,9 +743,8 @@ kubectl taint nodes --all node-role.kubernetes.io/master-
 #          value: "0"          
 #          '
 
-#kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
-#kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended/kubernetes-dashboard.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10-release/src/deploy/recommended/kubernetes-dashboard.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended/kubernetes-dashboard.yaml
+#kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10-release/src/deploy/recommended/kubernetes-dashboard.yaml
 #add defalt to admin
 kubectl create clusterrolebinding defaultdminrolebinding --clusterrole=cluster-admin --serviceaccount kube-system:default
 
