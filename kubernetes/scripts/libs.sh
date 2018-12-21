@@ -46,7 +46,7 @@ curl https://raw.githubusercontent.com/kiali/kiali/${VERSION_LABEL}/deploy/kuber
   IMAGE_PULL_POLICY_TOKEN="imagePullPolicy: Always" envsubst | kubectl create -n istio-system -f -
 
 
-ambassadorAnnotateObject kiali istio-system 20001
+ambassadorAnnotateService kiali istio-system 20001
 
 }
 
@@ -76,7 +76,7 @@ kubectl patch $OBJECTTYPE -n $NAMESPACE $NAME -p "$(cat /vagrant/conf/istio/isti
 
 }
 
-ambassadorAnnotateObject()
+ambassadorAnnotateService()
 {
 local SERVICE=$1
 local NAMESPACE=$2
@@ -133,7 +133,6 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 #for load balancer
 #export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.clusterIP}')
-
 export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].port}')
 export INGRESS_NODEPORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
 export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].port}')
@@ -1454,6 +1453,7 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/springbootmicroservice.yaml?$(date +%s)"  | kubectl apply -n apps -f -
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/springbootweb.yaml?$(date +%s)"  | kubectl apply -n apps -f -
 
+ambassadorAnnotateService zipkin apps 7777
 }
 
 getConfFromCephServer()
