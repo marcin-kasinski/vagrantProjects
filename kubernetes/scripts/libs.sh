@@ -46,7 +46,7 @@ curl https://raw.githubusercontent.com/kiali/kiali/${VERSION_LABEL}/deploy/kuber
   IMAGE_PULL_POLICY_TOKEN="imagePullPolicy: Always" envsubst | kubectl create -n istio-system -f -
 
 
-ambassadorAnnotateService kiali istio-system 20001
+#ambassadorAnnotateService kiali istio-system 20001
 
 }
 
@@ -129,6 +129,9 @@ helm install --name ambassador datawire/ambassador --set service.type=NodePort
 istioDisableInjectionOnObject ambassador default deployment
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/ambassador.yaml?$(date +%s)"  | kubectl apply -f -
+
+kubectl patch svc ambassador-admin --type=json -p='[{"op": "replace", "path": "/spec/type", "value": "NodePort"}]'
+
 
 #for load balancer
 #export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
