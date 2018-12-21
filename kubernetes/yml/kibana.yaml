@@ -69,14 +69,14 @@ metadata:
       timeout_ms: 10000
       service: kibana-logging.default:5601    
       ---
-      apiVersion: ambassador/v0
-      kind:  Mapping
-      name:  kibana_app_mapping
-      prefix: /app/kibana
-      timeout_ms: 10000
-      service: ambassador:31380
-      host_redirect: true
-      path_redirect: /kibana/app/kibana
+      #apiVersion: ambassador/v0
+      #kind:  Mapping
+      #name:  kibana_app_mapping
+      #prefix: /app/kibana
+      #timeout_ms: 10000
+      #service: ambassador:31380
+      #host_redirect: true
+      #path_redirect: /kibana/app/kibana
     
 spec:
   ports:
