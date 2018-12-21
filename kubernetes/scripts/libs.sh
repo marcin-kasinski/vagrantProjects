@@ -45,6 +45,9 @@ curl https://raw.githubusercontent.com/kiali/kiali/${VERSION_LABEL}/deploy/kuber
   VERBOSE_MODE=4  \
   IMAGE_PULL_POLICY_TOKEN="imagePullPolicy: Always" envsubst | kubectl create -n istio-system -f -
 
+
+ambassadorAnnotateObject kiali istio-system 20001
+
 }
 
 istioEnableInjection()
@@ -54,6 +57,35 @@ kubectl label namespace apps istio-injection=enabled
 kubectl label namespace default istio-injection=enabled
 }
 
+#
+istioDisableInjectionOnObject()
+{
+local NAME=$1
+local NAMESPACE=$2
+local OBJECTTYPE=$3
+
+echo executing kubectl patch $OBJECTTYPE -n $NAMESPACE $NAME -p "$(cat /vagrant/conf/istio/istiodisableinject.patch)"
+kubectl patch $OBJECTTYPE -n $NAMESPACE $NAME -p "$(cat /vagrant/conf/istio/istiodisableinject.patch)"
+
+}
+
+ambassadorAnnotateObject()
+{
+local SERVICE=$1
+local NAMESPACE=$2
+local PORT=$3
+
+cp /vagrant/conf/ambassador/annotateservice.patch /tmp/"$SERVICE".patch
+
+sed -i -e 's/{SERVICE}/'"$SERVICE"'/g' /tmp/"$SERVICE".patch
+sed -i -e 's/{NAMESPACE}/'"$NAMESPACE"'/g' /tmp/"$SERVICE".patch
+sed -i -e 's/{PORT}/'"$PORT"'/g' /tmp/"$SERVICE".patch
+
+cat /tmp/"$SERVICE".patch
+
+echo executing kubectl patch service -n $NAMESPACE $SERVICE -p "$(cat /tmp/"$SERVICE".patch)"
+kubectl patch service -n $NAMESPACE $SERVICE -p "$(cat /tmp/"$SERVICE".patch)"
+}
 
 istioDisableInjection()
 {
@@ -94,7 +126,27 @@ helm repo add datawire https://www.getambassador.io
 #helm del --purge ambassador
 helm install --name ambassador datawire/ambassador --set service.type=NodePort
 
+istioDisableInjectionOnObject ambassador default deployment
+
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/ambassador.yaml?$(date +%s)"  | kubectl apply -f -
+
+#for load balancer
+#export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.clusterIP}')
+
+export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].port}')
+export INGRESS_NODEPORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
+export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].port}')
+export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
+
+echo INGRESS_HOST $INGRESS_HOST
+echo INGRESS_PORT $INGRESS_PORT
+echo INGRESS_NODEPORT $INGRESS_NODEPORT
+echo GATEWAY_URL $GATEWAY_URL
+
+#curl -o /dev/null -s -w "%{http_code}\n" http://${GATEWAY_URL}/productpage
+curl http://${GATEWAY_URL}/springbootweb
+
 
 }
 
@@ -154,26 +206,7 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 #curl https://raw.githubusercontent.com/istio/istio/master/samples/bookinfo/platform/kube/bookinfo.yaml | kubectl apply -f -
 #curl https://raw.githubusercontent.com/istio/istio/master/samples/bookinfo/networking/bookinfo-gateway.yaml | kubectl apply -f -
 
-
-#for load balancer
-#export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.clusterIP}')
-
-export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].port}')
-export INGRESS_NODEPORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
-export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].port}')
-export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
-
-echo INGRESS_HOST $INGRESS_HOST
-echo INGRESS_PORT $INGRESS_PORT
-echo INGRESS_NODEPORT $INGRESS_NODEPORT
-echo GATEWAY_URL $GATEWAY_URL
-
-#curl -o /dev/null -s -w "%{http_code}\n" http://${GATEWAY_URL}/productpage
-curl http://${GATEWAY_URL}/springbootweb
-
 }
-
 
 createOpenFaasFunction()
 {
