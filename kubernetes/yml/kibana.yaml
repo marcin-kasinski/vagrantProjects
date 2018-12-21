@@ -59,6 +59,16 @@ metadata:
     kubernetes.io/cluster-service: "true"
     addonmanager.kubernetes.io/mode: Reconcile
     kubernetes.io/name: "Kibana"
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v0
+      kind:  Mapping
+      name:  kibana_mapping
+      prefix: /kibana
+      timeout_ms: 10000
+      service: kibana-logging.default:5601
+    
 spec:
   ports:
   - port: 5601
@@ -83,3 +93,24 @@ spec:
         backend:
           serviceName: kibana-logging
           servicePort: 5601
+---
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: kibana
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - itzone-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /kibana
+    route:
+    - destination:
+        host: ambassador
+        port:
+          number: 80
+                    
