@@ -191,8 +191,11 @@ spec:
   http:
   - match:
     - uri:
-#        exact: /springbootweb  
         prefix: /springbootweb  
+    - uri:
+        prefix: /kiali
+    - uri:
+        prefix: /springbootmicroservice-cs
     - uri:
         prefix: /ambassador
     route:
