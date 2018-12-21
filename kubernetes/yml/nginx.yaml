@@ -8,12 +8,12 @@ data:
     <body>
     Adresy uslug:<br>
     
-    <a href="http://springbootweb:30080">http://springbootweb:30080/</a><br>
+    <a href="http://ambassador:31380/springbootweb">http://ambassador:31380/springbootweb</a><br>
     <a href="http://phpmyadmin:30080">http://phpmyadmin:30080/</a><br>
     <a href="http://zoonavigator:30080">http://zoonavigator:30080/</a><br>
     <a href="http://kafka-manager:30080">http://kafka-manager:30080/</a><br>
     <a href="http://kafka-connect-ui:30080">http://kafka-connect-ui:30080/</a><br>
-    <a href="http://zipkin:30080">http://zipkin:30080/</a><br>
+    <a href="http://ambassador:31380/zipkin">http://ambassador:31380/zipkin</a><br>
     <a href="http://prometheus:30080">http://prometheus:30080/</a><br>
     <a href="http://alertmanager:30080">http://alertmanager:30080/</a><br>
     <a href="http://grafana:30080">http://grafana:30080/</a><br>
@@ -37,7 +37,7 @@ data:
     <a href="http://vistio:30080">http://vistio:30080</a><br>
     <a href="http://vistio-api:30080/graph">http://vistio-api:30080/graph</a><br>
     <br>
-    <a href="http://ambassador:30080/ambassador/v0/diag/">http://ambassador:30080/ambassador/v0/diag/</a><br>
+    <a href="http://ambassador:31380/ambassador/v0/diag/">http://ambassador:31380/ambassador/v0/diag/</a><br>
     <a href="http://concourse:30080/">http://concourse:30080/</a> CI TOOL<br>
     <a href="http://weave:30080/">http://weave:30080/</a><br>    
 
