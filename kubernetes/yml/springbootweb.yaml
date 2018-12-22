@@ -191,16 +191,16 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: springbootweb
+  name: am-springbootweb
   annotations:
     getambassador.io/config: |
       ---
       apiVersion: ambassador/v0
-      kind:  Mapping
-      name:  springbootweb_mapping
+      kind: Mapping
+      name: am-springbootweb_mapping
       prefix: /springbootweb
       timeout_ms: 10000
-      service: springbootweb.apps:7070
+      service: am-springbootweb.apps:7070
 spec:
   type: NodePort
   ports:
