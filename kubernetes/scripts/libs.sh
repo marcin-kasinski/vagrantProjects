@@ -1,3 +1,30 @@
+finish()
+{
+showDashboardIP | tee ~/showDashboardIP.log
+ 
+kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/MKWEB_exec_time_seconds_max" | jq '.items[].value'
+
+start=$(cat /tmp/start_time)
+		
+end=$(date +%s)
+
+echo $end> /tmp/end_time
+
+runtime_seconds=$((end-start))
+runtime_minutes=$((runtime_seconds/ 60 ))
+
+modulo=$((runtime_seconds % 60 ))
+
+
+#echo Runtime $runtime_seconds seconds
+
+ping onet.pl -c 4
+
+echo Runtime $runtime_minutes minutes and $modulo seconds
+
+
+}
+
 createJaeger()
 {
 #kubectl create -f https://raw.githubusercontent.com/jaegertracing/jaeger-kubernetes/master/all-in-one/jaeger-all-in-one-template.yml
