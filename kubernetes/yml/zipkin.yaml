@@ -24,22 +24,22 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: springbootzipkin
+  name: am-springbootzipkin
   annotations:
     getambassador.io/config: |
       ---
       apiVersion: ambassador/v0
       kind: TracingService
       name: tracing
-      service: springbootzipkin:7777
+      service: am-springbootzipkin:7777
       driver: zipkin
       ---
       apiVersion: ambassador/v0
       kind:  Mapping
-      name:  springbootzipkin_mapping
+      name:  am-springbootzipkin_mapping
       prefix: /springbootzipkin
       timeout_ms: 10000
-      service: springbootzipkin.apps:7777
+      service: am-springbootzipkin.apps:7777
 spec:
   type: NodePort
   ports:
