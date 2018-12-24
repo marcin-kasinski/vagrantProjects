@@ -158,6 +158,7 @@ istioDisableInjectionOnObject ambassador default deployment
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/ambassador.yaml?$(date +%s)"  | kubectl apply -f -
 
 kubectl patch svc ambassador-admin --type=json -p='[{"op": "replace", "path": "/spec/type", "value": "NodePort"}]'
+kubectl patch svc ambassador       --type=json -p='[{"op": "replace", "path": "/spec/ports/0/nodePort", "value": 30888}]'
 
 
 #for load balancer
