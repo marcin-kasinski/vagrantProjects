@@ -60,6 +60,21 @@ spec:
   selector:
     app: springbootzipkin
 ---
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: springbootzipkin
+spec:
+  type: NodePort
+  ports:
+  - port: 7777
+    targetPort: 9411
+    protocol: TCP
+    name: http
+  selector:
+    app: springbootzipkin
+---
 # An Ingress with 2 hosts and 3 endpoints
 apiVersion: extensions/v1beta1
 kind: Ingress
