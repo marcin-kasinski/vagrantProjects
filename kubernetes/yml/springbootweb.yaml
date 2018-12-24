@@ -276,7 +276,7 @@ spec:
   http:
   - match:
     - uri:
-        prefix: /springbootweb
+        prefix: /
     route:
     - destination:
         host: springbootweb # interpreted as springbootweb.apps.svc.cluster.local
