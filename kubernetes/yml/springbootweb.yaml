@@ -247,3 +247,22 @@ spec:
       metricName: MKWEB_exec_time_seconds_max
       targetAverageValue: 1500
 ---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: springbootweb
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - itzone-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /springbootweb
+    route:
+    - destination:
+        host: ambassador
+        port:
+          number: 80
+---
