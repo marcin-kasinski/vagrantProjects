@@ -46,8 +46,9 @@ metadata:
       name:  am-springbootzipkin2_mapping
       prefix: /zipkin
       timeout_ms: 10000
-      service: http://ambassador:30107/springbootzipkin/zipkin/
-      host_redirect: true
+      #service: ambassador:30888/springbootzipkin/zipkin
+      service: am-springbootzipkin.apps:7777
+      #host_redirect: true
       path_redirect: /zipkin
 spec:
   type: NodePort
@@ -71,5 +72,5 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: springbootzipkin
+          serviceName: am-springbootzipkin
           servicePort: 7777
