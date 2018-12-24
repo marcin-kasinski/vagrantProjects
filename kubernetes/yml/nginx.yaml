@@ -8,7 +8,7 @@ data:
     <body>
     Adresy uslug:<br>
     
-    <a href="http://ambassador:30999/springbootweb">http://ambassador:30999/springbootweb via Istio gateway</a><br>
+    <a href="http://springbootweb:30999/springbootweb">http://springbootweb:30999/springbootweb via Istio gateway</a><br>
     <a href="http://phpmyadmin:30080">http://phpmyadmin:30080/</a><br>
     <a href="http://zoonavigator:30080">http://zoonavigator:30080/</a><br>
     <a href="http://kafka-manager:30080">http://kafka-manager:30080/</a><br>
