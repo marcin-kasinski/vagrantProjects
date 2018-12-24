@@ -212,6 +212,21 @@ spec:
   selector:
     app: springbootweb
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: springbootweb
+spec:
+  type: NodePort
+  ports:
+  - port: 7070
+    #nodePort: 30070
+    targetPort: 7070
+    protocol: TCP
+    name: http
+  selector:
+    app: springbootweb
+---
 # An Ingress with 2 hosts and 3 endpoints
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -247,22 +262,24 @@ spec:
       metricName: MKWEB_exec_time_seconds_max
       targetAverageValue: 1500
 ---
+#curl -H "Host: springbootweb.apps.svc.cluster.local" 10.101.161.68/springbootweb
+#curl -H "Host: springbootweb.apps.svc.cluster.local" localhost:30999/springbootweb
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: springbootweb
 spec:
   hosts:
-  - "*"
-  gateways:
-  - itzone-gateway
+  - springbootweb # interpreted as springbootweb.apps.svc.cluster.local
+#  gateways:
+#  - itzone-gateway.default
   http:
   - match:
     - uri:
         prefix: /springbootweb
     route:
     - destination:
-        host: ambassador
+        host: springbootweb # interpreted as springbootweb.apps.svc.cluster.local
         port:
-          number: 80
+          number: 7070
 ---
