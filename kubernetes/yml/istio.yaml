@@ -155,15 +155,6 @@ spec:
           serviceName: servicegraph
           servicePort: 8088
 ---
----
----
----
----
----
----
----
----
-
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
