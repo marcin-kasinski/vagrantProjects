@@ -260,8 +260,8 @@ spec:
     hosts:
     - "*"
 ---
-#curl -H "Host: springbootweb.apps.svc.cluster.local" 10.101.161.68/springbootweb
-#curl -H "Host: springbootweb.apps.svc.cluster.local" localhost:30999/springbootweb
+#curl -H "Host: springbootweb.apps.svc.cluster.local" 10.101.161.68/
+#curl -H "Host: springbootweb.apps.svc.cluster.local" localhost:30999/
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
