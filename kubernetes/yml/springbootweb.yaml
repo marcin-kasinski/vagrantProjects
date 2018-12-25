@@ -264,7 +264,7 @@ spec:
         prefix: /springbootweb
     route:
     - destination:
-        host: springbootweb.apps.svc.cluster.local # interpreted as springbootweb.apps.svc.cluster.local
+        host: springbootweb # interpreted as springbootweb.apps.svc.cluster.local
         port:
           number: 7070
 ---
