@@ -72,6 +72,11 @@ curl https://raw.githubusercontent.com/kiali/kiali/${VERSION_LABEL}/deploy/kuber
   VERBOSE_MODE=4  \
   IMAGE_PULL_POLICY_TOKEN="imagePullPolicy: Always" envsubst | kubectl create -n istio-system -f -
 
+kubectl patch ingress kiali -n istio-system -p='spec:
+   rules:
+   - host: kiali
+          '
+
 
 #ambassadorAnnotateService kiali istio-system 20001
 
