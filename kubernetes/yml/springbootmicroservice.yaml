@@ -66,7 +66,7 @@ data:
                 maximum-pool-size: 5
                 pool-name: yourPoolName
                 auto-commit: true
-            url: jdbc:mysql://mysql:3306/test
+            url: jdbc:mysql://mysql.default.svc.cluster.local:3306/test
             username: root
             password: secret
     #spring.datasource.driver-class-name=Driver
@@ -196,6 +196,32 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: am-springbootmicroservice
+  labels:
+    app: springbootmicroservice
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v0
+      kind: Mapping
+      name: am-springbootmicroservice_mapping
+      prefix: /
+      timeout_ms: 10000
+      service: am-springbootmicroservice.apps:9191
+      #only works via istio ingress gateway
+      host: springbootmicroservice:30999
+spec:
+  type: NodePort
+  ports:
+  - port: 9191
+    targetPort: 9191
+    name: http
+  selector:
+    app: springbootmicroservice
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: springbootmicroservice-hs
   labels:
     app: springbootmicroservice
@@ -242,3 +268,25 @@ spec:
     pods:
       metricName: "MK_6_received_messages"
       targetAverageValue: 1
+---
+#curl -H "Host: springbootmicroservice:30999" localhost:30999/
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: springbootmicroservice
+spec:
+  hosts:
+  - "springbootweb"
+  gateways:
+  - itzone-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: ambassador.default.svc.cluster.local
+        port:
+          number: 80
+---          
+ 
