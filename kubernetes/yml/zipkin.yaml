@@ -37,19 +37,20 @@ metadata:
       apiVersion: ambassador/v0
       kind:  Mapping
       name:  am-springbootzipkin_mapping
-      prefix: /springbootzipkin
+      prefix: /
       timeout_ms: 10000
       service: am-springbootzipkin.apps:7777
+      #service: springbootzipkin:30999
+      #only works via istio ingress gateway
+      host: springbootzipkin:30999
       ---
-      apiVersion: ambassador/v0
-      kind:  Mapping
-      name:  am-springbootzipkin2_mapping
-      prefix: /zipkin
-      timeout_ms: 10000
-      #service: ambassador:30888/springbootzipkin/zipkin
-      service: am-springbootzipkin.apps:7777
-      #host_redirect: true
-      path_redirect: /zipkin
+      #apiVersion: ambassador/v0
+      #kind:  Mapping
+      #name:  am-springbootzipkin2_mapping
+      #prefix: /zipkin
+      #timeout_ms: 10000
+      #service: am-springbootzipkin.apps:7777
+      #path_redirect: /zipkin
 spec:
   type: NodePort
   ports:

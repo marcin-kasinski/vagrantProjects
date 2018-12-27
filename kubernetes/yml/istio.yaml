@@ -208,6 +208,8 @@ spec:
         prefix: /springbootzipkin
     - uri:
         prefix: /zipkin
+    - uri:
+        prefix: /
     route:
     - destination:
         host: ambassador

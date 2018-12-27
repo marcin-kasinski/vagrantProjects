@@ -8,12 +8,12 @@ data:
     <body>
     Adresy uslug:<br>
     
-    <a href="http://springbootweb:30999/springbootweb">http://springbootweb:30999/springbootweb via Istio gateway</a><br>
+    <a href="http://springbootweb:30999">http://springbootweb:30999</a><br>
     <a href="http://phpmyadmin:30080">http://phpmyadmin:30080/</a><br>
     <a href="http://zoonavigator:30080">http://zoonavigator:30080/</a><br>
     <a href="http://kafka-manager:30080">http://kafka-manager:30080/</a><br>
     <a href="http://kafka-connect-ui:30080">http://kafka-connect-ui:30080/</a><br>
-    <a href="http://ambassador:31380/zipkin">http://ambassador:31380/zipkin</a><br>
+    <a href="http://springbootzipkin:30999">http://springbootzipkin:30999</a><br>
     <a href="http://prometheus:30080">http://prometheus:30080/</a><br>
     <a href="http://alertmanager:30080">http://alertmanager:30080/</a><br>
     <a href="http://grafana:30080">http://grafana:30080/</a><br>
