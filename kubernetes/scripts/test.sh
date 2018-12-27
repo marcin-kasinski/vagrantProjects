@@ -45,23 +45,4 @@ curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/ku
 
 kubectl get po --all-namespaces | grep -v Running | grep -v Completed
 
-showDashboardIP | tee ~/showDashboardIP.log
- 
-kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/MKWEB_exec_time_seconds_max" | jq '.items[].value'
-
-start=$(cat /tmp/start_time)
-		
-end=$(date +%s)
-
-echo $end> /tmp/end_time
-
-runtime_seconds=$((end-start))
-runtime_minutes=$((runtime_seconds/ 60 ))
-
-modulo=$((runtime_seconds % 60 ))
-
-
-#echo Runtime $runtime_seconds seconds
-
-echo Runtime $runtime_minutes minutes and $modulo seconds
-
+finish
