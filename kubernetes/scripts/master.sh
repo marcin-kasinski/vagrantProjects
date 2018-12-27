@@ -80,7 +80,7 @@ setupRedis 2>&1 | tee ~/setupRedis.log
 
 #showCustomService
 
-#configureGrafana 2>&1  | tee ~/configureGrafana.log
+configureGrafana 2>&1  | tee ~/configureGrafana.log
 
 createceph
 createcephObjects 2>&1 | tee ~/createcephObjects.log
