@@ -48,5 +48,3 @@ spec:
     pods:
       metricName: "gateway_service_count"
       targetAverageValue: 1
-
-
