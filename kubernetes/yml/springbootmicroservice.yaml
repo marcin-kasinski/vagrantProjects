@@ -6,6 +6,9 @@ data:
   bootstrap.yml: |-
     
 
+    #execute fallback or not
+    hystrix.command.addUser.fallback.enabled: false
+
     hystrix.command.addUser.execution.isolation.thread.timeoutInMilliseconds: 5000
     hystrix.command.addUser.circuitBreaker.errorThresholdPercentage: 60
     hystrix.command.addUser.circuitBreaker.sleepWindowInMilliseconds: 60000
