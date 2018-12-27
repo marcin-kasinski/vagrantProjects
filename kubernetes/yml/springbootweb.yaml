@@ -7,7 +7,7 @@ data:
 
 
     #app.ajax_url: http://springbootmicroserviceingress:30080/api/get-by-email?email=ajax@ajax.com
-    app.ajax_url: ${APP_AJAX_URL:http://nginx:30080/api/get-by-email?email=ajax@ajax.com}
+    app.ajax_url: ${APP_AJAX_URL:http://springbootmicroservice:30999/api/get-by-email?email=ajax@ajax.com}
     #app.rest_url: ${APP_REST_URL:http://springbootmicroservice-cs:9191/api/get-by-email?email=x@x.com
     #app.rest_url: ${APP_REST_URL:http://nginx/api/get-by-email?email=x@x.com}
     app.rest_url: ${APP_REST_URL:http://nginx/api/adduser}
@@ -161,7 +161,7 @@ spec:
         #- name: JAVA_OPTS
         #  value: "-Dlogging.level.zipkin=DEBUG -Dlogging.level.zipkin2=DEBUG"          
         - name: APP_AJAX_URL
-          value: "http://springbootmicroservice:30080/api/get-by-email?email=ajax@ajax.com"          
+          value: "http://springbootmicroservice:30999/api/get-by-email?email=ajax@ajax.com"          
         - name: APP_REST_URL
           value: "http://springbootmicroservice-cs.apps.svc.cluster.local:9191/api/adduser"
         - name: KAFKA_BROKER_NODES
@@ -262,8 +262,7 @@ spec:
     hosts:
     - "*"
 ---
-#curl -H "Host: springbootweb.apps.svc.cluster.local" 10.101.161.68/
-#curl -H "Host: springbootweb.apps.svc.cluster.local" localhost:30999/
+#curl -H "Host: springbootweb:30999" localhost:30999/
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
