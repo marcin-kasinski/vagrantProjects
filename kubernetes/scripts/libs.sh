@@ -84,16 +84,17 @@ kubectl patch ingress kiali -n istio-system -p='spec:
 
 istioEnableInjection()
 {
+local NAMESPACE=$1
 #to enable injection
-kubectl label namespace apps istio-injection=enabled
-#kubectl label namespace default istio-injection=enabled
+kubectl label namespace $NAMESPACE istio-injection=enabled
 }
 
 istioDisableInjection()
 {
+local NAMESPACE=$1
+
 #to disable injection
-kubectl label namespace apps "istio-injection-"
-#kubectl label namespace default "istio-injection-"
+kubectl label namespace $NAMESPACE "istio-injection-"
 }
 
 #
@@ -303,6 +304,9 @@ createOpenFaas()
 functionNamespace=openfaas-fn
 
 kubectl apply -f https://raw.githubusercontent.com/openfaas/faas-netes/master/namespaces.yml
+
+istioDisableInjection openfaas
+istioDisableInjection openfaas-fn
 
 helm repo add openfaas https://openfaas.github.io/faas-netes/
 
