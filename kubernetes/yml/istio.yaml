@@ -69,6 +69,25 @@ spec:
   location: MESH_EXTERNAL
 ---
 apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: api.rubygems.org
+spec:
+  hosts:
+  - api.rubygems.org
+  tls:
+  - match:
+    - port: 443
+      sni_hosts:
+      - api.rubygems.org
+    route:
+    - destination:
+        host: api.rubygems.org
+        port:
+          number: 443
+      weight: 100
+---
+apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
   name: grafana.com
@@ -83,6 +102,25 @@ spec:
   location: MESH_EXTERNAL
 ---
 apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: grafana.com
+spec:
+  hosts:
+  - grafana.com
+  tls:
+  - match:
+    - port: 443
+      sni_hosts:
+      - grafana.com
+    route:
+    - destination:
+        host: grafana.com
+        port:
+          number: 443
+      weight: 100      
+---
+apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
   name: codeload.github.com
@@ -95,6 +133,25 @@ spec:
     protocol: HTTPS
   resolution: DNS
   location: MESH_EXTERNAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: codeload.github.com
+spec:
+  hosts:
+  - codeload.github.com
+  tls:
+  - match:
+    - port: 443
+      sni_hosts:
+      - codeload.github.com
+    route:
+    - destination:
+        host: codeload.github.com
+        port:
+          number: 443
+      weight: 100
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
