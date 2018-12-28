@@ -1205,9 +1205,9 @@ setupkafka()
  
 #while ! kubectl get po -o wide | grep kafka-0 | grep Running ; do   echo "waiting for kafka IP..." ; sleep 20 ; done
 
-getPodIP kafka-0 apps
-getPodIP kafka-1 apps
-getPodIP kafka-2 apps
+getPodIP kafka-0 default
+getPodIP kafka-1 default
+getPodIP kafka-2 default
 
 KAFKAPODIP=`kubectl get po -o wide | grep kafka-0 | grep Running `
 echo $KAFKAPODIP
