@@ -1369,6 +1369,9 @@ curl -XPOST --data "$DASHBOARD" -H "Content-Type:application/json"  http://admin
 DASHBOARD="{\"dashboard\":  $(</vagrant/conf/grafana/grafana_dashboard_istio_mixer.json) }"
 curl -XPOST --data "$DASHBOARD" -H "Content-Type:application/json"  http://admin:admin@$GRAFANAPODIP:3000/api/dashboards/db
 
+DASHBOARD="{\"dashboard\":  $(</vagrant/conf/grafana/grafana_dashboard_istio_pilot.json) }"
+curl -XPOST --data "$DASHBOARD" -H "Content-Type:application/json"  http://admin:admin@$GRAFANAPODIP:3000/api/dashboards/db
+
 
 
 
