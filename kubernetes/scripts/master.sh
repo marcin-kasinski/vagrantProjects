@@ -82,18 +82,17 @@ setupRedis 2>&1 | tee ~/setupRedis.log
 
 #showCustomService
 
-#configureGrafana 2>&1  | tee ~/configureGrafana.log
+configureGrafana 2>&1  | tee ~/configureGrafana.log
 
-createceph
-createcephObjects 2>&1 | tee ~/createcephObjects.log
+#createceph
+#createcephObjects 2>&1 | tee ~/createcephObjects.log
 
 #createfnproject
 
 #createKubeless
 
-
-createOpenFaas 2>&1 | tee ~/createOpenFaas.log
-createOpenFaasFunction 2>&1 | tee ~/createOpenFaasFunction.log
+#createOpenFaas 2>&1 | tee ~/createOpenFaas.log
+#createOpenFaasFunction 2>&1 | tee ~/createOpenFaasFunction.log
 istioEnableInjection
 
 kubectl get po --all-namespaces | grep -v Running | grep -v Completed
