@@ -37,7 +37,8 @@ kubectl create -f https://raw.githubusercontent.com/jaegertracing/jaeger-operato
 kubectl create -f https://raw.githubusercontent.com/jaegertracing/jaeger-operator/master/deploy/role_binding.yaml
 kubectl create -f https://raw.githubusercontent.com/jaegertracing/jaeger-operator/master/deploy/operator.yaml
 
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/jaeger.yaml?$(date +%s)"  | kubectl apply -f -
+#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/jaeger.yaml?$(date +%s)"  | kubectl apply -f -
+kubectl apply -f /vagrant/yml/jaeger.yaml
 
 kubectl get jaeger
 kubectl get pods -l jaeger=simplest
@@ -135,7 +136,8 @@ ssh -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key vagrant@k8sn
 ssh -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key vagrant@k8snode2 sudo mkdir /tmp1
 ssh -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key vagrant@k8snode3 sudo mkdir /tmp1
 
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/concourse.yaml?$(date +%s)"  | kubectl apply -f -
+#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/concourse.yaml?$(date +%s)"  | kubectl apply -f -
+kubectl apply -f /vagrant/yml/concourse.yaml
 
 helm install stable/concourse --name concourse --set persistence.worker.storageClass=standard
 # helm del --purge concourse
@@ -161,7 +163,8 @@ helm install --name ambassador datawire/ambassador --set service.type=NodePort
 
 istioDisableInjectionOnObject ambassador default deployment
 
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/ambassador.yaml?$(date +%s)"  | kubectl apply -f -
+#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/ambassador.yaml?$(date +%s)"  | kubectl apply -f -
+kubectl apply -f /vagrant/yml/ambassador.yaml
 
 kubectl patch svc ambassador-admin --type=json -p='[{"op": "replace", "path": "/spec/type", "value": "NodePort"}]'
 kubectl patch svc ambassador       --type=json -p='[{"op": "replace", "path": "/spec/ports/0/nodePort", "value": 30888}]'
@@ -197,7 +200,8 @@ cp /vagrant/conf/vistio/statefulset.yaml helm/vistio/templates/statefulset.yaml
 helm install helm/vistio --name vistio --namespace default -f helm/vistio/values-mesh-only.yaml  --set web.env.updateURL=http://vistio-api:30080/graph
 
 #helm install helm/vistio --name vistio --namespace default -f helm/vistio/values-with-ingress.yaml
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/vistio.yaml?$(date +%s)"  | kubectl apply -f -
+#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/vistio.yaml?$(date +%s)"  | kubectl apply -f -
+kubectl apply -f /vagrant/yml/vistio.yaml
 
 cd ~
 }
@@ -239,7 +243,8 @@ kubectl get po -n istio-system
 
 getPodIP istio-sidecar-injector- istio-system
 
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/istio.yaml?$(date +%s)"  | kubectl apply -f -
+#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/istio.yaml?$(date +%s)"  | kubectl apply -f -
+kubectl apply -f /vagrant/yml/istio.yaml
 
 #install example
 #curl https://raw.githubusercontent.com/istio/istio/master/samples/bookinfo/platform/kube/bookinfo.yaml | kubectl apply -f -
@@ -1381,7 +1386,9 @@ createMonitoring()
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/prometheus.yaml?$(date +%s)"   | sed -e 's/  replicas: 1/  replicas: 1/g' | kubectl apply -f -
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/alertmanager.yaml?$(date +%s)" | sed -e 's/  replicas: 1/  replicas: 3/g' | kubectl apply -f -
 
+echo createMonitoring grafana
 kubectl apply -f /vagrant/yml/grafana.yaml
+echo createMonitoring prometheus
 kubectl apply -f /vagrant/yml/prometheus.yaml
 cat /vagrant/yml/alertmanager.yaml | sed -e 's/  replicas: 1/  replicas: 3/g' | kubectl apply -f -
 
