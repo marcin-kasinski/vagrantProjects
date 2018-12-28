@@ -22,6 +22,8 @@ sudo sh -c "echo '192.168.1.25 cephmon1' >> /etc/hosts"
 
 sudo sh -c "echo '192.168.1.12 springbootmicroserviceingress' >> /etc/hosts"
 
+#set timezone
+timedatectl set-timezone Europe/Warsaw
 
 remove_LVM_logical_volume
 
