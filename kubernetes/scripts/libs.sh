@@ -233,7 +233,7 @@ cd $ISTIO_VERSION
 sed -i -e "s/  type: LoadBalancer/  type: NodePort/g" install/kubernetes/istio-demo.yaml
 kubectl apply -f install/kubernetes/istio-demo.yaml
 
-istioEnableInjection
+istioEnableInjection apps
 
 #set istio-ingressgateway nodeport to 30999
 kubectl patch svc istio-ingressgateway -n istio-system --type=json -p='[{"op": "replace", "path": "/spec/ports/0/nodePort", "value": 30999}]'
