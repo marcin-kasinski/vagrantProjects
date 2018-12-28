@@ -24,6 +24,8 @@ installHelm 2>&1 | tee ~/installHelm.log
 
 #createJaeger 2>&1 | tee ~/createJaeger.log
 
+istioDisableInjection default
+
 setupIstio 2>&1 | tee ~/setupIstio.log
 createVistio 2>&1 | tee ~/createVistio.log
 createKiali 2>&1 | tee ~/createKiali.log
@@ -80,7 +82,7 @@ setupRedis 2>&1 | tee ~/setupRedis.log
 
 #showCustomService
 
-configureGrafana 2>&1  | tee ~/configureGrafana.log
+#configureGrafana 2>&1  | tee ~/configureGrafana.log
 
 createceph
 createcephObjects 2>&1 | tee ~/createcephObjects.log
