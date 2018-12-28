@@ -169,6 +169,38 @@ spec:
           serviceName: servicegraph
           servicePort: 8088
 ---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: grafana-ingress
+  namespace: istio-system
+  annotations:
+spec:
+  rules:
+  - host: grafanaistio
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: grafana
+          servicePort: 3000
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: tracing-ingress
+  namespace: istio-system
+  annotations:
+spec:
+  rules:
+  - host: tracingistio
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: tracing
+          servicePort: 80
+---
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
