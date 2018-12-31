@@ -62,6 +62,23 @@ curl https://raw.githubusercontent.com/kiali/kiali/${VERSION_LABEL}/deploy/kuber
   ISTIO_NAMESPACE=istio-system  \
   GRAFANA_URL=${GRAFANA_URL} envsubst | kubectl create -n istio-system -f -
 
+#add prometheus url
+curl -OL https://raw.githubusercontent.com/kiali/kiali/${VERSION_LABEL}/deploy/kubernetes/kiali-configmap.yaml
+echo "      prometheus_service_url: http://prometheus-cs.default.svc.cluster.local:9090">> kiali-configmap.yaml
+cat kiali-configmap.yaml 
+
+cat kiali-configmap.yaml | \
+  VERSION_LABEL=${VERSION_LABEL} \
+  JAEGER_URL=${JAEGER_URL}  \
+  ISTIO_NAMESPACE=istio-system  \
+  GRAFANA_URL=${GRAFANA_URL} envsubst | kubectl apply -n istio-system -f -
+
+
+
+
+
+
+
 curl https://raw.githubusercontent.com/kiali/kiali/${VERSION_LABEL}/deploy/kubernetes/kiali-secrets.yaml | \
   VERSION_LABEL=${VERSION_LABEL} envsubst | kubectl create -n istio-system -f -
 
@@ -186,18 +203,19 @@ echo GATEWAY_URL $GATEWAY_URL
 #curl -o /dev/null -s -w "%{http_code}\n" http://${GATEWAY_URL}/productpage
 curl http://${GATEWAY_URL}/springbootweb
 
-
 }
 
 createVistio()
 {
 git clone https://github.com/nmnellis/vistio.git
+#set prometheus url
+sed -i -e 's/prometheusURL: http:\/\/prometheus.istio-system:9090/prometheusURL: http:\/\/prometheus-cs.default.svc.cluster.local:9090/g' vistio/helm/vistio/values-mesh-only.yaml
 cd vistio
 
-removed storageclass
+#removed storageclass
 cp /vagrant/conf/vistio/statefulset.yaml helm/vistio/templates/statefulset.yaml
 
-helm install helm/vistio --name vistio --namespace default -f helm/vistio/values-mesh-only.yaml  --set web.env.updateURL=http://vistio-api:30080/graph
+helm install helm/vistio --name vistio --namespace default -f helm/vistio/values-mesh-only.yaml --set web.env.updateURL=http://vistio-api:30080/graph
 
 #helm install helm/vistio --name vistio --namespace default -f helm/vistio/values-with-ingress.yaml
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/vistio.yaml?$(date +%s)"  | kubectl apply -f -
