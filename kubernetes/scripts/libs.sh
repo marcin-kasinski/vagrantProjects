@@ -1336,6 +1336,10 @@ while ! nc -w 20 -z $GRAFANAPODIP 3000; do   echo "waiting grafana to launch ...
 #add datasource
 curl -XPOST --data @/vagrant/conf/grafanaprometheusdatasource.json -H "Content-Type:application/json"  http://admin:admin@$GRAFANAPODIP:3000/api/datasources
 
+#create folder
+DASHBOARD="{  \"uid\": \"istio\",  \"title\": \"Istio Dashboards\"}"
+curl -XPOST --data "$DASHBOARD" -H "Content-Type:application/json"  http://admin:admin@$GRAFANAPODIP:3000/api/folders
+
 DASHBOARD="{\"dashboard\":  $(</vagrant/conf/grafana_dashboard_kafka_overview.json) }"
 curl -XPOST --data "$DASHBOARD" -H "Content-Type:application/json"  http://admin:admin@$GRAFANAPODIP:3000/api/dashboards/db
 
