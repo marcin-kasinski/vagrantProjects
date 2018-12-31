@@ -250,6 +250,13 @@ kubectl apply -f /vagrant/yml/istio.yaml
 #curl https://raw.githubusercontent.com/istio/istio/master/samples/bookinfo/platform/kube/bookinfo.yaml | kubectl apply -f -
 #curl https://raw.githubusercontent.com/istio/istio/master/samples/bookinfo/networking/bookinfo-gateway.yaml | kubectl apply -f -
 
+#delete grafana and prometheus
+
+kubectl delete svc -n istio-system grafana
+kubectl delete svc -n istio-system prometheus
+kubectl delete deployment -n istio-system grafana
+kubectl delete deployment -n istio-system prometheus
+
 }
 
 createOpenFaasFunction()
