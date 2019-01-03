@@ -20,6 +20,11 @@ data:
         #level.org.springframework.cloud.sleuth.log: TRACE
     server:
         port: 7070
+    opentracing.jaeger.udp-sender.host: jaeger-collector.default.svc.cluster.local
+    opentracing.jaeger.udp-sender.port: 14268
+    opentracing.jaeger.http-sender.url: 
+    opentracing.jaeger.log-spans: true
+    
     spring:
         application:
             name: SpringBootWeb
@@ -38,10 +43,10 @@ data:
             host: rabbitmq.default.svc.cluster.local
             password: guest
             port: 5672
-        zipkin:
-            baseUrl: http://springbootzipkin:7777
-            sender:
-                type: web
+        #zipkin:
+        #    baseUrl: http://springbootzipkin:7777
+        #    sender:
+        #        type: web
         sleuth:
             sampler:
                 percentage: 1
