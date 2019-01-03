@@ -1,3 +1,4 @@
+---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -10,11 +11,6 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: jaeger-query
+          serviceName: jaeger
           servicePort: 16686
 ---
-apiVersion: io.jaegertracing/v1alpha1
-kind: Jaeger
-metadata:
-  name: jaeger
-

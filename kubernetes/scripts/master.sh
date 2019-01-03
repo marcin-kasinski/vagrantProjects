@@ -22,7 +22,7 @@ installHelm 2>&1 | tee ~/installHelm.log
 #/vagrant/scripts/test.sh
 #exit
 
-#createJaeger 2>&1 | tee ~/createJaeger.log
+createJaeger 2>&1 | tee ~/createJaeger.log
 
 istioDisableInjection default
 
