@@ -1,0 +1,32 @@
+---
+apiVersion: io.jaegertracing/v1alpha1
+kind: Jaeger
+metadata:
+  name: simplest
+spec:
+  strategy: allInOne
+  allInOne:
+    image: jaegertracing/all-in-one:1.8
+    options:
+      log-level: debug  
+  sampling:
+    options:
+      default_strategy:
+        type: probabilistic
+        param: 1
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: jaeger-ingress
+  namespace: default
+spec:
+  rules:
+  - host: jaeger
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: simplest-query
+          servicePort: 16686
+---
