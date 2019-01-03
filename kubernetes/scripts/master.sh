@@ -54,9 +54,9 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fluentd_shipper.yaml?$(date +%s)"  | kubectl apply -f -
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fluentd_indexer.yaml?$(date +%s)"  | kubectl apply -f -
 
-createIngress	
+createIngress 2>&1 | tee ~/createIngress.log
 
-createHeapster
+createHeapster 2>&1 | tee ~/createHeapster.log
 
 istioDisableInjection 
 createMyBackendServers 2>&1 | tee ~/createMyBackendServers.log
