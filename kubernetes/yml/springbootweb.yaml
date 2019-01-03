@@ -13,11 +13,11 @@ data:
     app.rest_url: ${APP_REST_URL:http://nginx/api/adduser}
     logging:
         file: logs/application.log
-        #level.zipkin: TRACE
-        #level.zipkin2: TRACE
-        #level.org.springframework.cloud.sleuth.zipkin: TRACE
-        #level.org.springframework.cloud.sleuth.zipkin2: TRACE
-        #level.org.springframework.cloud.sleuth.log: TRACE
+        level.zipkin: TRACE
+        level.zipkin2: TRACE
+        level.org.springframework.cloud.sleuth.zipkin: TRACE
+        level.org.springframework.cloud.sleuth.zipkin2: TRACE
+        level.org.springframework.cloud.sleuth.log: TRACE
     server:
         port: 7070
     #opentracing.jaeger.udp-sender.host: jaeger-collector.default.svc.cluster.local
