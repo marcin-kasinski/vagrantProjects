@@ -278,7 +278,7 @@ kubectl delete svc -n istio-system prometheus
 kubectl delete deployment -n istio-system grafana
 kubectl delete deployment -n istio-system prometheus
 # poniższe usuwam, bo z nim nie mogę zdefiniować VirtualService zawierające host z portem
-kubectl delete deployment -n istio-system galley
+kubectl delete deployment -n istio-system istio-galley
 
 }
 
