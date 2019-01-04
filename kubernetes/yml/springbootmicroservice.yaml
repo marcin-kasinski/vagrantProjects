@@ -210,7 +210,7 @@ metadata:
       timeout_ms: 10000
       service: am-springbootmicroservice.apps:9191
       #only works via istio ingress gateway
-      host: springbootmicroservice.itzone.pl:30999
+      host: springbootmicroservice.apps.svc.cluster.local:30999
 spec:
   type: NodePort
   ports:
@@ -271,8 +271,9 @@ spec:
       targetAverageValue: 1
 ---
 #curl -H "Host: springbootmicroservice.itzone.pl:30999" localhost:30999/api/get-by-email?email=ajax@ajax.com
-#curl -H "Host: springbootmicroservice.itzone.pl" localhost:30999/api/get-by-email?email=ajax@ajax.com
-#curl springbootmicroservice.itzone.pl:30999/api/get-by-email?email=ajax@ajax.com
+#curl -H "Host: springbootmicroservice.apps.svc.cluster.local:30999" localhost:30999/api/get-by-email?email=ajax@ajax.com
+
+
 
 
 apiVersion: networking.istio.io/v1alpha3
@@ -284,6 +285,8 @@ spec:
   hosts:
   - "springbootmicroservice.itzone.pl"
   - "springbootmicroservice.itzone.pl:30999"
+  - "springbootmicroservice.apps.svc.cluster.local:30999"
+  - "springbootmicroservice:30999"
   gateways:
   - itzone-gateway
   http:
