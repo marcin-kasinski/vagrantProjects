@@ -510,7 +510,12 @@ installHelm()
 
 #tar -xvzf helm-v2.12.0-rc.1-linux-arm64.tar.gz
 
-sudo snap install helm --classic
+#sudo snap install helm --classic
+
+#install from script
+curl https://raw.githubusercontent.com/helm/helm/master/scripts/get > get_helm.sh
+chmod 700 get_helm.sh
+./get_helm.sh
 
 #sudo -H -u vagrant bash -c 'helm init' 
 helm init
