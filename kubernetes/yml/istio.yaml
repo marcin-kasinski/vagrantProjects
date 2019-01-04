@@ -222,7 +222,7 @@ metadata:
   name: ambassador
 spec:
   hosts:
-  - "*"
+  - "ambassador"
   gateways:
   - itzone-gateway
   http:
@@ -245,7 +245,7 @@ metadata:
   name: springbootzipkin
 spec:
   hosts:
-  - "*"
+  - "springbootzipkin"
   gateways:
   - itzone-gateway
   http:
