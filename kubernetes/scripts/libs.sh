@@ -281,6 +281,16 @@ kubectl delete deployment -n istio-system prometheus
 # poniższe usuwam, bo z nim nie mogę zdefiniować VirtualService zawierające host z portem
 kubectl delete deployment -n istio-system istio-galley
 
+
+
+bin/istioctl proxy-config endpoint -n apps springbootmicroservice-0
+bin/istioctl proxy-config listener -n apps springbootmicroservice-0
+bin/istioctl proxy-config route -n apps springbootmicroservice-0
+bin/istioctl proxy-config cluster -n apps springbootmicroservice-0
+bin/istioctl proxy-config bootstrap -n apps springbootmicroservice-0
+bin/istioctl proxy-config route -n apps springbootmicroservice-0
+bin/istioctl proxy-status
+ 
 }
 
 createOpenFaasFunction()
