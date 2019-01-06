@@ -117,17 +117,17 @@ data:
     management.metrics.tags.commonstack: ${SPRING_PROFILE:"unknown"}
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: springbootmicroservice
   labels:
     app: springbootmicroservice  
 spec:
-  serviceName: "springbootmicroservice-hs"
+#  serviceName: "springbootmicroservice-hs"
   replicas: 1
-  updateStrategy:
-    type: RollingUpdate
-  podManagementPolicy: Parallel  
+#  updateStrategy:
+#    type: RollingUpdate
+#  podManagementPolicy: Parallel  
   selector:
     matchLabels:
       app: springbootmicroservice    
@@ -220,21 +220,6 @@ spec:
   selector:
     app: springbootmicroservice
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: springbootmicroservice-hs
-  labels:
-    app: springbootmicroservice
-spec:
-  ports:
-  - port: 9191
-    targetPort: 9191
-    name: http
-  clusterIP: None
-  selector:
-    app: springbootmicroservice
----
 # An Ingress with 2 hosts and 3 endpoints
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -262,7 +247,7 @@ spec:
   minReplicas: 1
   scaleTargetRef:
     apiVersion: apps/v1
-    kind: StatefulSet
+    kind: Deployment
     name: springbootmicroservice
   metrics:
   - type: Pods
