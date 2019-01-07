@@ -302,7 +302,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: dr
+  name: springbootmicroservice
 spec:
   host: springbootmicroservice
   subsets:
@@ -312,16 +312,3 @@ spec:
   - name: v2
     labels:
       version: v2
-  trafficPolicy:
-    connectionPool:
-      tcp:
-        maxConnections: 1
-      http:
-        http1MaxPendingRequests: 1
-        maxRequestsPerConnection: 1
-    outlierDetection:
-      http:
-        consecutiveErrors: 1
-        interval: 1s
-        baseEjectionTime: 3m
-        maxEjectionPercent: 100
