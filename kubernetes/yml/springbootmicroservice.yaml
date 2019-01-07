@@ -119,7 +119,7 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: springbootmicroservice
+  name: springbootmicroservice-v1
   labels:
     app: springbootmicroservice  
 spec:
@@ -135,6 +135,7 @@ spec:
     metadata:
       labels:
         app: springbootmicroservice
+        version: v1
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/scheme: "http"
@@ -162,6 +163,8 @@ spec:
         - name: http
           containerPort: 9191
         env:
+        - name: VERSION_NAME
+          value: "V1"
         - name: SPRING_PROFILE
           value: "prd"
         - name: "EXTRA_JAVA_ARGS"
@@ -264,23 +267,27 @@ metadata:
 spec:
 # aby port przyjął w hostach trzeba usunąć galley deployment
   hosts:
-  - "springbootmicroservice.itzone.pl"
   - "springbootmicroservice.itzone.pl:30999"
   - "springbootmicroservice.apps.svc.cluster.local:30999"
-  - "springbootmicroservice:9191" # from webapplication
   - "springbootmicroservice" # from webapplication
-  - "springbootmicroservice:30999" # from webapplication
   gateways:
-  - itzone-gateway
   http:
   - match:
     - uri:
         prefix: /
     route:
     - destination:
-        host: ambassador.default.svc.cluster.local
+        host: springbootmicroservice
+        subset: v1
         port:
-          number: 80
+          number: 9191
+      weight: 1
+    - destination:
+        host: springbootmicroservice
+        subset: v2
+        port:
+          number: 9191
+      weight: 99          
     corsPolicy:
       allowOrigin:
       - "*"
@@ -291,6 +298,30 @@ spec:
       maxAge: "1s"
     appendHeaders:
       key1: "aaax-request-start1"
-          
----          
- 
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: dr
+spec:
+  host: springbootmicroservice
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        maxConnections: 1
+      http:
+        http1MaxPendingRequests: 1
+        maxRequestsPerConnection: 1
+    outlierDetection:
+      http:
+        consecutiveErrors: 1
+        interval: 1s
+        baseEjectionTime: 3m
+        maxEjectionPercent: 100
