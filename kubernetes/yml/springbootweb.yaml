@@ -207,7 +207,7 @@ metadata:
       timeout_ms: 10000
       service: am-springbootweb.apps:7070
       #only works via istio ingress gateway
-      host: springbootweb:30999
+      host: springbootweb.apps.svc.cluster.local:30999
       
 spec:
   type: NodePort
@@ -275,7 +275,7 @@ metadata:
   name: springbootweb
 spec:
   hosts:
-  - "springbootweb"
+  - "springbootweb.apps.svc.cluster.local:30999"
   gateways:
   - itzone-gateway
   http:
