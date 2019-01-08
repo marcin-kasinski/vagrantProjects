@@ -284,11 +284,11 @@ spec:
         prefix: /
     route:
     - destination:
-        #host: springbootweb # interpreted as springbootweb.apps.svc.cluster.local
-        host: ambassador.default.svc.cluster.local # interpreted as springbootweb.apps.svc.cluster.local
+        host: springbootweb # interpreted as springbootweb.apps.svc.cluster.local
+        #host: ambassador.default.svc.cluster.local # interpreted as springbootweb.apps.svc.cluster.local
         port:
-          #number: 7070
-          number: 80
+          number: 7070
+          #number: 80
 ---          
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
