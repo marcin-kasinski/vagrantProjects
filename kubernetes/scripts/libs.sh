@@ -254,6 +254,11 @@ cd $ISTIO_VERSION
 sed -i -e "s/  type: LoadBalancer/  type: NodePort/g" install/kubernetes/istio-demo.yaml
 kubectl apply -f install/kubernetes/istio-demo.yaml
 
+#install citadel
+kubectl apply -f install/kubernetes/istio-citadel-with-health-check.yaml
+
+kubectl apply -f /vagrant/yml/citadel.yaml
+
 istioEnableInjection apps
 
 #set istio-ingressgateway nodeport to 30999
