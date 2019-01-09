@@ -271,6 +271,7 @@ spec:
   - "springbootmicroservice.apps.svc.cluster.local:30999"
   - "springbootmicroservice" # from webapplication
   gateways:
+  - itzone-gateway  
   http:
   - match:
     - uri:
@@ -312,3 +313,26 @@ spec:
   - name: v2
     labels:
       version: v2
+---
+#curl -H "Host: springbootmicroservice2.itzone.pl:30999" localhost:30999/api/get-by-email?email=ajax@ajax.com
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: springbootmicroservice2.itzone.pl
+spec:
+  hosts:
+  - "springbootmicroservice2.itzone.pl:30999"
+  gateways:
+  - itzone-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: springbootmicroservice
+        #host: ambassador.default.svc.cluster.local # interpreted as springbootweb.apps.svc.cluster.local
+        port:
+          number: 9191
+          #number: 80
+---
