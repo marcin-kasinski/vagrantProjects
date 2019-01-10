@@ -65,14 +65,16 @@ echo "$PODNAME"
 OPTS2=" -- bash ";
 
 if [ ! -z "$BASHCOMMAND" ]; then 
-  #there is BASHCOMMAND
+  echo there is BASHCOMMAND
   OPTS2=$OPTS2" -c \"$BASHCOMMAND\"";
 fi
 
 echo executing : kubectl exec -it $OPTS $PODNAME $OPTS2
 
+CMD="kubectl exec -it $OPTS $PODNAME $OPTS2"
+eval $CMD
 
-kubectl exec -it $OPTS $PODNAME $OPTS2
+#kubectl exec -it $OPTS $PODNAME $OPTS2
 
 }
 
@@ -87,7 +89,7 @@ echo "BASH $3"
 
 if [ "$COMMAND" = "e" ]
 then
-kubeexec $ARG "$BASH"
+kubeexec $ARG "$BASH" "$4"
 elif [ "$COMMAND" = "l" ]
 then
 kubelogs $2 $3 $4
