@@ -75,6 +75,7 @@ echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
 
 istioDisableInjection 
 createMonitoring 2>&1 | tee ~/createMonitoring.log # grafana, prometheus , alertmanager, metric server and prometheus adapter
+configureGrafana 2>&1  | tee ~/configureGrafana.log
 createMongo 2>&1 | tee ~/createMongo.log
 createRedis 2>&1 | tee ~/createRedis.log
 
@@ -83,7 +84,6 @@ setupRedis 2>&1 | tee ~/setupRedis.log
 
 #showCustomService
 
-configureGrafana 2>&1  | tee ~/configureGrafana.log
 createdatapower 2>&1  | tee ~/createdatapower.log
 
 #createceph
