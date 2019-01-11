@@ -1,3 +1,31 @@
+createdatapower()
+{
+
+
+cd ~
+git clone https://github.com/ibm-datapower/datapower-tutorials.git
+cd datapower-tutorials/using-datapower-in-kubernetes/
+
+
+sed -i -e "s/  port 80/  port 8181/g" datapower/config/foo/foo.cfg 
+
+
+kubectl create configmap datapower-config --from-file=datapower/config/ --from-file=datapower/config/foo
+kubectl create configmap datapower-local-foo --from-file=datapower/local/foo
+
+kubectl apply -f kubernetes/deployments/backend-deployment.yaml
+kubectl apply -f kubernetes/deployments/datapower-deployment.yaml
+
+sed -i -e "s/  type: LoadBalancer/  type: NodePort/g" kubernetes/services/backend-service.yaml
+sed -i -e "s/  type: LoadBalancer/  type: NodePort/g" kubernetes/services/datapower-service.yaml
+
+kubectl apply -f kubernetes/services/backend-service.yaml
+kubectl apply -f kubernetes/services/datapower-service.yaml
+
+kubectl apply -f /vagrant/yml/datapower.yaml
+
+}
+
 finish()
 {
 showDashboardIP | tee ~/showDashboardIP.log
