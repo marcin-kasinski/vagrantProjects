@@ -188,6 +188,18 @@ metadata:
   name: springbootmicroservice
   labels:
     app: springbootmicroservice
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v0
+      kind: Mapping
+      name: springbootmicroservice_mapping
+      prefix: /
+      timeout_ms: 10000
+      service: springbootmicroservice.apps:9191
+      #only works via istio ingress gateway
+      host: springbootmicroservice1.apps.svc.cluster.local:30999
+    
 spec:
   type: NodePort
   ports:
