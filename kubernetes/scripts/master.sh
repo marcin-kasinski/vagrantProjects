@@ -78,7 +78,7 @@ createMonitoring 2>&1 | tee ~/createMonitoring.log # grafana, prometheus , alert
 createMongo 2>&1 | tee ~/createMongo.log
 createRedis 2>&1 | tee ~/createRedis.log
 
-configureGrafana 2>&1  | tee ~/configureGrafana.log
+#configureGrafana 2>&1  | tee ~/configureGrafana.log
 
 setupMongodb 2>&1 | tee ~/setupMongodb.log
 setupRedis 2>&1 | tee ~/setupRedis.log
