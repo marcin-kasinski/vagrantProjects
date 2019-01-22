@@ -1,0 +1,284 @@
+kind: ConfigMap
+metadata:
+  name: springbootsoapservice-bootstrap-yml-cm
+apiVersion: v1
+data:
+  bootstrap.yml: |-
+
+    logging:
+        file: logs/application.log
+        level:
+            io:
+                micrometer:
+                    graphite: DEBUG
+    server:
+        port: 8080
+    spring:
+        application:
+            name: SpringBootSoapService
+    
+        zipkin:
+            #baseUrl: http://springbootzipkin:7777
+            baseUrl: http://zipkin.default.svc.cluster.local:9411            
+            sender:
+                type: web            
+        sleuth:
+            sampler:
+                percentage: 1
+                probability: 1
+    endpoints:
+        prometheus:
+            enabled: true 
+    management:
+        security:
+            enabled: false
+        endpoint:
+            metrics:
+                enabled: true
+            prometheus:
+                enabled: true 
+        endpoints:
+            web:
+                exposure:
+                    include: "info, health, prometheus"
+            metrics:
+                enabled: true
+        metrics:
+            export:
+                prometheus:
+                    enabled: true            
+    
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springbootsoapservice-v1
+  labels:
+    app: springbootsoapservice  
+spec:
+#  serviceName: "springbootsoapservice-hs"
+  replicas: 1
+#  updateStrategy:
+#    type: RollingUpdate
+#  podManagementPolicy: Parallel  
+  selector:
+    matchLabels:
+      app: springbootsoapservice    
+  template:
+    metadata:
+      labels:
+        app: springbootsoapservice
+        version: v1
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/scheme: "http"
+        prometheus.io/path: "/actuator/prometheus"
+        prometheus.io/port: "8080"        
+    spec:
+      initContainers:
+      #- name: init-springbootsoapservice-monitoring
+       # image: openjdk:9
+        #command: ['sh', '-c', 'apt update && apt install -y netcat && echo "Waiting monitoring to launch"  && while ! nc -z monitoring-influxdb.kube-system.svc.cluster.local 8086; do   echo "waiting..." ; sleep 5 ; done ;  curl -POST http://monitoring-influxdb.kube-system.svc.cluster.local:8086/query --data-urlencode "q=CREATE DATABASE metrics"']
+      containers:
+      - name: springbootsoapservice
+        image: marcinkasinski/springbootsoapservice
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /actuator/prometheus
+            port: 8080
+            httpHeaders:
+            - name: X-Custom-Header
+              value: Awesome
+          initialDelaySeconds: 300
+          periodSeconds: 10
+        ports:
+        - name: http
+          containerPort: 8080
+        env:
+        - name: VERSION_NAME
+          value: "V1"
+        - name: SPRING_PROFILE
+          value: "prd"
+        - name: "EXTRA_JAVA_ARGS"
+          value: "-Dspring.cloud.bootstrap.location=adad"
+        - name: MONGODB_URL
+          value: "mongodb://mongodb-router-cs.default.svc.cluster.local:27017/mkdatabase"
+        - name: KAFKA_BROKER_NODES
+          value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"
+        volumeMounts:
+        - name: config-springbootsoapservice-bootstrap-yml-cm
+          mountPath: /usr/src/myapp/config/bootstrap.yml
+          subPath: bootstrap.yml
+      volumes:
+        - name: config-springbootsoapservice-bootstrap-yml-cm
+          configMap:
+            name: springbootsoapservice-bootstrap-yml-cm
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: springbootsoapservice
+  labels:
+    app: springbootsoapservice
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v0
+      kind: Mapping
+      name: springbootsoapservice_mapping
+      prefix: /
+      timeout_ms: 10000
+      service: springbootsoapservice.apps:8080
+      #only works via istio ingress gateway
+      host: springbootsoapservice1.apps.svc.cluster.local:30999
+    
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080
+    name: http
+  selector:
+    app: springbootsoapservice
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: am-springbootsoapservice
+  labels:
+    app: springbootsoapservice
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v0
+      kind: Mapping
+      name: am-springbootsoapservice_mapping
+      prefix: /
+      timeout_ms: 10000
+      service: am-springbootsoapservice.apps:8080
+      #only works via istio ingress gateway
+      host: springbootsoapservice.apps.svc.cluster.local:30999
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080
+    name: http
+  selector:
+    app: springbootsoapservice
+---
+# An Ingress with 2 hosts and 3 endpoints
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: springbootsoapservice-ingress
+  annotations:
+    ingress.kubernetes.io/enable-cors: "true"
+    ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: springbootsoapservice
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: springbootsoapservice
+          servicePort: 8080
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: springbootsoapservice
+spec:
+  maxReplicas: 12
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: springbootsoapservice
+  metrics:
+  - type: Pods
+    pods:
+      metricName: "MK_6_received_messages"
+      targetAverageValue: 1
+---
+#curl -H "Host: springbootsoapservice.itzone.pl:30999" localhost:30999/api/get-by-email?email=ajax@ajax.com
+#curl -H "Host: springbootsoapservice.apps.svc.cluster.local:30999" localhost:30999/api/get-by-email?email=ajax@ajax.com
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: springbootsoapservice
+spec:
+# aby port przyjął w hostach trzeba usunąć galley deployment
+  hosts:
+  - "springbootsoapservice.itzone.pl:30999"
+  - "springbootsoapservice.apps.svc.cluster.local:30999"
+  - "springbootsoapservice" # from webapplication
+  gateways:
+  - itzone-gateway  
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: springbootsoapservice
+        subset: v1
+        port:
+          number: 8080
+      weight: 1
+    - destination:
+        host: springbootsoapservice
+        subset: v2
+        port:
+          number: 8080
+      weight: 99          
+    corsPolicy:
+      allowOrigin:
+      - "*"
+      allowMethods:
+      - POST
+      - GET
+      - OPTIONS
+      maxAge: "1s"
+    appendHeaders:
+      key1: "aaax-request-start1"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: springbootsoapservice
+spec:
+  host: springbootsoapservice
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2
+---
+#curl -H "Host: springbootsoapservice2.itzone.pl:30999" localhost:30999/api/get-by-email?email=ajax@ajax.com
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: springbootsoapservice2.itzone.pl
+spec:
+  hosts:
+  - "springbootsoapservice2.itzone.pl:30999"
+  gateways:
+  - itzone-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: springbootsoapservice
+        #host: ambassador.default.svc.cluster.local # interpreted as springbootweb.apps.svc.cluster.local
+        port:
+          number: 8080
+          #number: 80
+---
