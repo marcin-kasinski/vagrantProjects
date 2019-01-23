@@ -30,6 +30,20 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: datapower-http-9191
+spec:
+  type: NodePort
+  ports:
+  - port: 9191
+    targetPort: 9191
+    protocol: TCP
+    name: http
+  selector:
+    app: datapower
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: datapower-https-8888
 spec:
   type: NodePort
@@ -46,7 +60,6 @@ kind: Ingress
 metadata:
   name: datapower-ingress
   annotations:
-#    kubernetes.io/ingress.class: "nginx"
     nginx.org/ssl-services: "datapower"
     ingress.kubernetes.io/ssl-redirect: "true"  
 spec:
@@ -58,4 +71,37 @@ spec:
         backend:
           serviceName: datapower
           servicePort: 9090
-    
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: datapower-ingress-8181
+  annotations:
+    nginx.org/ssl-services: "datapower"
+    ingress.kubernetes.io/ssl-redirect: "true"  
+spec:
+  rules:
+  - host: datapower8181
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: datapower-http-8181
+          servicePort: 8181
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: datapower-ingress-9191
+  annotations:
+    nginx.org/ssl-services: "datapower"
+    ingress.kubernetes.io/ssl-redirect: "true"  
+spec:
+  rules:
+  - host: datapower9191
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: datapower-http-9191
+          servicePort: 9191
