@@ -12,8 +12,8 @@ data:
       
       smtp_smarthost: 'fakesmtp:25'
       smtp_from: 'alertmanager@prometheus.com'
-      smtp_auth_username: ''
-      smtp_auth_password: ''
+      smtp_auth_username: 'xxx'
+      smtp_auth_password: 'xxx'
       smtp_require_tls: false
 
     templates:
@@ -32,6 +32,7 @@ data:
       - to: 'fakesmtpuser@fakesmtp'
         auth_username: 'xxx'
         auth_password: 'xxx'
+        require_tls: false
     - name: 'web.hook'
       webhook_configs:
       - url: 'http://127.0.0.1:5001/'
