@@ -30,6 +30,8 @@ data:
     - name: 'default-receiver'
       email_configs:
       - to: 'fakesmtpuser@fakesmtp'
+        auth_username: 'xxx'
+        auth_password: 'xxx'
     - name: 'web.hook'
       webhook_configs:
       - url: 'http://127.0.0.1:5001/'
@@ -108,7 +110,7 @@ spec:
       containers:
       - name: alertmanager
         image: prom/alertmanager
-        args: [ "--log.level","debug","--cluster.listen-address","$(POD_IP):8001", "--cluster.peer","alertmanager-0.alertmanager-hs.default.svc.cluster.local:8001", "--cluster.peer","alertmanager-1.alertmanager-hs.default.svc.cluster.local:8001", "--cluster.peer","alertmanager-2.alertmanager-hs.default.svc.cluster.local:8001" ]
+        args: [ "--config.file","/etc/alertmanager/alertmanager.yml","--log.level","debug","--cluster.listen-address","$(POD_IP):8001", "--cluster.peer","alertmanager-0.alertmanager-hs.default.svc.cluster.local:8001", "--cluster.peer","alertmanager-1.alertmanager-hs.default.svc.cluster.local:8001", "--cluster.peer","alertmanager-2.alertmanager-hs.default.svc.cluster.local:8001" ]
         ports:
         - name: alertmgr-port
           containerPort: 9093
