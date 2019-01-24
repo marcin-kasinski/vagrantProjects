@@ -75,6 +75,40 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
+  name: datapower-ingress-6161
+  annotations:
+    nginx.org/ssl-services: "datapower"
+    ingress.kubernetes.io/ssl-redirect: "true"  
+spec:
+  rules:
+  - host: datapower6161
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: datapower-http-6161
+          servicePort: 6161
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: datapower-ingress-7171
+  annotations:
+    nginx.org/ssl-services: "datapower"
+    ingress.kubernetes.io/ssl-redirect: "true"  
+spec:
+  rules:
+  - host: datapower7171
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: datapower-http-7171
+          servicePort: 7171
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
   name: datapower-ingress-8181
   annotations:
     nginx.org/ssl-services: "datapower"
