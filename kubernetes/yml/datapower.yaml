@@ -16,6 +16,34 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: datapower-http-6161
+spec:
+  type: NodePort
+  ports:
+  - port: 6161
+    targetPort: 6161
+    protocol: TCP
+    name: http
+  selector:
+    app: datapower
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: datapower-http-7171
+spec:
+  type: NodePort
+  ports:
+  - port: 7171
+    targetPort: 7171
+    protocol: TCP
+    name: http
+  selector:
+    app: datapower
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: datapower-http-8181
 spec:
   type: NodePort
