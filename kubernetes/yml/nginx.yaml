@@ -31,6 +31,8 @@ data:
     <a href="http://ambassador:30080/ambassador/v0/diag/">http://ambassador:30080/ambassador/v0/diag/</a><br>
     <a href="http://concourse:30080/">http://concourse:30080/</a> CI TOOL<br>
     <a href="http://weave:30080/">http://weave:30080/</a><br>
+    <a href="http://phpldapadmin:30080/">http://phpldapadmin:30080/</a><br>
+
     <a href="https://datapower:30777">https://datapower:30777</a><br>
 
     <br>ISTIO <br>

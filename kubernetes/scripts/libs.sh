@@ -1,3 +1,12 @@
+createopenldap()
+{
+cd ~
+helm install --name openldap stable/openldap
+kubectl apply -f /vagrant/yml/phpldapadmin.yaml
+
+}
+
+
 createdatapower()
 {
 

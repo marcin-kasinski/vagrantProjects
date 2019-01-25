@@ -87,6 +87,8 @@ setupRedis 2>&1 | tee ~/setupRedis.log
 
 createdatapower 2>&1  | tee ~/createdatapower.log
 
+createopenldap 2>&1  | tee ~/createopenldap.log
+
 #createceph
 #createcephObjects 2>&1 | tee ~/createcephObjects.log
 
