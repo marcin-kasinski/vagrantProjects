@@ -1,0 +1,7 @@
+# billy, example.org
+dn: cn=billy,dc=example,dc=org
+uid: billy
+cn: billy
+sn: 3
+objectClass: top
+objectClass: inetOrgPerson

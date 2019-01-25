@@ -5,6 +5,10 @@ kubectl apply -f /vagrant/yml/phpldapadmin.yaml
 
 helm install --name openldap stable/openldap --set existingSecret=openldap-secret
 
+getPodIP openldap default
+
+#ldapsearch -x -H ldap://10.108.62.247 -b dc=example,dc=org -D "cn=admin,dc=example,dc=org" -w admin 
+ldapadd -a -x -H ldap://10.108.62.247 -D "cn=admin,dc=example,dc=org" -w admin  -f /vagrant/conf/ldap/data.ldif
 }
 
 
