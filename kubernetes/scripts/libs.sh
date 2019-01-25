@@ -7,9 +7,11 @@ helm install --name openldap stable/openldap --set existingSecret=openldap-secre
 
 getPodIP openldap default
 
-#ldapsearch -x -H ldap://10.107.215.79 -b dc=itzone,dc=pl -D "cn=admin,dc=itzone,dc=pl" -w admin
-#ldapsearch -x -H ldap://10.108.62.247 -b dc=example,dc=org -D "cn=admin,dc=example,dc=org" -w admin 
-ldapadd -a -x -H ldap://10.107.215.79 -D "cn=admin,dc=itzone,dc=pl" -w admin  -f /vagrant/conf/ldap/data.ldif
+export OPENLDAP_HOST=$(kubectl -n default get service openldap -o jsonpath='{.spec.clusterIP}')
+
+ldapadd -a -x -H ldap://$OPENLDAP_HOST -D "cn=admin,dc=itzone,dc=pl" -w admin  -f /vagrant/conf/ldap/data.ldif
+ldapsearch -x -H ldap://$OPENLDAP_HOST -b dc=itzone,dc=pl -D "cn=admin,dc=itzone,dc=pl" -w admin
+
 }
 
 
