@@ -1,3 +1,12 @@
+# set admin password
+apiVersion: v1
+kind: Secret
+metadata:
+  name: openldap-secret
+data:
+  LDAP_ADMIN_PASSWORD: YWRtaW4=
+  LDAP_CONFIG_PASSWORD: YWRtaW4=
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
