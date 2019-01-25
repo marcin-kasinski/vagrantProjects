@@ -132,7 +132,7 @@ metadata:
       timeout_ms: 10000
       service: springbootsoapservice.apps:8080
       #only works via istio ingress gateway
-      host: springbootsoapservice1.apps.svc.cluster.local:30999
+      host: springbootsoapservice.apps.svc.cluster.local:30999
     
 spec:
   type: NodePort
