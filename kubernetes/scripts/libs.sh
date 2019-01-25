@@ -1,6 +1,8 @@
 createopenldap()
 {
 cd ~
+
+apt install ldap-utils
 kubectl apply -f /vagrant/yml/phpldapadmin.yaml
 
 helm install --name openldap stable/openldap --set existingSecret=openldap-secret --set env.LDAP_DOMAIN=itzone.pl
