@@ -1,8 +1,9 @@
 createopenldap()
 {
 cd ~
-helm install --name openldap stable/openldap
 kubectl apply -f /vagrant/yml/phpldapadmin.yaml
+
+helm install --name openldap stable/openldap --set existingSecret=openldap-secret
 
 }
 
