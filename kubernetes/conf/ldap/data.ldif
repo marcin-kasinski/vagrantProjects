@@ -1,5 +1,5 @@
-# billy, example.org
-dn: cn=billy,dc=example,dc=org
+# billy, itzone.pl
+dn: cn=billy,dc=itzone,dc=pl
 uid: billy
 cn: billy
 sn: 3

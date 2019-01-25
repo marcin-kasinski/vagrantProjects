@@ -3,12 +3,13 @@ createopenldap()
 cd ~
 kubectl apply -f /vagrant/yml/phpldapadmin.yaml
 
-helm install --name openldap stable/openldap --set existingSecret=openldap-secret
+helm install --name openldap stable/openldap --set existingSecret=openldap-secret --set env.LDAP_DOMAIN=itzone.pl
 
 getPodIP openldap default
 
+#ldapsearch -x -H ldap://10.107.215.79 -b dc=itzone,dc=pl -D "cn=admin,dc=itzone,dc=pl" -w admin
 #ldapsearch -x -H ldap://10.108.62.247 -b dc=example,dc=org -D "cn=admin,dc=example,dc=org" -w admin 
-ldapadd -a -x -H ldap://10.108.62.247 -D "cn=admin,dc=example,dc=org" -w admin  -f /vagrant/conf/ldap/data.ldif
+ldapadd -a -x -H ldap://10.107.215.79 -D "cn=admin,dc=itzone,dc=pl" -w admin  -f /vagrant/conf/ldap/data.ldif
 }
 
 
