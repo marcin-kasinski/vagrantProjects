@@ -7,15 +7,41 @@ kubectl apply -f /vagrant/yml/phpldapadmin.yaml
 
 helm install --name openldap stable/openldap --set existingSecret=openldap-secret --set env.LDAP_DOMAIN=itzone.pl
 
+
+kubectl patch svc openldap --type=json -p='[{"op": "replace", "path": "/spec/type", "value": "NodePort"}]'
+kubectl patch svc openldap --type=json -p='[{"op": "replace", "path": "/spec/ports/0/nodePort", "value": 30389}]'
+
+
 getPodIP openldap default
+
+IP=$retval
+waitForIPPort $IP 389
 
 export OPENLDAP_HOST=$(kubectl -n default get service openldap -o jsonpath='{.spec.clusterIP}')
 
 ldapadd -a -x -H ldap://$OPENLDAP_HOST -D "cn=admin,dc=itzone,dc=pl" -w admin  -f /vagrant/conf/ldap/data.ldif
 ldapsearch -x -H ldap://$OPENLDAP_HOST -b dc=itzone,dc=pl -D "cn=admin,dc=itzone,dc=pl" -w admin
+#ldapsearch -x -H ldap://$OPENLDAP_HOST -b cn=config -D "cn=admin,dc=itzone,dc=pl" -w admin
+#ldapsearch -x -H ldap://$OPENLDAP_HOST -b dc=itzone,dc=pl -D "cn=billy,ou=users,dc=itzone,dc=pl" -w admin
+
+
+getPodName openldap default
+POD_NAME=$retval
+echo "POD_NAME $POD_NAME"
+
+
+#kubectl exec $POD_NAME -- bash -c "ldapsearch -H ldapi:// -Y EXTERNAL -b \"cn=config\" \"(olcRootDN=*)\" olcSuffix olcRootDN olcRootPW -LLL -Q"
+#kubectl exec $POD_NAME -- bash -c "ldapsearch -H ldapi:// -Y EXTERNAL -b \"cn=config\" \"(olcRootDN=*)\" "
+kubectl exec $POD_NAME -- bash -c "ldapsearch -H ldapi:// -Y EXTERNAL -b \"cn=config\" \"(olcRootDN=*)\" "
+
+#kubectl exec $POD_NAME -- bash -c "ldapsearch -H ldapi:// -Y EXTERNAL -b \"cn=config\" \"(olcRootDN=*)\" olcAccess -LLL -Q"
+
+kubectl cp /vagrant/conf/ldap/olc.ldif default/$POD_NAME:/tmp/olc.ldif
+
+
+kubectl exec $POD_NAME -- bash -c "ldapmodify -H ldapi:// -Y EXTERNAL -f /tmp/olc.ldif"
 
 }
-
 
 createdatapower()
 {
