@@ -12,7 +12,18 @@ ou: users
 dn: cn=billy,ou=users,dc=itzone,dc=pl
 uid: billy
 cn: billy
-sn: 3
+sn: Smith
+objectClass: top
+objectclass: person
+objectclass: organizationalPerson
+objectClass: inetOrgPerson
+userPassword: admin
+
+# reader, itzone.pl
+dn: cn=reader,ou=users,dc=itzone,dc=pl
+uid: reader
+cn: reader
+sn: Smith
 objectClass: top
 objectclass: person
 objectclass: organizationalPerson
@@ -23,6 +34,13 @@ dn: cn=developers,ou=groups,dc=itzone,dc=pl
 objectclass: top
 objectclass: groupOfUniqueNames
 cn: developers
-ou: developer
 uniqueMember: cn=billy,ou=users,dc=itzone,dc=pl
 uniqueMember: cn=admin,dc=itzone,dc=pl
+
+dn: cn=readers,ou=groups,dc=itzone,dc=pl
+objectclass: top
+objectclass: groupOfUniqueNames
+cn: readers
+uniqueMember: cn=reader,ou=users,dc=itzone,dc=pl
+uniqueMember: cn=admin,dc=itzone,dc=pl
+
