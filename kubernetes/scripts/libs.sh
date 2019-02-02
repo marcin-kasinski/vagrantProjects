@@ -22,6 +22,11 @@ export OPENLDAP_HOST=$(kubectl -n default get service openldap -o jsonpath='{.sp
 while ! ldapadd -a -x -H ldap://$OPENLDAP_HOST -D "cn=admin,dc=itzone,dc=pl" -w admin  -f /vagrant/conf/ldap/data.ldif; do   echo "adding ldap data ..." ; sleep 20 ; done
 
 ldapsearch -x -H ldap://$OPENLDAP_HOST -b dc=itzone,dc=pl -D "cn=admin,dc=itzone,dc=pl" -w admin
+
+ldapsearch -x -H ldap://$OPENLDAP_HOST -b dc=itzone,dc=pl  "(uniqueMember=cn=reader,ou=users,dc=itzone,dc=pl)"   -D "cn=admin,dc=itzone,dc=pl" -w admin
+
+
+
 ldapsearch -x -H ldap://$OPENLDAP_HOST -b dc=itzone,dc=pl -D "cn=billy,ou=users,dc=itzone,dc=pl" -w admin
 
 getPodName openldap default
