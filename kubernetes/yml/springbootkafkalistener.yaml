@@ -148,3 +148,21 @@ spec:
     name: http
   selector:
     app: springbootkafkalistener
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: springbootkafkalistener-ingress
+  annotations:
+    ingress.kubernetes.io/enable-cors: "true"
+    ingress.kubernetes.io/rewrite-target: /  
+spec:
+  rules:
+  - host: springbootkafkalistener
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: springbootkafkalistener
+          servicePort: 9191
+---    
