@@ -22,6 +22,7 @@ data:
         #level.org.springframework.cloud.sleuth.log: TRACE
     server:
         port: 7070
+    spring.main.allow-bean-definition-overriding: true    
     #opentracing.jaeger.udp-sender.host: jaeger-collector.default.svc.cluster.local
     #opentracing.jaeger.udp-sender.port: 14268
     #opentracing.jaeger.http-sender.url: 
