@@ -172,7 +172,7 @@ spec:
         - name: APP_AJAX_URL
           value: "http://springbootmicroservice.apps.svc.cluster.local:30999/api/get-by-email?email=ajax@ajax.com"          
         - name: APP_EVENT_URL
-          value: "http://springbootweb:30080"          
+          value: "http://springbootweb.apps.svc.cluster.local:30999"          
         - name: APP_EVENT_KAFKA_URL
           value: "http://springbootkafkalistener:30080/events"
         - name: APP_REST_URL
