@@ -5,6 +5,7 @@ apiVersion: v1
 data:
   bootstrap.yml: |-
 
+    app.kafkaadmin.bootsrtapservers: kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092
     logging:
       file:  logs/application.log
     server:
