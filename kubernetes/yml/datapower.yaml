@@ -16,6 +16,20 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: datapower-http-5151
+spec:
+  type: NodePort
+  ports:
+  - port: 5151
+    targetPort: 5151
+    protocol: TCP
+    name: http
+  selector:
+    app: datapower
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: datapower-http-6161
 spec:
   type: NodePort
@@ -99,6 +113,23 @@ spec:
         backend:
           serviceName: datapower
           servicePort: 9090
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: datapower-ingress-5151
+  annotations:
+    nginx.org/ssl-services: "datapower"
+    ingress.kubernetes.io/ssl-redirect: "true"  
+spec:
+  rules:
+  - host: datapower5151
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: datapower-http-5151
+          servicePort: 5151
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
