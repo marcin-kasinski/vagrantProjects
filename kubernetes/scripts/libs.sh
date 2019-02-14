@@ -377,6 +377,9 @@ bin/istioctl proxy-config bootstrap -n apps springbootmicroservice-0
 bin/istioctl proxy-config route -n apps springbootmicroservice-0
 bin/istioctl proxy-status
  
+#delete ingress hpa and scale deployment (only in dev)
+kubectl delete hpa -n istio-system istio-ingressgateway
+kubectl scale deploy istio-ingressgateway  -n istio-system --replicas=1
 }
 
 createOpenFaasFunction()
