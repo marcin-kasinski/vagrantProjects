@@ -28,13 +28,13 @@ metadata:
   annotations:
     getambassador.io/config: |
       ---
-      apiVersion: ambassador/v0
+      apiVersion: ambassador/v1
       kind: TracingService
       name: tracing
       service: am-springbootzipkin:7777
       driver: zipkin
       ---
-      apiVersion: ambassador/v0
+      apiVersion: ambassador/v1
       kind:  Mapping
       name:  am-springbootzipkin_mapping
       prefix: /
@@ -44,7 +44,7 @@ metadata:
       #only works via istio ingress gateway
       host: springbootzipkin:30999
       ---
-      #apiVersion: ambassador/v0
+      #apiVersion: ambassador/v1
       #kind:  Mapping
       #name:  am-springbootzipkin2_mapping
       #prefix: /zipkin

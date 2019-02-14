@@ -2,7 +2,7 @@ metadata:
   annotations:
     getambassador.io/config: |
       ---
-      apiVersion: ambassador/v0
+      apiVersion: ambassador/v1
       kind:  Mapping
       name:  {SERVICE}_mapping
       prefix: /{SERVICE}
