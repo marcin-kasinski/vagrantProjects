@@ -329,16 +329,16 @@ cd $ISTIO_VERSION
 
 #helm install install/kubernetes/helm/istio --name istio --namespace istio-system  -f install/kubernetes/helm/istio/values-istio-galley.yaml
 #helm install install/kubernetes/helm/istio --name istio --namespace istio-system --set global.proxy.includeIPRanges="10.32.0.0/12"
-#helm install install/kubernetes/helm/istio --name istio --namespace istio-system --set gateways.istio-ingressgateway.type=ClusterIP
+helm install install/kubernetes/helm/istio --name istio --namespace istio-system --set gateways.istio-ingressgateway.type=NodePort
 #kubectl apply -f install/kubernetes/istio-demo-auth.yaml
 
-sed -i -e "s/  type: LoadBalancer/  type: NodePort/g" install/kubernetes/istio-demo.yaml
-kubectl apply -f install/kubernetes/istio-demo.yaml
+#sed -i -e "s/  type: LoadBalancer/  type: NodePort/g" install/kubernetes/istio-demo.yaml
+#kubectl apply -f install/kubernetes/istio-demo.yaml
 
 #install citadel
-kubectl apply -f install/kubernetes/istio-citadel-with-health-check.yaml
+#kubectl apply -f install/kubernetes/istio-citadel-with-health-check.yaml
 
-kubectl apply -f /vagrant/yml/citadel.yaml
+#kubectl apply -f /vagrant/yml/citadel.yaml
 
 istioEnableInjection apps
 
