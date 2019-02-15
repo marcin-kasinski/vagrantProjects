@@ -23,6 +23,7 @@ data:
     server:
         port: 7070
     spring.main.allow-bean-definition-overriding: true    
+    #spring.boot.admin.client.url: http://springbootadmin.apps:8080/
     #opentracing.jaeger.udp-sender.host: jaeger-collector.default.svc.cluster.local
     #opentracing.jaeger.udp-sender.port: 14268
     #opentracing.jaeger.http-sender.url: 
