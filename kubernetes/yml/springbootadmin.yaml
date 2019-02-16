@@ -15,14 +15,19 @@ data:
            converter:
              management-context-path: actuator
            ignored-services: a, b, c
-         #probed-endpoints: [ "health", "env", "metrics", "httptrace:trace", "threaddump:dump", "jolokia", "info", "logfile", "refresh", "flyway", "liquibase", "heapdump", "loggers", "auditevents" ]
-         probed-endpoints: [ "health", "env"]
+         probed-endpoints: [ "health", "env", "metrics", "httptrace:trace", "threaddump:dump", "jolokia", "info", "logfile", "refresh", "flyway", "liquibase", "heapdump", "loggers", "auditevents" ]
+         #probed-endpoints: [ "health", "env"]
        kubernetes:
          discovery:
            enabled: true
            catalog-services-watch:
              enabled: true
              catalogServicesWatchDelay: 10000
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: "*"             
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
