@@ -4,25 +4,37 @@ metadata:
 apiVersion: v1
 data:
   bootstrap.yml: |-
-
+    logging.level.root: INFO
     spring:
-     application:
-       name: springbootadmin
-     boot:
-       admin:
-         context-path: /admin
-         discovery:
-           converter:
-             management-context-path: actuator
-           ignored-services: a, b, c
-         probed-endpoints: [ "health", "env", "metrics", "httptrace:trace", "threaddump:dump", "jolokia", "info", "logfile", "refresh", "flyway", "liquibase", "heapdump", "loggers", "auditevents" ]
-         #probed-endpoints: [ "health", "env"]
-       kubernetes:
-         discovery:
-           enabled: true
-           catalog-services-watch:
-             enabled: true
-             catalogServicesWatchDelay: 10000
+      application:
+        name: springbootadmin
+      cloud:
+        kubernetes:
+          reload:
+            enabled: true
+            mode: polling
+            period: 5000
+          #discovery:
+            #filter: "metadata.labels['spring-boot']"
+      boot:
+        admin:
+          context-path: /admin
+          discovery:
+            converter:
+              management-context-path: actuator
+            ignored-services: a, b, c
+          probed-endpoints: [ "health", "env", "metrics", "httptrace:trace", "threaddump:dump", "jolokia", "info", "logfile", "refresh", "flyway", "liquibase", "heapdump", "loggers", "auditevents" ]
+          #probed-endpoints: [ "health", "env"]
+          monitor:
+            status-lifetime: 5000ms
+            period: 5000ms
+            read-timeout: 5000ms
+        kubernetes:
+          discovery:
+            enabled: true
+            catalog-services-watch:
+              enabled: true
+              catalogServicesWatchDelay: 10000
     management:
       endpoints:
         web:
