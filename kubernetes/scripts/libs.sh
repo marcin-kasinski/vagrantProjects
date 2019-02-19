@@ -1662,6 +1662,10 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/springbootmicroservice-v2.yaml?$(date +%s)"  | kubectl apply -n apps -f -
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/springbootweb.yaml?$(date +%s)"  | kubectl apply -n apps -f -
 
+kubectl apply -n apps -f /vagrant/yml/springbootwebreactor.yaml
+
+
+
 }
 
 getConfFromCephServer()
