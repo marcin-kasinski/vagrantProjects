@@ -26,7 +26,7 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/scheme: "http"
         prometheus.io/path: "/actuator/prometheus"
-        prometheus.io/port: "7070"  
+        prometheus.io/port: "8080"  
     spec:
       containers:
       - name: springbootwebreactor
@@ -34,7 +34,7 @@ spec:
         imagePullPolicy: Always
         ports:
         - name: http
-          containerPort: 7070
+          containerPort: 8080
         env:
         - name: SPRING_PROFILE
           value: "prd"          
@@ -69,9 +69,9 @@ metadata:
 spec:
   type: NodePort
   ports:
-  - port: 7070
+  - port: 8080
     #nodePort: 30070
-    targetPort: 7070
+    targetPort: 8080
     protocol: TCP
     name: http
   selector:
@@ -92,7 +92,7 @@ spec:
       - path: /
         backend:
           serviceName: springbootwebreactor
-          servicePort: 7070
+          servicePort: 8080
 ---
 #curl -H "Host: springbootwebreactor.apps.svc.cluster.local:30999" localhost:30999/
 apiVersion: networking.istio.io/v1alpha3
@@ -115,5 +115,5 @@ spec:
         host: springbootwebreactor # interpreted as springbootwebreactor.apps.svc.cluster.local
         #host: ambassador.default.svc.cluster.local # interpreted as springbootwebreactor.apps.svc.cluster.local
         port:
-          number: 7070
+          number: 8080
           #number: 80
