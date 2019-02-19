@@ -4,8 +4,8 @@ metadata:
 apiVersion: v1
 data:
   bootstrap.yml: |-
-
-
+    server.jetty.acceptors: 500
+    
 ---
 apiVersion: apps/v1
 kind: Deployment
