@@ -28,9 +28,24 @@ metadata:
 spec:
   type: NodePort
   ports:
-  - port: 7777
+  - port: 9411
     targetPort: 9411
     protocol: TCP
     name: http
   selector:
     app: springbootzipkin
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: springbootzipkin-ingress
+spec:
+  rules:
+  - host: springbootzipkin
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: springbootzipkin
+          servicePort: 9411
+    
