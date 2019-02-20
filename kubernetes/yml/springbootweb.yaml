@@ -16,11 +16,11 @@ data:
     logging:
         file: logs/application.log
         level.org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
-        #level.zipkin: DEBUG
-        #level.zipkin2: DEBUG
-        #level.org.springframework.cloud.sleuth.zipkin: DEBUG
-        #level.org.springframework.cloud.sleuth.zipkin2: DEBUG
-        #level.org.springframework.cloud.sleuth.log: DEBUG
+        level.zipkin: DEBUG
+        level.zipkin2: DEBUG
+        level.org.springframework.cloud.sleuth.zipkin: DEBUG
+        level.org.springframework.cloud.sleuth.zipkin2: DEBUG
+        evel.org.springframework.cloud.sleuth.log: DEBUG
     server:
         port: 7070
     spring.main.allow-bean-definition-overriding: true    
