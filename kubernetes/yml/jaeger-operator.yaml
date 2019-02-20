@@ -15,8 +15,6 @@ spec:
       es:
         server-urls: http://es:9200
     #secretName: jaeger-secrets
-
-      
   sampling:
     options:
       default_strategy:
@@ -58,3 +56,18 @@ spec:
           serviceName: simplest-query
           servicePort: 16686
 ---
+---
+# An Ingress with 2 hosts and 3 endpoints
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: zipkin-ingress
+spec:
+  rules:
+  - host: zipkin
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: zipkin
+          servicePort: 9411

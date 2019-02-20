@@ -24,47 +24,6 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: am-springbootzipkin
-  annotations:
-    getambassador.io/config: |
-      ---
-      apiVersion: ambassador/v1
-      kind: TracingService
-      name: tracing
-      service: am-springbootzipkin:7777
-      driver: zipkin
-      ---
-      apiVersion: ambassador/v1
-      kind:  Mapping
-      name:  am-springbootzipkin_mapping
-      prefix: /
-      timeout_ms: 10000
-      service: am-springbootzipkin.apps:7777
-      #service: springbootzipkin:30999
-      #only works via istio ingress gateway
-      host: springbootzipkin:30999
-      ---
-      #apiVersion: ambassador/v1
-      #kind:  Mapping
-      #name:  am-springbootzipkin2_mapping
-      #prefix: /zipkin
-      #timeout_ms: 10000
-      #service: am-springbootzipkin.apps:7777
-      #path_redirect: /zipkin
-spec:
-  type: NodePort
-  ports:
-  - port: 7777
-    targetPort: 9411
-    protocol: TCP
-    name: http
-  selector:
-    app: springbootzipkin
----
----
-apiVersion: v1
-kind: Service
-metadata:
   name: springbootzipkin
 spec:
   type: NodePort
@@ -75,18 +34,3 @@ spec:
     name: http
   selector:
     app: springbootzipkin
----
-# An Ingress with 2 hosts and 3 endpoints
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: springbootzipkin-ingress
-spec:
-  rules:
-  - host: zipkin
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: am-springbootzipkin
-          servicePort: 7777
