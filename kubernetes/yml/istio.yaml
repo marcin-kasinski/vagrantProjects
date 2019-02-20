@@ -16,7 +16,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: zipkin.apps.svc.cluster.local
+  name: zipkin.default.svc.cluster.local
 spec:
   hosts:
   - zipkin.default.svc.cluster.local
