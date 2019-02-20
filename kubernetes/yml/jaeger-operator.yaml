@@ -21,25 +21,21 @@ spec:
         type: probabilistic
         param: 1
 ---
-# Source: istio/charts/tracing/templates/service.yaml
 apiVersion: v1
-kind: List
-items:
-- apiVersion: v1
-  kind: Service
-  metadata:
-    name: zipkinjaeger
-    labels:
-      app: jaeger
-  spec:
-    type: ClusterIP
-    ports:
-      - port: 9411
-        targetPort: 9411
-        protocol: TCP
-        name: http
-    selector:
-      app: jaeger
+kind: Service
+metadata:
+  name: zipkinjaeger
+  labels:
+    app: jaeger
+spec:
+  type: NodePort
+  ports:
+  - port: 9411
+    #nodePort: 32017
+    targetPort: 9411
+    name: client
+  selector:
+    app: jaeger
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
