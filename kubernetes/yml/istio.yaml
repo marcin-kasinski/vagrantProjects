@@ -16,10 +16,10 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: zipkin.default.svc.cluster.local
+  name: zipkinjaeger.default.svc.cluster.local
 spec:
   hosts:
-  - zipkin.default.svc.cluster.local
+  - zipkinjaeger.default.svc.cluster.local
   ports:
   - number: 9411
     name: tcp

@@ -28,7 +28,7 @@ items:
 - apiVersion: v1
   kind: Service
   metadata:
-    name: zipkin
+    name: zipkinjaeger
     labels:
       app: jaeger
   spec:
@@ -63,10 +63,10 @@ metadata:
   name: zipkin-ingress
 spec:
   rules:
-  - host: zipkin
+  - host: zipkinjaeger
     http:
       paths:
       - path: /
         backend:
-          serviceName: zipkin
+          serviceName: zipkinjaeger
           servicePort: 9411
