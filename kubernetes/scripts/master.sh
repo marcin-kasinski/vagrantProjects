@@ -94,6 +94,7 @@ createopenldap 2>&1  | tee ~/createopenldap.log
 
 kubectl get po --all-namespaces | grep -v Running | grep -v Completed
 
-
-
 finish
+
+echo checking networking
+kubectl exec -it -n default kafka-0 -- sh -c "curl -s -o /dev/null -w "%{http_code}" https://www.onet.pl/"
