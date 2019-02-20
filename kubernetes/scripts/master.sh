@@ -22,7 +22,6 @@ installHelm 2>&1 | tee ~/installHelm.log
 #/vagrant/scripts/test.sh
 #exit
 
-#createJaeger 2>&1 | tee ~/createJaeger.log
 createJaegerOperator 2>&1 | tee ~/createJaegerOperator.log
 
 setupIstio 2>&1 | tee ~/setupIstio.log
@@ -56,7 +55,6 @@ createIngress 2>&1 | tee ~/createIngress.log
 
 createHeapster 2>&1 | tee ~/createHeapster.log
 
-
 createMyBackendServers 2>&1 | tee ~/createMyBackendServers.log
 
 createMyapps 2>&1 | tee ~/createMyapps.log
@@ -67,9 +65,7 @@ curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/ku
 #curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/influxdb-ingress.yaml | kubectl apply -f -
 #curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/graphite.yaml | kubectl apply -f -
 
-
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
-
 
 createMonitoring 2>&1 | tee ~/createMonitoring.log # grafana, prometheus , alertmanager, metric server and prometheus adapter
 createMongo 2>&1 | tee ~/createMongo.log
