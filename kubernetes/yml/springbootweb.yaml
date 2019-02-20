@@ -5,7 +5,7 @@ apiVersion: v1
 data:
   bootstrap.yml: |-
 
-
+    sample.zipkin.enabled: false
     #app.ajax_url: http://springbootmicroserviceingress:30080/api/get-by-email?email=ajax@ajax.com
     app.ajax_url: ${APP_AJAX_URL:http://springbootmicroservice.apps.svc.cluster.local:30999/api/get-by-email?email=ajax@ajax.com}
     app.event_url: ${APP_EVENT_URL:http://springbootmicroservice.apps.svc.cluster.local:30080}
