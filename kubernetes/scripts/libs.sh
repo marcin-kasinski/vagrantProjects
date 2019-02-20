@@ -108,6 +108,8 @@ echo Runtime $runtime_minutes minutes and $modulo seconds
 
 createJaegerOperator()
 {
+
+kubectl create namespace observability
 kubectl create -f https://raw.githubusercontent.com/jaegertracing/jaeger-operator/master/deploy/crds/io_v1alpha1_jaeger_crd.yaml
 kubectl create -f https://raw.githubusercontent.com/jaegertracing/jaeger-operator/master/deploy/service_account.yaml
 kubectl create -f https://raw.githubusercontent.com/jaegertracing/jaeger-operator/master/deploy/role.yaml
@@ -380,6 +382,10 @@ bin/istioctl proxy-status
 #delete ingress hpa and scale deployment (only in dev)
 kubectl delete hpa -n istio-system istio-ingressgateway
 kubectl scale deploy istio-ingressgateway  -n istio-system --replicas=1
+
+#delete egress hpa and scale deployment (only in dev)
+kubectl delete hpa -n istio-system istio-egressgateway
+kubectl scale deploy istio-egressgateway  -n istio-system --replicas=1
 }
 
 createOpenFaasFunction()
