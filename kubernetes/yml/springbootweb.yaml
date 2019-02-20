@@ -15,11 +15,12 @@ data:
     app.rest_url: ${APP_REST_URL:http://nginx/api/adduser}
     logging:
         file: logs/application.log
-        #level.zipkin: TRACE
-        #level.zipkin2: TRACE
-        #level.org.springframework.cloud.sleuth.zipkin: TRACE
-        #level.org.springframework.cloud.sleuth.zipkin2: TRACE
-        #level.org.springframework.cloud.sleuth.log: TRACE
+        level.org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+        #level.zipkin: DEBUG
+        #level.zipkin2: DEBUG
+        #level.org.springframework.cloud.sleuth.zipkin: DEBUG
+        #level.org.springframework.cloud.sleuth.zipkin2: DEBUG
+        #level.org.springframework.cloud.sleuth.log: DEBUG
     server:
         port: 7070
     spring.main.allow-bean-definition-overriding: true    
