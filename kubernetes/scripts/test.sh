@@ -19,6 +19,7 @@ createIngress 2>&1 | tee ~/createIngress.log
 #createHeapster 2>&1 | tee ~/createHeapster.log
 
 #createMyBackendServers 2>&1 | tee ~/createMyBackendServers.log
+curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/elasticsearch.yaml?$(date +%s)" | kubectl apply -f -
 curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/rabbitmq.yaml | kubectl apply -f -
 
 #createMyapps 2>&1 | tee ~/createMyapps.log
