@@ -48,4 +48,30 @@ spec:
         backend:
           serviceName: springbootzipkin
           servicePort: 9411
-    
+
+
+---
+#curl -H "Host: springbootzipkin.apps.svc.cluster.local:30999" localhost:30999/
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: springbootzipkin
+spec:
+  hosts:
+  - "springbootzipkin.apps.svc.cluster.local:30999"
+  - "springbootzipkin:30999"
+  - "springbootzipkin.com:30999"
+  gateways:
+  - itzone-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: springbootzipkin # interpreted as springbootzipkin.apps.svc.cluster.local
+        #host: ambassador.default.svc.cluster.local # interpreted as springbootzipkin.apps.svc.cluster.local
+        port:
+          number: 9411
+          #number: 80
+---                 
