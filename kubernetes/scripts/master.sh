@@ -65,13 +65,13 @@ curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/ku
 #curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/graphite.yaml | kubectl apply -f -
 
 createMonitoring 2>&1 | tee ~/createMonitoring.log # grafana, prometheus , alertmanager, metric server and prometheus adapter
-#createMongo 2>&1 | tee ~/createMongo.log
-#createRedis 2>&1 | tee ~/createRedis.log
+createMongo 2>&1 | tee ~/createMongo.log
+createRedis 2>&1 | tee ~/createRedis.log
 
 #configureGrafana 2>&1  | tee ~/configureGrafana.log
 
-#setupMongodb 2>&1 | tee ~/setupMongodb.log
-#setupRedis 2>&1 | tee ~/setupRedis.log
+setupMongodb 2>&1 | tee ~/setupMongodb.log
+setupRedis 2>&1 | tee ~/setupRedis.log
 
 #showCustomService
 
