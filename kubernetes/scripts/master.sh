@@ -46,10 +46,6 @@ setupMYSQL 2>&1 | tee ~/setupMYSQL.log
 setupkafka 2>&1 | tee ~/setupkafka.log
 #setupkafkaConnect 2>&1 | tee ~/setupkafkaConnect.log
 
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fakesmtp.yaml?$(date +%s)"  | kubectl apply -f -
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fluentd_shipper.yaml?$(date +%s)"  | kubectl apply -f -
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fluentd_indexer.yaml?$(date +%s)"  | kubectl apply -f -
-
 createIngress 2>&1 | tee ~/createIngress.log
 
 createHeapster 2>&1 | tee ~/createHeapster.log
@@ -64,7 +60,7 @@ curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/ku
 #curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/influxdb-ingress.yaml | kubectl apply -f -
 #curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/graphite.yaml | kubectl apply -f -
 
-createMonitoring 2>&1 | tee ~/createMonitoring.log # grafana, prometheus , alertmanager, metric server and prometheus adapter
+createMonitoring 2>&1 | tee ~/createMonitoring.log # metric server and prometheus adapter
 createMongo 2>&1 | tee ~/createMongo.log
 createRedis 2>&1 | tee ~/createRedis.log
 

@@ -1548,16 +1548,6 @@ kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | gre
 createMonitoring()
 {
 
-#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/grafana.yaml?$(date +%s)"  | kubectl apply -f -
-#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/prometheus.yaml?$(date +%s)"   | sed -e 's/  replicas: 1/  replicas: 1/g' | kubectl apply -f -
-#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/alertmanager.yaml?$(date +%s)" | sed -e 's/  replicas: 1/  replicas: 3/g' | kubectl apply -f -
-
-echo createMonitoring grafana
-kubectl apply -f /vagrant/yml/grafana.yaml
-echo createMonitoring prometheus
-kubectl apply -f /vagrant/yml/prometheus.yaml
-cat /vagrant/yml/alertmanager.yaml | sed -e 's/  replicas: 1/  replicas: 3/g' | kubectl apply -f -
-
 curl "https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/master/deploy/1.8%2B/auth-delegator.yaml?$(date +%s)"  | kubectl apply -f -
 curl "https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/master/deploy/1.8%2B/auth-reader.yaml?$(date +%s)"  | kubectl apply -f -
 curl "https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/master/deploy/1.8%2B/metrics-apiservice.yaml?$(date +%s)"  | kubectl apply -f -
@@ -1636,16 +1626,26 @@ createMyBackendServers()
 #curl http://es:9200/_cluster/stats?human&pretty
 
 
+#kubectl apply -f /vagrant/yml/grafana.yaml
+#kubectl apply -f /vagrant/yml/prometheus.yaml
+#cat /vagrant/yml/alertmanager.yaml | sed -e 's/  replicas: 1/  replicas: 3/g' | kubectl apply -f -
+
+
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/elasticsearch.yaml?$(date +%s)" | kubectl apply -f -
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/elastic-exporter.yaml?$(date +%s)" | kubectl apply -f -
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/logstash.yaml?$(date +%s)" | kubectl apply -f -
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kibana.yaml?$(date +%s)" | kubectl apply -f -
 
-curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/jenkins.yaml | kubectl apply -f -
-curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/artifactory.yaml | kubectl apply -f -
+#curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/jenkins.yaml | kubectl apply -f -
+c#url https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/artifactory.yaml | kubectl apply -f -
 curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/rabbitmq.yaml | kubectl apply -f -
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/nginx.yaml?$(date +%s)"  | kubectl apply -f -
+
+#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fakesmtp.yaml?$(date +%s)"  | kubectl apply -f -
+#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fluentd_shipper.yaml?$(date +%s)"  | kubectl apply -f -
+
+#kubectl apply -n apps -f /vagrant/yml/fluentd_indexer.yaml
 
 }
 
