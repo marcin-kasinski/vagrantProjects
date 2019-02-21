@@ -25,7 +25,7 @@ installHelm 2>&1 | tee ~/installHelm.log
 createJaegerOperator 2>&1 | tee ~/createJaegerOperator.log
 
 setupIstio 2>&1 | tee ~/setupIstio.log
-createVistio 2>&1 | tee ~/createVistio.log
+#createVistio 2>&1 | tee ~/createVistio.log
 createKiali 2>&1 | tee ~/createKiali.log
 #createConcourse 2>&1 | tee ~/createConcourse.log
 #createAmbassador 2>&1 | tee ~/createAmbassador.log
@@ -47,7 +47,6 @@ setupkafka 2>&1 | tee ~/setupkafka.log
 #setupkafkaConnect 2>&1 | tee ~/setupkafkaConnect.log
 
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fakesmtp.yaml?$(date +%s)"  | kubectl apply -f -
-
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fluentd_shipper.yaml?$(date +%s)"  | kubectl apply -f -
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fluentd_indexer.yaml?$(date +%s)"  | kubectl apply -f -
 
@@ -65,8 +64,6 @@ curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/ku
 #curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/influxdb-ingress.yaml | kubectl apply -f -
 #curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/graphite.yaml | kubectl apply -f -
 
-echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
-
 createMonitoring 2>&1 | tee ~/createMonitoring.log # grafana, prometheus , alertmanager, metric server and prometheus adapter
 #createMongo 2>&1 | tee ~/createMongo.log
 #createRedis 2>&1 | tee ~/createRedis.log
@@ -78,9 +75,9 @@ createMonitoring 2>&1 | tee ~/createMonitoring.log # grafana, prometheus , alert
 
 #showCustomService
 
-createdatapower 2>&1  | tee ~/createdatapower.log
+#createdatapower 2>&1  | tee ~/createdatapower.log
 
-createopenldap 2>&1  | tee ~/createopenldap.log
+#createopenldap 2>&1  | tee ~/createopenldap.log
 
 #createceph
 #createcephObjects 2>&1 | tee ~/createcephObjects.log
