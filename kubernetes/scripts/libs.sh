@@ -1218,7 +1218,7 @@ kubectl exec $POD_NAME -c mongodb-shard -- mongo --port 27017 --eval "rs.status(
 setupMongodb()
 {
 
-while ! kubectl get po -o wide | grep mongodb-configdb-0 | grep Running ; do   echo "waiting for mongocfg IP..." ; sleep 20 ; done
+while ! kubectl get po -o wide | grep mongodb-configdb-0 | grep Running ; do   echo "waiting for mongocfg pod..." ; sleep 20 ; done
 
 MONGOCFGPODIP=`kubectl get po -o wide | grep mongodb-configdb-0 | grep Running `
 MONGOCFGPODIP=`echo $MONGOCFGPODIP | cut -d " " -f 6`
