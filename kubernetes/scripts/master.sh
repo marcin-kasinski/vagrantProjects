@@ -27,7 +27,7 @@ createJaegerOperator 2>&1 | tee ~/createJaegerOperator.log
 setupIstio 2>&1 | tee ~/setupIstio.log
 createVistio 2>&1 | tee ~/createVistio.log
 createKiali 2>&1 | tee ~/createKiali.log
-createConcourse 2>&1 | tee ~/createConcourse.log
+#createConcourse 2>&1 | tee ~/createConcourse.log
 createAmbassador 2>&1 | tee ~/createAmbassador.log
 setupSSL apps 2>&1 | tee ~/setupSSL.log
 #install_cfssl
