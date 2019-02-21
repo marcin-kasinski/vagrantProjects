@@ -33,7 +33,7 @@ spec:
   - port: 9411
     #nodePort: 32017
     targetPort: 9411
-    name: client
+    name: http-client
   selector:
     app: jaeger
 ---
