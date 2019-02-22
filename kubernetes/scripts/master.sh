@@ -22,7 +22,7 @@ installHelm 2>&1 | tee ~/installHelm.log
 #/vagrant/scripts/test.sh
 #exit
 
-createJaegerOperator 2>&1 | tee ~/createJaegerOperator.log
+#createJaegerOperator 2>&1 | tee ~/createJaegerOperator.log
 
 setupIstio 2>&1 | tee ~/setupIstio.log
 #createVistio 2>&1 | tee ~/createVistio.log
