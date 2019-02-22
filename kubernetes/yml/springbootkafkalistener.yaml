@@ -30,7 +30,8 @@ data:
         port:5672
       zipkin:
         #baseUrl:  http://springbootzipkin:7777
-        baseUrl: http://zipkin.default.svc.cluster.local:9411        
+        #baseUrl: http://zipkin.default.svc.cluster.local:9411
+        baseUrl: http://zipkin.istio-system.svc.cluster.local:9411        
         sender:
           type:  WEB
       sleuth:
