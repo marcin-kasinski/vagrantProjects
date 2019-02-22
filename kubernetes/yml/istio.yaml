@@ -215,7 +215,29 @@ spec:
         backend:
           serviceName: tracing
           servicePort: 80
+
+
+
 ---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: jaeger-ingress
+  namespace: istio-system
+spec:
+  rules:
+  - host: jaeger
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: jaeger-query
+          servicePort: 16686
+
+
+---
+
+
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
