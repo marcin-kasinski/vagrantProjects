@@ -331,6 +331,10 @@ cd $ISTIO_VERSION
 
 #helm install install/kubernetes/helm/istio --name istio --namespace istio-system  -f install/kubernetes/helm/istio/values-istio-galley.yaml
 #helm install install/kubernetes/helm/istio --name istio --namespace istio-system --set global.proxy.includeIPRanges="10.32.0.0/12"
+
+#set zipkin url
+sed -i -e "s/zipkin:9411/zipkin.default:9411/g" install/kubernetes/helm/istio/charts/mixer/templates/deployment.yaml
+
 helm install install/kubernetes/helm/istio --name istio --namespace istio-system --set gateways.istio-ingressgateway.type=NodePort  --set pilot.traceSampling=100
 #kubectl apply -f install/kubernetes/istio-demo-auth.yaml
 
