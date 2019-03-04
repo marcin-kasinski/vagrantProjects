@@ -87,7 +87,7 @@ setupRedis 2>&1 | tee ~/setupRedis.log
 
 kubectl get po --all-namespaces | grep -v Running | grep -v Completed
 
-finish
+finish 2>&1 | tee ~/installHelm.log
 
 echo checking networking
 kubectl exec -it -n default kafka-0 -- sh -c "curl -s -o /dev/null -w "%{http_code}" https://www.onet.pl/"
