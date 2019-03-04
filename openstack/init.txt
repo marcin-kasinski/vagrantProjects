@@ -1,5 +1,5 @@
 
-    cd /vagrantprojects/openstack/
+    cd /tools/vagrantprojects/openstack/
     
     
     #vagrant plugin install vagrant-disksize
@@ -26,7 +26,7 @@
 
 	
 	#tylko node1
-	  cd /vagrantprojects/openstack/
+	  cd /tools/vagrantprojects/openstack/
 	vagrant halt node1
 	
 	vboxmanage list vms
@@ -306,7 +306,7 @@ openstack volume list
 montowanie dysku
 
 
-listowanie dysków
+listowanie dyskï¿½w
 lsblk -io KNAME,TYPE,SIZE,MODEL
 
 listowanie partycji
@@ -320,12 +320,12 @@ fdisk /dev/vdc
 
 The basic fdisk commands you need are:
 
-    m – print help
-    p – print the partition table
-    n – create a new partition
-    d – delete a partition
-    q – quit without saving changes
-    w – write the new partition table and exit
+    m ï¿½ print help
+    p ï¿½ print the partition table
+    n ï¿½ create a new partition
+    d ï¿½ delete a partition
+    q ï¿½ quit without saving changes
+    w ï¿½ write the new partition table and exit
     
     Format 
     
