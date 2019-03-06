@@ -1,7 +1,7 @@
 #!/bin/bash
 source /vagrant/scripts/libs.sh
 
-sudo apt install -y default-jdk
+#sudo apt install -y default-jdk
 
 echo I am provisioning...
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
@@ -20,11 +20,10 @@ init_kubernetesHA 2>&1 | tee ~/init_kubernetesHA.log
 
 
 createWeave 2>&1 | tee ~/createWeave.log
-/vagrant/scripts/test.sh
-exit
+#/vagrant/scripts/test.sh
+#exit
 
 installHelm 2>&1 | tee ~/installHelm.log
-
 
 #createJaegerOperator 2>&1 | tee ~/createJaegerOperator.log
 

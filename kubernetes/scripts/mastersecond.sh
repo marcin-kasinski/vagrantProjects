@@ -54,7 +54,7 @@ kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | gre
 
 }
 
-sudo apt install -y default-jdk
+#sudo apt install -y default-jdk
 
 echo I am provisioning...
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
