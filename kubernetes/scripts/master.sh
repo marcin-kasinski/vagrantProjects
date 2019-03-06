@@ -10,7 +10,6 @@ echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
 
 cd ~
 
-setupJava 2>&1 | tee ~/setupJava.log
 
 #configure_nfs 2>&1 | tee ~/configure_nfs.log
 
@@ -34,6 +33,7 @@ setupIstio 2>&1 | tee ~/setupIstio.log
 createKiali 2>&1 | tee ~/createKiali.log
 #createConcourse 2>&1 | tee ~/createConcourse.log
 #createAmbassador 2>&1 | tee ~/createAmbassador.log
+setupJava 2>&1 | tee ~/setupJava.log
 setupSSL apps 2>&1 | tee ~/setupSSL.log
 #install_cfssl
 

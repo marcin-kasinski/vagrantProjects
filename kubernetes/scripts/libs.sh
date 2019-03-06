@@ -5,6 +5,12 @@ local host=$1
 USER=vagrant
 
 	echo "copycertstosecondmaster"
+    
+    echo `date` "listing local files"
+
+    ls -l /etc/kubernetes/
+    ls -l /etc/kubernetes/pki/
+    ls -l /etc/kubernetes/pki/etcd/
 
 	scp -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key /etc/kubernetes/pki/ca.crt "${USER}"@$host:/tmp
     scp -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key /etc/kubernetes/pki/ca.key "${USER}"@$host:/tmp
@@ -31,6 +37,18 @@ do
 	echo "waiting for url $URL"
 #    REPLY=$(curl 192.168/master_second_init_completed)
     REPLY=$(curl $URL)
+    STATUSCODE=$(curl -s -o /dev/null -w "%{http_code}" http://www.example.org/XXX)
+    STATUSCODE=$(curl -s -o /dev/null -w "%{http_code}" $URL)
+    echo "STATUSCODE [$STATUSCODE]"
+
+    if [ $STATUSCODE != 200 ]; then
+       REPLY=""
+
+    fi
+
+
+    
+    echo "REPLY [$REPLY]"
     sleep 10
 done
 retval=$REPLY
@@ -50,6 +68,11 @@ copycertsonsecondmasternodes()
 
 
 echo "copycertsonsecondmasternodes START"
+
+echo "listing /tmp"
+
+ls -l /tmp/
+
 mkdir -p /etc/kubernetes/pki/etcd
 
 mv /tmp/ca.crt /etc/kubernetes/pki/
@@ -62,8 +85,10 @@ mv /tmp/etcd-ca.crt /etc/kubernetes/pki/etcd/ca.crt
 mv /tmp/etcd-ca.key /etc/kubernetes/pki/etcd/ca.key
 mv /tmp/admin.conf /etc/kubernetes/admin.conf
 
+echo "listing /etc/kubernetes/pki/"
+
 ls -l /etc/kubernetes/pki/
-echo "copycertsonsecondmasternodes START"
+echo "copycertsonsecondmasternodes END"
 
 }
 
@@ -115,6 +140,8 @@ echo "curl k8smaster/join_command_sudo"
 
 curl k8smaster/join_command_sudo
 
+echo `date` "join_command_sudo created"
+
 #--------
 
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>CREATING CONF "
@@ -130,17 +157,24 @@ sudo chown vagrant:vagrant /home/vagrant/.kube/config
 #taint pods on master nodes
 kubectl taint nodes --all node-role.kubernetes.io/master-
 
+echo `date` "listing pods"
+kubectl get po --all-namespaces
 
 #Wait for master2
 waitforurlOK http://k8smaster2/master_second_init_completed
+echo `date` "master2 ready"
 copycertstosecondmaster k8smaster2
+echo `date` "master2 files copied"
 
 #Wait for master3
 waitforurlOK http://k8smaster3/master_second_init_completed
+echo `date` "master3 ready"
 copycertstosecondmaster k8smaster3
+echo `date` "master3 files copied"
 
 sudo -H -u root bash -c 'echo "OK" > /var/www/html/certsforslavemasterscopied' 
 
+echo `date` "certsforslavemasterscopied created"
 
 
 
@@ -151,6 +185,10 @@ kubectl create clusterrolebinding defaultdminrolebinding --clusterrole=cluster-a
 kubectl create clusterrolebinding kubernetes-dashboard-rolebinding --clusterrole=cluster-admin --serviceaccount kube-system:kubernetes-dashboard
 
 kubectl create namespace apps
+
+
+
+echo "OK" > /var/www/html/master_init_completed
 
 }
 
