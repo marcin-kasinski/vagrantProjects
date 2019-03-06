@@ -839,8 +839,8 @@ waitForIPPort $IP_TILLER 44134
 
 setupJava()
 {
-sudo apt install -y openjdk-9-jre-headless
-
+#sudo apt install -y openjdk-9-jre-headless
+apt install -y default-jdk
 java -version
 }
 
