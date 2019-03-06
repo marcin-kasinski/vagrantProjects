@@ -6,8 +6,10 @@
 	vagrant box update
 	vboxmanage unregistervm k8smaster --delete
 	vboxmanage unregistervm k8smaster2 --delete
+	vboxmanage unregistervm k8smaster3 --delete
 	vboxmanage unregistervm k8snode1 --delete
 	vboxmanage unregistervm k8snode2 --delete
+	vboxmanage unregistervm k8snode3 --delete
 	vboxmanage list vms
 	
 	rm /tools/vagrantprojects/k8smaster_additiona_disc.vdi
