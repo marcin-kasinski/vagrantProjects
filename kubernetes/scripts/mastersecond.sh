@@ -45,13 +45,6 @@ sudo chown vagrant:vagrant /home/vagrant/.kube/config
 waitforurlOK http://k8smaster/master_init_completed
 setupkeepalived
 
-#echo "forward port"
-nohup kubectl port-forward -n kube-system  $(kubectl get po -n kube-system -l k8s-app=kubernetes-dashboard -o jsonpath="{.items[0].metadata.name}") 8443:8443  > /dev/null 2>&1 &
-
-echo "DashboardToken ..."
-
-kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep kubernetes-dashboard | awk '{print $1}')
-
 }
 
 #sudo apt install -y default-jdk
