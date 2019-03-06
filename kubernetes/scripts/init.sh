@@ -11,9 +11,11 @@ sudo sh -c "echo 'export PATH=$PATH:/vagrant/scripts' >> /root/.bashrc"
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
 
 sudo sh -c "echo '192.168.1.11 k8smaster' >> /etc/hosts"
-sudo sh -c "echo '192.168.1.12 k8snode1' >> /etc/hosts"
-sudo sh -c "echo '192.168.1.13 k8snode2' >> /etc/hosts"
-sudo sh -c "echo '192.168.1.14 k8snode3' >> /etc/hosts"
+sudo sh -c "echo '192.168.1.12 k8smaster2' >> /etc/hosts"
+sudo sh -c "echo '192.168.1.13 k8smaster3' >> /etc/hosts"
+sudo sh -c "echo '192.168.1.14 k8snode1' >> /etc/hosts"
+sudo sh -c "echo '192.168.1.15 k8snode2' >> /etc/hosts"
+sudo sh -c "echo '192.168.1.16 k8snode2' >> /etc/hosts"
 sudo sh -c "echo '192.168.1.21 cephadmin' >> /etc/hosts"
 sudo sh -c "echo '192.168.1.22 cephosd1' >> /etc/hosts"
 sudo sh -c "echo '192.168.1.23 cephosd2' >> /etc/hosts"
@@ -62,7 +64,7 @@ echo $K8S_VERSION
 K8S_VERSION=1.12.3
 
 #sudo apt install -y kubelet=${K8S_VERSION}-00 kubeadm=${K8S_VERSION}-00  kubectl=${K8S_VERSION}-00   kubernetes-cni 
-sudo apt install -y kubelet kubeadm kubectl kubernetes-cni 
+sudo apt install -y kubelet kubeadm kubectl		
 
 #list releases
 #apt-cache policy kubernetes-cni

@@ -1,5 +1,8 @@
 #!/bin/bash
+
 source /vagrant/scripts/libs.sh
+finish
+exit
 
 createJaegerOperator 2>&1 | tee ~/createJaegerOperator.log
 

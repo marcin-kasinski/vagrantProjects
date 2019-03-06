@@ -61,11 +61,37 @@ boxes = [
         :cpu => "2"
     },
     {
-        :name => "k8snode1",
-        :initscript => "node.sh",
+        :name => "k8smaster2",
+        :initscript => "mastersecond.sh",
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0002",
         :ip => "192.168.1.12",
+        :lvm_enable => true,
+        :lvm_size => 30000,
+        :lvm_filename => "/tools/vagrantprojects/k8smaster2_additiona_disc.vdi",
+#        :mem => "13312",
+        :mem => "15360",
+        :cpu => "2"
+    },
+    {
+        :name => "k8smaster3",
+        :initscript => "mastersecond.sh",
+        :interface => "enp3s0",
+        :mac=> "5CA1AB1E0003",
+        :ip => "192.168.1.13",
+        :lvm_enable => true,
+        :lvm_size => 30000,
+        :lvm_filename => "/tools/vagrantprojects/k8smaster3_additiona_disc.vdi",
+#        :mem => "13312",
+        :mem => "15360",
+        :cpu => "2"
+    },
+    {
+        :name => "k8snode1",
+        :initscript => "node.sh",
+        :interface => "enp3s0",
+        :mac=> "5CA1AB1E0004",
+        :ip => "192.168.1.14",
         :lvm_enable => true,
         :lvm_size => 30000,
         :lvm_filename => "/tools/vagrantprojects/k8snode1_additiona_disc.vdi",
@@ -77,8 +103,8 @@ boxes = [
         :name => "k8snode2",
         :initscript => "node.sh",
         :interface => "enp3s0",
-        :mac=> "5CA1AB1E0003",
-        :ip => "192.168.1.13",
+        :mac=> "5CA1AB1E0005",
+        :ip => "192.168.1.15",
         :lvm_enable => true,
         :lvm_size => 30000,
         :lvm_filename => "/tools/vagrantprojects/k8snode2_additiona_disc.vdi",
@@ -90,15 +116,15 @@ boxes = [
         :name => "k8snode3",
         :initscript => "node.sh",
         :interface => "enp3s0",
-        :mac=> "5CA1AB1E0004",
-        :ip => "192.168.1.14",
+        :mac=> "5CA1AB1E0006",
+        :ip => "192.168.1.16",
         :lvm_enable => true,
         :lvm_size => 30000,
         :lvm_filename => "/tools/vagrantprojects/k8snode3_additiona_disc.vdi",
 #        :mem => "13312",
         :mem => "15360",
         :cpu => "1"
-    },
+    }
 ]
 
 Vagrant.configure(2) do |config|

@@ -1,3 +1,164 @@
+copycertstosecondmaster()
+{
+local host=$1
+
+USER=vagrant
+
+	echo "copycertstosecondmaster"
+
+	scp -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key /etc/kubernetes/pki/ca.crt "${USER}"@$host:/tmp
+    scp -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key /etc/kubernetes/pki/ca.key "${USER}"@$host:/tmp
+    scp -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key /etc/kubernetes/pki/sa.key "${USER}"@$host:/tmp
+    scp -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key /etc/kubernetes/pki/sa.pub "${USER}"@$host:/tmp
+    scp -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key /etc/kubernetes/pki/front-proxy-ca.crt "${USER}"@$host:/tmp
+    scp -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key /etc/kubernetes/pki/front-proxy-ca.key "${USER}"@$host:/tmp
+    scp -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key /etc/kubernetes/pki/etcd/ca.crt "${USER}"@$host:/tmp/etcd-ca.crt
+    scp -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key /etc/kubernetes/pki/etcd/ca.key "${USER}"@$host:/tmp/etcd-ca.key
+    scp -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key /etc/kubernetes/admin.conf "${USER}"@$host:/tmp
+
+    ssh -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key k8smaster2 ls -l /tmp
+
+}
+
+waitforurlOK()
+{
+local URL=$1
+REPLY=""
+echo "REPLY=$REPLY"
+
+while [ "$REPLY" == "" ]
+do 
+	echo "waiting for url $URL"
+#    REPLY=$(curl 192.168/master_second_init_completed)
+    REPLY=$(curl $URL)
+    sleep 10
+done
+retval=$REPLY
+}
+
+setupkeepalived()
+{
+apt-get -y install keepalived
+cp /vagrant/conf/keepalived.conf /etc/keepalived/keepalived.conf
+systemctl start keepalived
+systemctl enable keepalived
+
+}
+
+copycertsonsecondmasternodes()
+{
+
+
+echo "copycertsonsecondmasternodes START"
+mkdir -p /etc/kubernetes/pki/etcd
+
+mv /tmp/ca.crt /etc/kubernetes/pki/
+mv /tmp/ca.key /etc/kubernetes/pki/
+mv /tmp/sa.pub /etc/kubernetes/pki/
+mv /tmp/sa.key /etc/kubernetes/pki/
+mv /tmp/front-proxy-ca.crt /etc/kubernetes/pki/
+mv /tmp/front-proxy-ca.key /etc/kubernetes/pki/
+mv /tmp/etcd-ca.crt /etc/kubernetes/pki/etcd/ca.crt
+mv /tmp/etcd-ca.key /etc/kubernetes/pki/etcd/ca.key
+mv /tmp/admin.conf /etc/kubernetes/admin.conf
+
+ls -l /etc/kubernetes/pki/
+echo "copycertsonsecondmasternodes START"
+
+}
+
+init_kubernetesHA()
+{
+
+cp /vagrant/conf/kubeadm-config.yaml ./kubeadm-config.yaml
+
+
+LOAD_BALANCER_DNS="192.168.1.20"
+
+echo $LOAD_BALANCER_DNS
+
+sed -i -e 's/LOAD_BALANCER_DNS/'"$LOAD_BALANCER_DNS"'/g' ./kubeadm-config.yaml
+
+cat ./kubeadm-config.yaml
+
+#sudo rm -rf ~/.kube && kubeadm reset 
+
+# for ubuntu 16
+#IP=$( ifconfig enp0s8 | grep "inet " | cut -d: -f2 | awk '{ print $1}' )
+
+# for ubuntu 18
+IP=$(ifconfig enp0s8 | sed -n '/inet /s/.*inet  *\([^[:space:]]\+\).*/\1/p' )
+
+echo  "IP $IP"
+
+#for weave networking
+#kubeadm init --pod-network-cidr 10.32.0.0/12 --apiserver-advertise-address $IP  2>&1 | tee kubeadm_join
+kubeadm init --config=kubeadm-config.yaml  2>&1 | tee kubeadm_join
+
+
+cat kubeadm_join
+cat kubeadm_join |  grep "kubeadm join"  >join_command
+
+
+JOIN_COMMAND="$( cat join_command )"
+
+echo "sudo $JOIN_COMMAND" > join_command_sudo
+
+cat join_command_sudo
+
+
+
+sudo apt install -y nginx
+sudo -H -u root bash -c 'cat join_command_sudo > /var/www/html/join_command_sudo' 
+
+echo "curl k8smaster/join_command_sudo"	
+
+curl k8smaster/join_command_sudo
+
+#--------
+
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>CREATING CONF "
+
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+mkdir -p /home/vagrant/.kube
+sudo cp -i /etc/kubernetes/admin.conf /home/vagrant/.kube/config
+sudo chown vagrant:vagrant /home/vagrant/.kube/config
+
+#taint pods on master nodes
+kubectl taint nodes --all node-role.kubernetes.io/master-
+
+
+#Wait for master2
+waitforurlOK http://k8smaster2/master_second_init_completed
+copycertstosecondmaster k8smaster2
+
+#Wait for master3
+waitforurlOK http://k8smaster3/master_second_init_completed
+copycertstosecondmaster k8smaster3
+
+sudo -H -u root bash -c 'echo "OK" > /var/www/html/certsforslavemasterscopied' 
+
+
+
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended/kubernetes-dashboard.yaml
+
+kubectl create clusterrolebinding defaultdminrolebinding --clusterrole=cluster-admin --serviceaccount kube-system:default
+
+kubectl create clusterrolebinding kubernetes-dashboard-rolebinding --clusterrole=cluster-admin --serviceaccount kube-system:kubernetes-dashboard
+
+kubectl create namespace apps
+
+}
+
+
+
+
+
+
 createopenldap()
 {
 cd ~

@@ -13,14 +13,19 @@ cd ~
 setupJava 2>&1 | tee ~/setupJava.log
 
 #configure_nfs 2>&1 | tee ~/configure_nfs.log
-init_kubernetes 2>&1 | tee ~/init_kubernetes.log
+
+setupkeepalived
+
+init_kubernetesHA 2>&1 | tee ~/init_kubernetesHA.log
+#init_kubernetes 2>&1 | tee ~/init_kubernetes.log
+
 
 createWeave 2>&1 | tee ~/createWeave.log
+/vagrant/scripts/test.sh
+exit
 
 installHelm 2>&1 | tee ~/installHelm.log
 
-#/vagrant/scripts/test.sh
-#exit
 
 #createJaegerOperator 2>&1 | tee ~/createJaegerOperator.log
 
