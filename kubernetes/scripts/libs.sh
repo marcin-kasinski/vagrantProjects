@@ -60,7 +60,7 @@ apt-get -y install keepalived
 cp /vagrant/conf/keepalived.conf /etc/keepalived/keepalived.conf
 systemctl start keepalived
 systemctl enable keepalived
-ss -tulp 6443
+ss -tulp| grep 6443
 ip a s | grep 192.168
 }
 
