@@ -538,6 +538,9 @@ echo Install the istio-init
 
 helm install install/kubernetes/helm/istio-init --name istio-init --namespace istio-system
 
+waitPodcreated istio-init-crd-10 istio-system
+waitPodcreated istio-init-crd-11 istio-system
+
 echo Install the istio
 helm install install/kubernetes/helm/istio --name istio --namespace istio-system --set gateways.istio-ingressgateway.type=NodePort --set pilot.traceSampling=100 --set tracing.enabled=true
 
@@ -1220,6 +1223,36 @@ REALPODNAME=`kubectl get po -o wide | grep $POD_NAME | grep Running `
 REALPODNAME=`echo $REALPODNAME | cut -d " " -f 1`
 echo $REALPODNAME
 retval=$REALPODNAME
+}
+
+waitPodcreated()
+{
+
+echo "waitPodcreated"
+local POD_NAME=$1
+local POD_NAMESPACE=$2
+local POD_LABEL=$3
+
+  echo "name $POD_NAME"
+
+OPTS="";
+
+if [ ! -z "$POD_NAMESPACE" ]; then 
+  #there is POD_NAMESPACE
+  OPTS=" -n $POD_NAMESPACE ";
+  echo "namespace $POD_NAMESPACE"
+fi
+
+if [ ! -z "$POD_LABEL" ]; then 
+  #there is POD_LABEL
+  OPTS=$OPTS" -l $POD_LABEL ";
+  echo "label $POD_LABEL "
+fi
+
+echo "OPTS [$OPTS]" 
+
+while ! kubectl get po $OPTS -o wide | grep $POD_NAME | grep Completed ; do   echo "waiting for pod $POD_NAME IP ..." ; sleep 20 ; done
+
 }
 
 getPodIP()
