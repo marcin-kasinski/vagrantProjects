@@ -13,7 +13,7 @@ cd ~
 
 #configure_nfs 2>&1 | tee ~/configure_nfs.log
 
-setupkeepalived
+setupkeepalived | tee ~/setupkeepalived.log
 
 init_kubernetesHA 2>&1 | tee ~/init_kubernetesHA.log
 #init_kubernetes 2>&1 | tee ~/init_kubernetes.log
@@ -90,6 +90,8 @@ setupRedis 2>&1 | tee ~/setupRedis.log
 #createOpenFaasFunction 2>&1 | tee ~/createOpenFaasFunction.log
 
 kubectl get po --all-namespaces | grep -v Running | grep -v Completed
+
+kubeadm token create --print-join-command
 
 finish 2>&1 | tee ~/installHelm.log
 

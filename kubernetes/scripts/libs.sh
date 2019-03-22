@@ -60,7 +60,8 @@ apt-get -y install keepalived
 cp /vagrant/conf/keepalived.conf /etc/keepalived/keepalived.conf
 systemctl start keepalived
 systemctl enable keepalived
-
+ss -tulp 6443
+ip a s | grep 192.168
 }
 
 copycertsonsecondmasternodes()
@@ -130,8 +131,6 @@ JOIN_COMMAND="$( cat join_command )"
 echo "sudo $JOIN_COMMAND" > join_command_sudo
 
 cat join_command_sudo
-
-
 
 sudo apt install -y nginx
 sudo -H -u root bash -c 'cat join_command_sudo > /var/www/html/join_command_sudo' 

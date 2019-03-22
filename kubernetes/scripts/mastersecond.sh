@@ -43,7 +43,7 @@ sudo chown vagrant:vagrant /home/vagrant/.kube/config
 
 # wait for init kubernetes HA executed
 waitforurlOK http://k8smaster/master_init_completed
-setupkeepalived
+setupkeepalived | tee ~/setupkeepalived.log
 
 }
 

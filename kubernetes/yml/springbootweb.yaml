@@ -9,7 +9,7 @@ data:
     #app.ajax_url: http://springbootmicroserviceingress:30080/api/get-by-email?email=ajax@ajax.com
     app.ajax_url: ${APP_AJAX_URL:http://springbootmicroservice.apps.svc.cluster.local:30999/api/get-by-email?email=ajax@ajax.com}
     app.event_url: ${APP_EVENT_URL:http://springbootmicroservice.apps.svc.cluster.local:30080}
-    app.event_kafka_url: ${APP_EVENT_KAFKA_URL:springbootkafkalistenerXXXXXX:30080/events}
+    app.event_kafka_url: "${APP_EVENT_KAFKA_URL:springbootkafkalistenerXXXXXX:30080/events}"
     #app.rest_url: ${APP_REST_URL:http://springbootmicroservice:9191/api/get-by-email?email=x@x.com
     #app.rest_url: ${APP_REST_URL:http://nginx/api/get-by-email?email=x@x.com}
     app.rest_url: ${APP_REST_URL:http://nginx/api/adduser}
