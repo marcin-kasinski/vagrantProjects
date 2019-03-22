@@ -533,6 +533,8 @@ cd $ISTIO_VERSION
 #set zipkin url
 #sed -i -e "s/zipkin:9411/zipkin.default:9411/g" install/kubernetes/helm/istio/charts/mixer/templates/deployment.yaml
 
+helm install install/kubernetes/helm/istio-init --name istio-init --namespace istio-system
+
 helm install install/kubernetes/helm/istio --name istio --namespace istio-system --set gateways.istio-ingressgateway.type=NodePort --set pilot.traceSampling=100 --set tracing.enabled=true
 #kubectl apply -f install/kubernetes/istio-demo-auth.yaml
 
