@@ -1157,6 +1157,9 @@ kubectl create clusterrolebinding kubernetes-dashboard-rolebinding --clusterrole
 
 kubectl create namespace apps
 
+
+systemctl list-units --type=service --no-pager
+
 }
 
 
