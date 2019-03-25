@@ -1874,9 +1874,8 @@ createMyBackendServers()
 #curl http://es:9200/_nodes
 #curl http://es:9200/_cluster/stats?human&pretty
 
-
 #kubectl apply -f /vagrant/yml/grafana.yaml
-#kubectl apply -f /vagrant/yml/prometheus.yaml
+kubectl apply -f /vagrant/yml/prometheus.yaml
 #cat /vagrant/yml/alertmanager.yaml | sed -e 's/  replicas: 1/  replicas: 3/g' | kubectl apply -f -
 
 
@@ -1887,7 +1886,7 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kibana.yaml?$(date +%s)" | kubectl apply -f -
 
 #curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/jenkins.yaml | kubectl apply -f -
-c#url https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/artifactory.yaml | kubectl apply -f -
+#curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/artifactory.yaml | kubectl apply -f -
 curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/rabbitmq.yaml | kubectl apply -f -
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/nginx.yaml?$(date +%s)"  | kubectl apply -f -
 
