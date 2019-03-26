@@ -237,7 +237,7 @@ waitForIPPort $IP 389
 
 export OPENLDAP_HOST=$(kubectl -n default get service openldap -o jsonpath='{.spec.clusterIP}')
 
-while ! ldapadd -a -x -H ldap://$OPENLDAP_HOST -D "cn=admin,dc=itzone,dc=pl" -w admin  -f /vagrant/conf/ldap/data.ldif; do   echo "adding ldap data ..." ; sleep 20 ; done
+while ! ldapadd -a -x -H ldap://$OPENLDAP_HOST -D "cn=admin,dc=itzone,dc=pl" -w admin  -f /vagrant/conf/ldap/data.ldif; do   echo "adding ldap data ..." ; sleep 10 ; done
 
 ldapsearch -x -H ldap://$OPENLDAP_HOST -b dc=itzone,dc=pl -D "cn=admin,dc=itzone,dc=pl" -w admin
 
@@ -971,7 +971,7 @@ KERBEROSPODNAME=`kubectl get po -n default -o wide | grep $POD_NAME`
 KERBEROSPODNAME=`echo $KERBEROSPODNAME | cut -d " " -f 1`
 echo  $KERBEROSPODNAME
 
-while ! kubectl get po -o wide | grep $KERBEROSPODNAME | grep Running ; do   echo "waiting for kerberos IP..." ; sleep 20 ; done
+while ! kubectl get po -o wide | grep $KERBEROSPODNAME | grep Running ; do   echo "waiting for kerberos IP..." ; sleep 10 ; done
 
 KERBEROSPODIP=`kubectl get po -o wide | grep $KERBEROSPODNAME | grep Running `
 KERBEROSPODIP=`echo $KERBEROSPODIP | cut -d " " -f 6`
@@ -1037,7 +1037,7 @@ setupkafkaConnect()
 
 POD_NAME="kafkaconnect-0"
 
-while ! kubectl get po -o wide | grep $POD_NAME | grep Running ; do   echo "waiting for kafka connect IP ($POD_NAME) ..." ; sleep 20 ; done
+while ! kubectl get po -o wide | grep $POD_NAME | grep Running ; do   echo "waiting for kafka connect IP ($POD_NAME) ..." ; sleep 10 ; done
 
 IP=`kubectl get po -o wide | grep $POD_NAME | grep Running `
 IP=`echo $IP | cut -d " " -f 6`
@@ -1240,7 +1240,7 @@ cfssl version
 getPodName()
 {
 local POD_NAME=$1
-while ! kubectl get po -o wide | grep $POD_NAME | grep Running ; do   echo "waiting for pod $POD_NAME IP ..." ; sleep 20 ; done
+while ! kubectl get po -o wide | grep $POD_NAME | grep Running ; do   echo "waiting for pod $POD_NAME IP ..." ; sleep 10 ; done
 
 REALPODNAME=`kubectl get po -o wide | grep $POD_NAME | grep Running `
 REALPODNAME=`echo $REALPODNAME | cut -d " " -f 1`
@@ -1274,7 +1274,7 @@ fi
 
 echo "OPTS [$OPTS]" 
 
-while ! kubectl get po $OPTS -o wide | grep $POD_NAME | grep Completed ; do   echo "waiting for pod $POD_NAME IP ..." ; sleep 20 ; done
+while ! kubectl get po $OPTS -o wide | grep $POD_NAME | grep Completed ; do   echo "waiting for pod $POD_NAME IP ..." ; sleep 10 ; done
 
 }
 
@@ -1304,7 +1304,7 @@ fi
 
 echo "OPTS [$OPTS]" 
 
-while ! kubectl get po $OPTS -o wide | grep $POD_NAME | grep Running ; do   echo "waiting for pod $POD_NAME IP ..." ; sleep 20 ; done
+while ! kubectl get po $OPTS -o wide | grep $POD_NAME | grep Running ; do   echo "waiting for pod $POD_NAME IP ..." ; sleep 10 ; done
 
 PODIP=`kubectl get po $OPTS -o wide | grep $POD_NAME | grep Running `
 PODIP=`echo $PODIP | cut -d " " -f 6`
@@ -1329,7 +1329,7 @@ fi
 
 echo "OPTS [$OPTS]" 
 
-while ! kubectl get pvc $OPTS | grep $PVC_NAME | grep Bound ; do   echo "waiting for pod $PVC_NAME IP ..." ; sleep 20 ; done
+while ! kubectl get pvc $OPTS | grep $PVC_NAME | grep Bound ; do   echo "waiting for pod $PVC_NAME IP ..." ; sleep 10 ; done
 
 PODIP=`kubectl get pvc $OPTS | grep $PVC_NAME | grep Bound `
 PODIP=`echo $PODIP | cut -d " " -f 6`
@@ -1441,7 +1441,7 @@ rs_id=0
 POD_NAME="mongodb-shard-rs-"$rs_id"x-0"
 echo $POD_NAME
 
-while ! kubectl get po -o wide | grep $POD_NAME | grep Running ; do   echo "waiting for mongo shard IP $POD_NAME..." ; sleep 20 ; done
+while ! kubectl get po -o wide | grep $POD_NAME | grep Running ; do   echo "waiting for mongo shard IP $POD_NAME..." ; sleep 10 ; done
 
 MONGOSHARDPODIP=`kubectl get po -o wide | grep $POD_NAME | grep Running `
 MONGOSHARDPODIP=`echo $MONGOSHARDPODIP | cut -d " " -f 6`
@@ -1466,7 +1466,7 @@ rs_id=1
 POD_NAME="mongodb-shard-rs-"$rs_id"x-0"
 echo $POD_NAME
 
-while ! kubectl get po -o wide | grep $POD_NAME | grep Running ; do   echo "waiting for mongo shard IP $POD_NAME..." ; sleep 20 ; done
+while ! kubectl get po -o wide | grep $POD_NAME | grep Running ; do   echo "waiting for mongo shard IP $POD_NAME..." ; sleep 10 ; done
 
 MONGOSHARDPODIP=`kubectl get po -o wide | grep $POD_NAME | grep Running `
 MONGOSHARDPODIP=`echo $MONGOSHARDPODIP | cut -d " " -f 6`
@@ -1487,7 +1487,7 @@ kubectl exec $POD_NAME -c mongodb-shard -- mongo --port 27017 --eval "rs.status(
 setupMongodb()
 {
 
-while ! kubectl get po -o wide | grep mongodb-configdb-0 | grep Running ; do   echo "waiting for mongocfg pod..." ; sleep 20 ; done
+while ! kubectl get po -o wide | grep mongodb-configdb-0 | grep Running ; do   echo "waiting for mongocfg pod..." ; sleep 10 ; done
 
 MONGOCFGPODIP=`kubectl get po -o wide | grep mongodb-configdb-0 | grep Running `
 MONGOCFGPODIP=`echo $MONGOCFGPODIP | cut -d " " -f 6`
@@ -1507,7 +1507,7 @@ setupMongodb_rs0
 setupMongodb_rs1
 
 
-while ! kubectl get po -o wide | grep mongodb-router-0 | grep Running ; do   echo "waiting for mongos IP..." ; sleep 20 ; done
+while ! kubectl get po -o wide | grep mongodb-router-0 | grep Running ; do   echo "waiting for mongos IP..." ; sleep 10 ; done
 
 MONGOROUTERPODIP=`kubectl get po -o wide | grep mongodb-router-0 | grep Running `
 MONGOROUTERPODIP=`echo $MONGOROUTERPODIP | cut -d " " -f 6`
@@ -1613,7 +1613,7 @@ setupkafka()
 
 #------------------------------- kafka init ------------------------------- 
  
-#while ! kubectl get po -o wide | grep kafka-0 | grep Running ; do   echo "waiting for kafka IP..." ; sleep 20 ; done
+#while ! kubectl get po -o wide | grep kafka-0 | grep Running ; do   echo "waiting for kafka IP..." ; sleep 10 ; done
 
 getPodIP kafka-0 default
 getPodIP kafka-1 default
@@ -1674,7 +1674,7 @@ sudo apt install -y netcat
 sudo apt install -y mysql-client 
 
 
-while ! kubectl get po -o wide | grep mysql-deployment | grep Running ; do   echo "waiting for mysql IP..." ; sleep 20 ; done
+while ! kubectl get po -o wide | grep mysql-deployment | grep Running ; do   echo "waiting for mysql IP..." ; sleep 10 ; done
 
 MYSQLPODIP=`kubectl get po -o wide | grep mysql-deployment | grep Running `
 MYSQLPODIP=`echo $MYSQLPODIP  | cut -d " " -f 6`
@@ -1686,7 +1686,7 @@ do
   MYSQLPODIP=`kubectl get po -o wide | grep mysql-deployment | grep Running `
   MYSQLPODIP=`echo $MYSQLPODIP  | cut -d " " -f 6`
   echo $MYSQLPODIP
-  echo "waiting mysql ( $MYSQLPODIP ) to launch ..." ; sleep 20 ; 
+  echo "waiting mysql ( $MYSQLPODIP ) to launch ..." ; sleep 10 ; 
 done
 
 
@@ -1714,7 +1714,7 @@ showCustomService()
 
 NGINXPODNAME="nginx"
 
-while ! kubectl get po -n default -o wide | grep $NGINXPODNAME | grep Running ; do   echo "waiting for nginx IP..." ; sleep 20 ; done
+while ! kubectl get po -n default -o wide | grep $NGINXPODNAME | grep Running ; do   echo "waiting for nginx IP..." ; sleep 10 ; done
 
 NGINXPODIP=`kubectl get po -n default -o wide | grep $NGINXPODNAME | grep Running`
 NGINXPODIP=`echo $NGINXPODIP | cut -d " " -f 6`
@@ -1732,7 +1732,7 @@ configureGrafana(){
 
 GRAFANAPODNAME="grafana"
 
-while ! kubectl get po -n default -o wide | grep $GRAFANAPODNAME | grep Running ; do   echo "waiting for Grafana IP..." ; sleep 20 ; done
+while ! kubectl get po -n default -o wide | grep $GRAFANAPODNAME | grep Running ; do   echo "waiting for Grafana IP..." ; sleep 10 ; done
 
 GRAFANAPODLINE=`kubectl get po -n default -o wide | grep $GRAFANAPODNAME | grep Running`
 GRAFANAPODIP=`echo $GRAFANAPODLINE | cut -d " " -f 6`
@@ -1797,7 +1797,7 @@ curl -XPOST --data "$DASHBOARD" -H "Content-Type:application/json"  http://admin
 
 showDashboardIP(){
 
-while ! kubectl get po -n kube-system -o wide | grep kubernetes-dashboard | grep Running ; do   echo "waiting for dashboard IP..." ; sleep 20 ; done
+while ! kubectl get po -n kube-system -o wide | grep kubernetes-dashboard | grep Running ; do   echo "waiting for dashboard IP..." ; sleep 10 ; done
 
 	DASHBOARDPODLINE=`kubectl get po -n kube-system -o wide | grep kubernetes-dashboard | grep Running`
 	
