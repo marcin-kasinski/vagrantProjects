@@ -1,3 +1,16 @@
+checkmasters()
+{
+    for MASTER_NODE in $MASTER_NODES
+    do
+        echo checking $MASTER_NODE
+        #curl -k https://$MASTER_NODE:6443
+        
+        STATUSCODE=$(curl -k -s -o /dev/null -w "%{http_code}" https://$MASTER_NODE:6443)
+        echo checking status: $STATUSCODE
+        
+    done
+}
+
 copycertstosecondmaster()
 {
 local host=$1
