@@ -1240,7 +1240,7 @@ cfssl version
 getPodName()
 {
 local POD_NAME=$1
-while ! kubectl get po -o wide | grep $POD_NAME | grep Running ; do   echo "waiting for pod $POD_NAME IP ..." ; sleep 10 ; done
+while ! kubectl get po -o wide | grep $POD_NAME | grep Running ; do echo `date` "waiting for pod $POD_NAME IP ..." ; sleep 10 ; done
 
 REALPODNAME=`kubectl get po -o wide | grep $POD_NAME | grep Running `
 REALPODNAME=`echo $REALPODNAME | cut -d " " -f 1`
