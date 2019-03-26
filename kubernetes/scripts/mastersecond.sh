@@ -42,9 +42,6 @@ waitforurlOK http://k8smaster/master_init_completed
 echo "OK" > /var/www/html/master_second_joined_completed
 
 waitforurlOK http://k8smaster/all_masters_completed
-
-setupkeepalived | tee ~/setupkeepalived.log
-
 }
 
 #sudo apt install -y default-jdk
@@ -60,6 +57,7 @@ cd ~
 #configure_nfs 2>&1 | tee ~/configure_nfs.log
 
 joinsecondaryMaster | tee ~/joinsecondaryMaster.log
+setupkeepalived | tee ~/setupkeepalived.log
 
 
 echo "Master second end"

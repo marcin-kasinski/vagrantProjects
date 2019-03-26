@@ -75,6 +75,7 @@ systemctl start keepalived
 systemctl enable keepalived
 ss -tulp| grep 6443
 ip a s | grep 192.168
+
 }
 
 copycertsonsecondmasternodes()
