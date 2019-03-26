@@ -584,6 +584,15 @@ istioEnableInjection apps
 kubectl get svc -n istio-system
 kubectl get po -n istio-system
 
+kubectl delete svc -n istio-system grafana
+kubectl delete svc -n istio-system prometheus
+#kubectl delete svc -n istio-system istio-galley
+kubectl delete deployment -n istio-system grafana
+kubectl delete deployment -n istio-system prometheus
+# poniższe usuwam, bo z nim nie mogę zdefiniować VirtualService zawierające host z portem
+#kubectl delete deployment -n istio-system istio-galley
+
+
 getPodIP istio-sidecar-injector- istio-system
 
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/istio.yaml?$(date +%s)"  | kubectl apply -f -
@@ -594,16 +603,6 @@ kubectl apply -f /vagrant/yml/istio.yaml
 #curl https://raw.githubusercontent.com/istio/istio/master/samples/bookinfo/networking/bookinfo-gateway.yaml | kubectl apply -f -
 
 #delete grafana and prometheus
-
-kubectl delete svc -n istio-system grafana
-kubectl delete svc -n istio-system prometheus
-#kubectl delete svc -n istio-system istio-galley
-kubectl delete deployment -n istio-system grafana
-kubectl delete deployment -n istio-system prometheus
-# poniższe usuwam, bo z nim nie mogę zdefiniować VirtualService zawierające host z portem
-#kubectl delete deployment -n istio-system istio-galley
-
-
 
 bin/istioctl proxy-config endpoint -n apps springbootmicroservice-0
 bin/istioctl proxy-config listener -n apps springbootmicroservice-0
