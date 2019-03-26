@@ -8,22 +8,13 @@ joinsecondaryMaster()
 
 apt install -y nginx
 echo "OK" > /var/www/html/master_second_init_completed
-
 echo `date` "master_second_init_completed created"
 
-
-echo "curl k8smaster2/master_second_init_completed"
-
-curl k8smaster2/master_second_init_completed
-
-echo "Master second init end"
-
-waitforurlOK http://k8smaster/certsforslavemasterscopied
-
-echo `date` "certsforslavemasterscopied finished"
-
-copycertsonsecondmasternodes
-echo `date` "certs copied from /temp"
+#echo "Master second init end"
+#waitforurlOK http://k8smaster/certsforslavemasterscopied
+#echo `date` "certsforslavemasterscopied finished"
+#copycertsonsecondmasternodes
+#echo `date` "certs copied from /temp"
 
 waitforurlOK http://k8smaster/join_command_for_control_pane
 

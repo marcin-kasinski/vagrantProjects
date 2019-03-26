@@ -10,6 +10,10 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 finish
 
 
+
+kubectl apply -f /vagrant/yml/httpbin.yaml
+
+
 export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.clusterIP}')
 export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].port}')
 export INGRESS_NODEPORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
@@ -22,7 +26,8 @@ echo INGRESS_NODEPORT $INGRESS_NODEPORT
 echo GATEWAY_URL $GATEWAY_URL
 
 
-
+curl -I -HHost:httpbin.example.com http://$INGRESS_HOST:$INGRESS_PORT/status/200
+curl -I -HHost:httpbin.example.com http://$INGRESS_HOST:$INGRESS_PORT/headers
 exit
 
 createJaegerOperator 2>&1 | tee ~/createJaegerOperator.log

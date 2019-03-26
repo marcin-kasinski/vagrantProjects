@@ -163,19 +163,22 @@ kubectl get po --all-namespaces
 
 #Wait for master2
 waitforurlOK http://k8smaster2/master_second_init_completed
-echo `date` "master2 ready"
-copycertstosecondmaster k8smaster2
-echo `date` "master2 files copied"
+
+
+#echo `date` "master2 ready"
+#copycertstosecondmaster k8smaster2
+#echo `date` "master2 files copied"
 
 #Wait for master3
 waitforurlOK http://k8smaster3/master_second_init_completed
-echo `date` "master3 ready"
-copycertstosecondmaster k8smaster3
-echo `date` "master3 files copied"
 
-sudo -H -u root bash -c 'echo "OK" > /var/www/html/certsforslavemasterscopied' 
+#echo `date` "master3 ready"
+#copycertstosecondmaster k8smaster3
+#echo `date` "master3 files copied"
 
-echo `date` "certsforslavemasterscopied created"
+#sudo -H -u root bash -c 'echo "OK" > /var/www/html/certsforslavemasterscopied' 
+
+#echo `date` "certsforslavemasterscopied created"
 
 
 
