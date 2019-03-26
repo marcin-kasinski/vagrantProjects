@@ -2,8 +2,9 @@
 source /vagrant/scripts/libs.sh
 
 
+KUBERNETES_MASTER_LOAD_BALANCER_DNS="192.168.1.11"
 KUBERNETES_MASTER_LOAD_BALANCER_DNS="192.168.1.20"
-
+MASTER_NODES="k8smaster k8smaster2 k8smaster3"
 
 #sudo apt install -y default-jdk
 
@@ -25,7 +26,9 @@ init_kubernetesHA 2>&1 | tee ~/init_kubernetesHA.log
 
 createWeave 2>&1 | tee ~/createWeave.log
 installHelm 2>&1 | tee ~/installHelm.log
+
 /vagrant/scripts/test.sh
+checkmasters
 exit
 
 
