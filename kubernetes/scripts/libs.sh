@@ -977,7 +977,7 @@ KERBEROSPODIP=`kubectl get po -o wide | grep $KERBEROSPODNAME | grep Running `
 KERBEROSPODIP=`echo $KERBEROSPODIP | cut -d " " -f 6`
 echo $KERBEROSPODIP
 
-while ! nc -z $KERBEROSPODIP 88; do   echo "waiting kerberos to launch ..." ; sleep 20 ; done
+while ! nc -w 10 -z $KERBEROSPODIP 88; do   echo "waiting kerberos to launch ..." ; sleep 10 ; done
 
 kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey reader@KAFKA.SECURE"
 kubectl exec $KERBEROSPODNAME -- kadmin.local -q "add_principal -randkey writer@KAFKA.SECURE"
@@ -1043,7 +1043,7 @@ IP=`kubectl get po -o wide | grep $POD_NAME | grep Running `
 IP=`echo $IP | cut -d " " -f 6`
 echo $IP
 
-while ! nc -z $IP 8083; do   echo "waiting for kafka connect pod ($POD_NAME) to launch ..." ; sleep 20 ; done
+while ! nc -w 10 -z $IP 8083; do   echo "waiting for kafka connect pod ($POD_NAME) to launch ..." ; sleep 10 ; done
 
 #curl -s -X POST -H "Content-Type: application/json" --data 'data here' http://$IP:8083/connectors
 
@@ -1347,7 +1347,7 @@ echo "waitForIPPort IP $IP, PORT $PORT"
 
 while true
 do
-  nc -z $IP $PORT
+  nc -w 10 -z $IP $PORT
   sleep 3  
 
   if [ $? != 0 ]; then
@@ -1372,7 +1372,7 @@ do
   getPodIP $POD_NAME $NAMESPACE
   IP=$retval
   #echo "ip $IP"  
-  nc -z $IP $PORT
+  nc -w 10 -z $IP $PORT
   sleep 3  
   
   #echo "nc exit code = $?"
@@ -1447,7 +1447,7 @@ MONGOSHARDPODIP=`kubectl get po -o wide | grep $POD_NAME | grep Running `
 MONGOSHARDPODIP=`echo $MONGOSHARDPODIP | cut -d " " -f 6`
 echo $MONGOSHARDPODIP
 
-while ! nc -z $MONGOSHARDPODIP 27017; do   echo "waiting mongo shard $POD_NAME to launch ..." ; sleep 20 ; done
+while ! nc -w 10 -z $MONGOSHARDPODIP 27017; do   echo "waiting mongo shard $POD_NAME to launch ..." ; sleep 10 ; done
 
 kubectl exec $POD_NAME -c mongodb-shard -- mongo --port 27017 --eval "rs.status()"
 
@@ -1472,7 +1472,7 @@ MONGOSHARDPODIP=`kubectl get po -o wide | grep $POD_NAME | grep Running `
 MONGOSHARDPODIP=`echo $MONGOSHARDPODIP | cut -d " " -f 6`
 echo $MONGOSHARDPODIP
 
-while ! nc -z $MONGOSHARDPODIP 27017; do   echo "waiting mongo shard $POD_NAME to launch ..." ; sleep 20 ; done
+while ! nc -w 10 -z $MONGOSHARDPODIP 27017; do   echo "waiting mongo shard $POD_NAME to launch ..." ; sleep 10 ; done
 
 kubectl exec $POD_NAME -c mongodb-shard -- mongo --port 27017 --eval "rs.status()"
 
@@ -1493,7 +1493,7 @@ MONGOCFGPODIP=`kubectl get po -o wide | grep mongodb-configdb-0 | grep Running `
 MONGOCFGPODIP=`echo $MONGOCFGPODIP | cut -d " " -f 6`
 echo $MONGOCFGPODIP
 
-while ! nc -z $MONGOCFGPODIP 27019; do   echo "waiting mongocgf to launch ..." ; sleep 20 ; done
+while ! nc -w 10 -z $MONGOCFGPODIP 27019; do   echo "waiting mongocgf to launch ..." ; sleep 10 ; done
 
 kubectl exec mongodb-configdb-0 -c mongodb-configdb-container -- mongo --port 27019 --eval "rs.status()"
 kubectl exec mongodb-configdb-0 -c mongodb-configdb-container -- mongo --port 27019 --eval "rs.initiate(  {_id: \"MyConfigRepl\",configsvr: true,members: [{ _id : 0, host : \"mongodb-configdb-0.mongodb-configdb-hs.default.svc.cluster.local:27019\" }]  })"
@@ -1513,7 +1513,7 @@ MONGOROUTERPODIP=`kubectl get po -o wide | grep mongodb-router-0 | grep Running 
 MONGOROUTERPODIP=`echo $MONGOROUTERPODIP | cut -d " " -f 6`
 echo $MONGOROUTERPODIP
 
-while ! nc -z $MONGOROUTERPODIP 27017; do   echo "waiting mongos to launch ..." ; sleep 20 ; done
+while ! nc -w 10 -z $MONGOROUTERPODIP 27017; do   echo "waiting mongos to launch ..." ; sleep 10 ; done
 
 #dodanie pierwszego rs
 kubectl exec mongodb-router-0 -c mongodb-router-container -- mongo --port 27017 --eval "sh.addShard('rs-0x/mongodb-shard-rs-0x-0.mongodb-shard-rs-0x-hs.default.svc.cluster.local:27017,mongodb-shard-rs-0x-1.mongodb-shard-rs-0x-hs.default.svc.cluster.local:27017,mongodb-shard-rs-0x-2.mongodb-shard-rs-0x-hs.default.svc.cluster.local:27017','name:shard-rs-0x')"
@@ -1624,7 +1624,7 @@ echo $KAFKAPODIP
 KAFKAPODIP=`echo $KAFKAPODIP  | cut -d " " -f 6`
 echo $KAFKAPODIP
 
-while ! nc -z $KAFKAPODIP 9092; do   echo "waiting kafka to launch ..." ; sleep 20 ; done
+while ! nc -w 10 -z $KAFKAPODIP 9092; do   echo "waiting kafka to launch ..." ; sleep 10 ; done
 
 #cd /tmp
 #curl http://ftp.ps.pl/pub/apache/kafka/1.0.0/kafka_2.11-1.0.0.tgz | tar xvz
@@ -1679,9 +1679,9 @@ while ! kubectl get po -o wide | grep mysql-deployment | grep Running ; do   ech
 MYSQLPODIP=`kubectl get po -o wide | grep mysql-deployment | grep Running `
 MYSQLPODIP=`echo $MYSQLPODIP  | cut -d " " -f 6`
 
-while ! nc -w 20 -z $MYSQLPODIP 3306; 
+while ! nc -w 10 -z $MYSQLPODIP 3306; 
 do
-  while ! kubectl get po -o wide | grep mysql-deployment | grep Running ; do   echo "waiting for mysql IP..." ; sleep 20 ; done
+  while ! kubectl get po -o wide | grep mysql-deployment | grep Running ; do   echo "waiting for mysql IP..." ; sleep 10 ; done
 
   MYSQLPODIP=`kubectl get po -o wide | grep mysql-deployment | grep Running `
   MYSQLPODIP=`echo $MYSQLPODIP  | cut -d " " -f 6`
@@ -1719,7 +1719,7 @@ while ! kubectl get po -n default -o wide | grep $NGINXPODNAME | grep Running ; 
 NGINXPODIP=`kubectl get po -n default -o wide | grep $NGINXPODNAME | grep Running`
 NGINXPODIP=`echo $NGINXPODIP | cut -d " " -f 6`
 
-while ! nc -w 20 -z $NGINXPODIP 80; do   echo "waiting nginx to launch ..." ; sleep 20 ; done
+while ! nc -w 10 -z $NGINXPODIP 80; do   echo "waiting nginx to launch ..." ; sleep 10 ; done
 
 
 echo "Adresy uslug"
@@ -1740,7 +1740,7 @@ GRAFANAPODNAME=`echo $GRAFANAPODLINE | cut -d " " -f 1`
 echo GRAFANA POD NAME $GRAFANAPODNAME
 echo GRAFANA IP $GRAFANAPODIP
 
-while ! nc -w 20 -z $GRAFANAPODIP 3000; do   echo "waiting grafana to launch ..." ; sleep 20 ; done
+while ! nc -w 10 -z $GRAFANAPODIP 3000; do   echo "waiting grafana to launch ..." ; sleep 10 ; done
 
 #add datasource
 curl -XPOST --data @/vagrant/conf/grafanaprometheusdatasource.json -H "Content-Type:application/json"  http://admin:admin@$GRAFANAPODIP:3000/api/datasources
@@ -2059,7 +2059,7 @@ nohup helm serve &
 
 sleep 1
 
-while ! nc -z localhost 8879; do   echo "waiting for local charts ..." ; sleep 5 ; done
+while ! nc -w 5 -z localhost 8879; do   echo "waiting for local charts ..." ; sleep 5 ; done
 
 sleep 1
 
