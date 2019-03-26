@@ -1,7 +1,6 @@
 #!/bin/bash
 source /vagrant/scripts/libs.sh
 
-
 KUBERNETES_MASTER_LOAD_BALANCER_DNS="192.168.1.11"
 KUBERNETES_MASTER_LOAD_BALANCER_DNS="192.168.1.20"
 MASTER_NODES="k8smaster k8smaster2 k8smaster3"
