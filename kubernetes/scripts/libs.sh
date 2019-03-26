@@ -116,21 +116,25 @@ echo  "IP $IP"
 #kubeadm init --pod-network-cidr 10.32.0.0/12 --apiserver-advertise-address $IP  2>&1 | tee kubeadm_join
 kubeadm init --config=kubeadm-config.yaml  --experimental-upload-certs  2>&1 | tee kubeadm_join
 
+sudo apt install -y nginx
 
 cat kubeadm_join
 #cat kubeadm_join |  grep "kubeadm join"  >join_command
 tail -3 kubeadm_join   |sed -e 's/\\/ /g'   >join_command
 JOIN_COMMAND="$( cat join_command )"
 
-cat kubeadm_join |sed -e 's/\\/ /g' | grep -B 3 -A 1 "experimental-control-plane">join_command_for_control_pane
-cp join_command_for_control_pane  /var/www/html/join_command_for_control_pane
+echo `date` "generating join_command_for_control_pane"	
 
+cat kubeadm_join |sed -e 's/\\/ /g' | grep -B 3 -A 1 "experimental-control-plane">join_command_for_control_pane
+
+cp join_command_for_control_pane /var/www/html/join_command_for_control_pane
+
+echo `date` "join_command_for_control_pane copied"
 
 echo "sudo $JOIN_COMMAND" > join_command_sudo
 
 cat join_command_sudo
 
-sudo apt install -y nginx
 sudo -H -u root bash -c 'cat join_command_sudo > /var/www/html/join_command_sudo' 
 
 echo "curl k8smaster/join_command_sudo"	
