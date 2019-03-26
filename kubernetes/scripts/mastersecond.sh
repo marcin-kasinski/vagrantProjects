@@ -43,7 +43,7 @@ echo "OK" > /var/www/html/master_second_joined_completed
 
 waitforurlOK http://k8smaster/all_masters_completed
 
-#setupkeepalived | tee ~/setupkeepalived.log
+setupkeepalived | tee ~/setupkeepalived.log
 
 }
 
