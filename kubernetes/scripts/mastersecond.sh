@@ -38,7 +38,12 @@ sudo chown vagrant:vagrant /home/vagrant/.kube/config
 
 # wait for init kubernetes HA executed
 waitforurlOK http://k8smaster/master_init_completed
-#setupkeepalived | tee ~/setupkeepalived.log
+
+echo "OK" > /var/www/html/master_second_joined_completed
+
+waitforurlOK http://k8smaster/all_masters_completed
+
+setupkeepalived | tee ~/setupkeepalived.log
 
 }
 
@@ -58,4 +63,3 @@ joinsecondaryMaster | tee ~/joinsecondaryMaster.log
 
 
 echo "Master second end"
-echo "OK" > /var/www/html/master_second_joined_completed

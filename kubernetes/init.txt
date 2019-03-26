@@ -19,10 +19,10 @@
 	rm /tools/vagrantprojects/k8snode2_additiona_disc.vdi
 	rm /tools/vagrantprojects/k8snode3_additiona_disc.vdi
 
-	vagrant up k8smaster --provision &
 	vagrant up k8smaster2 --provision &
 	vagrant up k8smaster3 --provision &
 	vagrant up k8snode1 --provision &
 #	vagrant up k8snode2 --provision &	
 #	vagrant up k8snode3 --provision &	
+	vagrant up k8smaster --provision
 	

@@ -197,6 +197,9 @@ waitforurlOK http://k8smaster3/master_second_joined_completed
 
 echo `date` taint pods on master nodes
 kubectl taint nodes --all node-role.kubernetes.io/master-
+
+echo "OK" > /var/www/html/all_masters_completed
+
 }
 
 createopenldap()
