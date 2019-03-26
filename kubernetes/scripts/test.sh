@@ -26,8 +26,8 @@ echo INGRESS_NODEPORT $INGRESS_NODEPORT
 echo GATEWAY_URL $GATEWAY_URL
 
 
-curl -I -HHost:httpbin.example.com http://$INGRESS_HOST:$INGRESS_PORT/status/200
-curl -I -HHost:httpbin.example.com http://$INGRESS_HOST:$INGRESS_PORT/headers
+curl -I -H Host:httpbin.example.com http://$INGRESS_HOST:$INGRESS_PORT/status/200
+curl -I -H Host:httpbin.example.com http://$INGRESS_HOST:$INGRESS_PORT/headers
 exit
 
 createJaegerOperator 2>&1 | tee ~/createJaegerOperator.log
