@@ -98,12 +98,9 @@ init_kubernetesHA()
 
 cp /vagrant/conf/kubeadm-config.yaml ./kubeadm-config.yaml
 
+echo $KUBERNETES_MASTER_LOAD_BALANCER_DNS
 
-LOAD_BALANCER_DNS="192.168.1.20"
-
-echo $LOAD_BALANCER_DNS
-
-sed -i -e 's/LOAD_BALANCER_DNS/'"$LOAD_BALANCER_DNS"'/g' ./kubeadm-config.yaml
+sed -i -e 's/LOAD_BALANCER_DNS/'"$KUBERNETES_MASTER_LOAD_BALANCER_DNS"'/g' ./kubeadm-config.yaml
 
 cat ./kubeadm-config.yaml
 
@@ -124,7 +121,7 @@ kubeadm init --config=kubeadm-config.yaml  2>&1 | tee kubeadm_join
 
 cat kubeadm_join
 cat kubeadm_join |  grep "kubeadm join"  >join_command
-
+tail -3 kubeadm_join  >join_command
 
 JOIN_COMMAND="$( cat join_command )"
 
@@ -561,7 +558,7 @@ kubectl get crds | grep 'istio.io\|certmanager.k8s.io' | wc -l
 istioEnableInjection apps
 
 #set istio-ingressgateway nodeport to 30999
-kubectl patch svc istio-ingressgateway -n istio-system --type=json -p='[{"op": "replace", "path": "/spec/ports/0/nodePort", "value": 30999}]'
+#kubectl patch svc istio-ingressgateway -n istio-system --type=json -p='[{"op": "replace", "path": "/spec/ports/0/nodePort", "value": 30999}]'
 
 kubectl get svc -n istio-system
 kubectl get po -n istio-system
@@ -1102,7 +1099,7 @@ sudo kubeadm init --pod-network-cidr 10.32.0.0/12 --apiserver-advertise-address 
 
 cat kubeadm_join
 cat kubeadm_join |  grep "kubeadm join"  >join_command
-
+tail -3 kubeadm_join  >join_command
 
 JOIN_COMMAND="$( cat join_command )"
 
@@ -1917,7 +1914,6 @@ curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/k
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/springbootweb.yaml?$(date +%s)"  | kubectl apply -n apps -f -
 
 #kubectl apply -n apps -f /vagrant/yml/springbootwebreactor.yaml
-
 
 
 }

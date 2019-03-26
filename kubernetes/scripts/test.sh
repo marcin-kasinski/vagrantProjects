@@ -1,12 +1,18 @@
 #!/bin/bash
 
 source /vagrant/scripts/libs.sh
+setupIstio 2>&1 | tee ~/setupIstio.log
+
+createIngress 2>&1 | tee ~/createIngress.log
+curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/nginx.yaml?$(date +%s)"  | kubectl apply -f -
+
+#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/springbootweb.yaml?$(date +%s)"  | kubectl apply -n apps -f -
 finish
 exit
 
 createJaegerOperator 2>&1 | tee ~/createJaegerOperator.log
 
-setupIstio 2>&1 | tee ~/setupIstio.log
+
 #createVistio 2>&1 | tee ~/createVistio.log
 createKiali 2>&1 | tee ~/createKiali.log
 

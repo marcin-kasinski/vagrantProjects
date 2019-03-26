@@ -1,6 +1,10 @@
 #!/bin/bash
 source /vagrant/scripts/libs.sh
 
+
+KUBERNETES_MASTER_LOAD_BALANCER_DNS="192.168.1.20"
+
+
 #sudo apt install -y default-jdk
 
 echo I am provisioning...
@@ -20,10 +24,10 @@ init_kubernetesHA 2>&1 | tee ~/init_kubernetesHA.log
 
 
 createWeave 2>&1 | tee ~/createWeave.log
-#/vagrant/scripts/test.sh
-#exit
-
 installHelm 2>&1 | tee ~/installHelm.log
+/vagrant/scripts/test.sh
+exit
+
 
 #createJaegerOperator 2>&1 | tee ~/createJaegerOperator.log
 
@@ -65,13 +69,13 @@ curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/ku
 #curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/graphite.yaml | kubectl apply -f -
 
 createMonitoring 2>&1 | tee ~/createMonitoring.log # metric server and prometheus adapter
-createMongo 2>&1 | tee ~/createMongo.log
-createRedis 2>&1 | tee ~/createRedis.log
+#createMongo 2>&1 | tee ~/createMongo.log
+#createRedis 2>&1 | tee ~/createRedis.log
 
 #configureGrafana 2>&1  | tee ~/configureGrafana.log
 
-setupMongodb 2>&1 | tee ~/setupMongodb.log
-setupRedis 2>&1 | tee ~/setupRedis.log
+#setupMongodb 2>&1 | tee ~/setupMongodb.log
+#setupRedis 2>&1 | tee ~/setupRedis.log
 
 #showCustomService
 
