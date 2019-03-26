@@ -25,12 +25,16 @@ echo `date` "certsforslavemasterscopied finished"
 copycertsonsecondmasternodes
 echo `date` "certs copied from /temp"
 
-waitforurlOK http://k8smaster/join_command_sudo
+waitforurlOK http://k8smaster/join_command_for_control_pane
 
-echo `date` "join_command_sudo finished"
+echo `date` "join_command_for_control_pane finished"
 
-joincommand="$retval --experimental-control-plane"
+joincommand="$retval"
+
+
+echo `date` "executing joincommand"
 echo $joincommand
+
 eval $joincommand
 
 mkdir -p $HOME/.kube
@@ -43,7 +47,7 @@ sudo chown vagrant:vagrant /home/vagrant/.kube/config
 
 # wait for init kubernetes HA executed
 waitforurlOK http://k8smaster/master_init_completed
-setupkeepalived | tee ~/setupkeepalived.log
+#setupkeepalived | tee ~/setupkeepalived.log
 
 }
 

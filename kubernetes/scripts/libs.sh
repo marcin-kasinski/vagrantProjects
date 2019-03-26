@@ -66,8 +66,6 @@ ip a s | grep 192.168
 
 copycertsonsecondmasternodes()
 {
-
-
 echo "copycertsonsecondmasternodes START"
 
 echo "listing /tmp"
@@ -116,14 +114,17 @@ echo  "IP $IP"
 
 #for weave networking
 #kubeadm init --pod-network-cidr 10.32.0.0/12 --apiserver-advertise-address $IP  2>&1 | tee kubeadm_join
-kubeadm init --config=kubeadm-config.yaml  2>&1 | tee kubeadm_join
+kubeadm init --config=kubeadm-config.yaml  --experimental-upload-certs  2>&1 | tee kubeadm_join
 
 
 cat kubeadm_join
-cat kubeadm_join |  grep "kubeadm join"  >join_command
-tail -3 kubeadm_join  >join_command
-
+#cat kubeadm_join |  grep "kubeadm join"  >join_command
+tail -3 kubeadm_join   |sed -e 's/\\/ /g'   >join_command
 JOIN_COMMAND="$( cat join_command )"
+
+cat kubeadm_join |sed -e 's/\\/ /g' | grep -B 3 -A 1 "experimental-control-plane">join_command_for_control_pane
+cp join_command_for_control_pane  /var/www/html/join_command_for_control_pane
+
 
 echo "sudo $JOIN_COMMAND" > join_command_sudo
 
@@ -1098,8 +1099,8 @@ sudo kubeadm init --pod-network-cidr 10.32.0.0/12 --apiserver-advertise-address 
 #sudo kubeadm init --apiserver-advertise-address $IP --kubernetes-version stable-1.12  2>&1 | tee kubeadm_join
 
 cat kubeadm_join
-cat kubeadm_join |  grep "kubeadm join"  >join_command
-tail -3 kubeadm_join  >join_command
+#cat kubeadm_join |  grep "kubeadm join"  >join_command
+tail -3 kubeadm_join   |sed -e 's/\\/ /g'   >join_command
 
 JOIN_COMMAND="$( cat join_command )"
 
