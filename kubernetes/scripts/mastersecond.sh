@@ -58,3 +58,4 @@ joinsecondaryMaster | tee ~/joinsecondaryMaster.log
 
 
 echo "Master second end"
+echo "OK" > /var/www/html/master_second_joined_completed

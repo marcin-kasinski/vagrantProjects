@@ -190,16 +190,14 @@ kubectl create clusterrolebinding kubernetes-dashboard-rolebinding --clusterrole
 
 kubectl create namespace apps
 
-
-
 echo "OK" > /var/www/html/master_init_completed
 
+waitforurlOK http://k8smaster2/master_second_joined_completed
+waitforurlOK http://k8smaster3/master_second_joined_completed
+
+echo `date` taint pods on master nodes
+kubectl taint nodes --all node-role.kubernetes.io/master-
 }
-
-
-
-
-
 
 createopenldap()
 {
