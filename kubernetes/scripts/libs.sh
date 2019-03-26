@@ -47,7 +47,7 @@ echo "REPLY=$REPLY"
 
 while [ "$REPLY" == "" ]
 do 
-	echo "waiting for url $URL"
+	echo `date` "waiting for url $URL"
 #    REPLY=$(curl 192.168/master_second_init_completed)
     REPLY=$(curl $URL)
     STATUSCODE=$(curl -s -o /dev/null -w "%{http_code}" http://www.example.org/XXX)
@@ -59,8 +59,6 @@ do
 
     fi
 
-
-    
     echo "REPLY [$REPLY]"
     sleep 10
 done
@@ -1274,7 +1272,7 @@ fi
 
 echo "OPTS [$OPTS]" 
 
-while ! kubectl get po $OPTS -o wide | grep $POD_NAME | grep Completed ; do   echo "waiting for pod $POD_NAME IP ..." ; sleep 10 ; done
+while ! kubectl get po $OPTS -o wide | grep $POD_NAME | grep Completed ; do echo `date` "waiting for pod $POD_NAME IP ..." ; sleep 10 ; done
 
 }
 
@@ -1304,7 +1302,7 @@ fi
 
 echo "OPTS [$OPTS]" 
 
-while ! kubectl get po $OPTS -o wide | grep $POD_NAME | grep Running ; do   echo "waiting for pod $POD_NAME IP ..." ; sleep 10 ; done
+while ! kubectl get po $OPTS -o wide | grep $POD_NAME | grep Running ; do echo `date` "waiting for pod $POD_NAME IP ..." ; sleep 10 ; done
 
 PODIP=`kubectl get po $OPTS -o wide | grep $POD_NAME | grep Running `
 PODIP=`echo $PODIP | cut -d " " -f 6`
@@ -1329,7 +1327,7 @@ fi
 
 echo "OPTS [$OPTS]" 
 
-while ! kubectl get pvc $OPTS | grep $PVC_NAME | grep Bound ; do   echo "waiting for pod $PVC_NAME IP ..." ; sleep 10 ; done
+while ! kubectl get pvc $OPTS | grep $PVC_NAME | grep Bound ; do echo `date` "waiting for pod $PVC_NAME IP ..." ; sleep 10 ; done
 
 PODIP=`kubectl get pvc $OPTS | grep $PVC_NAME | grep Bound `
 PODIP=`echo $PODIP | cut -d " " -f 6`
