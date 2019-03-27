@@ -526,31 +526,88 @@ kubectl apply -f /vagrant/yml/vistio.yaml
 cd ~
 }
 
+setupIstio1_0_6()
+{
+
+
+
+OS="$(uname)"
+if [ "x${OS}" = "xDarwin" ] ; then
+  OSEXT="osx"
+else
+  # TODO we should check more/complain if not likely to work, etc...
+  OSEXT="linux"
+fi
+
+ISTIO_VERSION="1.0.6"
+NAME="istio-$ISTIO_VERSION"
+URL="https://github.com/istio/istio/releases/download/${ISTIO_VERSION}/istio-${ISTIO_VERSION}-${OSEXT}.tar.gz"
+echo "Downloading $NAME from $URL ..."
+curl -L "$URL" | tar xz
+# TODO: change this so the version is in the tgz/directory name (users trying multiple versions)
+echo "Downloaded into $NAME:"
+ls "$NAME"
+
+cd $ISTIO_VERSION
+
+echo Install the istio
+helm install install/kubernetes/helm/istio --name istio --namespace istio-system --set gateways.istio-ingressgateway.type=NodePort --set pilot.traceSampling=100 --set tracing.enabled=true
+
+istioEnableInjection apps
+
+#set istio-ingressgateway nodeport to 30999
+kubectl patch svc istio-ingressgateway -n istio-system --type=json -p='[{"op": "replace", "path": "/spec/ports/0/nodePort", "value": 30999}]'
+
+kubectl get svc -n istio-system
+kubectl get po -n istio-system
+
+kubectl delete svc -n istio-system grafana
+kubectl delete svc -n istio-system prometheus
+#kubectl delete svc -n istio-system istio-galley
+kubectl delete deployment -n istio-system grafana
+kubectl delete deployment -n istio-system prometheus
+# poniższe usuwam, bo z nim nie mogę zdefiniować VirtualService zawierające host z portem
+#kubectl delete deployment -n istio-system istio-galley
+
+getPodIP istio-sidecar-injector- istio-system
+
+kubectl apply -f /vagrant/yml/istio.yaml
+
+#install example
+#curl https://raw.githubusercontent.com/istio/istio/master/samples/bookinfo/platform/kube/bookinfo.yaml | kubectl apply -f -
+#curl https://raw.githubusercontent.com/istio/istio/master/samples/bookinfo/networking/bookinfo-gateway.yaml | kubectl apply -f -
+
+#delete grafana and prometheus
+
+bin/istioctl proxy-config endpoint -n apps springbootmicroservice-0
+bin/istioctl proxy-config listener -n apps springbootmicroservice-0
+bin/istioctl proxy-config route -n apps springbootmicroservice-0
+bin/istioctl proxy-config cluster -n apps springbootmicroservice-0
+bin/istioctl proxy-config bootstrap -n apps springbootmicroservice-0
+bin/istioctl proxy-config route -n apps springbootmicroservice-0
+bin/istioctl proxy-status
+ 
+#delete ingress hpa and scale deployment (only in dev)
+kubectl delete hpa -n istio-system istio-ingressgateway
+kubectl scale deploy istio-ingressgateway  -n istio-system --replicas=1
+
+#delete egress hpa and scale deployment (only in dev)
+kubectl delete hpa -n istio-system istio-egressgateway
+kubectl scale deploy istio-egressgateway  -n istio-system --replicas=1
+}
+
+
 setupIstio()
 {
 curl -L https://git.io/getLatestIstio | sh -
-
-ISTIO_VERSION=$(ls -l | grep istio- | cut -d ' ' -f 10)
 ISTIO_VERSION=$(ls | grep istio- )
-
-echo "ISTIO_VERSION $ISTIO_VERSION"
-
 cd $ISTIO_VERSION
 #Add the istioctl client to your PATH environment variable,
 #export PATH=$PWD/bin:$PATH
-#Install Istio’s Custom Resource Definitions via
-#kubectl apply -f install/kubernetes/helm/istio/templates/crds.yaml
 
 #before clean
 #kubectl delete -f install/kubernetes/helm/istio/templates/crds.yaml -n istio-system
 #helm del --purge istio
-
-#helm install install/kubernetes/helm/istio --name istio --namespace istio-system  -f install/kubernetes/helm/istio/values-istio-galley.yaml
-#helm install install/kubernetes/helm/istio --name istio --namespace istio-system --set global.proxy.includeIPRanges="10.32.0.0/12"
-
-#set zipkin url
-#sed -i -e "s/zipkin:9411/zipkin.default:9411/g" install/kubernetes/helm/istio/charts/mixer/templates/deployment.yaml
-
 
 echo Install the istio-init 
 
@@ -566,20 +623,10 @@ echo listing cruds
 
 kubectl get crds | grep 'istio.io\|certmanager.k8s.io' | wc -l
 
-#kubectl apply -f install/kubernetes/istio-demo-auth.yaml
-
-#sed -i -e "s/  type: LoadBalancer/  type: NodePort/g" install/kubernetes/istio-demo.yaml
-#kubectl apply -f install/kubernetes/istio-demo.yaml
-
-#install citadel
-#kubectl apply -f install/kubernetes/istio-citadel-with-health-check.yaml
-
-#kubectl apply -f /vagrant/yml/citadel.yaml
-
 istioEnableInjection apps
 
 #set istio-ingressgateway nodeport to 30999
-#kubectl patch svc istio-ingressgateway -n istio-system --type=json -p='[{"op": "replace", "path": "/spec/ports/0/nodePort", "value": 30999}]'
+kubectl patch svc istio-ingressgateway -n istio-system --type=json -p='[{"op": "replace", "path": "/spec/ports/0/nodePort", "value": 30999}]'
 
 kubectl get svc -n istio-system
 kubectl get po -n istio-system
@@ -592,10 +639,8 @@ kubectl delete deployment -n istio-system prometheus
 # poniższe usuwam, bo z nim nie mogę zdefiniować VirtualService zawierające host z portem
 #kubectl delete deployment -n istio-system istio-galley
 
-
 getPodIP istio-sidecar-injector- istio-system
 
-#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/istio.yaml?$(date +%s)"  | kubectl apply -f -
 kubectl apply -f /vagrant/yml/istio.yaml
 
 #install example
