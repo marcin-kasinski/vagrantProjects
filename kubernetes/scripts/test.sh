@@ -1,12 +1,16 @@
 #!/bin/bash
 
 source /vagrant/scripts/libs.sh
-setupIstio 2>&1 | tee ~/setupIstio.log
+#setupIstio 2>&1 | tee ~/setupIstio.log
+setupIstio1_0_6 2>&1 | tee ~/setupIstio1_0_6.log
+setupJava 2>&1 | tee ~/setupJava.log
+setupSSL apps 2>&1 | tee ~/setupSSL.log
 
 createIngress 2>&1 | tee ~/createIngress.log
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/nginx.yaml?$(date +%s)"  | kubectl apply -f -
+curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/rabbitmq.yaml | kubectl apply -f -
 
-#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/springbootweb.yaml?$(date +%s)"  | kubectl apply -n apps -f -
+curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/springbootweb.yaml?$(date +%s)"  | kubectl apply -n apps -f -
 finish
 
 
@@ -28,6 +32,7 @@ echo GATEWAY_URL $GATEWAY_URL
 
 curl -I -H Host:httpbin.example.com http://$INGRESS_HOST:$INGRESS_PORT/status/200
 curl -I -H Host:httpbin.example.com http://$INGRESS_HOST:$INGRESS_PORT/headers
+curl -I -H Host:springbootweb.com:30999 http://$INGRESS_HOST:$INGRESS_PORT/
 exit
 
 createJaegerOperator 2>&1 | tee ~/createJaegerOperator.log
