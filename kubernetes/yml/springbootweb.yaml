@@ -284,9 +284,9 @@ metadata:
   name: springbootweb
 spec:
   hosts:
-#  - "springbootweb.apps.svc.cluster.local:30999"
-#  - "springbootweb:30999"
-#  - "springbootweb.com:30999"
+  - "springbootweb.apps.svc.cluster.local:30999"
+  - "springbootweb:30999"
+  - "springbootweb.com:30999"
   - "springbootweb.apps.svc.cluster.local"
   - "springbootweb"
   - "springbootweb.com"
