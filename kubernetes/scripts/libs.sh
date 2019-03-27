@@ -1395,10 +1395,11 @@ do
   if [ $? != 0 ]; then
      echo  "nc Error "
      #exit $ERROR_CODE
-  else break   
+     sleep 3  
+  else break     
+  fi
   sleep 3  
   
-  fi
 done
 }
 
@@ -1417,15 +1418,16 @@ do
   IP=$retval
   #echo "ip $IP"  
   nc -w 10 -z $IP $PORT
-  sleep 3  
   
   #echo "nc exit code = $?"
 
   if [ $? != 0 ]; then
      echo  "nc Error "
      #exit $ERROR_CODE
+     sleep 3     
   else break   
   fi  
+  sleep 3  
 
 done
 
