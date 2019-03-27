@@ -548,7 +548,7 @@ curl -L "$URL" | tar xz
 echo "Downloaded into $NAME:"
 ls "$NAME"
 
-cd $ISTIO_VERSION
+cd $NAME
 
 echo Install the istio
 helm install install/kubernetes/helm/istio --name istio --namespace istio-system --set gateways.istio-ingressgateway.type=NodePort --set pilot.traceSampling=100 --set tracing.enabled=true
@@ -567,7 +567,7 @@ kubectl delete svc -n istio-system prometheus
 kubectl delete deployment -n istio-system grafana
 kubectl delete deployment -n istio-system prometheus
 # poniższe usuwam, bo z nim nie mogę zdefiniować VirtualService zawierające host z portem
-#kubectl delete deployment -n istio-system istio-galley
+kubectl delete deployment -n istio-system istio-galley
 
 getPodIP istio-sidecar-injector- istio-system
 
@@ -1389,13 +1389,15 @@ echo "waitForIPPort IP $IP, PORT $PORT"
 
 while true
 do
-  nc -w 10 -z $IP $PORT
-  sleep 3  
+  nc -w 5 -z $IP $PORT
+
 
   if [ $? != 0 ]; then
      echo  "nc Error "
      #exit $ERROR_CODE
   else break   
+  sleep 3  
+  
   fi
 done
 }
