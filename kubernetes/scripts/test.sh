@@ -29,9 +29,12 @@ echo INGRESS_PORT $INGRESS_PORT
 echo INGRESS_NODEPORT $INGRESS_NODEPORT
 echo GATEWAY_URL $GATEWAY_URL
 
+getPodIP web apps
+IP_WEB=$retval
+waitForIPPort $IP_WEB 7070
 
-curl -I -H Host:httpbin.example.com http://$INGRESS_HOST:$INGRESS_PORT/status/200
-curl -I -H Host:httpbin.example.com http://$INGRESS_HOST:$INGRESS_PORT/headers
+#curl -I -H Host:httpbin.example.com http://$INGRESS_HOST:$INGRESS_PORT/status/200
+#curl -I -H Host:httpbin.example.com http://$INGRESS_HOST:$INGRESS_PORT/headers
 curl -I -H Host:springbootweb.com:30999 http://$INGRESS_HOST:$INGRESS_PORT/
 exit
 
