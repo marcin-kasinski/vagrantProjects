@@ -26,16 +26,17 @@ init_kubernetesHA 2>&1 | tee ~/init_kubernetesHA.log
 createWeave 2>&1 | tee ~/createWeave.log
 installHelm 2>&1 | tee ~/installHelm.log
 
-/vagrant/scripts/test.sh
-checkmasters
-exit
-
+#/vagrant/scripts/test.sh
+#checkmasters
+#exit
 
 #createJaegerOperator 2>&1 | tee ~/createJaegerOperator.log
 
-setupIstio 2>&1 | tee ~/setupIstio.log
+#setupIstio 2>&1 | tee ~/setupIstio.log
+setupIstio1_0_6 2>&1 | tee ~/setupIstio1_0_6.log
+
 #createVistio 2>&1 | tee ~/createVistio.log
-createKiali 2>&1 | tee ~/createKiali.log
+#createKiali 2>&1 | tee ~/createKiali.log
 #createConcourse 2>&1 | tee ~/createConcourse.log
 #createAmbassador 2>&1 | tee ~/createAmbassador.log
 setupJava 2>&1 | tee ~/setupJava.log
@@ -71,13 +72,13 @@ curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/ku
 #curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/graphite.yaml | kubectl apply -f -
 
 createMonitoring 2>&1 | tee ~/createMonitoring.log # metric server and prometheus adapter
-#createMongo 2>&1 | tee ~/createMongo.log
-#createRedis 2>&1 | tee ~/createRedis.log
+createMongo 2>&1 | tee ~/createMongo.log
+createRedis 2>&1 | tee ~/createRedis.log
 
 #configureGrafana 2>&1  | tee ~/configureGrafana.log
 
-#setupMongodb 2>&1 | tee ~/setupMongodb.log
-#setupRedis 2>&1 | tee ~/setupRedis.log
+setupMongodb 2>&1 | tee ~/setupMongodb.log
+setupRedis 2>&1 | tee ~/setupRedis.log
 
 #showCustomService
 
