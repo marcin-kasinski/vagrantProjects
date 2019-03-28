@@ -102,5 +102,7 @@ kubeadm token create --print-join-command
 
 finish 2>&1 | tee ~/installHelm.log
 
+checkmasters
+
 echo checking networking
 kubectl exec -it -n default kafka-0 -- sh -c "curl -s -o /dev/null -w "%{http_code}" https://www.onet.pl/"
