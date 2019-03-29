@@ -35,12 +35,12 @@ sudo sed -i -r '/cdrom/ s/^(.*)$/#\1/g' /etc/apt/sources.list
 sudo apt -y update
 
 sudo apt-get install -y ceph-common
-sudo apt -y install -y docker.io
-sudo apt install -y curl jq
-sudo apt install -y apt-transport-https
-sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 
-sudo usermod -aG docker vagrant
+installDocker 2>&1 | tee ~/installDocker.log
+
+sudo apt install -y curl jq
+
+sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 
 UBUNTU_CODENAME=`cat /etc/os-release | grep UBUNTU_CODENAME | cut -d "=" -f 2`
 echo "UBUNTU_CODENAME $UBUNTU_CODENAME"

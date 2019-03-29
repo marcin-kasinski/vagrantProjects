@@ -7,8 +7,8 @@ MASTER_NODES="k8smaster k8smaster2 k8smaster3"
 
 #sudo apt install -y default-jdk
 
-echo I am provisioning...
-echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
+log I am provisioning...
+log ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioning "$1
 
 #ls | grep pattern | sed -e 's/^/prefix/' -e 's/$/suffix/'
 
@@ -26,9 +26,9 @@ init_kubernetesHA 2>&1 | tee ~/init_kubernetesHA.log
 createWeave 2>&1 | tee ~/createWeave.log
 installHelm 2>&1 | tee ~/installHelm.log
 
-#/vagrant/scripts/test.sh
-#checkmasters
-#exit
+/vagrant/scripts/test.sh
+checkmasters
+exit
 
 #createJaegerOperator 2>&1 | tee ~/createJaegerOperator.log
 
@@ -104,5 +104,5 @@ finish 2>&1 | tee ~/installHelm.log
 
 checkmasters
 
-echo checking networking
+log checking networking
 kubectl exec -it -n default kafka-0 -- sh -c "curl -s -o /dev/null -w "%{http_code}" https://www.onet.pl/"
