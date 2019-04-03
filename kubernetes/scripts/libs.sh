@@ -638,7 +638,7 @@ waitPodcreated istio-init-crd-10 istio-system
 waitPodcreated istio-init-crd-11 istio-system
 
 echo Install the istio
-helm install install/kubernetes/helm/istio --name istio --namespace istio-system --set gateways.istio-ingressgateway.type=NodePort --set pilot.traceSampling=100 --set tracing.enabled=true --set kiali.enabled=true --set prometheus.enabled=false
+helm install install/kubernetes/helm/istio --name istio --namespace istio-system --set gateways.istio-ingressgateway.type=NodePort --set pilot.traceSampling=100 --set tracing.enabled=true --set kiali.enabled=true --set prometheus.enabled=false --set global.proxy.accessLogFile="/dev/stdout"
 echo listing cruds
 
 kubectl get crds | grep 'istio.io\|certmanager.k8s.io' | wc -l
