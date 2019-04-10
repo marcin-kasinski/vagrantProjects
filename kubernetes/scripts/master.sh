@@ -33,8 +33,8 @@ installHelm 2>&1 | tee ~/installHelm.log
 
 #createJaegerOperator 2>&1 | tee ~/createJaegerOperator.log
 
-#setupIstio 2>&1 | tee ~/setupIstio.log
-setupIstio1_0_6 2>&1 | tee ~/setupIstio1_0_6.log
+setupIstio 2>&1 | tee ~/setupIstio.log
+#setupIstio1_0_7 2>&1 | tee ~/setupIstio1_0_6.log
 
 #createVistio 2>&1 | tee ~/createVistio.log
 #createKiali 2>&1 | tee ~/createKiali.log
