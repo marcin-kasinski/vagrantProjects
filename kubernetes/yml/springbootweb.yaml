@@ -290,7 +290,6 @@ spec:
   - "springbootweb.apps.svc.cluster.local"
   - "springbootweb"
   - "springbootweb.com"
-
   gateways:
   - itzone-gateway
   http:
