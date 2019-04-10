@@ -617,9 +617,10 @@ kubectl delete hpa -n istio-system istio-egressgateway
 kubectl scale deploy istio-egressgateway  -n istio-system --replicas=1
 }
 
-
 setupIstio()
 {
+
+kubectl create secret -n istio-system generic kiali --from-literal=username='admin' --from-literal=passphrase='admin'
 curl -L https://git.io/getLatestIstio | sh -
 ISTIO_VERSION=$(ls | grep istio- )
 cd $ISTIO_VERSION
