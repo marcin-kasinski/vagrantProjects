@@ -548,7 +548,7 @@ kubectl apply -f /vagrant/yml/vistio.yaml
 cd ~
 }
 
-setupIstio1_0_6()
+setupIstio1_0_7()
 {
 
 
@@ -561,7 +561,7 @@ else
   OSEXT="linux"
 fi
 
-ISTIO_VERSION="1.0.6"
+ISTIO_VERSION="1.0.7"
 NAME="istio-$ISTIO_VERSION"
 URL="https://github.com/istio/istio/releases/download/${ISTIO_VERSION}/istio-${ISTIO_VERSION}-${OSEXT}.tar.gz"
 echo "Downloading $NAME from $URL ..."
