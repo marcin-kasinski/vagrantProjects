@@ -31,6 +31,22 @@ spec:
           serviceName: istiostatus
           servicePort: 15000
 ---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kiali
+  namespace: istio-system
+  annotations:
+spec:
+  rules:
+  - host: kiali
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kiali
+          servicePort: 20001
+---
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
