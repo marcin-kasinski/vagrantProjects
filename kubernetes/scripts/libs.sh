@@ -685,6 +685,21 @@ kubectl scale deploy istio-ingressgateway  -n istio-system --replicas=1
 #delete egress hpa and scale deployment (only in dev)
 kubectl delete hpa -n istio-system istio-egressgateway
 kubectl scale deploy istio-egressgateway  -n istio-system --replicas=1
+
+#correct kiali conf
+
+kubectl get cm -n istio-system kiali -o jsonpath='{.data.config\.yaml}' > /tmp/config.yaml
+
+cat /tmp/config.yaml
+
+sudo sh -c "echo '      prometheus_service_url: http://prometheus-cs.default.svc.cluster.local:9090' >> /tmp/config.yaml"
+
+cat /tmp/config.yaml
+
+kubectl delete configmap -n istio-system kiali
+
+kubectl create configmap -n istio-system kiali --from-file=/tmp/config.yaml
+
 }
 
 createOpenFaasFunction()
