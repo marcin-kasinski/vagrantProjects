@@ -21,6 +21,7 @@ setupkeepalived | tee ~/setupkeepalived.log
 
 init_kubernetesHA 2>&1 | tee ~/init_kubernetesHA.log
 #init_kubernetes 2>&1 | tee ~/init_kubernetes.log
+checkmasters | tee ~/checkmasters.log
 
 
 createWeave 2>&1 | tee ~/createWeave.log
@@ -102,7 +103,7 @@ kubeadm token create --print-join-command
 
 finish 2>&1 | tee ~/installHelm.log
 
-checkmasters
+checkmasters | tee ~/checkmasters.log
 
 log checking networking
 kubectl exec -it -n default kafka-0 -- sh -c "curl -s -o /dev/null -w "%{http_code}" https://www.onet.pl/"
