@@ -620,6 +620,28 @@ kubectl scale deploy istio-egressgateway  -n istio-system --replicas=1
 setupIstio()
 {
 
+#kiali
+kubectl create secret generic kiali -n istio-system --from-literal "username=admin" --from-literal "passphrase=admin"
+#correct kiali conf
+
+#kubectl get cm -n istio-system kiali -o jsonpath='{.data.config\.yaml}' > /tmp/config.yaml_ORG
+
+#cat /tmp/config.yaml_ORG
+
+#cp /tmp/config.yaml_ORG /tmp/config.yaml
+
+#sudo sh -c "echo '  prometheus_service_url: http://prometheus-cs.default.svc.cluster.local:9090' >> /tmp/config.yaml"
+
+#cat /tmp/config.yaml
+
+kubectl delete configmap -n istio-system kiali
+
+#kubectl create configmap -n istio-system kiali --from-file=/tmp/config.yaml
+kubectl create configmap -n istio-system kiali --from-file=/vagrant/conf/kiali/config.yaml
+
+#kiali
+
+
 kubectl create secret -n istio-system generic kiali --from-literal=username='admin' --from-literal=passphrase='admin'
 curl -L https://git.io/getLatestIstio | sh -
 ISTIO_VERSION=$(ls | grep istio- )
@@ -639,7 +661,7 @@ waitPodcreated istio-init-crd-10 istio-system
 waitPodcreated istio-init-crd-11 istio-system
 
 echo Install the istio
-helm install install/kubernetes/helm/istio --name istio --namespace istio-system --set gateways.istio-ingressgateway.type=NodePort --set pilot.traceSampling=100 --set tracing.enabled=true --set kiali.enabled=true --set prometheus.enabled=false --set global.proxy.accessLogFile="/dev/stdout"
+helm install install/kubernetes/helm/istio --name istio --namespace istio-system --set gateways.istio-ingressgateway.type=NodePort --set pilot.traceSampling=100 --set tracing.enabled=true --set kiali.enabled=true --set grafana.enabled=true --set prometheus.enabled=false --set global.proxy.accessLogFile="/dev/stdout"
 echo listing cruds
 
 kubectl get crds | grep 'istio.io\|certmanager.k8s.io' | wc -l
@@ -686,19 +708,7 @@ kubectl scale deploy istio-ingressgateway  -n istio-system --replicas=1
 kubectl delete hpa -n istio-system istio-egressgateway
 kubectl scale deploy istio-egressgateway  -n istio-system --replicas=1
 
-#correct kiali conf
 
-kubectl get cm -n istio-system kiali -o jsonpath='{.data.config\.yaml}' > /tmp/config.yaml
-
-cat /tmp/config.yaml
-
-sudo sh -c "echo '      prometheus_service_url: http://prometheus-cs.default.svc.cluster.local:9090' >> /tmp/config.yaml"
-
-cat /tmp/config.yaml
-
-kubectl delete configmap -n istio-system kiali
-
-kubectl create configmap -n istio-system kiali --from-file=/tmp/config.yaml
 
 }
 

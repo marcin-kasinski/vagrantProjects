@@ -1,0 +1,13 @@
+istio_namespace: istio-system
+server:
+  port: 20001
+external_services:
+  istio:
+    url_service_version: http://istio-pilot:8080/version
+  jaeger:
+    #url: http://jaeger-query.default.svc.cluster.local
+    url: http://jaeger:30080
+  grafana:
+    #url: http://grafana.default.svc.cluster.local:3000
+    url: http://grafana:30080
+  prometheus_service_url: http://prometheus-cs.default.svc.cluster.local:9090
