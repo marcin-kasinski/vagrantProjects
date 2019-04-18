@@ -1,0 +1,15 @@
+kubectl get componentstatuses
+
+
+kubectl exec -it -n kube-system etcd-k8smaster2  -- etcdctl --endpoints https://127.0.0.1:2379 \
+--cert-file /etc/kubernetes/pki/etcd/server.crt \
+--key-file /etc/kubernetes/pki/etcd/server.key \
+--ca-file /etc/kubernetes/pki/etcd/ca.crt \
+member list
+
+
+kubectl exec -it -n kube-system etcd-k8smaster2  -- etcdctl --endpoints https://127.0.0.1:2379 \
+--cert-file /etc/kubernetes/pki/etcd/server.crt \
+--key-file /etc/kubernetes/pki/etcd/server.key \
+--ca-file /etc/kubernetes/pki/etcd/ca.crt \
+cluster-health

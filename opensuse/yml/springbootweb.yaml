@@ -1,0 +1,322 @@
+kind: ConfigMap
+metadata:
+  name: springbootweb-bootstrap-yml-cm
+apiVersion: v1
+data:
+  bootstrap.yml: |-
+
+    sample.zipkin.enabled: false
+    #app.ajax_url: http://springbootmicroserviceingress:30080/api/get-by-email?email=ajax@ajax.com
+    app.ajax_url: ${APP_AJAX_URL:http://springbootmicroservice.apps.svc.cluster.local:30999/api/get-by-email?email=ajax@ajax.com}
+    app.event_url: ${APP_EVENT_URL:http://springbootmicroservice.apps.svc.cluster.local:30080}
+    app.event_kafka_url: "${APP_EVENT_KAFKA_URL:springbootkafkalistenerXXXXXX:30080/events}"
+    #app.rest_url: ${APP_REST_URL:http://springbootmicroservice:9191/api/get-by-email?email=x@x.com
+    #app.rest_url: ${APP_REST_URL:http://nginx/api/get-by-email?email=x@x.com}
+    app.rest_url: ${APP_REST_URL:http://nginx/api/adduser}
+    logging:
+        file: logs/application.log
+        level.org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+        level.zipkin: DEBUG
+        level.zipkin2: DEBUG
+        level.org.springframework.cloud.sleuth.zipkin: DEBUG
+        level.org.springframework.cloud.sleuth.zipkin2: DEBUG
+        evel.org.springframework.cloud.sleuth.log: DEBUG
+    server:
+        port: 7070
+    spring.main.allow-bean-definition-overriding: true    
+    #spring.boot.admin.client.url: http://springbootadmin.apps:8080/
+    #opentracing.jaeger.udp-sender.host: jaeger-collector.default.svc.cluster.local
+    #opentracing.jaeger.udp-sender.port: 14268
+    #opentracing.jaeger.http-sender.url: 
+    #opentracing.jaeger.log-spans: true    
+    spring:
+        application:
+            name: SpringBootWeb
+    #spring.jpa.hibernate.ddl-auto=create
+        datasource:
+            url: jdbc:mysql://mysql:30306/test
+            username: root
+            password: secret
+    #spring.datasource.driver-class-name=Driver
+    # Allows Hibernate to generate SQL optimized for a particular DBMS
+        jpa:
+            properties:
+                hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
+                hibernate.show_sql: true
+        rabbitmq:
+            host: rabbitmq.default.svc.cluster.local
+            password: guest
+            port: 5672
+        zipkin:
+            #baseUrl: http://springbootzipkin.apps.svc.cluster.local:9411
+            #baseUrl: http://zipkin.default.svc.cluster.local:9411
+            baseUrl: http://zipkin.istio-system.svc.cluster.local:9411
+            sender:
+                type: web
+        sleuth:
+            sampler:
+                percentage: 1
+                probability: 1
+    #if you want to send spans via kafka...            
+    #    kafka:
+    #        bootstrap-servers: kafka-service:9092            
+        cloud:
+            consul:
+                discovery:
+                    preferIpAddress: true
+                    instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}
+                port: 8500        
+            stream:
+                defaultBinder: rabbit1
+                bindings:
+                    worksChannel:
+                        destination: my-topic
+                        group: order
+                        content-type: application/json
+                        binder: rabbit1
+                    worksChannelKafka:
+                        destination: my-topic
+                        group: order
+                        content-type: application/json
+                        binder: kafka
+                binders:
+                    rabbit1:
+                        type: rabbit
+                        environment:
+                            spring:
+                                rabbitmq:
+                                    host: rabbitmq.default.svc.cluster.local
+                                    port: 5672
+                                    username: guest
+                                    password: guest
+                                    virtual-host: /
+                    kafka:
+                        type: kafka
+                        environment:
+                            spring:
+                                cloud:
+                                    stream:
+                                        kafka:
+                                            binder:
+                                                brokers: kafka-0.k-hs.default.svc.cluster.local:9094,kafka-1.k-hs.default.svc.cluster.local:9094,kafka-2.k-hs.default.svc.cluster.local:9094
+                                                #brokers: kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092
+                                                configuration:
+                                                    security.protocol: SSL
+                                                    ssl.truststore.location: /usr/src/myapp/config/truststore-springbootweb-0.jks
+                                                    ssl.truststore.password: secret
+                                                    ssl.truststore.type: JKS
+                                                    ssl.keystore.location: /usr/src/myapp/config/keystore-springbootweb-0.jks
+                                                    ssl.keystore.password: secret
+                                                    ssl.keystore.type: JKS
+    endpoints:
+        prometheus:
+            enabled: true 
+    management:
+        security:
+            enabled: false
+        endpoint:
+            metrics:
+                enabled: true
+            prometheus:
+                enabled: true 
+        endpoints:
+            web:
+                exposure:
+                    include: "info, health, prometheus"
+            metrics:
+                enabled: true
+        metrics:
+            export:
+                prometheus:
+                    enabled: true
+    #common tags for all metrics
+    management.metrics.tags.commonregion: us-east-1
+    management.metrics.tags.commonstack: ${SPRING_PROFILE:"unknown"}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springbootweb
+  labels:
+    app: springbootweb
+spec:
+#  serviceName: "springbootweb-hs"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: springbootweb
+  template:
+    metadata:
+      labels:
+        app: springbootweb
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/scheme: "http"
+        prometheus.io/path: "/actuator/prometheus"
+        prometheus.io/port: "7070"  
+    spec:
+      containers:
+      - name: springbootweb
+        image: marcinkasinski/springbootweb
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 7070
+        env:
+        - name: SPRING_PROFILE
+          value: "prd"          
+        #- name: "EXTRA_JAVA_ARGS"
+        #  value: "-Djavax.net.debug=all -Dssl.debug=true"
+          #value: "-Djavax.net.debug=ssl:handshake"
+        #- name: JAVA_OPTS
+        #  value: "-Dlogging.level.zipkin=DEBUG -Dlogging.level.zipkin2=DEBUG"          
+        - name: APP_AJAX_URL
+          value: "http://springbootmicroservice.apps.svc.cluster.local:30999/api/get-by-email?email=ajax@ajax.com"          
+        - name: APP_EVENT_URL
+          value: "http://springbootweb.apps.svc.cluster.local:30999"          
+        - name: APP_EVENT_KAFKA_URL
+          value: "http://springbootkafkalistener:30080/events"
+        - name: APP_REST_URL
+          value: "http://springbootmicroservice.apps.svc.cluster.local:9191/api/adduser"
+        - name: KAFKA_BROKER_NODES
+          value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"          
+        volumeMounts:
+        - name: config-springbootweb-bootstrap-yml-cm
+          mountPath: /usr/src/myapp/config/bootstrap.yml
+          subPath: bootstrap.yml
+        - name: config-volume-springbootweb-0-truststore-jks
+          mountPath: /usr/src/myapp/config/truststore-springbootweb-0.jks
+          subPath: truststore-springbootweb-0.jks
+        - name: config-volume-springbootweb-0-keystore-jks
+          mountPath: /usr/src/myapp/config/keystore-springbootweb-0.jks
+          subPath: keystore-springbootweb-0.jks
+      volumes:
+        - name: config-springbootweb-bootstrap-yml-cm
+          configMap:
+            name: springbootweb-bootstrap-yml-cm
+        - name: config-volume-springbootweb-0-truststore-jks
+          configMap:
+            name: truststore-springbootweb-0.jks
+        - name: config-volume-springbootweb-0-keystore-jks
+          configMap:
+            name: keystore-springbootweb-0.jks
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: am-springbootweb
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v1
+      kind: Mapping
+      name: am-springbootweb_mapping
+      prefix: /
+      timeout_ms: 10000
+      service: am-springbootweb.apps:7070
+      #only works via istio ingress gateway
+      host: springbootweb.apps.svc.cluster.local:30999
+      
+spec:
+  type: NodePort
+  ports:
+  - port: 7070
+    #nodePort: 30070
+    targetPort: 7070
+    protocol: TCP
+    name: http
+  selector:
+    app: springbootweb
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: springbootweb
+spec:
+  type: NodePort
+  ports:
+  - port: 7070
+    #nodePort: 30070
+    targetPort: 7070
+    protocol: TCP
+    name: http
+  selector:
+    app: springbootweb
+---
+# An Ingress with 2 hosts and 3 endpoints
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: springbootweb-ingress
+  annotations:
+    ingress.kubernetes.io/enable-cors: "true"
+    ingress.kubernetes.io/rewrite-target: /  
+spec:
+  rules:
+  - host: springbootweb
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: springbootweb
+          servicePort: 7070
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: itzone-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+#curl -H "Host: springbootweb.apps.svc.cluster.local:30999" localhost:30999/
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: springbootweb
+spec:
+  hosts:
+#  - "springbootweb.apps.svc.cluster.local:30999"
+#  - "springbootweb:30999"
+#  - "springbootweb.com:30999"
+  - "springbootweb.apps.svc.cluster.local"
+  - "springbootweb"
+  - "springbootweb.com"
+  gateways:
+  - itzone-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: springbootweb # interpreted as springbootweb.apps.svc.cluster.local
+        #host: ambassador.default.svc.cluster.local # interpreted as springbootweb.apps.svc.cluster.local
+        port:
+          number: 7070
+          #number: 80
+---          
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: springbootweb
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: springbootweb
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Pods
+    pods:
+      metricName: MKWEB_exec_time_seconds_max
+      targetAverageValue: 1500

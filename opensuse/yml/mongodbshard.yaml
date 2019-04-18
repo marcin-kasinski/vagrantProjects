@@ -1,0 +1,92 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-shard-rs-0x-hs
+  namespace: default
+  labels:
+    name: mongodb-shard-rs-0x
+spec:
+  ports:
+  - port: 27017
+    targetPort: 27017
+  clusterIP: None
+  selector:
+    role: mongodb-shard-rs-0x
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongodb-shard-rs-0x
+  namespace: default
+  labels:
+    app: mongodb-shard  
+spec:
+  selector:
+    matchLabels:
+      role: mongodb-shard-rs-0x # has to match .spec.template.metadata.labels
+  serviceName: mongodb-shard-rs-0x-hs
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        role: mongodb-shard-rs-0x
+        tier: maindb
+        replicaset: rs-0x
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/scheme: "http"
+        #prometheus.io/path: "/actuator/prometheus"
+        prometheus.io/port: "9104"        
+        
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: replicaset
+                  operator: In
+                  values:
+                  - rs-0x
+              topologyKey: kubernetes.io/hostname
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: mongodbshard-prometheus-exporter
+          image: eses/mongodb_exporter
+          ports:
+          - name: mongodbexporter
+            containerPort: 9104
+          env:
+          - name: MONGODB_URL
+            value: "mongodb://localhost:27017"
+#          - name: HTTP_AUTH
+#            value: "user:password"
+      
+      
+        - name: mongodb-shard
+          image: mongo
+          command:
+            - "mongod"
+            - "--shardsvr"
+            - "--port"
+            - "27017"
+            - "--bind_ip"
+            - "0.0.0.0"
+            - "--replSet"
+            - "rs-0x"
+            - "--dbpath"
+            - "/mongo-disk"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 100Mi
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: mongodb-data
+              mountPath: /mongo-disk
+      volumes:
+      - name: mongodb-data
+        emptyDir: {}

@@ -1,0 +1,248 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-index
+data:
+  index.html: |-   
+    <html>
+    <body>
+    Adresy uslug:<br>
+    
+    <a href="http://springbootweb.apps.svc.cluster.local:30999">http://springbootweb.apps.svc.cluster.local:30999</a><br>
+    <a href="http://springbootwebreactor.apps.svc.cluster.local:30999">http://springbootwebreactor.apps.svc.cluster.local:30999</a><br>
+    <a href="http://springbootadmin:30080">http://springbootadmin:30080/</a><br>
+    <a href="http://phpmyadmin:30080">http://phpmyadmin:30080/</a><br>
+    <a href="http://zoonavigator:30080">http://zoonavigator:30080/</a><br>
+    <a href="http://kafka-manager:30080">http://kafka-manager:30080/</a><br>
+    <a href="http://kafka-connect-ui:30080">http://kafka-connect-ui:30080/</a><br>
+    <a href="http://springbootzipkin:30999">http://springbootzipkin:30999</a><br>
+    <a href="http://prometheus:30080">http://prometheus:30080/</a><br>
+    <a href="http://alertmanager:30080">http://alertmanager:30080/</a><br>
+    <a href="http://grafana:30080">http://grafana:30080/</a><br>
+    <a href="http://kibana:30080">http://kibana:30080/</a><br>
+    <a href="http://rabbitmq:30080">http://rabbitmq:30080/</a><br>
+    <a href="http://fakesmtp:30080">http://fakesmtp:30080/</a><br>
+    <a href="http://jenkins:30080">http://jenkins:30080/</a><br>
+    <a href="http://phpredisadmin:30080">http://phpredisadmin:30080/</a><br>
+    <a href="http://artifactory:30080">http://artifactory:30080/</a><br>
+    <!--<a href="http://fn-ui:30080">http://fn-ui:30080</a><br>-->
+    <a href="http://faasgateway:30080">http://faasgateway:30080</a><br>
+    <a href="http://jaeger:30080">http://jaeger:30080</a><br>
+    <a href="http://rabbitmq:30080">http://rabbitmq:30080</a><br>
+    <a href="http://ambassador:30080/ambassador/v0/diag/">http://ambassador:30080/ambassador/v0/diag/</a><br>
+    <a href="http://concourse:30080/">http://concourse:30080/</a> CI TOOL<br>
+    <a href="http://weave:30080/">http://weave:30080/</a><br>
+    <a href="http://phpldapadmin:30080/">http://phpldapadmin:30080/</a><br>
+
+    <a href="https://datapower:30777">https://datapower:30777</a><br>
+
+    <br>ISTIO <br>
+    <a href="http://vistio:30080">http://vistio:30080</a><br>
+    <a href="http://vistio-api:30080/graph">http://vistio-api:30080/graph</a><br>
+    <a href="http://kiali:30080/kiali">http://kiali:30080/kiali</a><br>
+    <a href="http://servicegraph:30080/force/forcegraph.html">http://servicegraph:30080/force/forcegraph.html</a><br>    
+    <a href="http://servicegraph:30080/dotviz">http://servicegraph:30080/dotviz</a><br>    
+    <a href="http://servicegraph:30080/dotgraph">http://servicegraph:30080/dotgraph</a><br>    
+    <a href="http://servicegraph:30080/graph">http://servicegraph:30080/graph</a><br>    
+    <a href="http://tracingistio:30080">http://tracingistio:30080</a><br>    
+    <a href="http://grafanaistio:30080">http://grafanaistio:30080</a><br>    
+    
+    
+    
+    
+     <br>
+    
+    Inne:<br>
+    
+    http://prometheus:9090/api/v1/label/__name__/values - prometheus nazwy kluczy<br>
+    http://springbootmicroservice-cs.default.svc.cluster.local:9191/api/gethostname - nazwa hosta<br>
+
+    Linki elastic search<br>
+    <br>
+    http://es:9200/_cat/indices?v - lista indeks�w<br>
+    http://es:9200/_cluster/health<br>
+    http://es:9200/_nodes<br>
+    http://es:9200/_cluster/stats?human&pretty<br>
+    
+    </body>
+    </html>
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  nginx.conf: |-   
+    # MK CONF
+    user  nginx;
+    worker_processes  1;
+
+    error_log  /var/log/nginx/error.log warn;
+    pid        /var/run/nginx.pid;
+
+
+    events {
+    	worker_connections  1024;
+    }
+
+
+    http {
+    	include       /etc/nginx/mime.types;
+    	default_type  application/octet-stream;
+
+    	log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+        	  '$status $body_bytes_sent "$http_referer" '
+        	  '"$http_user_agent" "$http_x_forwarded_for" '
+        	  '"x_b3_traceid [$http_x_b3_traceid]" '
+        	  '" MK-X1 $http_MK\-X1" '
+        	  '" MK_X2 $http_MK_X2" '
+        	  '"request postdata $request_body" '
+        	  '"response postdata $resp_body" ';
+
+    	access_log  /var/log/nginx/access.log2  main;
+
+    	sendfile        on;
+    	#tcp_nopush     on;
+
+    	keepalive_timeout  65;
+
+    	#gzip  on;
+
+    	include /etc/nginx/conf.d/*.conf;
+    	
+    	
+      upstream myproject {
+    	server springbootmicroservice-cs:9191;
+      }
+
+      server {
+    	listen 80;
+    	#server_name www.domain.com;
+    	server_name nginx;
+    	
+    	
+    	
+        lua_need_request_body on;
+
+        set $resp_body "";
+        body_filter_by_lua '
+            local resp_body = string.sub(ngx.arg[1], 1, 1000)
+            ngx.ctx.buffered = (ngx.ctx.buffered or "") .. resp_body
+            if ngx.arg[2] then
+                ngx.var.resp_body = ngx.ctx.buffered
+            end
+        ';
+    	
+    	
+    	
+    	
+    	location / {
+    	  proxy_pass http://myproject;
+    	}
+      }    	
+    	
+    	
+    	
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-www
+  template:
+    metadata:
+      labels:
+        app: nginx-www
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        #image: ilagnev/alpine-nginx-lua
+        #image: firesh/nginx-lua
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 80
+        env:
+        - name: SPRING_PROFILE
+          value: "prd"
+        volumeMounts:
+        #- name: nginx-config
+        #  mountPath: /etc/nginx/nginx.conf
+        #  subPath: nginx.conf
+        - name: nginx-index
+          mountPath: /usr/share/nginx/html/index.html
+          subPath: index.html
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: nginx-config
+        - name: nginx-index
+          configMap:
+            name: nginx-index
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v1
+      kind:  Mapping
+      name:  nginx_mapping
+      prefix: /nginx
+      service: nginx  
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+#    nodePort: 30080
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: nginx-www
+---
+# An Ingress with 2 hosts and 3 endpoints
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+  annotations:
+    ingress.kubernetes.io/enable-cors: "true"
+    ingress.kubernetes.io/rewrite-target: /  
+spec:
+  rules:
+  - host: nginx
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: nginx
+          servicePort: 80
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: nginx
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - itzone-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /nginx
+    route:
+    - destination:
+        host: ambassador
+        port:
+          number: 80
+          

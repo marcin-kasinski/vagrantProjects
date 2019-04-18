@@ -1,0 +1,334 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jenkins-artifactorymanagerconf-cm
+  labels:
+    app: jenkins
+data:
+  jenkins.model.ArtifactManagerConfiguration.xml: |
+    <?xml version='1.1' encoding='UTF-8'?>
+    <jenkins.model.ArtifactManagerConfiguration>
+      <artifactManagerFactories/>
+    </jenkins.model.ArtifactManagerConfiguration>
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jenkins-artifactory-cm
+  labels:
+    app: jenkins
+data:
+  org.jfrog.hudson.ArtifactoryBuilder.xml: |
+
+    <?xml version='1.1' encoding='UTF-8'?>
+    <org.jfrog.hudson.ArtifactoryBuilder_-DescriptorImpl plugin="artifactory@2.16.2">
+      <useCredentialsPlugin>false</useCredentialsPlugin>
+      <artifactoryServers>
+        <org.jfrog.hudson.ArtifactoryServer>
+          <url>http://artifactory:8081/artifactory</url>
+          <id>artifactoryserver</id>
+          <timeout>300</timeout>
+          <bypassProxy>false</bypassProxy>
+          <connectionRetry>3</connectionRetry>
+          <deployerCredentialsConfig>
+            <credentials>
+              <username>admin</username>
+              <password>YWRtaW4=</password>
+            </credentials>
+            <credentialsId></credentialsId>
+            <overridingCredentials>false</overridingCredentials>
+            <ignoreCredentialPluginDisabled>false</ignoreCredentialPluginDisabled>
+          </deployerCredentialsConfig>
+        </org.jfrog.hudson.ArtifactoryServer>
+      </artifactoryServers>
+      <pushToBintrayEnabled>true</pushToBintrayEnabled>
+      <buildInfoProxyEnabled>false</buildInfoProxyEnabled>
+      <buildInfoProxyPort>0</buildInfoProxyPort>
+      <buildInfoProxyCertPublic>/var/jenkins_home/secrets/jfrog/certs/jfrog.proxy.crt</buildInfoProxyCertPublic>
+      <buildInfoProxyCertPrivate>/var/jenkins_home/secrets/jfrog/certs/jfrog.proxy.key</buildInfoProxyCertPrivate>
+    </org.jfrog.hudson.ArtifactoryBuilder_-DescriptorImpl>
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jenkins-maven-cm
+  labels:
+    app: jenkins
+data:
+  hudson.tasks.Maven.xml: |
+    <?xml version='1.1' encoding='UTF-8'?>
+    <hudson.tasks.Maven_-DescriptorImpl>
+      <installations>
+        <hudson.tasks.Maven_-MavenInstallation>
+          <name>maveninstallation</name>
+          <properties>
+            <hudson.tools.InstallSourceProperty>
+              <installers>
+                <hudson.tasks.Maven_-MavenInstaller>
+                  <id>3.6.0</id>
+                </hudson.tasks.Maven_-MavenInstaller>
+              </installers>
+            </hudson.tools.InstallSourceProperty>
+          </properties>
+        </hudson.tasks.Maven_-MavenInstallation>
+      </installations>
+    </hudson.tasks.Maven_-DescriptorImpl>
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jenkins-locale-cm
+  labels:
+    app: jenkins
+data:
+  locale.xml: |
+    <locale plugin="locale@1.4">
+      <systemLocale>en</systemLocale>
+      <ignoreAcceptLanguage>true</ignoreAcceptLanguage>
+    </locale>
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jenkins-startscript-cm
+  labels:
+    app: jenkins
+data:
+  startscript.sh: |
+    #!/bin/sh
+    
+    echo "it is startscript.sh"
+    ls -l
+    #apt update
+    #apt install -y maven
+    cp /init/locale.xml /var/jenkins_home/locale.xml
+    cp /init/hudson.tasks.Maven.xml /var/jenkins_home/hudson.tasks.Maven.xml
+    cp /init/org.jfrog.hudson.ArtifactoryBuilder.xml /var/jenkins_home/org.jfrog.hudson.ArtifactoryBuilder.xml
+    cp /init/jenkins.model.ArtifactManagerConfiguration.xml /var/jenkins_home/jenkins.model.ArtifactManagerConfiguration.xml
+    /usr/local/bin/install-plugins.sh < /plugins.txt
+    /usr/local/bin/jenkins.sh
+
+---
+kind: ConfigMap
+metadata:
+  name: jenkins-plugins-cm
+  namespace: default
+apiVersion: v1
+data:
+  plugins.txt: |-
+    ace-editor
+    ant
+    antisamy-markup-formatter
+    apache-httpcomponents-client-4-api
+    artifactory
+    authentication-tokens
+    bouncycastle-api
+    branch-api
+    build-timeout
+    cloudbees-folder
+    command-launcher
+    copyartifact
+    credentials
+    credentials-binding
+    display-url-api
+    docker-commons
+    docker-workflow
+    durable-task
+    email-ext
+    git
+    git-client
+    git-server
+    github
+    github-api
+    github-branch-source
+    gradle
+    handlebars
+    jackson2-api
+    javadoc
+    jdk-tool
+    jquery-detached
+    jsch
+    junit
+    ldap
+    locale
+    lockable-resources
+    mailer
+    mapdb-api
+    matrix-auth
+    matrix-project
+    maven-plugin
+    momentjs
+    pam-auth
+    pipeline-build-step
+    pipeline-github-lib
+    pipeline-graph-analysis
+    pipeline-input-step
+    pipeline-milestone-step
+    pipeline-model-api
+    pipeline-model-declarative-agent
+    pipeline-model-definition
+    pipeline-model-extensions
+    pipeline-rest-api
+    pipeline-stage-step
+    pipeline-stage-tags-metadata
+    pipeline-stage-view
+    plain-credentials
+    resource-disposer
+    scm-api
+    script-security
+    ssh-credentials
+    ssh-slaves
+    structs
+    subversion
+    timestamper
+    token-macro
+    trilead-api
+    workflow-aggregator
+    workflow-api
+    workflow-basic-steps
+    workflow-cps
+    workflow-cps-global-lib
+    workflow-durable-task-step
+    workflow-job
+    workflow-multibranch
+    workflow-scm-step
+    workflow-step-api
+    workflow-support
+    ws-cleanup
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfsjenkins
+spec:
+  capacity:
+    storage: 1Mi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    # FIXME: use the right IP
+    server: k8smaster.local
+    path: "/var/nfs/jenkins"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfsjenkins
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 1Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins-deployment
+spec:
+  replicas: 1    
+  selector:
+    matchLabels:
+      app: jenkins
+  template:
+    metadata:
+      labels:
+        app: jenkins
+    spec:
+      containers:
+      - name: jenkins
+        #image: jenkins
+        image: jenkins/jenkins
+        command: ["/bin/sh"]
+        args: ["-c", "echo MK;/init/startscript.sh"]
+        securityContext:
+          privileged: true
+          runAsUser: 0
+        ports:
+        - name: jenkins-port1
+          containerPort: 8080
+        - name: jenkins-port2
+          containerPort: 50000
+        env:
+        - name: JAVA_OPTS
+          value: "-Xmx2048m -XX:MaxPermSize=512m -Djenkins.install.runSetupWizard=false"
+        volumeMounts:
+        #- name: nfsjenkins
+        #  mountPath: /var/jenkins_home
+        - name: config-jenkins-plugins-cm
+          mountPath: /plugins.txt
+          subPath: plugins.txt
+        - name: config-jenkins-startscript-cm
+          mountPath: /init/startscript.sh
+          subPath: startscript.sh
+        - name: config-jenkins-locale-cm
+          mountPath: /init/locale.xml
+          subPath: locale.xml
+        - name: config-jenkins-maven-cm
+          mountPath: /init/hudson.tasks.Maven.xml
+          subPath: hudson.tasks.Maven.xml
+        - name: config-jenkins-artifactory-cm
+          mountPath: /init/org.jfrog.hudson.ArtifactoryBuilder.xml
+          subPath: org.jfrog.hudson.ArtifactoryBuilder.xml
+        - name: config-jenkins-artifactorymanagerconf-cm
+          mountPath: /init/jenkins.model.ArtifactManagerConfiguration.xml
+          subPath: jenkins.model.ArtifactManagerConfiguration.xml
+      volumes:
+      #- name: nfsjenkins
+      #  persistentVolumeClaim:
+      #    claimName: nfsjenkins
+      - name: config-jenkins-plugins-cm
+        configMap:
+          name: jenkins-plugins-cm          
+      - name: config-jenkins-startscript-cm
+        configMap:
+          name: jenkins-startscript-cm
+          defaultMode: 0755
+      - name: config-jenkins-locale-cm
+        configMap:
+          name: jenkins-locale-cm
+      - name: config-jenkins-maven-cm
+        configMap:
+          name: jenkins-maven-cm
+      - name: config-jenkins-artifactory-cm
+        configMap:
+          name: jenkins-artifactory-cm          
+      - name: config-jenkins-artifactorymanagerconf-cm
+        configMap:
+          name: jenkins-artifactorymanagerconf-cm
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    nodePort: 31888
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  - port: 50000
+    nodePort: 32000
+    targetPort: 50000
+    protocol: TCP
+    name: http2
+  selector:
+    app: jenkins
+---
+# An Ingress with 2 hosts and 3 endpoints
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: jenkins-ingress
+spec:
+  rules:
+  - host: jenkins
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: jenkins
+          servicePort: 8080

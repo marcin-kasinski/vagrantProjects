@@ -1,0 +1,88 @@
+run buid remotely
+
+
+#kafka
+
+ssh -o "StrictHostKeyChecking no" -i /tools/vagrantprojects/private_key  vagrant@192.168.1.11 "rm  -fr /tmp/kafkacluster |true && cd /tmp && git clone https://github.com/marcin-kasinski/kafkacluster.git && cd kafkacluster && sudo docker build -t kafkacluster . && sudo docker tag kafkacluster marcinkasinski/kafkacluster:latest"
+ssh -o "StrictHostKeyChecking no" -i /tools/vagrantprojects/private_key  vagrant@192.168.1.12 "rm  -fr /tmp/kafkacluster |true && cd /tmp && git clone https://github.com/marcin-kasinski/kafkacluster.git && cd kafkacluster && sudo docker build -t kafkacluster . && sudo docker tag kafkacluster marcinkasinski/kafkacluster:latest"
+ssh -o "StrictHostKeyChecking no" -i /tools/vagrantprojects/private_key  vagrant@192.168.1.13 "rm  -fr /tmp/kafkacluster |true && cd /tmp && git clone https://github.com/marcin-kasinski/kafkacluster.git && cd kafkacluster && sudo docker build -t kafkacluster . && sudo docker tag kafkacluster marcinkasinski/kafkacluster:latest"
+ssh -o "StrictHostKeyChecking no" -i /tools/vagrantprojects/private_key  vagrant@192.168.1.14 "rm  -fr /tmp/kafkacluster |true && cd /tmp && git clone https://github.com/marcin-kasinski/kafkacluster.git && cd kafkacluster && sudo docker build -t kafkacluster . && sudo docker tag kafkacluster marcinkasinski/kafkacluster:latest"
+
+
+#zookeeper
+ssh -o "StrictHostKeyChecking no" -i /tools/vagrantprojects/private_key  vagrant@192.168.1.11 "rm  -fr /tmp/zookeepercluster |true && cd /tmp && git clone https://github.com/marcin-kasinski/zookeepercluster.git && cd zookeepercluster && sudo docker build -t zookeepercluster . && sudo docker tag zookeepercluster marcinkasinski/zookeepercluster:latest"
+ssh -o "StrictHostKeyChecking no" -i /tools/vagrantprojects/private_key  vagrant@192.168.1.12 "rm  -fr /tmp/zookeepercluster |true && cd /tmp && git clone https://github.com/marcin-kasinski/zookeepercluster.git && cd zookeepercluster && sudo docker build -t zookeepercluster . && sudo docker tag zookeepercluster marcinkasinski/zookeepercluster:latest"
+ssh -o "StrictHostKeyChecking no" -i /tools/vagrantprojects/private_key  vagrant@192.168.1.13 "rm  -fr /tmp/zookeepercluster |true && cd /tmp && git clone https://github.com/marcin-kasinski/zookeepercluster.git && cd zookeepercluster && sudo docker build -t zookeepercluster . && sudo docker tag zookeepercluster marcinkasinski/zookeepercluster:latest"
+ssh -o "StrictHostKeyChecking no" -i /tools/vagrantprojects/private_key  vagrant@192.168.1.14 "rm  -fr /tmp/zookeepercluster |true && cd /tmp && git clone https://github.com/marcin-kasinski/zookeepercluster.git && cd zookeepercluster && sudo docker build -t zookeepercluster . && sudo docker tag zookeepercluster marcinkasinski/zookeepercluster:latest"
+
+
+ssh -o "StrictHostKeyChecking no" -i /tools/vagrantprojects/private_key  vagrant@192.168.1.14 " \
+
+rm  -fr /tmp/kafkacluster |true && cd /tmp && git clone https://github.com/marcin-kasinski/kafkacluster.git && cd kafkacluster &&  sudo docker kill kafkacluster | true &&  sudo docker rm kafkacluster | true && sudo docker build -t kafkacluster . && sudo docker tag kafkacluster marcinkasinski/kafkacluster:latest \
+&& sudo docker run --name kafkacluster -e BROKER_NODES=kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092   \
+-e JAAS_FILE_LOCATION=/tmp/kafka_server_jaas.conf \
+-e KAFKA_PARAM_BATCH_SIZE=65536 \
+-e KAFKA_PARAM_listeners=PLAINTEXT://0.0.0.0:9092,SASL_PLAINTEXT://0.0.0.0:9093 \
+-e KAFKA_PARAM_advertised_listeners=PLAINTEXT://{HOSTNAME}:9092,SASL_PLAINTEXT://{HOSTNAME}:9093 \
+-e KAFKA_PARAM_ZOOKEEPER_CONNECT=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka \
+-e KAFKA_PARAM_sasl_enabled_mechanisms=GSSAPI \
+-e KAFKA_PARAM_sasl_kerberos_service_name=kafka \
+kafkacluster marcinkasinski/kafkacluster \
+
+
+"
+
+klist -kt /opt/kafka/config/kafka-0.service.keytab
+kinit -kt /opt/kafka/config/kafka-0.service.keytab kafka/kafka-0.k-hs.default.svc.cluster.local@KAFKA.SECURE
+klist
+
+
+klist -kt /opt/zookeeper/conf/zk.service.keytab
+kinit -kt /opt/zookeeper/conf/zk.service.keytab zookeeper/zk-0.zk-hs.default.svc.cluster.local@KAFKA.SECURE
+klist
+
+-----------------------------------------------copile and run remotely--------------------------------------
+copy folder to pod:
+
+POD_NAME="springbootrabbitmqlistener-"
+
+#FULL_POD_NAME=`kubectl get po -n default -o wide | grep $POD_NAME | grep Running `
+FULL_POD_NAME=`kubectl get po -n default -o wide | grep $POD_NAME`
+FULL_POD_NAME=`echo $FULL_POD_NAME | cut -d " " -f 1`
+echo  $FULL_POD_NAME
+
+kubectl cp /home/vagrant/SpringBootWeb/ default/$FULL_POD_NAME:/usr/src/myapp/
+
+
+kubectl exec -it $FULL_POD_NAME -- /bin/bash -c "apt update && apt install -y maven"
+kubectl exec -it $FULL_POD_NAME -- /bin/bash -c "cd /usr/src/myapp/SpringBootWeb/ && mvn clean install"
+
+#compile and run
+kubectl exec -it $FULL_POD_NAME -- /bin/bash -c \
+"cd /usr/src/myapp/SpringBootWeb/ && ls -l && mvn install && cd /usr/src/myapp/SpringBootWeb/target && \
+java -jar -Dsun.security.krb5.debug=true -Dspring.profiles.active=prd -Djava.security.auth.login.config=/tmp/jaas.conf SpringBootWeb-0.0.1-SNAPSHOT.jar"
+
+#run
+kubectl exec -it $FULL_POD_NAME -- /bin/bash -c \
+"cd /usr/src/myapp/SpringBootWeb/target && \
+java -jar -Dsun.security.krb5.debug=true -Dspring.profiles.active=prd -Djava.security.auth.login.config=/tmp/jass.conf SpringBootWeb-0.0.1-SNAPSHOT.jar"
+
+
+KafkaClient {
+    com.sun.security.auth.module.Krb5LoginModule required
+    useKeyTab=true
+    storeKey=true
+    debug=true
+    keyTab="/opt/kafka/config/kafka.service.keytab"
+    principal="kafka/kafka-0.k-hs.default.svc.cluster.local@KAFKA.SECURE";
+};
+
+
+
+
+only run
+kubectl exec -it $FULL_POD_NAME -- /bin/bash -c \
+"cd /usr/src/myapp/SpringBootWeb/target && SPRING_PROFILE=prd java -jar -Dspring.profiles.active=$SPRING_PROFILE SpringBootWeb-0.0.1-SNAPSHOT.jar"
+
+
+-----------------------------------------------copile and run remotely--------------------------------------

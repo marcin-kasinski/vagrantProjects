@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kconnect-cs
+  labels:
+    app: kafkaconnect
+spec:
+  type: NodePort
+  ports:
+  - port: 8083
+    #nodePort: 30092
+    targetPort: 8083
+    name: rest
+  selector:
+    app: kafkaconnect
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kconnect-hs
+  labels:
+    app: kafkaconnect
+spec:
+  ports:
+  - port: 8083
+    name: rest
+  - port: 8080
+    name: jmxagent
+  clusterIP: None
+  selector:
+    app: kafkaconnect
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafkaconnect
+spec:
+  serviceName: "kconnect-hs"
+  replicas: 3
+  updateStrategy:
+    type: RollingUpdate
+  podManagementPolicy: Parallel
+  selector:
+    matchLabels:
+      app: kafkaconnect
+  template:
+    metadata:
+      labels:
+        app: kafkaconnect
+        kubernetes.io/name: "kafkaconnect"
+        tier: backend
+      annotations:
+        #prometheus.io/scrape: "true"
+        #prometheus.io/scheme: "http"
+        #prometheus.io/path: "/"
+        #prometheus.io/port: "8080"          
+    spec:
+      containers:
+      - name: kafkaconnect
+        image: marcinkasinski/kafkaconnectcluster
+        imagePullPolicy: Always        
+        ports:
+        - containerPort: 8083
+          name: client
+        volumeMounts:
+        - mountPath: /tmp/kafkaconnect-logs
+          name: kafkaconnect-logs   
+        env:
+        - name: "KAFKA_PARAM_BOOTSTRAP_SERVERS"
+          value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"
+      volumes:
+      - name: kafkaconnect-logs
+        emptyDir: {}    

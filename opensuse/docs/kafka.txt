@@ -1,0 +1,156 @@
+
+./kafka-consumer-groups.sh --bootstrap-server kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092 --list
+
+./kafka-console-consumer.sh --bootstrap-server kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092 --topic mysql-foobar
+
+
+
+
+# Create ACLs
+
+1.) Allow users _reader_ and _writer_ to consumer from topic _acl-test_
+
+KAFKA_OPTS="" \
+/opt/kafka/bin/kafka-acls.sh \
+--authorizer-properties zookeeper.connect=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka --add \
+--allow-principal User:reader --allow-principal User:writer \
+--operation Read \
+--group=* \
+--topic my-topic
+
+2.) Allow user _writer_ to produce messages into topic _acl-test_
+```
+~/kafka/bin/kafka-acls.sh \
+--authorizer-properties zookeeper.connect=<<KAFKA-SERVER-PUBLIC-DNS>>:2181 --add \
+--allow-principal User:writer \
+--operation Write \
+--topic acl-test
+
+------------------------ SSL ------------------------
+
+KAFKA_OPTS="-Djavax.net.debug=ssl:handshake"
+KAFKA_OPTS=""
+#zookeeper=zk-0.zk-hs.default.svc.cluster.local:2181/kafka
+zookeeper=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka
+brokers=kafka-0.k-hs.default.svc.cluster.local:9094,kafka-1.k-hs.default.svc.cluster.local:9094,kafka-2.k-hs.default.svc.cluster.local:9094
+brokers=kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092
+#brokers=kafka-0.k-hs.default.svc.cluster.local:9094
+kafka-topics.sh --list --zookeeper $zookeeper
+
+#create
+kafka-topics.sh --create --zookeeper zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka --partitions 1 --replication-factor 1 --topic mktopic
+
+#describe
+kafka-topics.sh --describe --zookeeper $zookeeper --topic mktopic
+
+# Listing acls
+kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --list --topic mktopic
+
+
+
+# ----------------- SET ACL -----------------
+KAFKA_OPTS=""
+zookeeper=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka
+
+#Producer
+kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
+User:ANONYMOUS \
+--operation Describe --operation Describe --operation Create --operation Write \
+--topic logs
+
+#Consumer
+kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
+User:ANONYMOUS \
+--operation Describe --operation Describe --operation Create --operation Read \
+--topic  logs
+
+kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
+User:ANONYMOUS --operation ClusterAction --operation Create --cluster kafka-cluster
+
+kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
+User:ANONYMOUS \
+--operation All --group '*'
+
+KAFKA_OPTS=""
+zookeeper=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka
+
+#Producer
+kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
+User:CN=kafka-0.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL \
+--operation Describe --operation Describe --operation Create --operation Write \
+--topic logs
+
+#Consumer
+kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
+User:CN=kafka-0.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL \
+--operation Describe --operation Describe --operation Create --operation Read \
+--topic logs
+
+kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
+User:CN=kafka-0.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL \
+--operation ClusterAction --operation Create \
+--cluster kafka-cluster
+
+kafka-acls.sh --authorizer-properties zookeeper.connect=$zookeeper --add --allow-principal \
+User:CN=kafka-0.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL \
+--operation All --group "*"
+
+
+
+#Producer PLAINTEXT
+KAFKA_OPTS=""
+brokers=kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092
+
+while true
+do
+ echo $(date) | kafka-console-producer.sh --broker-list $brokers --topic logs
+ sleep 1
+done
+
+#Producer SSL
+KAFKA_OPTS="-Djavax.net.debug=ssl:handshake"
+KAFKA_OPTS=""
+brokers=kafka-0.k-hs.default.svc.cluster.local:9094,kafka-1.k-hs.default.svc.cluster.local:9094,kafka-2.k-hs.default.svc.cluster.local:9094
+
+while true
+do
+ echo $(date) by SSL | kafka-console-producer.sh --broker-list $brokers --producer.config config/producer-ssl-auth.properties --topic logs
+ sleep 1
+done
+
+echo "group.id=group1"> config/consumer-nossl-auth.properties
+
+#Consumer PLAINTEXT
+KAFKA_OPTS=""
+brokers=kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092
+kafka-console-consumer.sh --bootstrap-server $brokers --consumer.config config/consumer-nossl-auth.properties  --topic fluentd-springboot-logs
+
+#Consumer PLAINTEXT
+KAFKA_OPTS=""
+brokers=kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092
+kafka-console-consumer.sh --bootstrap-server $brokers --consumer.config config/consumer-nossl-auth.properties  --topic my-topic
+
+#Consumer SSL
+KAFKA_OPTS="-Djavax.net.debug=ssl:handshake"
+KAFKA_OPTS=""
+brokers=kafka-0.k-hs.default.svc.cluster.local:9094,kafka-1.k-hs.default.svc.cluster.local:9094,kafka-2.k-hs.default.svc.cluster.local:9094
+kafka-console-consumer.sh --bootstrap-server $brokers --consumer.config config/consumer-ssl-auth.properties --topic fluentd-logs
+
+
+openssl s_client -showcerts -connect kafka-0.k-hs.default.svc.cluster.local:9094
+
+openssl s_client -connect kafka-0.k-hs.default.svc.cluster.local:9094 2>/dev/null |
+  openssl x509 -noout -text -certopt no_header,no_version,no_serial,no_signame,no_pubkey,no_sigdump,no_aux -subject -nameopt multiline -issuer
+
+
+openssl s_client -connect 10.47.0.9:9094 -state -debug
+
+
+
+
+apt install sslscan 
+sslscan kafka-0.k-hs.default.svc.cluster.local:9094
+
+
+------------------------ SSL ------------------------
+

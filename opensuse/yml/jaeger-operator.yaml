@@ -1,0 +1,53 @@
+apiVersion: io.jaegertracing/v1alpha1
+kind: Jaeger
+metadata:
+  name: jaeger
+spec:
+  strategy: allInOne
+  allInOne:
+    image: jaegertracing/all-in-one:1.10
+    options:
+      log-level: debug
+  storage:
+    type: elasticsearch
+    options:
+      es:
+        server-urls: http://es:9200
+    #secretName: jaeger-secrets
+  sampling:
+    options:
+      default_strategy:
+        type: probabilistic
+        param: 1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zipkin
+  labels:
+    app: jaeger
+spec:
+  type: NodePort
+  ports:
+  - port: 9411
+    #nodePort: 32017
+    targetPort: 9411
+    name: http-client
+  selector:
+    app.kubernetes.io/name: jaeger
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: jaeger-ingress
+  namespace: default
+spec:
+  rules:
+  - host: jaeger
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: jaeger-query
+          servicePort: 16686

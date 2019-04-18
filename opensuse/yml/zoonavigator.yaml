@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zoonavigator-deployment
+  labels:
+    app: zoonavigator  
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zoonavigator
+  template:
+    metadata:
+      labels:
+        app: zoonavigator
+    spec:
+      containers:
+      - name: zoonavigator-web
+        image: elkozmon/zoonavigator-web:latest
+        ports:
+        - name: zoonav-web
+          containerPort: 7070
+        env:
+        - name: WEB_HTTP_PORT
+          value: "7070"
+        - name: API_HOST
+          value: "zoonavigator-api"
+        - name: API_PORT
+          value: "9000"
+      - name: zoonavigator-api
+        image: elkozmon/zoonavigator-api:latest
+        ports:
+        - name: zoonav-api
+          containerPort: 9000
+        env:
+        - name: API_HTTP_PORT
+          value: "9000"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zoonavigator
+spec:
+  type: NodePort
+  ports:
+  - port: 7070
+    protocol: TCP
+    name: http
+  selector:
+    app: zoonavigator
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zoonavigator-api
+spec:
+  type: NodePort
+  ports:
+  - port: 9000
+    protocol: TCP
+    name: api
+  selector:
+    app: zoonavigator
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: zoonavigator-ingress
+spec:
+  rules:
+  - host: zoonavigator
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: zoonavigator
+          servicePort: 7070
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: zoonavigator-api-ingress
+spec:
+  rules:
+  - host: zoonavigator-api
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: zoonavigator-api
+          servicePort: 9000
+          

@@ -1,0 +1,368 @@
+kind: ConfigMap
+metadata:
+  name: template-server-properties-cm
+  namespace: default
+apiVersion: v1
+data:
+  template_server.properties: |-
+    
+    #advertised.listeners=PLAINTEXT://{HOSTNAME_FQDN}:9092,SASL_PLAINTEXT://{HOSTNAME_FQDN}:9093,SSL://{HOSTNAME_FQDN}:9094
+    advertised.listeners=PLAINTEXT://{HOSTNAME_FQDN}:9092,SSL://{HOSTNAME_FQDN}:9094
+    #listeners=PLAINTEXT://0.0.0.0:9092,SASL_PLAINTEXT://0.0.0.0:9093,SSL://0.0.0.0:9094
+    listeners=PLAINTEXT://0.0.0.0:9092,SSL://0.0.0.0:9094
+    zookeeper.connect=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka
+    security.inter.broker.protocol=SSL
+    delete.topic.enable=true
+    batch.size=65536 # for dev only ?
+    
+    #ACL
+    
+    # username builder
+    #principal.builder.class=CustomizedPrincipalBuilderClass
+    authorizer.class.name=kafka.security.auth.SimpleAclAuthorizer
+    allow.everyone.if.no.acl.found=false
+    #super.users=User:admin;User:CN=kafka-0.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL;User:CN=kafka-1.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL;User:CN=kafka-2.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL
+    super.users=User:admin
+    
+    #SSL
+    ssl.truststore.location=/opt/kafka/config/truststore-{HOSTNAME}.jks
+    ssl.truststore.password=secret
+    ssl.keystore.location=/opt/kafka/config/keystore-{HOSTNAME}.jks
+    ssl.keystore.password=secret
+    ssl.key.password=secret
+    ssl.client.auth=required
+---
+kind: ConfigMap
+metadata:
+  name: consumer-ssl-auth-cm
+  namespace: default
+apiVersion: v1
+data:
+  consumer-ssl-auth.properties: |-
+    security.protocol=SSL
+    ssl.truststore.location=/opt/kafka/config/truststore-kafka-0.jks
+    ssl.truststore.password=secret
+    ssl.keystore.location=/opt/kafka/config/keystore-kafka-0.jks
+    ssl.keystore.password=secret
+    ssl.key.password=secret 
+    group.id=group1
+---
+kind: ConfigMap
+metadata:
+  name: producer-ssl-auth-cm
+  namespace: default
+apiVersion: v1
+data:
+  producer-ssl-auth.properties: |-
+    security.protocol=SSL
+    ssl.truststore.location=/opt/kafka/config/truststore-kafka-0.jks
+    ssl.truststore.password=secret
+    ssl.keystore.location=/opt/kafka/config/keystore-kafka-0.jks
+    ssl.keystore.password=secret
+    ssl.key.password=secret 
+---
+kind: ConfigMap
+metadata:
+  name: kafka-server-jaas-conf-cm
+  namespace: default
+apiVersion: v1
+data:
+  kafka_server_jaas.conf: |-
+    KafkaServer {
+        com.sun.security.auth.module.Krb5LoginModule required
+        useKeyTab=true
+        storeKey=true
+        debug=true
+        keyTab="/opt/kafka/config/kafka.service.keytab"
+        principal="kafka/{HOSTNAME_FQDN}@KAFKA.SECURE";
+    };
+
+    KafkaClient {
+        com.sun.security.auth.module.Krb5LoginModule required
+        useKeyTab=true
+        storeKey=true
+        debug=true
+        keyTab="/opt/kafka/config/kafka.service.keytab"
+        principal="kafka/{HOSTNAME_FQDN}@KAFKA.SECURE";
+    };
+
+    // ZooKeeper client authentication
+    Client {
+        com.sun.security.auth.module.Krb5LoginModule required
+        useKeyTab=true
+        storeKey=true
+        debug=true
+        keyTab="/opt/kafka/config/kafka.service.keytab"
+        principal="kafka/{HOSTNAME_FQDN}@KAFKA.SECURE";
+    };    
+---
+kind: ConfigMap
+metadata:
+  name: kafka-krb5-conf-cm
+  namespace: default
+apiVersion: v1
+data:
+  krb5.conf: |-
+    [logging]
+      default = FILE:/var/log/krb5libs.log
+      kdc = FILE:/var/log/krb5kdc.log
+      admin_server = FILE:/var/log/kadmind.log
+    
+    [libdefaults]
+        default_realm = KAFKA.SECURE
+        kdc_timesync = 1
+        ticket_lifetime = 24h
+        udp_preference_limit = 1
+    [realms]
+        KAFKA.SECURE = {
+          admin_server = kerberos
+          kdc  = kerberos
+          } 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: k-cs
+  labels:
+    app: kafka
+spec:
+  type: NodePort
+  ports:
+  - name: client2
+    port: 9092
+    #nodePort: 30092
+    targetPort: 9092
+  - name: client3
+    port: 9093
+    #nodePort: 30093
+    targetPort: 9093
+  - name: client4
+    port: 9094
+    #nodePort: 30094
+    targetPort: 9094    
+  selector:
+    app: kafka
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: k-hs
+  labels:
+    app: kafka
+spec:
+  ports:
+  - port: 9092
+    name: client2
+  - port: 9093
+    name: client3
+  - port: 9094
+    name: client4
+  - port: 8080
+    name: jmxagent
+  clusterIP: None
+  selector:
+    app: kafka
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka
+  labels:
+    app: kafka
+spec:
+  serviceName: "k-hs"
+  replicas: 3
+  updateStrategy:
+    type: RollingUpdate
+  podManagementPolicy: Parallel
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+        kubernetes.io/name: "kafka"
+        tier: backend
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/scheme: "http"
+        prometheus.io/path: "/"
+        prometheus.io/port: "8080"          
+    spec:
+      containers:
+      - name: kafka
+        image: marcinkasinski/kafkacluster
+        imagePullPolicy: Always        
+        #imagePullPolicy: Never        
+        ports:
+        - name: client2
+          containerPort: 9092
+        - name: client3
+          containerPort: 9093
+        - name: client4
+          containerPort: 9094
+        env:
+        - name: "POD_NAME"
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        #- name: "EXTRA_JAVA_ARGS"
+        #  value: "-Djavax.net.debug=ssl:handshake"
+        - name: "CONF_TEMPLATE"
+          value: "/opt/kafka/config/template_server.properties"
+        - name: "BROKER_NODES"
+          value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"
+        #  value: "kafka-0.k-hs.default.svc.cluster.local:9092"
+        # default 16kb we set to 64
+        #- name: "KAFKA_PARAM_BATCH_SIZE"
+        #  value: "65536"
+       # - name: "KAFKA_PARAM_advertised_listeners"
+       #   value: "PLAINTEXT://{HOSTNAME_FQDN}:9092,SASL_PLAINTEXT://{HOSTNAME_FQDN}:9093,SSL://{HOSTNAME_FQDN}:9094"
+        #  value: "PLAINTEXT://{HOSTNAME_FQDN}:9092"
+        #- name: "KAFKA_PARAM_listeners"
+        #  value: "PLAINTEXT://0.0.0.0:9092,SASL_PLAINTEXT://0.0.0.0:9093,SSL://0.0.0.0:9094"
+        #  value: "PLAINTEXT://0.0.0.0:9092"
+        #- name: "KAFKA_PARAM_ZOOKEEPER_CONNECT"
+        #  value: "zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka"
+        #  value: "zk-{NODEINDEX}.zk-hs.default.svc.cluster.local:2181/kafka"
+        #!!!!!!!!!!!!!!!!!!!!!!DEV ONLY!!!!!!!!!!!!!!!!!!!!
+        #- name: "KAFKA_PARAM_offsets_topic_replication_factor"
+        #  value: "1"
+        #- name: "KAFKA_PARAM_delete_topic_enable"
+        #  value: "true"
+
+        # #### Enable ACLs ####
+
+        #- name: "KAFKA_PARAM_authorizer_class_name"
+        #  value: "kafka.security.auth.SimpleAclAuthorizer"
+        #- name: "KAFKA_PARAM_allow_everyone_if_no_acl_found"
+        #  value: "false"
+        #--------------------------------- SSL --------------------------------- 
+        #- name: "KAFKA_PARAM_ssl_truststore_location"
+        #  value: "/opt/kafka/config/truststore-{HOSTNAME}.jks"
+        #- name: "KAFKA_PARAM_ssl_truststore_password"
+        #  value: "secret"
+        #- name: "KAFKA_PARAM_ssl_keystore_location"
+        #  value: "/opt/kafka/config/keystore-{HOSTNAME}.jks"
+        #- name: "KAFKA_PARAM_ssl_keystore_password"
+        #  value: "secret"
+        #- name: "KAFKA_PARAM_ssl_key_password"
+        #  value: "secret"
+        #- name: "KAFKA_PARAM_security_inter_broker_protocol"
+        #  value: "PLAINTEXT"
+        #- name: "KAFKA_PARAM_ssl_client_auth"
+        #  value: "required"
+        #- name: "KAFKA_PARAM_super_users"
+        #  value: "User:admin;User:CN=kafka-0.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL;User:CN=kafka-1.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL;User:CN=kafka-2.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL"
+        #  value: "User:admin"
+        #--------------------------------- SSL --------------------------------- 
+
+        #--------------------------------- SASL --------------------------------- 
+        #- name: "EXTRA_JAVA_ARGS"
+        #  value: "-Dsun.security.krb5.debug=true"
+        #- name: "JAAS_FILE_LOCATION"
+        #  value: "/opt/kafka/config/kafka_server_jaas.conf"
+        #- name: "JAAS_FILE_LOCATION_RO"
+        #  value: "/opt/kafka/config/kafka_server_jaas.conf_RO"
+        #- name: "KAFKA_PARAM_security_inter_broker_protocol"
+        #  value: "SASL_PLAINTEXT"
+        #- name: "KAFKA_PARAM_sasl_mechanism_inter_broker_protocol"
+        #  value: "GSSAPI"
+        #- name: "KAFKA_PARAM_sasl_enabled_mechanisms"
+        #  value: "GSSAPI"
+        #  #value: "GSSAPI"
+        #- name: "KAFKA_PARAM_sasl_kerberos_service_name"
+        #  value: "kafka"
+        #--------------------------------- SASL --------------------------------- 
+        volumeMounts:
+        #- name: config-volume-krb5-conf-cm
+        #  mountPath: /etc/krb5.conf
+        #  subPath: krb5.conf        
+        #- name: config-volume-kafka-0-service-keytab
+        #  mountPath: /opt/kafka/config/kafka-0.service.keytab
+        #  subPath: kafka-0.service.keytab
+        #- name: config-volume-kafka-1-service-keytab
+        #  mountPath: /opt/kafka/config/kafka-1.service.keytab
+        #  subPath: kafka-1.service.keytab
+        #- name: config-volume-kafka-2-service-keytab
+        #  mountPath: /opt/kafka/config/kafka-2.service.keytab
+        #  subPath: kafka-2.service.keytab
+        - name: config-volume-kafka-0-keystore-jks
+          mountPath: /opt/kafka/config/keystore-kafka-0.jks
+          subPath: keystore-kafka-0.jks
+        - name: config-volume-kafka-1-keystore-jks
+          mountPath: /opt/kafka/config/keystore-kafka-1.jks
+          subPath: keystore-kafka-1.jks
+        - name: config-volume-kafka-2-keystore-jks
+          mountPath: /opt/kafka/config/keystore-kafka-2.jks
+          subPath: keystore-kafka-2.jks
+        - name: config-volume-kafka-0-truststore-jks
+          mountPath: /opt/kafka/config/truststore-kafka-0.jks
+          subPath: truststore-kafka-0.jks
+        - name: config-volume-kafka-1-truststore-jks
+          mountPath: /opt/kafka/config/truststore-kafka-1.jks
+          subPath: truststore-kafka-1.jks
+        - name: config-volume-kafka-2-truststore-jks
+          mountPath: /opt/kafka/config/truststore-kafka-2.jks
+          subPath: truststore-kafka-2.jks
+        - name: config-volume-kafka-server-jaas-conf-cm
+          mountPath: /opt/kafka/config/kafka_server_jaas.conf_RO
+          subPath: kafka_server_jaas.conf
+        - name: config-volume-consumer-ssl-auth-cm
+          mountPath: /opt/kafka/config/consumer-ssl-auth.properties
+          subPath: consumer-ssl-auth.properties
+        - name: config-volume-producer-ssl-auth-cm
+          mountPath: /opt/kafka/config/producer-ssl-auth.properties
+          subPath: producer-ssl-auth.properties
+        - name: volume-template-server-properties-cm
+          mountPath: /opt/kafka/config/template_server.properties
+          subPath: template_server.properties
+        - name: kafka-logs
+          mountPath: /tmp/kafka-logs
+      volumes:
+        #- name: config-volume-krb5-conf-cm
+        #  configMap:
+        #    name: kafka-krb5-conf-cm
+        #- name: config-volume-kafka-0-service-keytab
+        #  configMap:
+        #    name: kafka-0-service-keytab
+        #- name: config-volume-kafka-1-service-keytab
+        #  configMap:
+        #    name: kafka-1-service-keytab
+        #- name: config-volume-kafka-2-service-keytab
+        #  configMap:
+        #    name: kafka-2-service-keytab
+        - name: config-volume-kafka-0-keystore-jks
+          configMap:
+            name: keystore-kafka-0.jks
+        - name: config-volume-kafka-1-keystore-jks
+          configMap:
+            name: keystore-kafka-1.jks
+        - name: config-volume-kafka-2-keystore-jks
+          configMap:
+            name: keystore-kafka-2.jks
+        - name: config-volume-kafka-0-truststore-jks
+          configMap:
+            name: truststore-kafka-0.jks
+        - name: config-volume-kafka-1-truststore-jks
+          configMap:
+            name: truststore-kafka-1.jks
+        - name: config-volume-kafka-2-truststore-jks
+          configMap:
+            name: truststore-kafka-2.jks            
+        - name: config-volume-kafka-server-jaas-conf-cm
+          configMap:
+            name: kafka-server-jaas-conf-cm
+        - name: config-volume-consumer-ssl-auth-cm
+          configMap:
+            name: consumer-ssl-auth-cm
+        - name: config-volume-producer-ssl-auth-cm
+          configMap:
+            name: producer-ssl-auth-cm
+        - name: volume-template-server-properties-cm
+          configMap:
+            name: template-server-properties-cm
+        - name: kafka-logs
+          emptyDir: {}
+          

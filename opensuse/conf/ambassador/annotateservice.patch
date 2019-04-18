@@ -1,0 +1,10 @@
+metadata:
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v1
+      kind:  Mapping
+      name:  {SERVICE}_mapping
+      prefix: /{SERVICE}
+      timeout_ms: 10000
+      service: {SERVICE}.{NAMESPACE}:{PORT}

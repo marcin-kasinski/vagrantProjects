@@ -1,0 +1,67 @@
+
+logLevel: 8
+
+metricsRelistInterval: 30s
+
+# Url to access prometheus
+prometheus:
+  url: http://prometheus-cs.default.svc
+  port: 9090
+
+replicas: 1
+
+tls:
+  enable: false
+  ca: |-
+    # Public CA file that signed the APIService
+  key: |-
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEowIBAAKCAQEAxbt+IkYmLXPWGKcvGUuh7OXw40Z9zHZ4uwoVY6LCGJD1DKBu
+    /4IlHYDbn9A7Qk91HHVBonovGiP60yiKFKrPw4PcRGN/IEGBrOmarKX70ztRsiAr
+    7mDFLfH8eMe7qsddJqtyKC0WABEyFDjuH2GVHx/oub3RSF9xqD41II/m4U+h9HNe
+    H38l94eo2qjpwqogPH5gIfxS+jHwoJuSRjpO9ZaenqF3XlYDQcO30xtHr4BDQqZW
+    8Es9dubon/aVx94U/4gxZ/riSLkbAml5+2+HEaY9nE9nn/DgU2eHccBPQzXQWWMm
+    +IOM/al6v3ktcnugTL7dOYbGzt9cZS3sJYO15wIDAQABAoIBAApywNSAzm2ibFK7
+    KtL0WycQc20fAXC3ZePEQaMVK5putnQnWhYoQ1vOvkwwjaEQX8jULVavjCOeeReF
+    Ud6LtBTJt+7pLwN+UqLXaTPsRWVBAi0eZBPhiynFWqjrLPB2PmbXsl2LHFl+jx3g
+    cDy6RE3zurFt5UwktvXD67y/vdxz5+ej+u/tVbJwjIRO5WoYJUmkenGldcERzKu3
+    hH1CpFPPc1e/tPjYb5wxheXnkg151vuO5GvaelavzVwPHayvQqJuSfsSazcRKdzB
+    klJQE7MDWdz+dhNbqlAXXQ9b8Wxg3LhWeZCx7BFcG6+uD5uqoxL/M7InGdsiZKxT
+    konvNfECgYEA9Jz0vwE0TGZj4XrTGMLJAAbJ2KjdLiJFFtH0ygMFkXJ15YAAp88s
+    89lEOKYmE5mLYWZEViHjWoFGP7attpA5ZHA2pqwtft9A69XMc+2+5CRKoARB2upg
+    oG1zbW5w1AK8R3kwRycr+a5UfI7SB25FgkEmZ+Di9oqd29XVl8pTUx8CgYEAzu/c
+    dnd/u8rIVm2z1OsQtHGZ6PhaQPgwb9Xh1SRLwuARMAyWQp5b0AItSUDPD8kVTRh+
+    GI4GcKkIE5gnjUAAZ/0s/i0/IvzrqMknLrhs/qkfOoKEV0Z5bmond8T99X+7naI8
+    WAGUIxJnxCzT2ffr/YuvnpHfUm4UIHqgyQuXTDkCgYEA8z5JGs8FxJtk40mSNWMt
+    IXueqHZzS3cEoQazl1ad6N6bYlaBUF3yY6I/9t0xq/fZ5Ecf2U7lmJBI3P65i3ur
+    trbngaJhs3IqStpV70oRsyhrlOfm3NyIrb9pMv7J7+mwdJqMaZUIY8b5eMtFC+KZ
+    +Eb0/ANjbqq1A3CGb+TgKx0CgYBaz7gX5OkRKDQyeYHpdh6mkRPRwOsah8/5xAqO
+    1pbItjvUsjFems//wHTPKLm1W7EVXCI59FmvJv58WtFAk02aVOhhwslqOUPRljSz
+    tAtg1ib2LkCVbD/tzHf1f2VTTvKugnuow0iW+4S9+k4d4UaWxa4UED/IlLYQasAU
+    ehmzQQKBgFeikSsp4FaI1U3COzcDyjzjR0d+OHdkA6eKy6gD0zELaVRZfVSNCbXF
+    2oIGiqrhpCw/iqInMzW04pUkDVf6WEBCgHKpqqp+AoqiPnBG0MDVaQM6yDqaLPtE
+    PUsgHdxCq8J278fTDut3WkRKgrodfTKEkvJtM+CJk5DHndRwFb4Q
+    -----END RSA PRIVATE KEY-----
+  certificate: |-
+    -----BEGIN CERTIFICATE-----
+    MIIDlzCCAn+gAwIBAgIBATANBgkqhkiG9w0BAQUFADCBjjELMAkGA1UEBhMCUEwx
+    DDAKBgNVBAgTA1dBVzEMMAoGA1UEBxMDV0FXMRAwDgYDVQQKEwdJVCBab25lMQsw
+    CQYDVQQLEwJJVDEaMBgGA1UEAxMRcHJvbWV0aGV1c2FkYXB0ZXIxKDAmBgkqhkiG
+    9w0BCQEWGW1hcmNpbi5rYXNpbnNraUBnbWFpbC5jb20wHhcNMTgwOTE4MTMwNzAw
+    WhcNMTkwOTE4MTMwNzAwWjCBjjELMAkGA1UEBhMCUEwxDDAKBgNVBAgTA1dBVzEM
+    MAoGA1UEBxMDV0FXMRAwDgYDVQQKEwdJVCBab25lMQswCQYDVQQLEwJJVDEaMBgG
+    A1UEAxMRcHJvbWV0aGV1c2FkYXB0ZXIxKDAmBgkqhkiG9w0BCQEWGW1hcmNpbi5r
+    YXNpbnNraUBnbWFpbC5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB
+    AQDFu34iRiYtc9YYpy8ZS6Hs5fDjRn3Mdni7ChVjosIYkPUMoG7/giUdgNuf0DtC
+    T3UcdUGiei8aI/rTKIoUqs/Dg9xEY38gQYGs6ZqspfvTO1GyICvuYMUt8fx4x7uq
+    x10mq3IoLRYAETIUOO4fYZUfH+i5vdFIX3GoPjUgj+bhT6H0c14ffyX3h6jaqOnC
+    qiA8fmAh/FL6MfCgm5JGOk71lp6eoXdeVgNBw7fTG0evgENCplbwSz125uif9pXH
+    3hT/iDFn+uJIuRsCaXn7b4cRpj2cT2ef8OBTZ4dxwE9DNdBZYyb4g4z9qXq/eS1y
+    e6BMvt05hsbO31xlLewlg7XnAgMBAAEwDQYJKoZIhvcNAQEFBQADggEBABf0vT9m
+    A3IiTl0lkn2pIouANF63BUE6qV0vKiZh7w+8ChMYk0E6pLVOJs3+iSZjE1IKYTJ0
+    gphKEmiMYvqKQoCo671YgJ91DMkrM0je1DNlyp23FuTtc5/riDztaAEJvQFnciav
+    TijUvfphLQWlhKAvs2r5znmzj0E6nduU2Ew5d0LdBvLlE1M4TOuk+bnJ6KQgwvse
+    tzbImkD6EVVTLc+imFQFrYz515GjqiO7forgTCd1GVxQvfU7kQrC3kdg8sV0m9HO
+    kGwLFn75Xy4V2+ZVHJWTZZ6qpX2538xzadcfhYycUB0yx6cVdInSSoq1wFsvNnOH
+    JnllA8+VOXDNivA=
+    -----END CERTIFICATE-----
