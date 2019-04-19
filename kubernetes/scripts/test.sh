@@ -36,7 +36,10 @@ waitForIPPort $IP_WEB 7070
 
 #curl -I -H Host:httpbin.example.com http://$INGRESS_HOST:$INGRESS_PORT/status/200
 #curl -I -H Host:httpbin.example.com http://$INGRESS_HOST:$INGRESS_PORT/headers
-curl -I -H Host:springbootweb.apps.svc.cluster.local:30999 http://$INGRESS_HOST:$INGRESS_PORT/
+log "checking internal"
+curl -I -H Host:springbootweb.apps.svc.cluster.local http://$INGRESS_HOST:$INGRESS_PORT/
+log "checking external"
+curl -I -H Host:springbootweb.apps.svc.cluster.local http://192.168.1.11:30999/
 exit
 
 createJaegerOperator 2>&1 | tee ~/createJaegerOperator.log
