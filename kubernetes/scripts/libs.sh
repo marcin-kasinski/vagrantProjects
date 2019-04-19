@@ -639,26 +639,6 @@ waitPodcreated istio-init-crd-10 istio-system
 waitPodcreated istio-init-crd-11 istio-system
 
 
-###################################kiali###################################
-#correct kiali conf
-
-#kubectl get cm -n istio-system kiali -o jsonpath='{.data.config\.yaml}' > /tmp/config.yaml_ORG
-
-#cat /tmp/config.yaml_ORG
-
-#cp /tmp/config.yaml_ORG /tmp/config.yaml
-
-#sudo sh -c "echo '  prometheus_service_url: http://prometheus-cs.default.svc.cluster.local:9090' >> /tmp/config.yaml"
-
-#cat /tmp/config.yaml
-
-kubectl delete configmap -n istio-system kiali
-
-#kubectl create configmap -n istio-system kiali --from-file=/tmp/config.yaml
-kubectl create configmap -n istio-system kiali --from-file=/vagrant/conf/kiali/config.yaml
-kubectl create secret -n istio-system generic kiali --from-literal=username='admin' --from-literal=passphrase='admin'
-
-###################################kiali###################################
 
 
 echo Install the istio
@@ -709,6 +689,26 @@ kubectl scale deploy istio-ingressgateway  -n istio-system --replicas=1
 kubectl delete hpa -n istio-system istio-egressgateway
 kubectl scale deploy istio-egressgateway  -n istio-system --replicas=1
 
+###################################kiali###################################
+#correct kiali conf
+
+#kubectl get cm -n istio-system kiali -o jsonpath='{.data.config\.yaml}' > /tmp/config.yaml_ORG
+
+#cat /tmp/config.yaml_ORG
+
+#cp /tmp/config.yaml_ORG /tmp/config.yaml
+
+#sudo sh -c "echo '  prometheus_service_url: http://prometheus-cs.default.svc.cluster.local:9090' >> /tmp/config.yaml"
+
+#cat /tmp/config.yaml
+
+kubectl delete configmap -n istio-system kiali
+
+#kubectl create configmap -n istio-system kiali --from-file=/tmp/config.yaml
+kubectl create configmap -n istio-system kiali --from-file=/vagrant/conf/kiali/config.yaml
+kubectl create secret -n istio-system generic kiali --from-literal=username='admin' --from-literal=passphrase='admin'
+
+###################################kiali###################################
 
 
 }
