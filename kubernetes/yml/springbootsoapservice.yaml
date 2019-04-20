@@ -132,7 +132,7 @@ metadata:
       timeout_ms: 10000
       service: springbootsoapservice.apps:8080
       #only works via istio ingress gateway
-      host: springbootsoapservice.apps.svc.cluster.local:30999
+      host: springbootsoapservice.apps.svc.cluster.local
     
 spec:
   type: NodePort
@@ -159,7 +159,7 @@ metadata:
       timeout_ms: 10000
       service: am-springbootsoapservice.apps:8080
       #only works via istio ingress gateway
-      host: springbootsoapservice.apps.svc.cluster.local:30999
+      host: springbootsoapservice.apps.svc.cluster.local
 spec:
   type: NodePort
   ports:
@@ -204,8 +204,8 @@ spec:
       metricName: "MK_6_received_messages"
       targetAverageValue: 1
 ---
-#curl -H "Host: springbootsoapservice.itzone.pl:30999" localhost:30999/api/get-by-email?email=ajax@ajax.com
-#curl -H "Host: springbootsoapservice.apps.svc.cluster.local:30999" localhost:30999/api/get-by-email?email=ajax@ajax.com
+#curl -H "Host: springbootsoapservice.itzone.pl" localhost/api/get-by-email?email=ajax@ajax.com
+#curl -H "Host: springbootsoapservice.apps.svc.cluster.local" localhost/api/get-by-email?email=ajax@ajax.com
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
@@ -213,8 +213,8 @@ metadata:
 spec:
 # aby port przyjął w hostach trzeba usunąć galley deployment
   hosts:
-  - "springbootsoapservice.itzone.pl:30999"
-  - "springbootsoapservice.apps.svc.cluster.local:30999"
+  - "springbootsoapservice.itzone.pl"
+  - "springbootsoapservice.apps.svc.cluster.local"
   - "springbootsoapservice" # from webapplication
   gateways:
   - itzone-gateway  
@@ -260,14 +260,14 @@ spec:
     labels:
       version: v2
 ---
-#curl -H "Host: springbootsoapservice2.itzone.pl:30999" localhost:30999/api/get-by-email?email=ajax@ajax.com
+#curl -H "Host: springbootsoapservice2.itzone.pl" localhost/api/get-by-email?email=ajax@ajax.com
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: springbootsoapservice2.itzone.pl
 spec:
   hosts:
-  - "springbootsoapservice2.itzone.pl:30999"
+  - "springbootsoapservice2.itzone.pl"
   gateways:
   - itzone-gateway
   http:

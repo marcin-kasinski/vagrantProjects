@@ -101,9 +101,9 @@ metadata:
   name: springbootwebreactor
 spec:
   hosts:
-  - "springbootwebreactor.apps.svc.cluster.local:30999"
-  - "springbootwebreactor:30999"
-  - "springbootwebreactor.com:30999"
+  - "springbootwebreactor.apps.svc.cluster.local"
+  - "springbootwebreactor"
+  - "springbootwebreactor.com"
   gateways:
   - itzone-gateway
   http:
