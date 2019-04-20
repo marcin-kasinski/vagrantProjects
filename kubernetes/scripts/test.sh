@@ -33,7 +33,7 @@ echo GATEWAY_URL $GATEWAY_URL
 
 getPodIP springbootsoapservice-v1 apps
 IP_WEB=$retval
-waitForIPPort $IP_WEB 7070
+waitForIPPort $IP_WEB 8080
 
 #curl -I -H Host:httpbin.example.com http://$INGRESS_HOST:$INGRESS_PORT/status/200
 #curl -I -H Host:httpbin.example.com http://$INGRESS_HOST:$INGRESS_PORT/headers
