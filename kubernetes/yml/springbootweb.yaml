@@ -262,21 +262,6 @@ spec:
           serviceName: springbootweb
           servicePort: 7070
 ---
-apiVersion: networking.istio.io/v1alpha3
-kind: Gateway
-metadata:
-  name: itzone-gateway
-spec:
-  selector:
-    istio: ingressgateway # use istio default controller
-  servers:
-  - port:
-      number: 80
-      name: http
-      protocol: HTTP
-    hosts:
-    - "*"
----
 #curl -H "Host: springbootweb.apps.svc.cluster.local:30999" localhost:30999/
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
