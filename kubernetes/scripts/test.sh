@@ -1,8 +1,8 @@
 #!/bin/bash
 
 source /vagrant/scripts/libs.sh
-#setupIstio 2>&1 | tee ~/setupIstio.log
-setupIstio1_0_7 2>&1 | tee ~/setupIstio1_0_7.log
+setupIstio 2>&1 | tee ~/setupIstio.log
+#setupIstio1_0_7 2>&1 | tee ~/setupIstio1_0_7.log
 setupJava 2>&1 | tee ~/setupJava.log
 #setupSSL apps 2>&1 | tee ~/setupSSL.log
 
