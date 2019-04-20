@@ -29,7 +29,7 @@ echo INGRESS_PORT $INGRESS_PORT
 echo INGRESS_NODEPORT $INGRESS_NODEPORT
 echo GATEWAY_URL $GATEWAY_URL
 
-getPodIP springbootsoapservice-v1 apps
+getPodIP springbootwebreactor apps
 IP_WEB=$retval
 waitForIPPort $IP_WEB 8080
 
