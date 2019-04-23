@@ -640,15 +640,44 @@ kubectl create secret -n istio-system generic kiali --from-literal=username='adm
 
 }
 
-setupIstio()
+
+downloadIstio1_1_2()
 {
+OS="$(uname)"
+if [ "x${OS}" = "xDarwin" ] ; then
+  OSEXT="osx"
+else
+  # TODO we should check more/complain if not likely to work, etc...
+  OSEXT="linux"
+fi
 
+ISTIO_VERSION="1.1.2"
+NAME="istio-$ISTIO_VERSION"
+URL="https://github.com/istio/istio/releases/download/${ISTIO_VERSION}/istio-${ISTIO_VERSION}-${OSEXT}.tar.gz"
+echo "Downloading $NAME from $URL ..."
+curl -L "$URL" | tar xz
+# TODO: change this so the version is in the tgz/directory name (users trying multiple versions)
+echo "Downloaded into $NAME:"
+ls "$NAME"
 
+cd $NAME
+
+}
+
+downloadIstioCurrent()
+{
 curl -L https://git.io/getLatestIstio | sh -
 ISTIO_VERSION=$(ls | grep istio- )
 cd $ISTIO_VERSION
 #Add the istioctl client to your PATH environment variable,
 #export PATH=$PWD/bin:$PATH
+}
+
+setupIstio()
+{
+
+#downloadIstioCurrent
+downloadIstio1_1_2
 
 #before clean
 #kubectl delete -f install/kubernetes/helm/istio/templates/crds.yaml -n istio-system
@@ -684,7 +713,7 @@ kubectl delete svc -n istio-system prometheus
 kubectl delete deployment -n istio-system grafana
 kubectl delete deployment -n istio-system prometheus
 # poniższe usuwam, bo z nim nie mogę zdefiniować VirtualService zawierające host z portem
-#kubectl delete deployment -n istio-system istio-galley
+kubectl delete deployment -n istio-system istio-galley
 
 getPodIP istio-sidecar-injector- istio-system
 
