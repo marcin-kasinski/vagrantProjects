@@ -43,6 +43,7 @@ curl -H "Host: springbootwebreactor.apps.svc.cluster.local" http://$INGRESS_HOST
 
 log "checking external"
 curl -H "Host: springbootwebreactor.apps.svc.cluster.local" localhost:30999
+
 exit
 
 createJaegerOperator 2>&1 | tee ~/createJaegerOperator.log
