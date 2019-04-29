@@ -676,8 +676,8 @@ cd $ISTIO_VERSION
 setupIstio()
 {
 
-#downloadIstioCurrent
-downloadIstio1_1_2
+downloadIstioCurrent
+#downloadIstio1_1_2
 
 #before clean
 #kubectl delete -f install/kubernetes/helm/istio/templates/crds.yaml -n istio-system
