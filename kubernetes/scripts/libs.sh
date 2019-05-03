@@ -577,7 +577,7 @@ helm install install/kubernetes/helm/istio --name istio --namespace istio-system
 istioEnableInjection apps
 
 #set istio-ingressgateway nodeport to 30999
-kubectl patch svc istio-ingressgateway -n istio-system --type=json -p='[{"op": "replace", "path": "/spec/ports/0/nodePort", "value": 30999}]'
+#kubectl patch svc istio-ingressgateway -n istio-system --type=json -p='[{"op": "replace", "path": "/spec/ports/0/nodePort", "value": 30999}]'
 
 kubectl get svc -n istio-system
 kubectl get po -n istio-system
@@ -702,7 +702,7 @@ kubectl get crds | grep 'istio.io\|certmanager.k8s.io' | wc -l
 istioEnableInjection apps
 
 #set istio-ingressgateway nodeport to 30999
-kubectl patch svc istio-ingressgateway -n istio-system --type=json -p='[{"op": "replace", "path": "/spec/ports/0/nodePort", "value": 30999}]'
+#kubectl patch svc istio-ingressgateway -n istio-system --type=json -p='[{"op": "replace", "path": "/spec/ports/0/nodePort", "value": 30999}]'
 
 kubectl get svc -n istio-system
 kubectl get po -n istio-system

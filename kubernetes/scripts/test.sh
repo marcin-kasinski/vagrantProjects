@@ -16,7 +16,7 @@ createIngress 2>&1 | tee ~/createIngress.log
 #kubectl apply -n apps -f /vagrant/yml/springbootsoapservice.yaml
 kubectl apply -n apps -f /vagrant/yml/springbootwebreactor.yaml
 finish
-#exit
+exit
 
 export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.clusterIP}')
 export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].port}')
