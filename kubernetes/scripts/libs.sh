@@ -707,11 +707,11 @@ istioEnableInjection apps
 kubectl get svc -n istio-system
 kubectl get po -n istio-system
 
-kubectl delete svc -n istio-system grafana
-kubectl delete svc -n istio-system prometheus
+#kubectl delete svc -n istio-system grafana
+#kubectl delete svc -n istio-system prometheus
 #kubectl delete svc -n istio-system istio-galley
-kubectl delete deployment -n istio-system grafana
-kubectl delete deployment -n istio-system prometheus
+#kubectl delete deployment -n istio-system grafana
+#kubectl delete deployment -n istio-system prometheus
 # poniższe usuwam, bo z nim nie mogę zdefiniować VirtualService zawierające host z portem
 #kubectl delete deployment -n istio-system istio-galley
 
@@ -743,22 +743,9 @@ kubectl scale deploy istio-egressgateway  -n istio-system --replicas=1
 
 ###################################kiali###################################
 #correct kiali conf
-
-#kubectl get cm -n istio-system kiali -o jsonpath='{.data.config\.yaml}' > /tmp/config.yaml_ORG
-
-#cat /tmp/config.yaml_ORG
-
-#cp /tmp/config.yaml_ORG /tmp/config.yaml
-
-#sudo sh -c "echo '  prometheus_service_url: http://prometheus-cs.default.svc.cluster.local:9090' >> /tmp/config.yaml"
-
-#cat /tmp/config.yaml
-
-kubectl delete configmap -n istio-system kiali
-
-#kubectl create configmap -n istio-system kiali --from-file=/tmp/config.yaml
-kubectl create configmap -n istio-system kiali --from-file=/vagrant/conf/kiali/config.yaml
-kubectl create secret -n istio-system generic kiali --from-literal=username='admin' --from-literal=passphrase='admin'
+#kubectl delete configmap -n istio-system kiali
+#kubectl create configmap -n istio-system kiali --from-file=/vagrant/conf/kiali/config.yaml
+#kubectl create secret -n istio-system generic kiali --from-literal=username='admin' --from-literal=passphrase='admin'
 
 ###################################kiali###################################
 
