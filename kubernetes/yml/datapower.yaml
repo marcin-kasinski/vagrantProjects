@@ -16,6 +16,20 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: datapower-https-4141
+spec:
+  type: NodePort
+  ports:
+  - port: 4141
+    targetPort: 4141
+    protocol: TCP
+    name: https
+  selector:
+    app: datapower
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: datapower-http-5151
 spec:
   type: NodePort
