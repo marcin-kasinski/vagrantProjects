@@ -15,6 +15,13 @@ createIngress 2>&1 | tee ~/createIngress.log
 
 #kubectl apply -n apps -f /vagrant/yml/springbootsoapservice.yaml
 kubectl apply -n apps -f /vagrant/yml/springbootwebreactor.yaml
+
+
+#datapower
+kubectl apply -n apps -f /vagrant/yml/springbootsoapservice.yaml
+createopenldap 2>&1  | tee ~/createopenldap.log
+createdatapower
+
 finish
 exit
 
