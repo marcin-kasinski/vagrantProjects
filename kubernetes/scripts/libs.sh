@@ -313,6 +313,7 @@ kubectl apply -f kubernetes/services/datapower-service.yaml
 kubectl apply -f /vagrant/yml/datapower.yaml
 
 kubectl patch svc datapower-webui --type=json -p='[{"op": "replace", "path": "/spec/ports/0/nodePort", "value": 30777}]'
+kubectl patch svc datapower-https-4141 --type=json -p='[{"op": "replace", "path": "/spec/ports/0/nodePort", "value": 30414}]'
 
 
 }
