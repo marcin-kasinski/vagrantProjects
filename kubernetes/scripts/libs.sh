@@ -1,4 +1,22 @@
 
+createMQ()
+{
+
+kubectl apply -f /vagrant/yml/mq.yaml
+
+}
+
+createMQExplorer()
+{
+##################################################### EXPLORER #####################################################
+git clone https://github.com/ibm-messaging/mq-container
+cd mq-container/
+docker build -t mq-explorer -f ./incubating/mq-explorer/Dockerfile .
+docker run -e DISPLAY=192.168.1.239:0 --name mq-explorer -v /tmp/.X11-unix:/tmp/.X11-unix -u 0 -ti mq-explorer
+#docker exec --tty --interactive mq dspmq
+
+}
+
 installDocker()
 {
 apt update

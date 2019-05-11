@@ -20,6 +20,7 @@ kubectl apply -n apps -f /vagrant/yml/springbootwebreactor.yaml
 #datapower
 kubectl apply -n apps -f /vagrant/yml/springbootsoapservice.yaml
 createopenldap 2>&1  | tee ~/createopenldap.log
+createMQ 2>&1  | tee ~/createMQ.log
 createdatapower
 
 finish
