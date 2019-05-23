@@ -1090,6 +1090,8 @@ kubectl delete configmap truststore-$shorthostname.jks -n $NAMESPACE | true
 kubectl create configmap keystore-$shorthostname.jks -n $NAMESPACE --from-file=/tmp/keystore-$shorthostname.jks
 kubectl create configmap truststore-$shorthostname.jks -n $NAMESPACE --from-file=/tmp/truststore-$shorthostname.jks
 
+#keytool -list -rfc -keystore keystore-kafka-0.jks -storepass secret -alias kafka-0.k-hs.default.svc.cluster.local
+
 }
 
 
