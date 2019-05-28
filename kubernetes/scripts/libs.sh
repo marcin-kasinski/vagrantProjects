@@ -764,7 +764,7 @@ kubectl scale deploy istio-egressgateway  -n istio-system --replicas=1
 #correct kiali conf
 #kubectl delete configmap -n istio-system kiali
 #kubectl create configmap -n istio-system kiali --from-file=/vagrant/conf/kiali/config.yaml
-#kubectl create secret -n istio-system generic kiali --from-literal=username='admin' --from-literal=passphrase='admin'
+kubectl create secret -n istio-system generic kiali --from-literal=username='admin' --from-literal=passphrase='admin'
 
 ###################################kiali###################################
 
@@ -2018,11 +2018,26 @@ curl https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-co
 
 createIngress()
 {
+kubectl create namespace ingress-nginx
+
+cat << EOF > kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: ingress-nginx
+bases:
+- github.com/kubernetes/ingress-nginx/deploy/cluster-wide
+- github.com/kubernetes/ingress-nginx/deploy/baremetal
+EOF
+
+
+kubectl apply --kustomize .
+
+
 
 # ingress
 #set 4 replicas
-curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/mandatory.yaml | sed -e 's/  replicas: 1/  replicas: 4/g' | kubectl apply -f -
-curl "https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/provider/baremetal/service-nodeport.yaml?$(date +%s)"  | kubectl apply -f -
+#curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/mandatory.yaml | sed -e 's/  replicas: 1/  replicas: 4/g' | kubectl apply -f -
+#curl "https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/provider/baremetal/service-nodeport.yaml?$(date +%s)"  | kubectl apply -f -
 
 kubectl patch svc -n ingress-nginx ingress-nginx  --type=json -p='[{"op": "replace", "path": "/spec/ports/0/nodePort", "value": 30080}]'
 
