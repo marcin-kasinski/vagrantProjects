@@ -683,10 +683,15 @@ cd $NAME
 
 }
 
-downloadIstioCurrent()
+downloadIstio()
 {
-curl -L https://git.io/getLatestIstio | sh -
+
+local version=$1
+
+#curl -L https://git.io/getLatestIstio | sh -
+curl -L https://git.io/getLatestIstio | ISTIO_VERSION=$version sh -
 ISTIO_VERSION=$(ls | grep istio- )
+echo "ISTIO_VERSION $ISTIO_VERSION"
 cd $ISTIO_VERSION
 #Add the istioctl client to your PATH environment variable,
 #export PATH=$PWD/bin:$PATH
@@ -695,22 +700,23 @@ cd $ISTIO_VERSION
 setupIstio()
 {
 
-downloadIstioCurrent
+downloadIstio "1.2.0-rc.0"
 #downloadIstio1_1_2
 
 #before clean
 #kubectl delete -f install/kubernetes/helm/istio/templates/crds.yaml -n istio-system
 #helm del --purge istio
 
+kubectl create namespace istio-system
+
 echo Install the istio-init 
 
-helm install install/kubernetes/helm/istio-init --name istio-init --namespace istio-system
+#helm install install/kubernetes/helm/istio-init --name istio-init --namespace istio-system
+helm template install/kubernetes/helm/istio-init --name istio-init --namespace istio-system | kubectl apply -f -
 
 waitPodcreated istio-init-crd-10 istio-system
 waitPodcreated istio-init-crd-11 istio-system
-
-
-
+waitPodcreated istio-init-crd-12 istio-system
 
 echo Install the istio
 helm install install/kubernetes/helm/istio --name istio --namespace istio-system --set gateways.istio-ingressgateway.type=NodePort --set pilot.traceSampling=100 --set tracing.enabled=true --set kiali.enabled=true --set grafana.enabled=true --set prometheus.enabled=true --set global.proxy.accessLogFile="/dev/stdout"
