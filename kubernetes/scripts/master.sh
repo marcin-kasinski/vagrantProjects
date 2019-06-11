@@ -27,9 +27,9 @@ checkmasters | tee ~/checkmasters.log
 createWeave 2>&1 | tee ~/createWeave.log
 installHelm 2>&1 | tee ~/installHelm.log
 
-/vagrant/scripts/test.sh
+#/vagrant/scripts/test.sh
 #checkmasters
-exit
+#exit
 
 #createJaegerOperator 2>&1 | tee ~/createJaegerOperator.log
 
