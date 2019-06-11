@@ -34,7 +34,7 @@ boxes = [
     {
         :name => "openstackmaster",
 #        :box => "najoy/os-pike-aio",
-        :box => "ubuntu/xenial64",       
+#        :box => "ubuntu/xenial64",       
         :box => "ubuntu/bionic64",       
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0001",
@@ -49,7 +49,7 @@ boxes = [
     {
         :name => "node1",
 #        :box => "najoy/openstack-pike-compute",
-        :box => "ubuntu/xenial64",       
+#        :box => "ubuntu/xenial64",       
         :box => "ubuntu/bionic64",       
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0002",
@@ -66,7 +66,7 @@ boxes = [
     {
         :name => "node2",
 #        :box => "najoy/openstack-pike-compute",
-        :box => "ubuntu/xenial64",       
+#        :box => "ubuntu/xenial64",       
         :box => "ubuntu/bionic64",       
         :interface => "enp3s0",
         :mac=> "5CA1AB1E0003",
