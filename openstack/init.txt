@@ -18,3 +18,4 @@
     vagrant up openstackmaster --provision 
 
 	vagrant ssh openstackmaster
+	
