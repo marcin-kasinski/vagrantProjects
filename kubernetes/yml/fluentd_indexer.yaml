@@ -150,7 +150,8 @@ spec:
         effect: NoSchedule
       containers:
       - name: fluentd-indexer
-        image: fluent/fluentd-kubernetes-daemonset:v1.2-debian-kafka
+        #image: fluent/fluentd-kubernetes-daemonset:v1.2-debian-kafka
+        image: fluent/fluentd-kubernetes-daemonset:v1.4-debian-kafka-1
         command: ["/bin/sh"]
         args: ["-c", "echo MK;gem install fluent-plugin-elasticsearch fluent-plugin-concat fluent-plugin-grok-parser;  /fluentd/entrypoint.sh"]
         env:
