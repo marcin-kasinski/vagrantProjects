@@ -1776,16 +1776,32 @@ setupkafka()
  
 #while ! kubectl get po -o wide | grep kafka-0 | grep Running ; do   echo "waiting for kafka IP..." ; sleep 10 ; done
 
+#getPodIP kafka-0 default
+#getPodIP kafka-1 default
+#getPodIP kafka-2 default
+
+
+
+
 getPodIP kafka-0 default
+IP=$retval
+waitForIPPort $IP 9092
+
 getPodIP kafka-1 default
+IP=$retval
+waitForIPPort $IP 9092
+
 getPodIP kafka-2 default
+IP=$retval
+waitForIPPort $IP 9092
 
-KAFKAPODIP=`kubectl get po -o wide | grep kafka-0 | grep Running `
-echo $KAFKAPODIP
-KAFKAPODIP=`echo $KAFKAPODIP  | cut -d " " -f 6`
-echo $KAFKAPODIP
 
-while ! nc -w 10 -z $KAFKAPODIP 9092; do   echo "waiting kafka to launch ..." ; sleep 10 ; done
+#KAFKAPODIP=`kubectl get po -o wide | grep kafka-0 | grep Running `
+#echo $KAFKAPODIP
+#KAFKAPODIP=`echo $KAFKAPODIP  | cut -d " " -f 6`
+#echo $KAFKAPODIP
+
+#while ! nc -w 10 -z $KAFKAPODIP 9092; do   echo "waiting kafka $KAFKAPODIP to launch ..." ; sleep 10 ; done
 
 #cd /tmp
 #curl http://ftp.ps.pl/pub/apache/kafka/1.0.0/kafka_2.11-1.0.0.tgz | tar xvz
