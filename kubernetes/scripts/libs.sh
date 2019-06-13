@@ -700,7 +700,9 @@ cd $ISTIO_VERSION
 setupIstio()
 {
 
-downloadIstio "1.2.0-rc.0"
+#downloadIstio "1.2.0-rc.1"
+downloadIstio "1.1.8"
+
 #downloadIstio1_1_2
 
 #before clean
