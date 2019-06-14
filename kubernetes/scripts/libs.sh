@@ -2103,9 +2103,9 @@ curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/ku
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/nginx.yaml?$(date +%s)"  | kubectl apply -f -
 
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fakesmtp.yaml?$(date +%s)"  | kubectl apply -f -
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fluentd_shipper.yaml?$(date +%s)"  | kubectl apply -f -
+#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fluentd_shipper.yaml?$(date +%s)"  | kubectl apply -f -
 
-kubectl apply -f /vagrant/yml/fluentd_shipper.yaml
+#kubectl apply -f /vagrant/yml/fluentd_shipper.yaml
 
 kubectl apply -f /vagrant/yml/fluentd_indexer.yaml
 
