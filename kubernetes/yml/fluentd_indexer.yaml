@@ -156,6 +156,7 @@ spec:
 #        securityContext:
 #          privileged: true
 #          runAsUser: 0        
+
         command: ["/bin/sh"]
         #args: ["-c", "echo MK;apk add --no-cache --update --virtual .build-deps;build-base ruby-dev ;gem install fluent-plugin-elasticsearch fluent-plugin-concat fluent-plugin-grok-parser;  /fluentd/entrypoint.sh"]
         #args: ["-c", "echo MK1;gem search -rd fluent-plugin;echo MK2;gem install fluent-plugin-elasticsearch fluent-plugin-concat fluent-plugin-grok-parser;  /fluentd/entrypoint.sh"]
