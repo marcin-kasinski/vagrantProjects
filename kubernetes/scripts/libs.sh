@@ -701,7 +701,7 @@ setupIstio()
 {
 
 #downloadIstio "1.2.0-rc.1"
-downloadIstio "1.1.8"
+downloadIstio "1.1.9"
 
 #downloadIstio1_1_2
 
