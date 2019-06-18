@@ -33,6 +33,8 @@ spec:
         env:
           - name: ELASTICSEARCH_URL
             value: http://es:9200
+          - name: ELASTICSEARCH_HOSTS
+            value: http://es:9200
           # use this if you want to use proxy
           #- name: SERVER_BASEPATH
           #  value: /api/v1/proxy/namespaces/kube-system/services/kibana-logging
