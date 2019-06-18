@@ -33,7 +33,7 @@ installHelm 2>&1 | tee ~/installHelm.log
 
 #createJaegerOperator 2>&1 | tee ~/createJaegerOperator.log
 
-setupIstio 2>&1 | tee ~/setupIstio.log
+#setupIstio 2>&1 | tee ~/setupIstio.log
 #setupIstio1_0_7 2>&1 | tee ~/setupIstio1_0_6.log
 
 #createVistio 2>&1 | tee ~/createVistio.log
@@ -44,14 +44,13 @@ setupJava 2>&1 | tee ~/setupJava.log
 setupSSL apps 2>&1 | tee ~/setupSSL.log
 #install_cfssl
 
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mysql.yaml?$(date +%s)"  | kubectl apply -f -
-
+#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mysql.yaml?$(date +%s)"  | kubectl apply -f -
 
 createKafka 2>&1 | tee ~/createKafka.log
 
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kerberos.yaml?$(date +%s)"  | kubectl apply -f -
 
-setupMYSQL 2>&1 | tee ~/setupMYSQL.log
+#setupMYSQL 2>&1 | tee ~/setupMYSQL.log
 
 #setupkerberos 2>&1 | tee ~/setupkerberos.log
 
