@@ -60,7 +60,7 @@ setupkafka 2>&1 | tee ~/setupkafka.log
 
 createIngress 2>&1 | tee ~/createIngress.log
 
-createHeapster 2>&1 | tee ~/createHeapster.log
+#createHeapster 2>&1 | tee ~/createHeapster.log
 
 createMyBackendServers 2>&1 | tee ~/createMyBackendServers.log
 
