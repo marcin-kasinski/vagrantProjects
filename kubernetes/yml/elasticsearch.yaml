@@ -144,6 +144,8 @@ spec:
               fieldPath: metadata.name
         - name: "cluster.name"
           value: myesdb
+        - name: "cluster.initial_master_nodes"
+          value: "es-0,es-1,es-2"
         - name: network.host
           value: "0.0.0.0"
         - name: bootstrap.memory_lock
