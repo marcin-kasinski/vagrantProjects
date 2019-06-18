@@ -97,7 +97,7 @@ boxes = [
         :lvm_filename => "/tools/vagrantprojects/k8snode1_additiona_disc.vdi",
 #        :mem => "13312",
         :mem => "15360",
-        :cpu => "1"
+        :cpu => "2"
     },
     {
         :name => "k8snode2",
@@ -110,7 +110,7 @@ boxes = [
         :lvm_filename => "/tools/vagrantprojects/k8snode2_additiona_disc.vdi",
 #        :mem => "13312",
         :mem => "15360",
-        :cpu => "1"
+        :cpu => "2"
     },
     {
         :name => "k8snode3",
@@ -123,7 +123,7 @@ boxes = [
         :lvm_filename => "/tools/vagrantprojects/k8snode3_additiona_disc.vdi",
 #        :mem => "13312",
         :mem => "15360",
-        :cpu => "1"
+        :cpu => "2"
     }
 ]
 
