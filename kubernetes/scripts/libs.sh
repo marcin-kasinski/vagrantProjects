@@ -716,6 +716,10 @@ echo Install the istio-init
 #helm install install/kubernetes/helm/istio-init --name istio-init --namespace istio-system
 helm template install/kubernetes/helm/istio-init --name istio-init --namespace istio-system | kubectl apply -f -
 
+echo "Listing istio-init-crd"
+kubectl get po -n istio-system -o wide | grep istio-init-crd
+
+
 waitPodcreated istio-init-crd-10 istio-system
 waitPodcreated istio-init-crd-11 istio-system
 #waitPodcreated istio-init-crd-12 istio-system
