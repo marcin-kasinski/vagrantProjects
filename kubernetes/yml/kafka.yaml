@@ -320,6 +320,12 @@ spec:
           subPath: template_server.properties
         - name: kafka-logs
           mountPath: /tmp/kafka-logs
+        readinessProbe:
+          exec:
+           command:
+            - sh
+            - -c
+            - "KAFKA_OPTS=\"\" /opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server=localhost:9092"  
       volumes:
         #- name: config-volume-krb5-conf-cm
         #  configMap:
