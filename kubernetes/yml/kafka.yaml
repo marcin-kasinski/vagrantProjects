@@ -337,7 +337,7 @@ spec:
            command:
             - sh
             - -c
-            - "/usr/bin/jps | /bin/grep Kafka"  
+            - "jps | /bin/grep Kafka"  
         
       volumes:
         #- name: config-volume-krb5-conf-cm
