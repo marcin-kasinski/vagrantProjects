@@ -321,6 +321,7 @@ spec:
         - name: kafka-logs
           mountPath: /tmp/kafka-logs
         readinessProbe:
+          initialDelaySeconds: 20
           exec:
            command:
             - sh
