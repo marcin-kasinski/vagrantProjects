@@ -322,11 +322,21 @@ spec:
           mountPath: /tmp/kafka-logs
         readinessProbe:
           initialDelaySeconds: 20
+          timeoutSeconds: 5
+          tcpSocket:
+            port: 9092
+          #exec:
+          # command:
+          #  - sh
+          #  - -c
+          #  - "KAFKA_OPTS=\"\" /opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server=localhost:9092"  
+        livenessProbe:
           exec:
            command:
             - sh
             - -c
-            - "KAFKA_OPTS=\"\" /opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server=localhost:9092"  
+            - "/usr/bin/jps | /bin/grep Kafka"  
+        
       volumes:
         #- name: config-volume-krb5-conf-cm
         #  configMap:
