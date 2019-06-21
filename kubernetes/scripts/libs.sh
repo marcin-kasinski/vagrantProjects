@@ -701,7 +701,7 @@ setupIstio()
 {
 
 #downloadIstio "1.2.0-rc.1"
-downloadIstio "1.1.9"
+downloadIstio "1.2.0"
 
 #downloadIstio1_1_2
 
@@ -722,7 +722,7 @@ kubectl get po -n istio-system -o wide | grep istio-init-crd
 
 waitPodcreated istio-init-crd-10 istio-system
 waitPodcreated istio-init-crd-11 istio-system
-#waitPodcreated istio-init-crd-12 istio-system
+waitPodcreated istio-init-crd-12 istio-system
 
 echo Install the istio
 helm install install/kubernetes/helm/istio --name istio --namespace istio-system --set gateways.istio-ingressgateway.type=NodePort --set pilot.traceSampling=100 --set tracing.enabled=true --set kiali.enabled=true --set grafana.enabled=true --set prometheus.enabled=true --set global.proxy.accessLogFile="/dev/stdout"
