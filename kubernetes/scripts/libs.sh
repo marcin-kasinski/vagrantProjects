@@ -1,16 +1,21 @@
 
 createAirflow()
 {
-kubectl apply -f /vagrant/yml/postgresql.yaml
+#kubectl apply -f /vagrant/yml/postgresql.yaml
 
-getPodIP postgresql default
+#getPodIP postgresql default
 
-IP=$retval
-waitForIPPort $IP 5432
+#IP=$retval
+#waitForIPPort $IP 5432
 
 
-kubectl apply -f /vagrant/yml/airflow.yaml
+#kubectl apply -f /vagrant/yml/airflow.yaml
 
+
+#git clone https://github.com/apache/incubator-airflow.git
+#cd incubator-airflow/
+
+helm install --namespace "airflow" --name "airflow" stable/airflow
 }
 
 createMQ()
