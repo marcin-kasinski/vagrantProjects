@@ -1,4 +1,18 @@
 
+createAirflow()
+{
+kubectl apply -f /vagrant/yml/postgresql.yaml
+
+getPodIP postgresql default
+
+IP=$retval
+waitForIPPort $IP 5432
+
+
+kubectl apply -f /vagrant/yml/airflow.yaml
+
+}
+
 createMQ()
 {
 

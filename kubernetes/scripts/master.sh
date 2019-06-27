@@ -100,7 +100,9 @@ kubectl get po --all-namespaces | grep -v Running | grep -v Completed
 
 kubeadm token create --print-join-command
 
-finish 2>&1 | tee ~/installHelm.log
+createAirflow 2>&1 | tee ~/createairflow.log
+
+finish 2>&1 | tee ~/finish.log
 
 checkmasters | tee ~/checkmasters.log
 
