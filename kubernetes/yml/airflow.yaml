@@ -7,13 +7,26 @@ metadata:
   name: manual
   namespace: airflow
 provisioner: kubernetes.io/no-provisioner
-volumeBindingMode: WaitForFirstConsumer
+#volumeBindingMode: WaitForFirstConsumer
+volumeBindingMode: Immediate
+mountOptions:
+  - debug
 ---
-
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: airflow-dags
+  namespace: airflow
+provisioner: kubernetes.io/no-provisioner
+#volumeBindingMode: WaitForFirstConsumer
+volumeBindingMode: Immediate
+mountOptions:
+  - debug
+---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: mk-pv
+  name: airflow-postgres-pv
   namespace: airflow
 spec:
   storageClassName: manual
@@ -24,11 +37,24 @@ spec:
   hostPath:
     path: /tmp/mk
 ---
-
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: airflow-dags
+  namespace: airflow
+spec:
+  storageClassName: airflow-dags
+  capacity:
+    storage: 50Mi
+  accessModes:
+  - ReadWriteOnce
+  hostPath:
+    path: /vagrant/conf/airflowdags
+---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: airflow-postgresql
+  name: airflow-dags
   namespace: airflow
 spec:
   accessModes:
@@ -36,7 +62,9 @@ spec:
   resources:
     requests:
       storage: 50Mi
-  storageClassName: manual
+  storageClassName: airflow-dags
+  volumeName: airflow-dags   
+
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress

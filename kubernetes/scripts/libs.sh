@@ -1,6 +1,24 @@
 
 createAirflow()
 {
+USER=vagrant
+
+kubectl create namespace airflow
+kubectl apply -f /vagrant/yml/airflow.yaml
+
+mkdir /tmp/mk
+
+ssh -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key vagrant@k8smaster2 "sudo mkdir /tmp/mk"
+ssh -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key vagrant@k8smaster3 "sudo mkdir /tmp/mk"
+ssh -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key vagrant@k8snode1 "sudo mkdir /tmp/mk"
+
+#copy dags to other machines
+scp -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key /vagrant/conf/airflowdags/* "${USER}"@k8smaster2:/vagrant/conf/airflowdags
+scp -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key /vagrant/conf/airflowdags/* "${USER}"@k8smaster3:/vagrant/conf/airflowdags
+scp -o "StrictHostKeyChecking=no" -i /home/vagrant/.ssh/private_key /vagrant/conf/airflowdags/* "${USER}"@k8snode1:/vagrant/conf/airflowdags
+
+
+
 #kubectl apply -f /vagrant/yml/postgresql.yaml
 
 #getPodIP postgresql default
@@ -15,10 +33,14 @@ createAirflow()
 #git clone https://github.com/apache/incubator-airflow.git
 #cd incubator-airflow/
 
-helm install --namespace "airflow" --name "airflow" stable/airflow
+# helm del --purge airflow
+
+helm install --namespace "airflow" --name "airflow" stable/airflow  --set postgresql.persistence.storageClass=manual --set persistence.enabled=true \
+ --set persistence.storageClass=airflow-dags --set persistence.existingClaim=airflow-dags --set airflow.image.repository=marcinkasinski/airflow \
+ --set airflow.image.tag=latest
 
 kubectl delete pvc -n airflow airflow-postgresql
-kubectl apply -f /vagrant/yml/airflow.yaml
+kubectl apply -f /vagrant/yml/airflow_postgres_pvc.yaml
 
 }
 
