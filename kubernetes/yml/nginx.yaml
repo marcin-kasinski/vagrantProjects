@@ -8,6 +8,7 @@ data:
     <body>
     Adresy uslug:<br>
     
+    <a href="http://airflow:30080">http://airflow:30080</a><br>
     <a href="http://springbootweb.apps.svc.cluster.local:30999">http://springbootweb.apps.svc.cluster.local:30999</a><br>
     <a href="http://springbootwebreactor.apps.svc.cluster.local:30999">http://springbootwebreactor.apps.svc.cluster.local:30999</a><br>
     <a href="http://springbootadmin:30080">http://springbootadmin:30080/</a><br>
