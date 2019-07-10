@@ -1,0 +1,218 @@
+#echo "" >a.yaml && nano a.yaml && kubectl apply -f a.yaml
+
+kind: ConfigMap
+metadata:
+  name: airflow-kubernetesdag-cm
+apiVersion: v1
+data:
+  kubernetesdag.py: |-
+
+
+    from airflow import DAG
+    from datetime import datetime, timedelta
+    from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
+    from airflow.operators.dummy_operator import DummyOperator
+    
+    
+    default_args = {
+        'owner': 'airflow',
+        'depends_on_past': False,
+        'start_date': datetime.utcnow(),
+        'email': ['airflow@example.com'],
+        'email_on_failure': False,
+        'email_on_retry': False,
+        'retries': 1,
+        'retry_delay': timedelta(minutes=5)
+    }
+    
+    dag = DAG(
+        'kubernetes_sample', default_args=default_args, schedule_interval=timedelta(minutes=10))
+    
+    
+    start = DummyOperator(task_id='run_this_first', dag=dag)
+    
+    passing = KubernetesPodOperator(namespace='default',
+                              image="Python:3.6",
+                              cmds=["Python","-c"],
+                              arguments=["print('hello world')"],
+                              labels={"foo": "bar"},
+                              name="passing-test",
+                              task_id="passing-task",
+                              get_logs=True,
+                              dag=dag
+                              )
+    
+    failing = KubernetesPodOperator(namespace='default',
+                              image="ubuntu:1604",
+                              cmds=["Python","-c"],
+                              arguments=["print('hello world')"],
+                              labels={"foo": "bar"},
+                              name="fail",
+                              task_id="failing-task",
+                              get_logs=True,
+                              dag=dag
+                              )
+    
+    passing.set_upstream(start)
+    failing.set_upstream(start)
+---
+
+kind: ConfigMap
+metadata:
+  name: airflow-dockerdag-cm
+apiVersion: v1
+data:
+  dockerdag.py: |-
+    '''
+    sudo apt install -y docker-ce
+    
+    sudo apt install -y docker-compose
+    
+    sudo apt install -y python-pip
+    
+    pip install apache-airflow
+    pip install docker
+    
+    
+    remove docker
+    
+    To identify what installed package you have:
+    
+    dpkg -l | grep -i docker
+    
+    #Remove
+    
+    sudo apt-get purge -y docker-engine docker docker.io docker-ce docker-compose golang-docker-credential-helpers docker-ce-cli python-dockerpty
+    sudo apt-get autoremove -y --purge docker-engine docker docker.io docker-ce docker-compose golang-docker-credential-helpers docker-ce-cli python-dockerpty
+    
+    
+    '''
+    from airflow import DAG
+    from airflow.operators.bash_operator import BashOperator
+    from datetime import datetime, timedelta
+    from airflow.operators.docker_operator import DockerOperator
+    
+    default_args = {
+            'owner'                 : 'airflow',
+            'description'           : 'Use of the DockerOperator',
+            'depend_on_past'        : False,
+            'start_date'            : datetime(2018, 1, 3),
+            'email_on_failure'      : False,
+            'email_on_retry'        : False,
+            'retries'               : 1,
+            'retry_delay'           : timedelta(minutes=5)
+    }
+    
+    with DAG('docker_dag', default_args=default_args, schedule_interval="*/5 * * * *", catchup=False) as dag:
+            t1 = BashOperator(
+                    task_id='print_current_date',
+                    bash_command='date'
+            )
+    
+            t2 = DockerOperator(
+                    task_id='docker_command',
+                    #image='centos:latest',
+                    image='pythonrobot',                
+                    api_version='auto',
+                    auto_remove=True,
+                    #command="echo 'starting docker' && /bin/sleep 30",
+                    docker_url="unix://var/run/docker.sock",
+                    network_mode="bridge"
+            )
+    
+            t3 = BashOperator(
+                    task_id='print_hello',
+                    bash_command='echo "hello world"'
+            )
+    
+            t1 >> t2 >> t3
+    
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow
+  labels:
+    app: airflow
+spec:
+#  serviceName: "airflow-hs"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airflow
+  template:
+    metadata:
+      labels:
+        app: airflow
+      annotations:
+        #prometheus.io/scrape: "true"
+        #prometheus.io/scheme: "http"
+        #prometheus.io/path: "/actuator/prometheus"
+        #prometheus.io/port: "8080"  
+    spec:
+      containers:
+      - name: airflow
+        image: marcinkasinski/airflow
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 8080
+        env:
+        #- name: EXECUTOR
+        #  value: Kubernetes
+        - name: POSTGRES_USER
+          value: airflow
+        - name: POSTGRES_PASSWORD
+          value: airflow
+        - name: POSTGRES_DB
+          value: airflow          
+        - name: POSTGRES_HOST
+          value: postgresql
+        volumeMounts:
+        - name: config-airflow-dockerdag-cm
+          mountPath: /usr/local/airflow/dags/dockerdag.py
+          subPath: dockerdag.py
+        - name: config-airflow-kubernetesdag-cm
+          mountPath: /usr/local/airflow/dags/kubernetesdag.py
+          subPath: kubernetesdag.py
+      volumes:
+        - name: config-airflow-dockerdag-cm
+          configMap:
+            name: airflow-dockerdag-cm
+        - name: config-airflow-kubernetesdag-cm
+          configMap:
+            name: airflow-kubernetesdag-cm
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: airflow
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    #nodePort: 30070
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  selector:
+    app: airflow
+---
+# An Ingress with 2 hosts and 3 endpoints
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: airflow-ingress
+  annotations:
+    ingress.kubernetes.io/enable-cors: "true"
+    ingress.kubernetes.io/rewrite-target: /  
+spec:
+  rules:
+  - host: airflow
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: airflow
+          servicePort: 8080
