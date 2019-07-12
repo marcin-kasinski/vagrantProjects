@@ -1,0 +1,7 @@
+curl -XGET 'http://localhost:9200/_cluster/state?pretty'
+
+
+    http://es:9200/_cat/indices?v #- lista indeks�w<br>
+    http://es:9200/_cluster/health<br>
+    http://es:9200/_nodes<br>
+    http://es:9200/_cluster/stats?human&pretty<br>

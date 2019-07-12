@@ -1,4 +1,22 @@
 
+createAirflowKubernetesOperator()
+{
+git clone https://github.com/apache/airflow.git
+
+
+
+VERSION=`kubectl version | grep Server | cut -d "," -f 3 | cut -d ":" -f 2`
+VERSION=`echo "${VERSION//\"}"`
+
+echo $VERSION
+
+export KUBERNETES_VERSION=$VERSION
+cd airflow/scripts/ci/kubernetes/
+
+./docker/build.sh 
+./kube/deploy.sh -d persistent_mode
+}
+
 createAirflow()
 {
 USER=vagrant
@@ -277,12 +295,16 @@ waitforurlOK http://k8smaster3/master_second_init_completed
 
 #echo `date` "certsforslavemasterscopied created"
 
-#kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended/kubernetes-dashboard.yaml
-#kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended/kubernetes-dashboard-head.yaml
+#certyfikaty dla dashboard
 
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
+kubectl delete secrets  -n kube-system kubernetes-dashboard-certs
+kubectl create secret generic kubernetes-dashboard-certs --from-file=/vagrant/conf/certs -n kube-system
+kubectl get secrets  -n kube-system kubernetes-dashboard-certs -o yaml
+
+
+#kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
 #Poniższe serwuje tylko na http 9090
-#kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/alternative/kubernetes-dashboard.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/alternative/kubernetes-dashboard.yaml
 
 
 kubectl create clusterrolebinding defaultdminrolebinding --clusterrole=cluster-admin --serviceaccount kube-system:default
@@ -2037,6 +2059,7 @@ while ! kubectl get po -n kube-system -o wide | grep kubernetes-dashboard | grep
 	echo Dashboard IP $DASHBOARDPODIP
 #echo "forward port"
 nohup kubectl port-forward -n kube-system  $(kubectl get po -n kube-system -l k8s-app=kubernetes-dashboard -o jsonpath="{.items[0].metadata.name}") 8443:8443  > /dev/null 2>&1 &
+nohup kubectl port-forward -n kube-system  $(kubectl get po -n kube-system -l k8s-app=kubernetes-dashboard -o jsonpath="{.items[0].metadata.name}") 9090:9090  > /dev/null 2>&1 &
 
 echo "DashboardToken ..."
 
