@@ -1,0 +1,21 @@
+		
+	cd /tools/vagrantprojects/ansible/
+	
+	#vagrant plugin install vagrant-disksize
+	vagrant halt
+	vagrant box update
+	vboxmanage unregistervm ansible-controller --delete
+	vboxmanage unregistervm ansible-target1 --delete
+	vboxmanage unregistervm ansible-target2 --delete
+
+	vboxmanage list vms
+	
+	rm /tools/vagrantprojects/ansible-controller_additiona_disc.vdi
+	rm /tools/vagrantprojects/ansible-target1_additiona_disc.vdi
+	rm /tools/vagrantprojects/ansible-target2_additiona_disc.vdi
+
+
+	vagrant up ansible-controller --provision &
+	vagrant up ansible-target1 --provision &
+	vagrant up ansible-target2 --provision &
+
