@@ -159,18 +159,20 @@ Vagrant.configure(2) do |config|
           #ssh_pub_key = File.readlines("/tools/vagrantprojects/public_key").first.strip
           ssh_pub_key = File.readlines("/tools/vagrantprojects/public_key").first.strip
           ssh_private_key_global = File.read("/tools/vagrantprojects/private_key")
-          ssh_private_key = File.read("/tools/vagrantprojects/private_key_cephuser")
+
           s.inline = <<-SHELL
           echo "showing public key "
           echo #{ssh_pub_key} 
           echo #{ssh_pub_key} >> /home/vagrant/.ssh/authorized_keys
+          echo #{ssh_pub_key} >> /home/vagrant/.ssh/id_rsa.pub
           
           echo #{ssh_pub_key} >> /tmp/ssh_pub_key
-          echo "#{ssh_private_key}"
-          echo "#{ssh_private_key}" >> /home/vagrant/.ssh/private_key_cephuser
 
           echo "#{ssh_private_key_global}"
-          echo "#{ssh_private_key_global}" >> /home/vagrant/.ssh/private_key
+          echo "#{ssh_private_key_global}" >> /home/vagrant/.ssh/id_rsa
+          
+          chmod 600 /home/vagrant/.ssh/id_rsa
+          
 
           sudo bash -c "echo #{ssh_pub_key} >> /root/.ssh/authorized_keys"
           
