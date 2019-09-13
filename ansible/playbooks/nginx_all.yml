@@ -39,6 +39,15 @@
       become: yes
     - name: Run custom script
       script: /vagrant/scripts/script.sh --some-argument 1234
-      register: out
-    - debug: var=out.stdout_lines      
+      register: out1
+    - name: Show script output
+      debug: var=out1.stdout_lines      
+    - name: Execute command
+      shell: |
+        echo "XXXX"
+        echo "YYY"
+        ip a s
+      register: out2
+    - name: Show command output
+      debug: var=out2.stdout_lines      
       
