@@ -28,7 +28,6 @@
         group: www-data
         mode: 0775
         recurse: yes      
-      
     - name: copy the content of the web site
       copy:
         src: /vagrant/conf/nginx/index.html
@@ -38,3 +37,8 @@
         name: nginx
         state: restarted
       become: yes
+    - name: Run custom script
+      script: /vagrant/scripts/script.sh --some-argument 1234
+      register: out
+    - debug: var=out.stdout_lines      
+      
