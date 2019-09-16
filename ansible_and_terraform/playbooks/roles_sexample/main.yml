@@ -1,0 +1,8 @@
+---
+- hosts: all
+  vars_files:
+     - "/vagrant/playbooks/roles_sexample/env_variables/common.yml"
+     - "/vagrant/playbooks/roles_sexample/env_variables/{{ env }}.yml"
+  roles:
+    - common
+    #- webservers

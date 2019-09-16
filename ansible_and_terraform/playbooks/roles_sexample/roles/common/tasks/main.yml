@@ -1,0 +1,6 @@
+    - name: executing role common
+      command: echo variable value= {{ variable1 }}, variable common={{ variable_common }}, mysql_password={{ mysql_password }}
+      register: out
+    - name: Show script output
+      debug: var=out.stdout_lines      
+      

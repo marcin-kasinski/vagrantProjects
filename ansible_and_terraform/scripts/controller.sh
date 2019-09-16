@@ -16,6 +16,16 @@ sudo apt install -y ansible
 #ansible-playbook -i /vagrant/playbooks/inventory /vagrant/playbooks/nginx_install.yml -b
 #ansible-playbook -i /vagrant/playbooks/inventory /vagrant/playbooks/nginx_all.yml -b
 
+#roles
+
+
+EDITOR=nano ansible-vault create /vagrant/playbooks/roles_sexample/vault.yml
+
+Wprowadzić poniższą wartość
+vault_mysql_password: supersecretpassword
+
+#ansible-playbook -i /vagrant/playbooks/inventory /vagrant/playbooks/roles_sexample/main.yml --extra-vars env=dev -b --ask-vault-pass
+
 #disable host key checking
 
 sudo sed -i -e "s/#host_key_checking = False/host_key_checking = False/g" /etc/ansible/ansible.cfg 
