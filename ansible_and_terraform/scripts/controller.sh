@@ -19,10 +19,10 @@ sudo apt install -y ansible
 #roles
 
 
-EDITOR=nano ansible-vault create /vagrant/playbooks/roles_sexample/vault.yml
+#EDITOR=nano ansible-vault create /vagrant/playbooks/roles_sexample/vault.yml
 
-Wprowadzić poniższą wartość
-vault_mysql_password: supersecretpassword
+#Wprowadzić poniższą wartość
+#vault_mysql_password: supersecretpassword
 
 #ansible-playbook -i /vagrant/playbooks/inventory /vagrant/playbooks/roles_sexample/main.yml --extra-vars env=dev -b --ask-vault-pass
 
