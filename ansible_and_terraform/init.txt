@@ -1,5 +1,5 @@
 		
-	cd /tools/vagrantprojects/ansible/
+	cd /tools/vagrantprojects/ansible_and_terraform/
 	
 	#vagrant plugin install vagrant-disksize
 	vagrant halt

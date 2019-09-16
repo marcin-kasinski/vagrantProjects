@@ -1,0 +1,5 @@
+AWS_ACCESS_KEY=""
+AWS_SECRET_KEY=""
+AWS_REGION="us-east-1"
+PATH_TO_PRIVATE_KEY="/vagrant/terraform/mykey"
+PATH_TO_PUBLIC_KEY="/vagrant/terraform/mykey.pub"
