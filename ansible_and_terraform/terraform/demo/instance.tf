@@ -7,16 +7,25 @@ resource "aws_instance" "example" {
   ami           = "${lookup(var.AMIS, var.AWS_REGION)}"
   instance_type = "t2.micro"
   key_name      = "${aws_key_pair.mykey.key_name}"
+  
+  # the VPC subnet
+  subnet_id = "${aws_subnet.main-public-1.id}"
+  
   tags ={
         Name = "example instance",
         Size = "small one"
     }
     
+  # the security group
+  #vpc_security_group_ids = ["${aws_security_group.allow-ssh.id}"]
+  vpc_security_group_ids = ["${aws_security_group.allow_ssh_from_main_server_vpc.id}","${aws_security_group.allow-outside.id}"]
+  
+/*
   security_groups = [
     "default",
     "allow_ssh_from_main_server"
   ]
-
+*/
 
   provisioner "file" {
     source      = "script.sh"
