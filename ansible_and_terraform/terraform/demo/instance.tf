@@ -17,8 +17,11 @@ resource "aws_instance" "web" {
     }
     
   # the security group
-  #vpc_security_group_ids = ["${aws_security_group.allow-ssh.id}"]
   vpc_security_group_ids = ["${aws_security_group.allow_ssh_from_main_server_vpc.id}","${aws_security_group.allow-outside.id}"]
+  
+  # user data
+  #user_data = "${data.template_cloudinit_config.cloudinit-example.rendered}"
+  
   
 /*
   security_groups = [
