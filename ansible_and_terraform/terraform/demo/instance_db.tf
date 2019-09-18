@@ -1,18 +1,14 @@
-resource "aws_key_pair" "mykey" {
-  key_name   = "mykey"
-  public_key = "${file("${var.PATH_TO_PUBLIC_KEY}")}"
-}
 
-resource "aws_instance" "web" {
+resource "aws_instance" "db" {
   ami           = "${lookup(var.AMIS, var.AWS_REGION)}"
   instance_type = "t2.micro"
   key_name      = "${aws_key_pair.mykey.key_name}"
   
   # the VPC subnet
-  subnet_id = "${aws_subnet.main-public-1.id}"
+  subnet_id = "${aws_subnet.main-private-1.id}"
   
   tags ={
-        Name = "web",
+        Name = "dbinstance",
         Size = "small one"
     }
     
@@ -35,24 +31,23 @@ resource "aws_instance" "web" {
     inline = [
       "chmod +x /tmp/script.sh",
       "sed -i -e 's/\r//g' /tmp/script.sh",
-      "sudo /tmp/script.sh ${aws_instance.web.public_ip}",
-      "echo 'public_ip ${aws_instance.web.public_ip}'",
+      "sudo /tmp/script.sh ${aws_instance.db.public_ip}",
+      "echo 'public_ip ${aws_instance.db.public_ip}'",
 
     ]
   }
   connection {
-    host        = "${self.public_ip}"
-    user        = "${var.INSTANCE_USERNAME}"
-    private_key = "${file("${var.PATH_TO_PRIVATE_KEY}")}"
+    host        			= "${self.private_ip}"
+    user        			= "${var.INSTANCE_USERNAME}"
+    private_key 			= "${file("${var.PATH_TO_PRIVATE_KEY}")}"
+    bastion_host			= "${aws_instance.web.public_ip}"
+    bastion_private_key		= "${file("${var.PATH_TO_PRIVATE_KEY}")}"
   }
 
 }
 
 
 
-output "ip_public" {
-  value = "${aws_instance.web.public_ip}"
-}
-output "ip_private" {
-  value = "${aws_instance.web.private_ip}"
+output "ip_db_private" {
+  value = "${aws_instance.db.private_ip}"
 }

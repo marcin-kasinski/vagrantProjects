@@ -33,7 +33,7 @@ resource "aws_security_group" "allow_ssh_from_main_server_vpc" {
     protocol    = "tcp"
     # Please restrict your ingress to only necessary IPs and ports.
     # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
-    cidr_blocks = ["46.31.39.119/32"] # add your IP address here
+    cidr_blocks = ["46.31.39.119/32","10.0.0.0/16"] # add your IP address here
 
  
   }
