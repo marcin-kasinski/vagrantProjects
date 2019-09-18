@@ -1,4 +1,4 @@
-
+/*
 
 resource "aws_security_group" "allow_ssh_from_main_server" {
   name        = "allow_ssh_from_main_server"
@@ -19,7 +19,7 @@ resource "aws_security_group" "allow_ssh_from_main_server" {
 
  
 }
-
+*/
 
 resource "aws_security_group" "allow_ssh_from_main_server_vpc" {
   name        = "allow_ssh_from_main_server_vpc"
