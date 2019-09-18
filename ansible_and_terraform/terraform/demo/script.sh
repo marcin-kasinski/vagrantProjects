@@ -10,6 +10,10 @@ cat /tmp/public_ip.txt
 
 ls -l /tmp/
 echo "PUBLIC_IP $PUBLIC_IP"
+
+echo "to connect run:"
+echo "ssh -i /vagrant/terraform/mykey ubuntu@$PUBLIC_IP"
+
 }
 
 processnginx()
