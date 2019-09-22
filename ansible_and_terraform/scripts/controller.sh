@@ -72,6 +72,6 @@ ssh-keygen -t rsa -N "" -f /vagrant/terraform/mykey
 #terraform destroy -auto-approve
 #terraform graph | dot -Tsvg > graph.svg
 
-ssh -i /vagrant/terraform/mykey ubuntu@52.200.183.2
+#ssh -i /vagrant/terraform/mykey ubuntu@52.200.183.2
 
 echo Controller finished...

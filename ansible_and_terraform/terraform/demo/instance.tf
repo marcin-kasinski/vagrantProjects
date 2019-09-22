@@ -16,8 +16,10 @@ resource "aws_instance" "web" {
         Size = "small one"
     }
     
+    
+  private_ip="10.0.1.10"  
   # the security group
-  vpc_security_group_ids = ["${aws_security_group.allow_ssh_from_main_server_vpc.id}","${aws_security_group.allow-outside.id}"]
+  vpc_security_group_ids = ["${aws_security_group.allow_ssh_from_main_server_vpc.id}","${aws_security_group.allow_icmp.id}","${aws_security_group.allow-outside.id}"]
   
   # user data
   #user_data = "${data.template_cloudinit_config.cloudinit-example.rendered}"
@@ -58,4 +60,8 @@ output "ip_public" {
 }
 output "ip_private" {
   value = "${aws_instance.web.private_ip}"
+}
+
+output "connection" {
+  value = "ssh -i /vagrant/terraform/mykey ubuntu@${aws_instance.web.public_ip}"
 }

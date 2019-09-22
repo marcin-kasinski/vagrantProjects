@@ -1,3 +1,27 @@
+
+# DHCPOptionSet
+
+resource "aws_vpc_dhcp_options" "DHCPOptionSet" {
+  domain_name          = "mkdomain"
+  #domain_name_servers  = ["127.0.0.1", "10.0.0.2"]
+  domain_name_servers  = ["AmazonProvidedDNS"]
+  
+  #ntp_servers          = ["127.0.0.1"]
+  #netbios_name_servers = ["127.0.0.1"]
+  #netbios_node_type    = 2
+
+  tags = {
+    Name = "DHCPOptionSet"
+  }
+}
+
+
+resource "aws_vpc_dhcp_options_association" "dns_resolver" {
+  vpc_id          = "${aws_vpc.main.id}"
+  dhcp_options_id = "${aws_vpc_dhcp_options.DHCPOptionSet.id}"
+}
+
+
 # Internet VPC
 resource "aws_vpc" "main" {
     cidr_block = "10.0.0.0/16"
@@ -8,6 +32,8 @@ resource "aws_vpc" "main" {
     tags ={
         Name = "main"
     }
+    #depends_on = [aws_vpc_dhcp_options_association.dns_resolver,aws_vpc_dhcp_options.DHCPOptionSet ]
+    depends_on = [aws_vpc_dhcp_options.DHCPOptionSet ]
 }
 
 

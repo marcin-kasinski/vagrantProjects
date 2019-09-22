@@ -59,3 +59,27 @@ resource "aws_security_group" "allow-outside" {
     Name = "allow-outside"
   }
 }
+
+
+
+
+resource "aws_security_group" "allow_icmp" {
+  name        = "allow_icmp"
+  description = "Allow icmp"
+  vpc_id = "${aws_vpc.main.id}"
+
+  ingress {
+    # Allow ivmp
+    from_port   = -1
+    to_port     = -1
+    protocol    = "icmp"
+    # Please restrict your ingress to only necessary IPs and ports.
+    # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
+    cidr_blocks = ["10.0.0.0/16"] # add your IP address here
+
+ 
+  }
+
+ 
+}
+

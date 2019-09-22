@@ -5,23 +5,23 @@ resource "aws_instance" "db" {
   key_name      = "${aws_key_pair.mykey.key_name}"
   
   # the VPC subnet
-  subnet_id = "${aws_subnet.main-private-1.id}"
+  subnet_id = "${aws_subnet.main-public-1.id}"
   
   tags ={
-        Name = "dbinstance",
+        Name = "db",
         Size = "small one"
     }
     
   # the security group
   #vpc_security_group_ids = ["${aws_security_group.allow-ssh.id}"]
-  vpc_security_group_ids = ["${aws_security_group.allow_ssh_from_main_server_vpc.id}","${aws_security_group.allow-outside.id}"]
+  vpc_security_group_ids = ["${aws_security_group.allow_ssh_from_main_server_vpc.id}","${aws_security_group.allow_icmp.id}","${aws_security_group.allow-outside.id}"]
   
-/*
-  security_groups = [
-    "default",
-    "allow_ssh_from_main_server"
-  ]
-*/
+  private_ip="10.0.1.11"  
+  
+  #security_groups = [
+  #  "default",
+  #  "allow_ssh_from_main_server"
+  #]
 
   provisioner "file" {
     source      = "script.sh"
