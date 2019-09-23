@@ -17,7 +17,7 @@ resource "aws_route53_record" "db-record" {
    name = "db.mkdomain"
    type = "A"
    ttl = "300"
-   records = ["10.0.1.11"]
+   records = ["10.0.4.10"]
 }
 
 output "ns-servers" {

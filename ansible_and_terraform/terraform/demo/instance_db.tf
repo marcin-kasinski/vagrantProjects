@@ -5,7 +5,7 @@ resource "aws_instance" "db" {
   key_name      = "${aws_key_pair.mykey.key_name}"
   
   # the VPC subnet
-  subnet_id = "${aws_subnet.main-public-1.id}"
+  subnet_id = "${aws_subnet.main-private-1.id}"
   
   tags ={
         Name = "db",
@@ -16,7 +16,7 @@ resource "aws_instance" "db" {
   #vpc_security_group_ids = ["${aws_security_group.allow-ssh.id}"]
   vpc_security_group_ids = ["${aws_security_group.allow_ssh_from_main_server_vpc.id}","${aws_security_group.allow_icmp.id}","${aws_security_group.allow-outside.id}"]
   
-  private_ip="10.0.1.11"  
+  private_ip="10.0.4.10"  
   
   #security_groups = [
   #  "default",
