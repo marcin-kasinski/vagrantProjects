@@ -15,8 +15,8 @@ output "db_private_ip" {
 }
 
 
-output "selected_security_group" {
-  value = "id=${data.aws_security_group.selected_allow_ssh_from_main_server_vpc.id}"
-}
+#output "selected_security_group" {
+#  value = "id=${data.aws_security_group.selected_allow_ssh_from_main_server_vpc.id}"
+#}
 
 

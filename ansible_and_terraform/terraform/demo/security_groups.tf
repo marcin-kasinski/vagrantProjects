@@ -95,8 +95,8 @@ resource "aws_security_group" "allow_icmp" {
 
 
 
-data "aws_security_group" "selected_allow_ssh_from_main_server_vpc" {
-  name = "allow_ssh_from_main_server_vpc"
-}
+#data "aws_security_group" "selected_allow_ssh_from_main_server_vpc" {
+#  name = "allow_ssh_from_main_server_vpc"
+#}
 
 

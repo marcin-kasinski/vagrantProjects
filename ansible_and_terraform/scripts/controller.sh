@@ -57,6 +57,13 @@ cd ~/.ssh
 find . -type f -exec printf "\n{}\n" \; -exec ssh-keygen -E md5 -lf {} \;
 
 
+#install packer
+wget https://releases.hashicorp.com/packer/1.4.3/packer_1.4.3_linux_amd64.zip
+unzip packer_1.4.3_linux_amd64.zip
+sudo mv packer /usr/local/bin/
+
+
+
 #install terraform
 #for graph 
 sudo apt install -y graphviz
