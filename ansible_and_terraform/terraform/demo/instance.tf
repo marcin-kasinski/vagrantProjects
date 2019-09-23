@@ -53,7 +53,7 @@ resource "aws_instance" "web" {
 }
 
 
-
+/*
 module "instancedb" {
   source              = "./modules/instance"
   
@@ -74,3 +74,4 @@ module "instancedb" {
 }
 
 
+*/

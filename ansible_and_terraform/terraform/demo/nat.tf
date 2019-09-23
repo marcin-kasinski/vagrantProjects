@@ -1,3 +1,4 @@
+/*
 
 # nat gw
 resource "aws_eip" "nat" {
@@ -35,3 +36,4 @@ resource "aws_route_table_association" "main-private-3-a" {
     route_table_id = "${aws_route_table.main-private.id}"
 }
 
+*/

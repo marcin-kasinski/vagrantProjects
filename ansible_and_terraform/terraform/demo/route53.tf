@@ -1,3 +1,4 @@
+/*
 resource "aws_route53_zone" "mkdomain" {
    name = "mkdomain"
     vpc {
@@ -23,3 +24,6 @@ resource "aws_route53_record" "db-record" {
 output "ns-servers" {
    value = "${aws_route53_zone.mkdomain.name_servers}"
 }
+
+
+*/

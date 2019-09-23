@@ -35,3 +35,5 @@ done
 processnginx
 echo "executing displayPublicIP with input $1"
 displayPublicIP $1
+
+sudo lsblk -o NAME,FSTYPE,SIZE,MOUNTPOINT,LABEL
