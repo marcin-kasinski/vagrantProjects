@@ -50,18 +50,42 @@ resource "aws_instance" "web" {
     user        = "${var.INSTANCE_USERNAME}"
     private_key = "${file("${var.PATH_TO_PRIVATE_KEY}")}"
   }
-
 }
 
 
 
-output "ip_public" {
+module "instancedb" {
+  source              = "./modules/instance"
+  
+  NAME              = "db"
+  SUBNET_ID         = "${aws_subnet.main-private-1.id}"
+  PRIVATE_IP        = "10.0.4.10"
+  KEY_NAME          = "${aws_key_pair.mykey.key_name}"
+  
+  PATH_TO_PRIVATE_KEY= "/vagrant/terraform/mykey"
+    
+ #DEPENDS_ON = "${list("${aws_security_group.allow_ssh_from_main_server_vpc.id}","${aws_security_group.allow_icmp.id}","${aws_security_group.allow-outside.id}")}"
+  
+  AMI				= "ami-07d0cf3af28718ef8"
+  
+  BASTION_HOST		= "${aws_instance.web.public_ip}"
+  #VPC_SECURITY_GROUP_IDS = ["sg-0184e989d858045c5", "sg-01ab01e66ec860f82","sg-094e10a91db198182"]
+  VPC_SECURITY_GROUP_IDS = ["${aws_security_group.allow_ssh_from_main_server_vpc.id}", "${aws_security_group.allow_icmp.id}","${aws_security_group.allow-outside.id}"]
+}
+
+
+
+output "web_public_ip" {
   value = "${aws_instance.web.public_ip}"
 }
-output "ip_private" {
+output "web_private_ip" {
   value = "${aws_instance.web.private_ip}"
 }
 
-output "connection" {
+output "web_instance_connection" {
   value = "ssh -i /vagrant/terraform/mykey ubuntu@${aws_instance.web.public_ip}"
+}
+
+output "db_private_ip" {
+  value = "${module.instancedb.private_ip}"
 }

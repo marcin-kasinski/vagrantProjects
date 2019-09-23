@@ -38,6 +38,10 @@ resource "aws_security_group" "allow_ssh_from_main_server_vpc" {
  
   }
 
+  tags ={
+    Name = "allow_ssh_from_main_server_vpc"
+  }
+ 
  
 }
 
@@ -80,6 +84,9 @@ resource "aws_security_group" "allow_icmp" {
  
   }
 
+  tags ={
+    Name = "allow_icmp"
+  }
  
 }
 
