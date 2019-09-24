@@ -11,7 +11,16 @@ resource "aws_instance" "this" {
         Name = "${var.NAME}",
         Size = "small one"
     }
-    
+  volume_tags = var.VOLUME_TAGS  
+  
+  
+  root_block_device {
+    #volume_type               = "standard"
+    volume_type               = "gp2"
+    volume_size               = 10
+  }
+  
+  
   # the security group
   #vpc_security_group_ids = ["${aws_security_group.allow_ssh_from_main_server_vpc.id}","${aws_security_group.allow_icmp.id}","${aws_security_group.allow-outside.id}"]
   #vpc_security_group_ids = ["allow_ssh_from_main_server_vpc","allow-outside","allow_icmp"]
@@ -40,11 +49,12 @@ resource "aws_instance" "this" {
     ]
   }
   connection {
-    host        			= "${var.PRIVATE_IP}"
+    #host        			= "${var.PRIVATE_IP}"
+    host        = "${self.public_ip}"    
     user        			= "${var.INSTANCE_USERNAME}"
     private_key 			= "${file("${var.PATH_TO_PRIVATE_KEY}")}"
-    bastion_host			= "${var.BASTION_HOST}"
-    bastion_private_key		= "${file("${var.PATH_TO_PRIVATE_KEY}")}"
+    #bastion_host			= "${var.BASTION_HOST}"
+    #bastion_private_key		= "${file("${var.PATH_TO_PRIVATE_KEY}")}"
   }
 
 }
@@ -60,5 +70,10 @@ resource "aws_instance" "this" {
 output "private_ip" {
   value       = aws_instance.this.private_ip
   description = "The private IP address of the server instance."
+}
+
+output "public_ip" {
+  value       = aws_instance.this.public_ip
+  description = "The public IP address of the server instance."
 }
 

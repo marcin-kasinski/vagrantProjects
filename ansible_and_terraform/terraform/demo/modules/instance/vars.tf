@@ -3,7 +3,7 @@ variable "PRIVATE_IP" {}
 variable "SUBNET_ID" {}
 variable "KEY_NAME" {}
 variable "PATH_TO_PRIVATE_KEY" {}
-variable "BASTION_HOST" {}
+#variable "BASTION_HOST" {}
 
 
 #variable "DEPENDS_ON" {}
@@ -24,4 +24,10 @@ variable "VPC_SECURITY_GROUP_IDS" {
   type        = list(string)
 }
 
-
+variable "VOLUME_TAGS" {
+  type = "map"
+  default = {
+    "X" = "X"
+    "Y" = "Y"
+  }
+}
