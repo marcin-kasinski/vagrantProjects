@@ -57,7 +57,7 @@ boxes = [
         :lvm_size => 10000,
         :lvm_filename => "/tools/vagrantprojects/ansible-controller_additiona_disc.vdi",
 #        :mem => "13312",
-        :mem => "2048",
+        :mem => "8192",
         :cpu => "2"
     },
     {
@@ -70,7 +70,7 @@ boxes = [
         :lvm_size => 10000,
         :lvm_filename => "/tools/vagrantprojects/ansible-target1_additiona_disc.vdi",
 #        :mem => "13312",
-        :mem => "2048",
+        :mem => "8192",
         :cpu => "2"
     },
     {
@@ -83,7 +83,7 @@ boxes = [
         :lvm_size => 10000,
         :lvm_filename => "/tools/vagrantprojects/ansible-target2_additiona_disc.vdi",
 #        :mem => "13312",
-        :mem => "2048",
+        :mem => "8192",
         :cpu => "2"
     }
 ]
