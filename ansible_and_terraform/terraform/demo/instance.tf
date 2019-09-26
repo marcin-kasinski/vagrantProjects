@@ -98,7 +98,7 @@ module "web1" {
   
 }
 
-
+/*
 module "web2" {
   source              = "./modules/instance"
   
@@ -121,3 +121,4 @@ module "web2" {
   
   
 }
+*/

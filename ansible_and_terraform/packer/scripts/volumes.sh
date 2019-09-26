@@ -1,13 +1,12 @@
 #!/bin/bash
 
-init_volumes()
-{
+set -ex 
 DEVICE="/dev/xvdb"
 
 
 echo "DEVICE $DEVICE" 
 
-#exit
+exit
 
 vgchange -ay
 
@@ -33,21 +32,4 @@ echo '/dev/data/volume1 /data ext4 defaults 0 0' >> /etc/fstab
 mount /data
 
 # install docker
-#curl https://get.docker.com | bash
-
-echo "this is simple message in custom volume" >/data/tst.txt
-
-}
-
-
-apt-get update
-apt-get install -y nginx docker.io vim lvm2
-
-echo "this is simple message" >/root/tst.txt
-sudo lsblk -o NAME,FSTYPE,SIZE,MOUNTPOINT,LABEL
-cat /root/tst.txt
-
-
-init_volumes
-
-
+curl https://get.docker.com | bash

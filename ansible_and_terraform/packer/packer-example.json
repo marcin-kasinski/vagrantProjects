@@ -12,17 +12,20 @@
     "instance_type": "t2.micro",
     "ssh_username": "ubuntu",
     "ami_name": "packer-example {{timestamp}}",
-          "ami_block_device_mappings": [
+    
+    "ami_block_device_mappings": [
         {
           "device_name": "/dev/xvdb",
           "volume_type": "gp2",
           "volume_size": "4",
           "delete_on_termination": false
-        },
+        }
+      ],
+    "launch_block_device_mappings": [
         {
-          "device_name": "/dev/xvdc",
+          "device_name": "/dev/xvdb",
           "volume_type": "gp2",
-          "volume_size": "6",
+          "volume_size": "4",
           "delete_on_termination": false
         }
       ]

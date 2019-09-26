@@ -6,6 +6,7 @@ sudo apt update
 sudo apt install software-properties-common
 sudo apt-add-repository --yes --update ppa:ansible/ansible
 sudo apt install -y ansible
+sudo apt-get install -y unzip
 
 #generate key
 #ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
@@ -58,7 +59,7 @@ find . -type f -exec printf "\n{}\n" \; -exec ssh-keygen -E md5 -lf {} \;
 
 
 #install packer
-wget https://releases.hashicorp.com/packer/1.4.3/packer_1.4.3_linux_amd64.zip
+wget -q https://releases.hashicorp.com/packer/1.4.3/packer_1.4.3_linux_amd64.zip
 unzip packer_1.4.3_linux_amd64.zip
 sudo mv packer /usr/local/bin/
 
@@ -67,8 +68,7 @@ sudo mv packer /usr/local/bin/
 #install terraform
 #for graph 
 sudo apt install -y graphviz
-sudo apt-get install unzip
-wget https://releases.hashicorp.com/terraform/0.12.8/terraform_0.12.8_linux_amd64.zip
+wget -q https://releases.hashicorp.com/terraform/0.12.8/terraform_0.12.8_linux_amd64.zip
 unzip terraform_0.12.8_linux_amd64.zip
 sudo mv terraform /usr/local/bin/
 cd /vagrant/terraform/demo
