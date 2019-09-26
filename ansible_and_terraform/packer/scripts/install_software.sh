@@ -12,14 +12,14 @@ echo "DEVICE $DEVICE"
 vgchange -ay
 
 DEVICE_FS=`blkid -o value -s TYPE ${DEVICE} || echo ""`
-if [ "`echo -n $DEVICE_FS`" == "" ] ; then 
+#if [ "`echo -n $DEVICE_FS`" == "" ] ; then 
   # wait for the device to be attached
   DEVICENAME=`echo "${DEVICE}" | awk -F '/' '{print $3}'`
   DEVICEEXISTS=''
-  while [[ -z $DEVICEEXISTS ]]; do
+  while [ -z $DEVICEEXISTS ]; do
     echo "checking $DEVICENAME"
     DEVICEEXISTS=`lsblk |grep "$DEVICENAME" |wc -l`
-    if [[ $DEVICEEXISTS != "1" ]]; then
+    if [ $DEVICEEXISTS != "1" ]; then
       sleep 15
     fi
   done
@@ -27,7 +27,7 @@ if [ "`echo -n $DEVICE_FS`" == "" ] ; then
   vgcreate data ${DEVICE}
   lvcreate --name volume1 -l 100%FREE data
   mkfs.ext4 /dev/data/volume1
-fi
+#fi
 mkdir -p /data
 echo '/dev/data/volume1 /data ext4 defaults 0 0' >> /etc/fstab
 mount /data
@@ -36,6 +36,10 @@ mount /data
 #curl https://get.docker.com | bash
 
 echo "this is simple message in custom volume" >/data/tst.txt
+
+sudo lsblk -o NAME,FSTYPE,SIZE,MOUNTPOINT,LABEL
+
+cat /data/tst.txt
 
 }
 
