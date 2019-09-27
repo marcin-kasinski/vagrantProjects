@@ -8,6 +8,9 @@ target1
 target1
 target2
 
+[web]
+target2
+
 [all_servers:children]
 group1
 servers
