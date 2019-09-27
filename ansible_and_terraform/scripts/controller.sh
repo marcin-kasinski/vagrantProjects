@@ -1,5 +1,24 @@
 #!/bin/bash
 
+
+installDocker()
+{
+sudo apt update
+sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+sudo apt update
+sudo apt-cache policy docker-ce
+sudo apt install docker-ce -y 
+sudo usermod -aG docker vagrant
+
+
+sudo curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+sudo chmod +x /usr/local/bin/docker-compose
+}
+
+
 echo I am controller...
 
 sudo apt update
@@ -18,6 +37,7 @@ sudo apt-get install -y unzip
 #ansible-playbook -i /vagrant/playbooks/inventory /vagrant/playbooks/nginx_all.yml -b
 
 #roles
+#ansible-playbook -i /vagrant/playbooks/inventory /vagrant/playbooks/roles_sexample/main.yml --extra-vars env=dev -b --ask-vault-pass
 
 
 #EDITOR=nano ansible-vault create /vagrant/playbooks/roles_sexample/vault.yml
@@ -25,7 +45,7 @@ sudo apt-get install -y unzip
 #Wprowadzić poniższą wartość
 #vault_mysql_password: supersecretpassword
 
-#ansible-playbook -i /vagrant/playbooks/inventory /vagrant/playbooks/roles_sexample/main.yml --extra-vars env=dev -b --ask-vault-pass
+
 
 #disable host key checking
 
@@ -57,6 +77,8 @@ cat /etc/ansible/ansible.cfg | grep check
 cd ~/.ssh
 find . -type f -exec printf "\n{}\n" \; -exec ssh-keygen -E md5 -lf {} \;
 
+
+installDocker
 
 #install packer
 wget -q https://releases.hashicorp.com/packer/1.4.3/packer_1.4.3_linux_amd64.zip
