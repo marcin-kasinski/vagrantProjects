@@ -1,6 +1,27 @@
+    - name: Install aptitude
+      apt:
+        name: aptitude 
+      register: out
+    - name: Show script output
+      debug: var=out.stdout
+    - name: Update all packages to the latest version
+      apt:
+        upgrade: dist
+      become: yes        
+      register: out
+    - name: Show script output
+      debug: var=out.stdout_lines
+    - name: Upgrade all packages to the latest version
+      apt:
+        name: "*"
+        state: latest
+      become: yes        
+      register: out
+    - name: Show script output
+      debug: var=out.stdout_lines     
     - name: executing role common
       command: echo variable value= {{ variable1 }}, variable common={{ variable_common }}, mysql_password={{ mysql_password }}
       register: out
     - name: Show script output
       debug: var=out.stdout_lines      
-      
+     
