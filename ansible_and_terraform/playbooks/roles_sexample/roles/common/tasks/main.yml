@@ -29,5 +29,30 @@
       shell: "/vagrant/scripts/target.sh '{{ variable1  }}' {{ env }}"
       register: out
     - name: Show script output
+      debug: var=out.stdout_lines
+    - name: Add a line to a file if the file does not exist, without passing regexp
+      lineinfile:
+        path: /root/testfile
+        line: 192.168.1.99 foo.lab.net foo
+        create: yes
+      become: yes        
+      register: task_result
+    - name: Reboot immediately if there was a change.
+      shell: "sleep 5 && reboot"
+      async: 1
+      poll: 0
+      when: task_result is changed
+    - name: Wait for the reboot to complete if there was a change.
+      wait_for_connection:
+        connect_timeout: 20
+        sleep: 5
+        delay: 5
+        timeout: 300
+      when: task_result is changed
+    - name: show file
+      command: cat /root/testfile
+      become: yes        
+      register: out
+    - name: Show script output
       debug: var=out.stdout_lines      
      
