@@ -1,6 +1,7 @@
     - name: Install aptitude
       apt:
         name: aptitude 
+      become: yes        
       register: out
     - name: Show script output
       debug: var=out.stdout
@@ -19,8 +20,13 @@
       register: out
     - name: Show script output
       debug: var=out.stdout_lines     
-    - name: executing role common
-      command: echo variable value= {{ variable1 }}, variable common={{ variable_common }}, mysql_password={{ mysql_password }}
+    - name: executing role common simple command
+      command: echo env= {{ env }}, variable value= {{ variable1 }}, variable common={{ variable_common }}, mysql_password={{ mysql_password }}
+      register: out
+    - name: Show script output
+      debug: var=out.stdout_lines      
+    - name: executing role common script
+      shell: "/vagrant/scripts/target.sh '{{ variable1  }}' {{ env }}"
       register: out
     - name: Show script output
       debug: var=out.stdout_lines      
