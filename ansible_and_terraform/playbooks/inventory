@@ -1,3 +1,4 @@
+ansible_controller ansible_host=192.168.1.11
 target1 ansible_host=192.168.1.12
 target2 ansible_host=192.168.1.13
 
@@ -10,6 +11,12 @@ target2
 
 [web]
 target2
+
+
+[nexpose-consoles]
+ansible_controller
+[nexpose-engines]
+ansible_controller
 
 [all_servers:children]
 group1

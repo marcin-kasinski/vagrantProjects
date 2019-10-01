@@ -54,10 +54,10 @@ boxes = [
         :mac=> "5CA1AB1E0001",
         :ip => "192.168.1.11",
         :lvm_enable => true,
-        :lvm_size => 10000,
+        :lvm_size => 100000,
         :lvm_filename => "/tools/vagrantprojects/ansible-controller_additiona_disc.vdi",
-#        :mem => "13312",
-        :mem => "8192",
+        :mem => "32768",
+#        :mem => "8192",
         :cpu => "2"
     },
     {
@@ -94,11 +94,12 @@ Vagrant.configure(2) do |config|
   config.vm.boot_timeout = 1800
 
   #config.vm.box = "ubuntu/xenial64"
-  config.vm.box = "ubuntu/bionic64"  
+  #config.vm.box = "ubuntu/bionic64"
+  config.vm.box = "centos/7"
 #  config.vm.box = "ubuntu/trusty64"
 #  config.vm.box = "bento/ubuntu-16.04"
   
-  config.disksize.size = '10GB'
+  config.disksize.size = '40GB'
   
   #config.vm.box_version = "20181109.0.0"
 
@@ -113,8 +114,7 @@ Vagrant.configure(2) do |config|
         #config.ssh.insert_key       = false
         #config.ssh.private_key_path =  ["/tools/vagrantprojects/private_key"]
         
-        #config.vm.provision "file", source: "/tools/vagrantprojects/public_key", destination: "/home/vagrant/.ssh/authorized_keys"
-        
+        #config.vm.provision "file", source: "/tools/vagrantprojects/public_key", destination: "/home/vagrant/.ssh/authorized_keys"        
         
         config.vm.provider "virtualbox" do |v|
           v.customize ["modifyvm", :id, "--memory", opts[:mem]]
@@ -173,7 +173,8 @@ Vagrant.configure(2) do |config|
           
           chmod 600 /home/vagrant/.ssh/id_rsa
           
-
+          #in centos there is no .ssh 
+          sudo bash -c "mkdir -p /root/.ssh/"
           sudo bash -c "echo #{ssh_pub_key} >> /root/.ssh/authorized_keys"
           
           sudo ls -l /home/vagrant/.ssh
@@ -193,19 +194,19 @@ Vagrant.configure(2) do |config|
 
 
  # default router
-  config.vm.provision "shell",
-    run: "always",
-    inline: "sudo route add default gw 192.168.1.1"
+  #config.vm.provision "shell",
+  #  run: "always",
+  #  inline: "sudo route add default gw 192.168.1.1"
 
   # default router ipv6
-  config.vm.provision "shell",
-    run: "always",
-    inline: "#sudo route -A inet6 add default gw fe80::5ea1:abff:fe1e:1 dev enp0s8"
+  #config.vm.provision "shell",
+  #  run: "always",
+  #  inline: "#sudo route -A inet6 add default gw fe80::5ea1:abff:fe1e:1 dev enp0s8"
 
   # delete default gw on enp0s3 
-  config.vm.provision "shell",
-    run: "always",
-    inline: "sudo route del default gw 10.0.2.2"
+  #config.vm.provision "shell",
+  #  run: "always",
+  #  inline: "sudo route del default gw 10.0.2.2"
 
 
 

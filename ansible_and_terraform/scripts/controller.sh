@@ -1,5 +1,11 @@
 #!/bin/bash
+source /vagrant/scripts/centoslibs.sh
 
+
+installAnsible
+chmod u+x /vagrant/install/Rapid7Setup-Linux64.bin
+
+exit
 
 installDocker()
 {
@@ -37,7 +43,9 @@ sudo apt-get install -y unzip
 #ansible-playbook -i /vagrant/playbooks/inventory /vagrant/playbooks/nginx_all.yml -b
 
 #roles
-#ansible-playbook -i /vagrant/playbooks/inventory /vagrant/playbooks/roles_sexample/main.yml --extra-vars env=dev -b --ask-vault-pass
+#ansible-playbook -i /vagrant/playbooks/inventory /vagrant/playbooks/roles_example/main.yml --extra-vars env=dev -b --ask-vault-pass
+#ansible-playbook -i /vagrant/playbooks/inventory /vagrant/playbooks/nexpose_example/main_console.yml
+#ansible-playbook -i /vagrant/playbooks/inventory /vagrant/playbooks/nexpose_example/main_engine.yml
 
 
 #EDITOR=nano ansible-vault create /vagrant/playbooks/roles_sexample/vault.yml

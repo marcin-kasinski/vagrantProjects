@@ -1,6 +1,6 @@
 #!/bin/bash
 #source /vagrant/scripts/libs.sh
-
+exit
 start=$(date +%s)
 
 echo $start > /tmp/start_time
