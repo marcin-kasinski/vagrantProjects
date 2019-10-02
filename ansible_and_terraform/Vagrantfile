@@ -93,11 +93,9 @@ Vagrant.configure(2) do |config|
  
   config.vm.boot_timeout = 1800
 
-  #config.vm.box = "ubuntu/xenial64"
+
   #config.vm.box = "ubuntu/bionic64"
   config.vm.box = "centos/7"
-#  config.vm.box = "ubuntu/trusty64"
-#  config.vm.box = "bento/ubuntu-16.04"
   
   config.disksize.size = '40GB'
   
