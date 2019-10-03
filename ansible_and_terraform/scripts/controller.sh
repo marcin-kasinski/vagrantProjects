@@ -2,8 +2,16 @@
 source /vagrant/scripts/centoslibs.sh
 
 
+cat /etc/centos-release
+
 installAnsible
+installPacker
+installTerraform
+
 chmod u+x /vagrant/install/Rapid7Setup-Linux64.bin
+
+echo I am controller...
+
 
 exit
 
@@ -25,7 +33,6 @@ sudo chmod +x /usr/local/bin/docker-compose
 }
 
 
-echo I am controller...
 
 sudo apt update
 sudo apt install software-properties-common
@@ -88,19 +95,6 @@ find . -type f -exec printf "\n{}\n" \; -exec ssh-keygen -E md5 -lf {} \;
 
 installDocker
 
-#install packer
-wget -q https://releases.hashicorp.com/packer/1.4.3/packer_1.4.3_linux_amd64.zip
-unzip packer_1.4.3_linux_amd64.zip
-sudo mv packer /usr/local/bin/
-
-
-
-#install terraform
-#for graph 
-sudo apt install -y graphviz
-wget -q https://releases.hashicorp.com/terraform/0.12.8/terraform_0.12.8_linux_amd64.zip
-unzip terraform_0.12.8_linux_amd64.zip
-sudo mv terraform /usr/local/bin/
 cd /vagrant/terraform/demo
 terraform init
 ssh-keygen -t rsa -N "" -f /vagrant/terraform/mykey
