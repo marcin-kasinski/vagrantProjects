@@ -17,6 +17,13 @@ resource "aws_instance" "this" {
   root_block_device {
     #volume_type               = "standard"
     volume_type               = "gp2"
+    volume_size               = 12
+  }
+  
+  ebs_block_device {
+    device_name           = "/dev/xvdb"
+    #volume_type               = "standard"
+    volume_type               = "gp2"
     volume_size               = 10
   }
   
