@@ -1,13 +1,14 @@
 ---
-- hosts: all
+- hosts: ansible_controller
   vars_files:
-     - "/vagrant/playbooks/roles_sexample/env_variables/common.yml"
-     - "/vagrant/playbooks/roles_sexample/env_variables/{{ env }}.yml"
+     - "/vagrant/playbooks/roles_example/env_variables/common.yml"
+     - "/vagrant/playbooks/roles_example/env_variables/vaults.yml"
+     - "/vagrant/playbooks/roles_example/env_variables/{{ env }}.yml"
   roles:
     - common
 #- hosts: web
 #  vars_files:
-#     - "/vagrant/playbooks/roles_sexample/env_variables/common.yml"
-#     - "/vagrant/playbooks/roles_sexample/env_variables/{{ env }}.yml"
+#     - "/vagrant/playbooks/roles_example/env_variables/common.yml"
+#     - "/vagrant/playbooks/roles_example/env_variables/{{ env }}.yml"
 #  roles:
 #    - webservers    

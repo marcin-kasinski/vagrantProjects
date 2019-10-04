@@ -3,3 +3,4 @@
 - app_port: 5001
 #- mysql_password: "{{ vault_mysql_password }}"
 - mysql_password: "mysql pwd variable"
+- var_secret: "{{ vault_secret }}"

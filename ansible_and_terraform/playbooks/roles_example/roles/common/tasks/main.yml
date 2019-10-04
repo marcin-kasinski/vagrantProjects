@@ -1,30 +1,25 @@
-    - name: Install aptitude
-      apt:
-        name: aptitude 
-      become: yes        
-      register: out
-    - name: Show script output
-      debug: var=out.stdout
-    - name: Update all packages to the latest version
-      apt:
-        upgrade: dist
-      become: yes        
-      register: out
-    - name: Show script output
-      debug: var=out.stdout_lines
-    - name: Upgrade all packages to the latest version
-      apt:
-        name: "*"
-        state: latest
-      become: yes        
-      register: out
-    - name: Show script output
-      debug: var=out.stdout_lines     
-    - name: executing role common simple command
-      command: echo env= {{ env }}, variable value= {{ variable1 }}, variable common={{ variable_common }}, mysql_password={{ mysql_password }}
-      register: out
-    - name: Show script output
-      debug: var=out.stdout_lines      
+#    - name: Install aptitude
+#      apt:
+#        name: aptitude 
+#      become: yes        
+#      register: out
+#    - name: Show script output
+#      debug: var=out.stdout
+#    - name: Update all packages to the latest version
+#      apt:
+#        upgrade: dist
+#      become: yes
+#      register: out
+#    - name: Show script output
+#      debug: var=out.stdout_lines
+#    - name: Upgrade all packages to the latest version
+#      apt:
+#        name: "*"
+#        state: latest
+#      become: yes        
+#      register: out
+#    - name: Show script output
+#      debug: var=out.stdout_lines     
     - name: executing role common script
       shell: "/vagrant/scripts/target.sh '{{ variable1  }}' {{ env }}"
       register: out
@@ -52,6 +47,11 @@
     - name: show file
       command: cat /root/testfile
       become: yes        
+      register: out
+    - name: Show script output
+      debug: var=out.stdout_lines      
+    - name: executing role common simple command
+      command: echo var_secret= {{ var_secret }},env= {{ env }}, variable value= {{ variable1 }}, variable common={{ variable_common }}, mysql_password={{ mysql_password }}
       register: out
     - name: Show script output
       debug: var=out.stdout_lines      

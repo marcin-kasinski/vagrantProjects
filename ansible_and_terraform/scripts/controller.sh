@@ -54,8 +54,17 @@ sudo apt-get install -y unzip
 #ansible-playbook -i /vagrant/playbooks/inventory /vagrant/playbooks/nexpose_example/main_console.yml
 #ansible-playbook -i /vagrant/playbooks/inventory /vagrant/playbooks/nexpose_example/main_engine.yml
 
-
 #EDITOR=nano ansible-vault create /vagrant/playbooks/roles_sexample/vault.yml
+
+#ansible vault
+ansible-vault encrypt_string 'foobar' --name 'the_secret'
+ansible-vault encrypt_string --vault-password-file ./a_password_file 'foobar' --name 'the_secret'
+
+#
+#ansible-vault encrypt /vagrant/playbooks/roles_example/env_variables/vaults.yml
+
+
+
 
 #Wprowadzić poniższą wartość
 #vault_mysql_password: supersecretpassword
