@@ -1,0 +1,82 @@
+
+- name: executing role common script
+  shell: "/vagrant/scripts/target.sh '{{ variable1  }}' {{ env }}"
+  register: out
+- name: Show script output
+  debug: var=out.stdout_lines
+- name: Add a line to a file if the file does not exist, without passing regexp
+  lineinfile:
+    path: /root/testfile
+    line: 192.168.1.99 foo.lab.net foo
+    create: yes
+  become: yes        
+  register: task_result
+- name: show file
+  command: cat /root/testfile
+  become: yes        
+  register: out
+- name: Show script output
+  debug: var=out.stdout_lines      
+- name: executing role common simple command
+  command: echo var_secret= {{ var_secret }},env= {{ env }}, variable value= {{ variable1 }}, variable common={{ variable_common }}, mysql_password={{ mysql_password }}
+  register: out
+- name: Show script output
+  debug: var=out.stdout_lines      
+
+- name: Add Docker CE repository
+  become: yes        
+  get_url:
+    url: https://download.docker.com/linux/centos/docker-ce.repo
+    dest: /etc/yum.repos.d/docker-ce.repo
+    force: yes
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Install packages	EPEL
+  yum:
+    name: "{{ packages }}"
+  become: yes        
+  vars:
+    packages:
+    - epel-release
+
+
+- name: Install packages	
+  yum:
+    name: "{{ packages }}"
+  become: yes        
+  vars:
+    packages:
+    - epel-release
+    - git
+    - curl
+    - python-pip
+    - docker-ce
+    - docker-compose
+ 
+- name: Start service docker
+  become: yes        
+  service:
+    name: docker
+    state: started
+
+
+
+- name: Add the user 'vagrant' to group 'docker'
+  become: yes        
+  user:
+    name: vagrant
+    group: docker
+    
+    
+- name: installing hyperledger fabric
+  shell: "curl -sSL http://bit.ly/2ysbOFE | bash -s && pwd"
+  register: out
+- name: Show script output
+  debug: var=out.stdout_lines
+
+- git:
+    repo: https://github.com/hyperledger/fabric-samples.git
+    dest: /fabric-samples
+    

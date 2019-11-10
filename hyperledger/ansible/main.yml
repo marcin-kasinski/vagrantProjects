@@ -1,0 +1,8 @@
+---
+- hosts: 127.0.0.1
+  vars_files:
+     - "/vagrant/ansible/env_variables/common.yml"
+     - "/vagrant/ansible/env_variables/vaults.yml"
+     - "/vagrant/ansible/env_variables/{{ env }}.yml"
+  roles:
+    - common

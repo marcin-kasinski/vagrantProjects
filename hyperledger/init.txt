@@ -1,0 +1,20 @@
+		
+	cd /tools/vagrantprojects/hyperledger/
+	
+	#vagrant plugin install vagrant-disksize
+	vagrant halt
+	vagrant box update
+	vboxmanage unregistervm hyperledger-controller --delete
+	vboxmanage unregistervm hyperledger-target1 --delete
+	vboxmanage unregistervm hyperledger-target2 --delete
+	
+	rm /tools/vagrantprojects/hyperledger-controller_additiona_disc.vdi
+	rm /tools/vagrantprojects/hyperledger-target1_additiona_disc.vdi
+	rm /tools/vagrantprojects/hyperledger-target2_additiona_disc.vdi
+
+	vboxmanage list vms
+	
+	vagrant up hyperledger-controller --provision &
+#	vagrant up hyperledger-target1 --provision &
+#	vagrant up hyperledger-target2 --provision &
+

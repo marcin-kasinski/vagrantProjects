@@ -1,0 +1,11 @@
+    - name: executing role webservers
+      command: ls -l
+    - name: executing role webservers script
+      shell: /vagrant/scripts/target.sh
+      register: out1
+    - name: Show script output
+      debug: var=out1.stdout_lines
+    - name: ensure nginx is at the latest version
+      apt: name=nginx state=latest
+      become: yes
+      
