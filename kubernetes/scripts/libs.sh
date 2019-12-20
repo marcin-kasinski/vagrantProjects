@@ -229,7 +229,10 @@ echo  "IP $IP"
 
 #for weave networking
 #kubeadm init --pod-network-cidr 10.32.0.0/12 --apiserver-advertise-address $IP  2>&1 | tee kubeadm_join
-kubeadm init --config=kubeadm-config.yaml  --experimental-upload-certs  2>&1 | tee kubeadm_join
+#kubeadm init --config=kubeadm-config.yaml  --experimental-upload-certs  2>&1 | tee kubeadm_join
+kubeadm init --control-plane-endpoint $KUBERNETES_MASTER_LOAD_BALANCER_DNS:6443 --upload-certs 2>&1 | tee kubeadm_join
+
+
 
 sudo apt install -y nginx
 
@@ -240,7 +243,7 @@ JOIN_COMMAND="$( cat join_command )"
 
 echo `date` "generating join_command_for_control_pane"	
 
-cat kubeadm_join |sed -e 's/\\/ /g' | grep -B 3 -A 1 "experimental-control-plane">join_command_for_control_pane
+cat kubeadm_join |sed -e 's/\\/ /g' | grep -B 3 -A 1 "\-\-control-plane">join_command_for_control_pane
 
 cp join_command_for_control_pane /var/www/html/join_command_for_control_pane
 
@@ -773,6 +776,7 @@ setupIstio()
 
 #downloadIstio "1.2.0-rc.1"
 downloadIstio "1.2.4"
+downloadIstio "1.4.2"
 
 #downloadIstio1_1_2
 
@@ -793,7 +797,7 @@ kubectl get po -n istio-system -o wide | grep istio-init-crd
 
 waitPodcreated istio-init-crd-10 istio-system
 waitPodcreated istio-init-crd-11 istio-system
-waitPodcreated istio-init-crd-12 istio-system
+waitPodcreated istio-init-crd-14 istio-system
 
 echo Install the istio
 helm install install/kubernetes/helm/istio --name istio --namespace istio-system --set gateways.istio-ingressgateway.type=NodePort --set pilot.traceSampling=100 --set tracing.enabled=true --set kiali.enabled=true --set grafana.enabled=true --set prometheus.enabled=true --set global.proxy.accessLogFile="/dev/stdout"
