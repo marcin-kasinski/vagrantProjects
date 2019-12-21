@@ -1431,7 +1431,8 @@ createKafka()
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/zookeeper.yaml?$(date +%s)"  | kubectl apply -f -
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/zoonavigator.yaml?$(date +%s)"  | kubectl apply -f -
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kafka.yaml?$(date +%s)" | sed -e 's/  replicas: 1/  replicas: 3/g' | kubectl apply -f -
-#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kafka-manager.yaml?$(date +%s)"  | kubectl apply -f -
+
+kubectl apply -f /vagrant/yml/kafka-manager.yaml
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kafka-connect.yaml?$(date +%s)"  | kubectl apply -f -
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kafka-connect-ui.yaml?$(date +%s)"  | kubectl apply -f -
 
@@ -2175,8 +2176,8 @@ createMyBackendServers()
 #curl http://es:9200/_nodes
 #curl http://es:9200/_cluster/stats?human&pretty
 
-#kubectl apply -f /vagrant/yml/grafana.yaml
-#kubectl apply -f /vagrant/yml/prometheus.yaml
+kubectl apply -f /vagrant/yml/grafana.yaml
+kubectl apply -f /vagrant/yml/prometheus.yaml
 #cat /vagrant/yml/alertmanager.yaml | sed -e 's/  replicas: 1/  replicas: 3/g' | kubectl apply -f -
 
 
