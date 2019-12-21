@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: kafka-manager
-        image: hlebalbau/kafka-manager:latest
+        image: hlebalbau/kafka-manager:stable
         ports:
         - name: kafka-manager
           containerPort: 9000
