@@ -312,6 +312,11 @@ kubectl get secrets  -n kube-system kubernetes-dashboard-certs -o yaml
 #for kubernetes 1.17
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta8/aio/deploy/recommended.yaml
 
+kubectl apply -f /vagrant/yml/dashboard-rolebinding.yaml
+#kubectl delete clusterrolebinding defaultdminrolebinding
+#kubectl delete clusterrolebinding kubernetes-dashboard-rolebinding
+#kubectl delete clusterrolebinding kubernetes-dashboard
+
 kubectl create clusterrolebinding defaultdminrolebinding --clusterrole=cluster-admin --serviceaccount kube-system:default
 
 kubectl create clusterrolebinding kubernetes-dashboard-rolebinding --clusterrole=cluster-admin --serviceaccount kubernetes-dashboard:kubernetes-dashboard
@@ -1406,7 +1411,7 @@ kubectl taint nodes --all node-role.kubernetes.io/master-
 #          value: "0"          
 #          '
 
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended/kubernetes-dashboard.yaml
+#kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended/kubernetes-dashboard.yaml
 #kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10-release/src/deploy/recommended/kubernetes-dashboard.yaml
 #add defalt to admin
 kubectl create clusterrolebinding defaultdminrolebinding --clusterrole=cluster-admin --serviceaccount kube-system:default
@@ -2055,9 +2060,9 @@ curl -XPOST --data "$DASHBOARD" -H "Content-Type:application/json"  http://admin
 
 showDashboardIP(){
 
-while ! kubectl get po -n kube-system -o wide | grep kubernetes-dashboard | grep Running ; do   echo "waiting for dashboard IP..." ; sleep 10 ; done
+while ! kubectl get po -n kubernetes-dashboard -o wide | grep kubernetes-dashboard | grep Running ; do   echo "waiting for dashboard IP..." ; sleep 10 ; done
 
-	DASHBOARDPODLINE=`kubectl get po -n kube-system -o wide | grep kubernetes-dashboard | grep Running`
+	DASHBOARDPODLINE=`kubectl get po -n kubernetes-dashboard -o wide | grep kubernetes-dashboard | grep Running`
 	
 	DASHBOARDPODNAME=`echo $DASHBOARDPODLINE  | cut -d " " -f 1`
 	DASHBOARDPODIP=`echo $DASHBOARDPODLINE  | cut -d " " -f 6`
@@ -2065,7 +2070,7 @@ while ! kubectl get po -n kube-system -o wide | grep kubernetes-dashboard | grep
 	echo Dashboard IP $DASHBOARDPODIP
 #echo "forward port"
 #nohup kubectl port-forward -n kube-system  $(kubectl get po -n kube-system -l k8s-app=kubernetes-dashboard -o jsonpath="{.items[0].metadata.name}") 8443:8443  > /dev/null 2>&1 &
-nohup kubectl port-forward -n kube-system  $(kubectl get po -n kube-system -l k8s-app=kubernetes-dashboard -o jsonpath="{.items[0].metadata.name}") 9090:9090  > /dev/null 2>&1 &
+nohup kubectl port-forward -n kube-system  $(kubectl get po -n kubernetes-dashboard -l k8s-app=kubernetes-dashboard -o jsonpath="{.items[0].metadata.name}") 9090:9090  > /dev/null 2>&1 &
 
 nohup kubectl port-forward -n kube-system  $(kubectl get po -n kubernetes-dashboard -l k8s-app=kubernetes-dashboard -o jsonpath="{.items[0].metadata.name}") 8443:8443  > /dev/null 2>&1 &
 
@@ -2175,15 +2180,16 @@ createMyBackendServers()
 #cat /vagrant/yml/alertmanager.yaml | sed -e 's/  replicas: 1/  replicas: 3/g' | kubectl apply -f -
 
 
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/elasticsearch.yaml?$(date +%s)" | kubectl apply -f -
+kubectl apply -f /vagrant/yml/elasticsearch.yaml
+
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/elastic-exporter.yaml?$(date +%s)" | kubectl apply -f -
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/logstash.yaml?$(date +%s)" | kubectl apply -f -
 
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kibana.yaml?$(date +%s)" | kubectl apply -f -
+kubectl apply -f /vagrant/yml/kibana.yaml
 
 #curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/jenkins.yaml | kubectl apply -f -
 #curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/artifactory.yaml | kubectl apply -f -
-#curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/rabbitmq.yaml | kubectl apply -f -
+curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/rabbitmq.yaml | kubectl apply -f -
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/nginx.yaml?$(date +%s)"  | kubectl apply -f -
 
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/fakesmtp.yaml?$(date +%s)"  | kubectl apply -f -
