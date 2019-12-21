@@ -281,6 +281,7 @@ spec:
   - match:
     - uri:
         prefix: /
+#    - port: 31380
     route:
     - destination:
         host: springbootweb # interpreted as springbootweb.apps.svc.cluster.local
