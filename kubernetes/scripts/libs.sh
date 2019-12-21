@@ -312,6 +312,10 @@ kubectl get secrets  -n kube-system kubernetes-dashboard-certs -o yaml
 #for kubernetes 1.17
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta8/aio/deploy/recommended.yaml
 
+#set port
+kubectl patch svc kubernetes-dashboard -n kubernetes-dashboard --type=json -p='[{"op": "replace", "path": "/spec/type", "value": "NodePort"}]'
+kubectl patch svc kubernetes-dashboard -n kubernetes-dashboard --type=json -p='[{"op": "replace", "path": "/spec/ports/0/nodePort", "value": 30443}]'
+
 kubectl apply -f /vagrant/yml/dashboard-rolebinding.yaml
 #kubectl delete clusterrolebinding defaultdminrolebinding
 #kubectl delete clusterrolebinding kubernetes-dashboard-rolebinding
