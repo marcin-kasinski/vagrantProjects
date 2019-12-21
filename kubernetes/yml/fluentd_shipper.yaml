@@ -403,7 +403,7 @@ subjects:
   name: fluentd-shipper
   namespace: default
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: fluentd-shipper
@@ -414,6 +414,9 @@ metadata:
     version: v1
     kubernetes.io/cluster-service: "true"
 spec:
+  selector:
+    matchLabels:
+      k8s-app: fluentd-shipper
   template:
     metadata:
       labels:

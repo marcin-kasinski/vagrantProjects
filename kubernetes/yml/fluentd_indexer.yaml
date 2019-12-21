@@ -126,7 +126,7 @@ data:
       #start_from_beginning    (bool)    :default => true
     </source>
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: fluentd-indexer
@@ -137,6 +137,9 @@ metadata:
     kubernetes.io/cluster-service: "true"
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: fluentd-indexer
   template:
     metadata:
       labels:
