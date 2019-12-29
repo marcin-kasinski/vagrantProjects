@@ -46,6 +46,8 @@ setupSSL apps 2>&1 | tee ~/setupSSL.log
 
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/mysql.yaml?$(date +%s)"  | kubectl apply -f -
 
+kubectl apply -f /vagrant/yml/mysql.yaml
+
 createKafka 2>&1 | tee ~/createKafka.log
 
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kerberos.yaml?$(date +%s)"  | kubectl apply -f -
@@ -73,12 +75,12 @@ curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/ku
 
 #createMonitoring 2>&1 | tee ~/createMonitoring.log # metric server and prometheus adapter
 #createMongo 2>&1 | tee ~/createMongo.log
-#createRedis 2>&1 | tee ~/createRedis.log
+createRedis 2>&1 | tee ~/createRedis.log
 
 #configureGrafana 2>&1  | tee ~/configureGrafana.log
 
 #setupMongodb 2>&1 | tee ~/setupMongodb.log
-#setupRedis 2>&1 | tee ~/setupRedis.log
+setupRedis 2>&1 | tee ~/setupRedis.log
 
 #showCustomService
 

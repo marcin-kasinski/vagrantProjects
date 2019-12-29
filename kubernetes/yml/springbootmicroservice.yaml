@@ -280,15 +280,21 @@ metadata:
 spec:
 # aby port przyjął w hostach trzeba usunąć galley deployment
   hosts:
-  - "springbootmicroservice.itzone.pl:30999"
-  - "springbootmicroservice.apps.svc.cluster.local:30999"
+  - "springbootmicroservice.itzone.pl"
+  - "springbootmicroservice.apps.svc.cluster.local"
   - "springbootmicroservice" # from webapplication
   gateways:
   - itzone-gateway  
   http:
   - match:
-    - uri:
-        prefix: /
+      - authority:
+          exact: 'springbootmicroservice.apps.svc.cluster.local:31380'
+    #    - uri:
+    #        prefix: /
+    #    - port: 31380
+
+
+
     route:
     - destination:
         host: springbootmicroservice
@@ -334,13 +340,18 @@ metadata:
   name: springbootmicroservice2.itzone.pl
 spec:
   hosts:
-  - "springbootmicroservice2.itzone.pl:30999"
+  - "springbootmicroservice2.itzone.pl"
   gateways:
   - itzone-gateway
   http:
   - match:
-    - uri:
-        prefix: /
+      - authority:
+          exact: 'springbootmicroservice2.itzone.pl:31380'
+    #    - uri:
+    #        prefix: /
+    #    - port: 31380
+
+
     route:
     - destination:
         host: springbootmicroservice
