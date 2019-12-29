@@ -2223,6 +2223,8 @@ createMyapps()
 
 
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/springbootmicroservice.yaml?$(date +%s)"  | kubectl apply -n apps -f -
+`kubectl apply -n apps -f /vagrant/yml/springbootmicroservice.yaml
+
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/springbootmicroservice-v2.yaml?$(date +%s)"  | kubectl apply -n apps -f -
 kubectl apply -n apps -f /vagrant/yml/springbootweb.yaml
 
