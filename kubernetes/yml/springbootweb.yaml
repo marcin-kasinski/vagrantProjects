@@ -272,15 +272,18 @@ spec:
 #  - "springbootweb.apps.svc.cluster.local:30999"
 #  - "springbootweb:30999"
 #  - "springbootweb.com:30999"
-  - "springbootweb.apps.svc.cluster.local"
-  - "springbootweb"
-  - "springbootweb.com"
+#  - "springbootweb.apps.svc.cluster.local"
+#  - "springbootweb"
+#  - "springbootweb.com"
+    - "*"
   gateways:
   - itzone-gateway
   http:
   - match:
-    - uri:
-        prefix: /
+      - authority:
+          exact: 'springbootweb.apps.svc.cluster.local:31380'
+#    - uri:
+#        prefix: /
 #    - port: 31380
     route:
     - destination:
