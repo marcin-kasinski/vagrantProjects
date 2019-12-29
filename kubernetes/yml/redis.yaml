@@ -75,7 +75,8 @@ spec:
       - name: redis
         #image: redis:5.0-rc
         #image: redis:5.0.3-alpine
-        image: redis:5.0.5-alpine
+        #image: redis:5.0.5-alpine
+        image: redis:5.0.7-alpine
         securityContext:
           privileged: true        
         ports:
