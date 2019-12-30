@@ -2223,7 +2223,7 @@ createMyapps()
 
 
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/springbootmicroservice.yaml?$(date +%s)"  | kubectl apply -n apps -f -
-`kubectl apply -n apps -f /vagrant/yml/springbootmicroservice.yaml
+kubectl apply -n apps -f /vagrant/yml/springbootmicroservice.yaml
 
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/springbootmicroservice-v2.yaml?$(date +%s)"  | kubectl apply -n apps -f -
 kubectl apply -n apps -f /vagrant/yml/springbootweb.yaml
@@ -2249,7 +2249,7 @@ helm repo add rook-master https://charts.rook.io/master
 helm search rook
 helm repo update
 
-# Create a ServiceAccount for Tiller in the `kube-system` namespace
+# Create a ServiceAccount for Tiller in the kube-system namespace
 kubectl --namespace kube-system create sa tiller
 
 # Create a ClusterRoleBinding for Tiller
