@@ -67,14 +67,23 @@ spec:
         app: es
         kubernetes.io/name: "es"
         tier: backend
+
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/scheme: "http"
+        #prometheus.io/path: "/actuator/prometheus"
+        prometheus.io/port: "9114"
+
+
+
     spec:
       containers:
       - name: es-exporter
-        image: justwatch/elasticsearch_exporter:1.0.1
+        image: justwatch/elasticsearch_exporter:1.1.0
         command:
         - /bin/elasticsearch_exporter
-        - -es.uri=http://es:9200
-        - -es.all=true          
+        - --es.uri=http://es:9200
+        - --es.all
         securityContext:
           capabilities:
             drop:
@@ -96,7 +105,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /health
-            port: 9108
+            port: 9114
           initialDelaySeconds: 30
           timeoutSeconds: 10
         ports:
@@ -104,7 +113,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /health
-            port: 9108
+            port: 9114
           initialDelaySeconds: 10
           timeoutSeconds: 10
         resources:
