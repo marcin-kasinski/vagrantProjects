@@ -101,7 +101,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(mongodb_mongod_op_counters_total{pod=~\"$instance\"}[$interval])",
+          "expr": "rate(mongodb_op_counters_total{pod=~\"$instance\"}[$interval])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -565,7 +565,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(mongodb_mongod_op_counters_repl_total{pod=~\"$instance\"}[$interval])",
+          "expr": "rate(mongodb_op_counters_repl_total{pod=~\"$instance\"}[$interval])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -669,7 +669,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "mongodb_mongod_connections{pod=~\"$instance\",state=~\"current\"}",
+          "expr": "mongodb_connections{pod=~\"$instance\",state=~\"current\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -848,7 +848,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "mongodb_mongod_connections{pod=~\"$instance\",state=~\"available\"}",
+          "expr": "mongodb_connections{pod=~\"$instance\",state=~\"available\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -952,7 +952,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "mongodb_mongod_instance_uptime_seconds{pod=~\"$instance\"}",
+          "expr": "mongodb_instance_uptime_seconds{pod=~\"$instance\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1044,7 +1044,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "mongodb_mongod_memory{pod=~\"$instance\",type=~\"resident|virtual\"}",
+          "expr": "mongodb_memory{pod=~\"$instance\",type=~\"resident|virtual\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1132,7 +1132,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(mongodb_mongod_network_bytes_total{pod=~\"$instance\"}[$interval])",
+          "expr": "rate(mongodb_network_bytes_total{pod=~\"$instance\"}[$interval])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1666,7 +1666,7 @@
         "multi": true,
         "name": "instance",
         "options": [],
-        "query": "label_values(mongodb_mongod_connections, pod)",
+        "query": "label_values(mongodb_connections, pod)",
         "refresh": 1,
         "regex": "",
         "sort": 1,
