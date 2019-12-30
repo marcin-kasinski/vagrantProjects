@@ -55,7 +55,8 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
         - name: mongodbcfg-prometheus-exporter
-          image: eses/mongodb_exporter
+#          image: eses/mongodb_exporter
+          image: ssheehy/mongodb-exporter
           ports:
           - name: mongodbexporter
             containerPort: 9104
