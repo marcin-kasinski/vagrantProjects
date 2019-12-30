@@ -82,7 +82,7 @@ spec:
       
 
         - name: mongodb-router-container
-          image: mongo:4.2.2-bionic
+          image: mongo
           command:
             - "mongos"
             - "--port"
