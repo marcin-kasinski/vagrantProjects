@@ -36,7 +36,7 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/scheme: "http"
         #prometheus.io/path: "/actuator/prometheus"
-        prometheus.io/port: "9104"        
+        prometheus.io/port: "9216"
         
     spec:
       affinity:
