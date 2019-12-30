@@ -85,11 +85,39 @@ installDocker()
 apt update
 sudo apt install apt-transport-https ca-certificates curl software-properties-common
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+#sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+
+### Add Docker apt repository.
+add-apt-repository \
+  "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) \
+  stable"
+
 apt update
 apt-cache policy docker-ce
-apt install docker-ce -y 
+apt install docker-ce docker-ce-cli -y
 sudo usermod -aG docker vagrant
+
+
+# Setup daemon.
+cat > /etc/docker/daemon.json <<EOF
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m"
+  },
+  "storage-driver": "overlay2"
+}
+EOF
+
+
+mkdir -p /etc/systemd/system/docker.service.d
+
+# Restart docker.
+systemctl daemon-reload
+systemctl restart docker
+
 
 }
 
@@ -304,6 +332,7 @@ kubectl delete secrets  -n kube-system kubernetes-dashboard-certs
 kubectl create secret generic kubernetes-dashboard-certs --from-file=/vagrant/conf/certs -n kube-system
 kubectl get secrets  -n kube-system kubernetes-dashboard-certs -o yaml
 
+#kubectl apply -f /vagrant/yml/limits.yaml
 
 #kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
 #Poniższe serwuje tylko na http 9090
