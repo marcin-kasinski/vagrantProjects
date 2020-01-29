@@ -61,7 +61,7 @@ setupkafka 2>&1 | tee ~/setupkafka.log
 
 createIngress 2>&1 | tee ~/createIngress.log
 
-createHeapster 2>&1 | tee ~/createHeapster.log
+#screateHeapster 2>&1 | tee ~/createHeapster.log
 
 createMyBackendServers 2>&1 | tee ~/createMyBackendServers.log
 
@@ -73,7 +73,7 @@ curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/ku
 #curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/influxdb-ingress.yaml | kubectl apply -f -
 #curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/graphite.yaml | kubectl apply -f -
 
-#createMonitoring 2>&1 | tee ~/createMonitoring.log # metric server and prometheus adapter
+createMonitoring 2>&1 | tee ~/createMonitoring.log # metric server and prometheus adapter
 createMongo 2>&1 | tee ~/createMongo.log
 createRedis 2>&1 | tee ~/createRedis.log
 
@@ -102,7 +102,7 @@ kubectl get po --all-namespaces | grep -v Running | grep -v Completed
 
 kubeadm token create --print-join-command
 
-createAirflow 2>&1 | tee ~/createairflow.log
+#createAirflow 2>&1 | tee ~/createairflow.log
 
 finish 2>&1 | tee ~/finish.log
 
