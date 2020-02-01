@@ -2224,7 +2224,7 @@ kubectl apply -f /vagrant/yml/elasticsearch.yaml
 
 kubectl apply -f /vagrant/yml/kibana.yaml
 
-#curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/jenkins.yaml | kubectl apply -f -
+kubectl apply -f /vagrant/yml/jenkins.yaml
 #curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/artifactory.yaml | kubectl apply -f -
 kubectl apply -f /vagrant/yml/rabbitmq.yaml
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/nginx.yaml?$(date +%s)"  | kubectl apply -f -
