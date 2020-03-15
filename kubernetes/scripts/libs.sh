@@ -816,7 +816,8 @@ setupIstio()
 
 #downloadIstio "1.2.0-rc.1"
 #downloadIstio "1.2.4"
-downloadIstio "1.4.3"
+#downloadIstio "1.4.3"
+downloadIstio "1.5.0"
 
 #downloadIstio1_1_2
 
