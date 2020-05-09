@@ -1,0 +1,4 @@
+dn: olcDatabase={1}hdb,cn=config
+changetype: modify
+add: olcAccess
+olcAccess: {2}to dn.base="" by * read

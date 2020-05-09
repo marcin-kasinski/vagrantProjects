@@ -1,0 +1,23 @@
+{
+    "id": 2,
+    "orgId": 1,
+    "name": "Prometheus",
+    "type": "prometheus",
+    "typeLogoUrl": "",
+    "access": "proxy",
+    "url": "http://prometheus-hs.default.svc.cluster.local:9090",
+    "password": "",
+    "user": "",
+    "database": "",
+    "basicAuth": false,
+    "basicAuthUser": "",
+    "basicAuthPassword": "",
+    "withCredentials": false,
+    "isDefault": true,
+    "jsonData": {
+        "keepCookies": []
+    },
+    "secureJsonFields": {},
+    "version": 2,
+    "readOnly": false
+}

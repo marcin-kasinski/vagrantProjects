@@ -1,0 +1,174 @@
+kind: ConfigMap
+metadata:
+  name: zookeeper-server-jaas-conf-cm
+  namespace: default
+apiVersion: v1
+data:
+  zookeeper_server_jaas.conf: |-
+    Server {
+        com.sun.security.auth.module.Krb5LoginModule required
+        useKeyTab=true
+        storeKey=true
+        debugXXXXXXXXXX=true
+        keyTab="/opt/zookeeper/conf/zk.service.keytab"
+        principal="zookeeper/{HOSTNAME_FQDN}@KAFKA.SECURE";
+    };
+    
+    //client configuration
+    Client {
+        com.sun.security.auth.module.Krb5LoginModule required
+        useKeyTab=true
+        storeKey=true
+        debug=true
+        keyTab="/opt/zookeeper/conf/zk.service.keytab"
+        principal="zookeeper/{HOSTNAME_FQDN}@KAFKA.SECURE";
+    };
+---
+kind: ConfigMap
+metadata:
+  name: zookeeper-krb5-conf-cm
+  namespace: default
+apiVersion: v1
+data:
+  krb5.conf: |-
+    [logging]
+      default = FILE:/var/log/krb5libs.log
+      kdc = FILE:/var/log/krb5kdc.log
+      admin_server = FILE:/var/log/kadmind.log
+    
+    [libdefaults]
+        default_realm = KAFKA.SECURE
+        kdc_timesync = 1
+        ticket_lifetime = 24h
+        udp_preference_limit = 1
+    [realms]
+        KAFKA.SECURE = {
+          admin_server = kerberos
+          kdc  = kerberos
+          } 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zk-hs
+  labels:
+    app: zookeeper
+spec:
+  ports:
+  - port: 2888
+    name: server
+  - port: 3888
+    name: leader-election
+  - port: 2181
+    name: client    
+  - port: 8080
+    name: jmxagent
+  clusterIP: None
+  selector:
+    app: zookeeper
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zk
+  labels:
+    app: zookeeper  
+spec:
+  serviceName: "zk-hs"
+  replicas: 3
+  updateStrategy:
+    type: RollingUpdate
+  podManagementPolicy: Parallel
+  selector:
+    matchLabels:
+      app: zookeeper
+  template:
+    metadata:
+      labels:
+        app: zookeeper
+        kubernetes.io/name: "zookeeper"
+        tier: backend
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/scheme: "http"
+        prometheus.io/path: "/"
+        prometheus.io/port: "8080"
+    spec:
+      containers:
+      - name: zookeeper
+        image: marcinkasinski/zookeepercluster
+        imagePullPolicy: Always
+        #imagePullPolicy: Never
+        ports:
+        - containerPort: 2181
+          name: client
+        - containerPort: 2888
+          name: server
+        - containerPort: 3888
+          name: leader-election
+        env:
+        - name: "LOG_LEVEL"
+          value: "DEBUG"
+        #- name: "EXTRA_JAVA_ARGS"
+        #  value: "-Dsun.security.krb5.debug=true"
+        #- name: "JAAS_FILE_LOCATION"
+        #  value: "/opt/zookeeper/conf/zookeeper_server_jaas.conf"
+        #- name: "JAAS_FILE_LOCATION_RO"
+        #  value: "/opt/zookeeper/conf/zookeeper_server_jaas.conf_RO"        
+        - name: "ZOOKEEPER_NODES"
+          value: "zk-0.zk-hs.default.svc.cluster.local:2888:3888,zk-1.zk-hs.default.svc.cluster.local:2888:3888,zk-2.zk-hs.default.svc.cluster.local:2888:3888"
+          #value: "{HOSTNAME_FQDN}:2888:3888"
+        #ustawia na wartość default 
+        - name: "ZOOKEEPER_PARAM_tickTime"
+          value: "2000"
+        #ustawia na wartość default 
+        - name: "ZOOKEEPER_PARAM_maxClientCnxns"
+          value: "60"
+        #- name: "ZOOKEEPER_PARAM_authProvider_1"
+        #  value: "org.apache.zookeeper.server.auth.SASLAuthenticationProvider"
+        #- name: "ZOOKEEPER_PARAM_jaasLoginRenew"
+        #  value: "3600000"
+        #- name: "ZOOKEEPER_PARAM_kerberos_removeHostFromPrincipal"
+        #  value: "true"
+        #- name: "ZOOKEEPER_PARAM_kerberos_removeRealmFromPrincipal"
+        #  value: "true"
+        volumeMounts:
+        - name: zookeeper-logs
+          mountPath: /datalog/zookeeper
+        - name: zookeeper-data
+          mountPath: /data/zookeeper
+        - name: config-volume-krb5-conf-cm
+          mountPath: /etc/krb5.conf
+          subPath: krb5.conf
+        #- name: config-volume-zk-0-service-keytab
+        #  mountPath: /opt/zookeeper/conf/zk-0.service.keytab
+        #  subPath: zk-0.service.keytab
+        #- name: config-volume-zk-1-service-keytab
+        #  mountPath: /opt/zookeeper/conf/zk-1.service.keytab
+        #  subPath: zk-1.service.keytab
+        #- name: config-volume-zk-2-service-keytab
+        #  mountPath: /opt/zookeeper/conf/zk-2.service.keytab
+        #  subPath: zk-2.service.keytab
+        - name: config-volume-zookeeper-server-jaas-conf-cm
+          mountPath: /opt/zookeeper/conf/zookeeper_server_jaas.conf_RO
+          subPath: zookeeper_server_jaas.conf
+      volumes:
+        - name: config-volume-krb5-conf-cm
+          configMap:
+            name: zookeeper-krb5-conf-cm      
+        #- name: config-volume-zk-0-service-keytab
+        #  configMap:
+        #    name: zk-0-service-keytab
+        #- name: config-volume-zk-1-service-keytab
+        #  configMap:
+        #    name: zk-1-service-keytab
+        #- name: config-volume-zk-2-service-keytab
+        #  configMap:
+        #    name: zk-2-service-keytab      
+        - name: config-volume-zookeeper-server-jaas-conf-cm
+          configMap:
+            name: zookeeper-server-jaas-conf-cm      
+        - name: zookeeper-logs
+          emptyDir: {}
+        - name: zookeeper-data
+          emptyDir: {}

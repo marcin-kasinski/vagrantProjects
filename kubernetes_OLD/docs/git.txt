@@ -1,0 +1,84 @@
+
+
+First, you create a git user account and a .ssh directory for that user. git:git
+
+sudo adduser git
+
+sudo adduser git sudo
+
+su git
+cd
+mkdir .ssh && chmod 700 .ssh
+touch .ssh/authorized_keys && chmod 600 .ssh/authorized_keys
+
+
+
+
+
+
+add public keys
+
+
+$ cat /tmp/id_rsa.john.pub >> ~/.ssh/authorized_keys
+$ cat /tmp/id_rsa.josie.pub >> ~/.ssh/authorized_keys
+$ cat /tmp/id_rsa.jessica.pub >> ~/.ssh/authorized_keys
+
+
+omijamy to i kopiujemy z użytkownika ubuntu
+
+
+sudo cp /home/ubuntu/.ssh/authorized_keys /home/git/.ssh/authorized_keys
+
+
+
+
+sudo cp /home/ubuntu/.ssh/authorized_keys /home/git/.ssh/authorized_keys
+
+
+make repo dir:
+
+sudo mkdir -p /srv/git
+sudo chown git:git /srv/git
+ls -l /srv/
+
+initializing
+
+
+
+cd /srv/git
+mkdir project.git
+cd project.git
+git init --bare
+
+
+
+
+
+
+
+
+# on John's computer
+
+git config --global user.email "mkasinski@sygnitysbs.pl"
+git config --global user.name "Marcin Kasiński"
+
+mkdir myproject
+cd myproject
+git init
+echo "" > a.txt
+ls -l
+git add .
+git commit -m 'initial commit'
+git remote add origin git@130.61.243.16:/srv/git/project.git
+git push origin master
+
+
+other user
+
+
+git clone git@130.61.243.16:/srv/git/project.git
+$ cd project
+$ vim README
+$ git commit -am 'fix for the README file'
+$ git push origin master
+

@@ -1,0 +1,108 @@
+kind: ConfigMap
+metadata:
+  name: springbootrabbitmqlistener-bootstrap-yml-cm
+apiVersion: v1
+data:
+  bootstrap.yml: |-
+
+    logging:
+        file: logs/application.log
+    server:
+        port: 9191
+    spring:
+        application:
+            name: SpringBootRabbitMQListener
+    #spring.jpa.hibernate.ddl-auto=create
+        datasource:
+            url: jdbc:mysql://mysql.default.svc.cluster.local:3306/test
+            username: root
+            password: secret
+    #spring.datasource.driver-class-name=Driver
+    # Allows Hibernate to generate SQL optimized for a particular DBMS
+        jpa:
+            properties:
+                hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
+                hibernate.show_sql: true
+        rabbitmq:
+            host:tools.local
+            password:guest
+            port:5672
+        zipkin:
+            #baseUrl: http://springbootzipkin.apps.svc.cluster.local:7777
+            baseUrl: http://zipkin.default.svc.cluster.local:9411            
+            sender:
+                type: web
+        sleuth:
+            sampler:
+                percentage: 1
+                probability: 1
+        cloud:
+            stream:
+                defaultBinder: rabbit1
+                bindings:
+                    worksChannel:
+                      destination: my-topic
+                      content-type: application/json
+                      binder: rabbit1
+                binders:
+                    rabbit1:
+                        type: rabbit
+                        environment:
+                            spring:
+                                rabbitmq:
+                                    host: rabbitmq.default.svc.cluster.local
+                                    port: 5672
+                                    username: guest
+                                    password: guest
+                                    virtual-host: /
+     
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springbootrabbitmqlistener-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: springbootrabbitmqlistener
+  template:
+    metadata:
+      labels:
+        app: springbootrabbitmqlistener
+    spec:
+      containers:
+      - name: springbootrabbitmqlistener
+        image: marcinkasinski/springbootrabbitmqlistener
+        imagePullPolicy: Always
+        ports:
+        - name: nodejs-port
+          containerPort: 9191
+        env:
+        - name: SPRING_PROFILE
+          value: "prd"
+        volumeMounts:
+        - name: config-springbootrabbitmqlistener-bootstrap-yml-cm
+          mountPath: /usr/src/myapp/config/bootstrap.yml
+          subPath: bootstrap.yml
+      volumes:
+        - name: config-springbootrabbitmqlistener-bootstrap-yml-cm
+          configMap:
+            name: springbootrabbitmqlistener-bootstrap-yml-cm
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: springbootrabbitmqlistener
+spec:
+  type: NodePort
+  ports:
+  - port: 9191
+    nodePort: 30091
+    targetPort: 9191
+    protocol: TCP
+    name: http
+  selector:
+    app: springbootrabbitmqlistener

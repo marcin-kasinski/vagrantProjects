@@ -1,0 +1,119 @@
+kind: ConfigMap
+metadata:
+  name: springbootwebreactor-bootstrap-yml-cm
+apiVersion: v1
+data:
+  bootstrap.yml: |-
+    server.jetty.acceptors: 500
+    
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springbootwebreactor
+  labels:
+    app: springbootwebreactor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: springbootwebreactor
+  template:
+    metadata:
+      labels:
+        app: springbootwebreactor
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/scheme: "http"
+        prometheus.io/path: "/actuator/prometheus"
+        prometheus.io/port: "8080"  
+    spec:
+      containers:
+      - name: springbootwebreactor
+        image: marcinkasinski/springbootwebreactor
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 8080
+        env:
+        - name: SPRING_PROFILE
+          value: "prd"          
+        #- name: "EXTRA_JAVA_ARGS"
+        #  value: "-Djavax.net.debug=all -Dssl.debug=true"
+          #value: "-Djavax.net.debug=ssl:handshake"
+        #- name: JAVA_OPTS
+        #  value: "-Dlogging.level.zipkin=DEBUG -Dlogging.level.zipkin2=DEBUG"          
+        - name: APP_AJAX_URL
+          value: "http://springbootmicroservice.apps.svc.cluster.local:30999/api/get-by-email?email=ajax@ajax.com"          
+        - name: APP_EVENT_URL
+          value: "http://springbootwebreactor.apps.svc.cluster.local:30999"          
+        - name: APP_EVENT_KAFKA_URL
+          value: "http://springbootkafkalistener:30080/events"
+        - name: APP_REST_URL
+          value: "http://springbootmicroservice.apps.svc.cluster.local:9191/api/adduser"
+        - name: KAFKA_BROKER_NODES
+          value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"          
+        volumeMounts:
+        - name: config-springbootwebreactor-bootstrap-yml-cm
+          mountPath: /usr/src/myapp/config/bootstrap.yml
+          subPath: bootstrap.yml
+      volumes:
+        - name: config-springbootwebreactor-bootstrap-yml-cm
+          configMap:
+            name: springbootwebreactor-bootstrap-yml-cm
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: springbootwebreactor
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    #nodePort: 30070
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  selector:
+    app: springbootwebreactor
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: springbootwebreactor-ingress
+  annotations:
+    ingress.kubernetes.io/enable-cors: "true"
+    ingress.kubernetes.io/rewrite-target: /  
+spec:
+  rules:
+  - host: springbootwebreactor
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: springbootwebreactor
+          servicePort: 8080
+---
+#curl -H "Host: springbootwebreactor.apps.svc.cluster.local:30999" localhost:30999/
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: springbootwebreactor
+spec:
+  hosts:
+  - "springbootwebreactor.apps.svc.cluster.local"
+  - "springbootwebreactor"
+  - "springbootwebreactor.com"
+  gateways:
+  - itzone-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: springbootwebreactor # interpreted as springbootwebreactor.apps.svc.cluster.local
+        #host: ambassador.default.svc.cluster.local # interpreted as springbootwebreactor.apps.svc.cluster.local
+        port:
+          number: 8080
+          #number: 80

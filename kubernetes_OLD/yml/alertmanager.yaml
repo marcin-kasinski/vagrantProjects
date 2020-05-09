@@ -1,0 +1,186 @@
+#http://alertmanager.default.svc.cluster.local:9093
+kind: ConfigMap
+metadata:
+  name: alertmanager-config-alertmanager.yml
+  namespace: default
+apiVersion: v1
+data:
+  alertmanager.yml: |-
+    #mk conf#
+    global:
+      resolve_timeout: 5m
+      
+      smtp_smarthost: 'fakesmtp:25'
+      smtp_from: 'alertmanager@prometheus.com'
+      smtp_auth_username: 'xxx'
+      smtp_auth_password: 'xxx'
+      smtp_require_tls: false
+
+    templates:
+    - '/etc/alertmanager/template/*.tmpl'
+
+    route:
+      group_by: ['alertname']
+      group_wait: 10s
+      group_interval: 10s
+      repeat_interval: 1h
+      #receiver: 'web.hook'
+      receiver: 'default-receiver'
+    receivers:
+    - name: 'default-receiver'
+      email_configs:
+      - to: 'fakesmtpuser@fakesmtp'
+        auth_username: 'xxx'
+        auth_password: 'xxx'
+        require_tls: false
+    - name: 'web.hook'
+      webhook_configs:
+      - url: 'http://127.0.0.1:5001/'
+    inhibit_rules:
+      - source_match:
+          severity: 'critical'
+        target_match:
+          severity: 'warning'
+        equal: ['alertname', 'dev', 'instance']        
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: alertmanager
+rules:
+- apiGroups: [""]
+  resources:
+  - nodes
+  - nodes/proxy
+  - services
+  - endpoints
+  - pods
+  verbs: ["get", "list", "watch"]
+- apiGroups:
+  - extensions
+  resources:
+  - ingresses
+  verbs: ["get", "list", "watch"]
+- nonResourceURLs: ["/metrics"]
+  verbs: ["get"]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: alertmanager
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: alertmanager
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: alertmanager
+subjects:
+- kind: ServiceAccount
+  name: alertmanager
+  namespace: default
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: alertmanager
+  labels:
+    app: alertmanager  
+spec:
+  serviceName: "alertmanager-hs"
+  replicas: 1
+  updateStrategy:
+    type: RollingUpdate
+  podManagementPolicy: Parallel  
+  selector:
+    matchLabels:
+      app: alertmanager
+  template:
+    metadata:
+      labels:
+        app: alertmanager
+      #bez poniższych annotacji nie dziala klaster  
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '9093'
+    spec:
+      serviceAccountName: alertmanager
+      containers:
+      - name: alertmanager
+        image: prom/alertmanager
+        args: [ "--config.file","/etc/alertmanager/alertmanager.yml","--log.level","debug","--cluster.listen-address","$(POD_IP):8001", "--cluster.peer","alertmanager-0.alertmanager-hs.default.svc.cluster.local:8001", "--cluster.peer","alertmanager-1.alertmanager-hs.default.svc.cluster.local:8001", "--cluster.peer","alertmanager-2.alertmanager-hs.default.svc.cluster.local:8001" ]
+        ports:
+        - name: alertmgr-port
+          containerPort: 9093
+        - name: alertclust
+          containerPort: 8001
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP        
+        volumeMounts:
+        - name: config-volume-alertmanager-yml
+          mountPath: /etc/alertmanager/alertmanager.yml
+          subPath: alertmanager.yml
+      volumes:
+        - name: config-volume-alertmanager-yml
+          configMap:
+            # Provide the name of the ConfigMap containing the files you want
+            # to add to the container
+            name: alertmanager-config-alertmanager.yml	
+          
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alertmanager-cs
+  labels:
+    app: alertmanager
+  #bez poniższych annotacji nie dziala klaster
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '9093'
+spec:
+  type: NodePort
+  ports:
+  - name: client
+    port: 9093
+    targetPort: 9093
+  - name: cluster
+    port: 8001
+    targetPort: 8001
+  selector:
+    app: alertmanager
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alertmanager-hs
+  labels:
+    app: alertmanager
+spec:
+  ports:
+  - port: 9093
+    name: server
+  clusterIP: None
+  selector:
+    app: alertmanager
+---
+# An Ingress with 2 hosts and 3 endpoints
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: alertmanager-ingress
+spec:
+  rules:
+  - host: alertmanager
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: alertmanager-hs
+          servicePort: 9093

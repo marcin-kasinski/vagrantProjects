@@ -1,0 +1,98 @@
+#!/bin/bash
+# set -o xtrace
+
+
+#przyklad : k e nginx cat /a/a/a
+
+
+kubelogs(){
+
+echo in $1 $2 $3
+
+SEARCH=$1
+local POD_NAMESPACE=$2
+local CONTAINER=$3
+
+OPTS="";
+
+if [ ! -z "$POD_NAMESPACE" ]; then 
+  #there is POD_NAMESPACE
+  OPTS=$OPTS" -n $POD_NAMESPACE ";
+  echo "namespace $POD_NAMESPACE"
+fi
+
+PODNAME=`kubectl get po $OPTS| grep $SEARCH| grep Running | cut -d " " -f 1`
+
+if [ ! -z "$CONTAINER" ]; then 
+  #there is CONTAINER
+  OPTS=$OPTS" -c $CONTAINER ";
+  echo "namespace $CONTAINER"
+fi
+
+echo "Pod name:"
+
+echo "$PODNAME"
+echo executing :kubectl logs -f $PODNAME $OPTS
+
+kubectl logs -f $PODNAME $OPTS
+
+}
+
+kubeexec(){
+
+SEARCH=$1
+POD_NAMESPACE=$2
+BASHCOMMAND=$3
+echo "Searching $SEARCH"
+
+
+OPTS="";
+
+if [ ! -z "$POD_NAMESPACE" ]; then 
+  #there is POD_NAMESPACE
+  OPTS=$OPTS" -n $POD_NAMESPACE ";
+  echo "namespace $POD_NAMESPACE"
+fi
+
+
+
+PODNAME=`kubectl get po $OPTS | grep $SEARCH| grep Running | cut -d " " -f 1`
+
+echo "Pod name:"
+
+echo "$PODNAME"
+
+OPTS2=" -- bash ";
+
+if [ ! -z "$BASHCOMMAND" ]; then 
+  echo there is BASHCOMMAND
+  OPTS2=$OPTS2" -c \"$BASHCOMMAND\"";
+fi
+
+echo executing : kubectl exec -it $OPTS $PODNAME $OPTS2
+
+CMD="kubectl exec -it $OPTS $PODNAME $OPTS2"
+eval $CMD
+
+#kubectl exec -it $OPTS $PODNAME $OPTS2
+
+}
+
+
+COMMAND=$1
+ARG=$2
+BASH="$3"
+CONTAINER=$3
+
+echo $COMMAND
+echo "BASH $3"
+
+if [ "$COMMAND" = "e" ]
+then
+kubeexec $ARG "$BASH" "$4"
+elif [ "$COMMAND" = "l" ]
+then
+kubelogs $2 $3 $4
+
+fi
+

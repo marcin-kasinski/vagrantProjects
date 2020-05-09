@@ -1,0 +1,159 @@
+kind: ConfigMap
+metadata:
+  name: logstash-config-logstash.conf
+  namespace: default
+apiVersion: v1
+data:
+  logstash.conf: |-
+    input {
+      beats {
+        port => 5044
+      }
+      kafka {
+        #bootstrap_servers => ["hdp1.local:6667,hdp2.local:6667,hdp2.local:6667"]  
+        #bootstrap_servers => ["kafka-service:9092"]
+        bootstrap_servers => '${KAFKA_BROKER_NODES:"host1:9092,host2:9092,host3:9092"}'   
+        #topics => ["logs"]
+        topics => ["fluentd-logs"]
+        client_id => "logstashelk"
+        group_id => "glogstashelk"
+  
+  
+        codec => plain {
+          format => "^%{YEAR}-%{MONTHNUM}-%{MONTHDAY} %{TIME}.*"
+        }
+
+
+       # codec => multiline   {
+        #  pattern => "^%{YEAR}-%{MONTHNUM}-%{MONTHDAY} %{TIME}.*"
+        #  negate => "true"
+        #  what => "previous"
+
+        #}
+    
+    
+    
+      }
+      
+    }
+    
+    filter {
+      #If log line contains tab character followed by 'at' then we will tag that entry as stacktrace
+      #if [message] =~ "\tat" {
+      #  grok {
+      #    match => ["message", "^(\tat)"]
+      #    add_tag => ["stacktrace"]
+      #  }
+      #}
+    
+     
+      #Grokking Spring Boot's default log format
+      grok {
+      #  match => [ "message", 
+      #             "(?<timestamp>%{YEAR}-%{MONTHNUM}-%{MONTHDAY} %{TIME})  %{LOGLEVEL:level} %{NUMBER:pid} --- \[(?<thread>[A-Za-z0-9-]+)\] [A-Za-z0-9.]*\.(?<class>[A-Za-z0-9#_]+)\s*:\s+(?<logmessage>.*)",
+      #             "message",
+      #             "(?<timestamp>%{YEAR}-%{MONTHNUM}-%{MONTHDAY} %{TIME})  %{LOGLEVEL:level} %{NUMBER:pid} --- .+? :\s+(?<logmessage>.*)"
+      #           ]
+      
+
+      # Do multiline matching with (?m) as the above mutliline filter may add newlines to the log messages.
+      #match => [ "message", "(?m)^%{DATE:date} %{TIME:time} %{SPACE}?%{LOGLEVEL:loglevel} \[%{DATA:appname},%{WORD:zipkintraceid}?,%{WORD:zipkinspanid}?,%{WORD:zipkinsend}?\] %{NUMBER:pid} --- \[%{DATA:thread}\] %{JAVACLASS:classname} %{GREEDYDATA:message}" ]
+ 
+
+         # poni�sze dzia�a dla code plain
+          match => { "message" => "%{DATE:date} %{TIME:time} %{SPACE}?%{LOGLEVEL:loglevel} \[%{DATA:appname},%{WORD:zipkintraceid}?,%{WORD:zipkinspanid}?,%{WORD:zipkinsend}?\] %{NUMBER:pid} --- \[%{DATA:thread}\] %{JAVACLASS:classname} %{GREEDYDATA:message}" }
+      }
+    
+      #Parsing out timestamps which are in timestamp field thanks to previous grok section
+      date {
+        match => [ "timestamp" , "yyyy-MM-dd HH:mm:ss.SSS" ]
+      }
+    }
+     
+    
+    output {
+      stdout {
+        codec => rubydebug
+      }
+      # Sending properly parsed log events to elasticsearch
+      elasticsearch {
+        hosts => "${ELASTICSEARCH_URL}"
+        user => elastic
+        password => changeme
+      }
+    
+    }
+    
+    
+    
+---
+kind: ConfigMap
+metadata:
+  name: logstash-config-logstash.yml
+  namespace: default
+apiVersion: v1
+data:    
+  logstash.yml: |-   
+    http.host: "0.0.0.0"
+    xpack.monitoring.elasticsearch.url: ${ELASTICSEARCH_URL}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logstash-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logstash
+  template:
+    metadata:
+      labels:
+        app: logstash
+    spec:
+      containers:
+      - name: logstash
+#        image: docker.elastic.co/logstash/logstash:5.2.2
+#        image: docker.elastic.co/logstash/logstash:6.3.2
+        image: docker.elastic.co/logstash/logstash:6.4.2
+        imagePullPolicy: Always
+        ports:
+        - name: logstash-port
+          containerPort: 5044
+        env:
+        - name: ELASTICSEARCH_URL
+          value: "http://es:9200"
+        - name: KAFKA_BROKER_NODES
+          value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"          
+        volumeMounts:
+        - name: config-volume-logstash-yml
+          mountPath: /usr/share/logstash/config/logstash.yml
+          subPath: logstash.yml
+        - name: config-volume-logstash-conf
+          mountPath: /usr/share/logstash/pipeline                    
+      volumes:
+        - name: config-volume-logstash-conf
+          configMap:
+            # Provide the name of the ConfigMap containing the files you want
+            # to add to the container
+            name: logstash-config-logstash.conf	
+        - name: config-volume-logstash-yml
+          configMap:
+            # Provide the name of the ConfigMap containing the files you want
+            # to add to the container
+            name: logstash-config-logstash.yml	
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: logstash
+spec:
+  type: NodePort
+  ports:
+  - port: 5044
+    nodePort: 30044
+    targetPort: 5044
+    protocol: TCP
+    name: http2
+  selector:
+    app: logstash

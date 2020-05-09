@@ -1,0 +1,80 @@
+# set admin password
+apiVersion: v1
+kind: Secret
+metadata:
+  name: openldap-secret
+data:
+  LDAP_ADMIN_PASSWORD: YWRtaW4=
+  LDAP_CONFIG_PASSWORD: YWRtaW4=
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phpldapadmin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: phpldapadmin
+  template:
+    metadata:
+      labels:
+        app: phpldapadmin
+    spec:
+      containers:
+      - name: phpldapadmin
+        image: osixia/phpldapadmin:0.7.2
+        #image: ilagnev/alpine-phpldapadmin-lua
+        #image: firesh/phpldapadmin-lua
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 443
+        env:
+        - name: PHPLDAPADMIN_LDAP_HOSTS
+          value: "#PYTHON2BASH:[{'openldap.default.svc.cluster.local': [{'server': [{'tls': 'false'}]}]}]"
+        - name: PHPLDAPADMIN_SERVER_ADMIN
+          value: "cn=admin,dc=example,dc=org"
+        - name: PHPLDAPADMIN_SERVER_PATH
+          value: "/phpldapadmin"
+        - name: PHPLDAPADMIN_HTTPS
+          value: "false"
+           
+          
+        volumeMounts:
+
+      volumes:
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: phpldapadmin
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    #nodePort: 30443
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: phpldapadmin
+---
+# An Ingress with 2 hosts and 3 endpoints
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: phpldapadmin-ingress
+  annotations:
+    ingress.kubernetes.io/enable-cors: "true"
+    ingress.kubernetes.io/rewrite-target: /  
+spec:
+  rules:
+  - host: phpldapadmin
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: phpldapadmin
+          servicePort: 80

@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: fnproject-ui
+  annotations:
+    ingress.kubernetes.io/enable-cors: "true"
+    ingress.kubernetes.io/rewrite-target: /  
+spec:
+  rules:
+  - host: fn-ui
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: fm-release-fn-ui
+          servicePort: 80

@@ -1,0 +1,20 @@
+
+create table foobar (c1 int, c2 varchar(255),create_ts timestamp DEFAULT CURRENT_TIMESTAMP , update_ts timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP );
+
+insert into foobar (c1,c2) values(1,'foo1');
+insert into foobar (c1,c2) values(2,'foo2');
+insert into foobar (c1,c2) values(3,'foo3');
+insert into foobar (c1,c2) values(4,'foo4');
+
+
+curl -s -X POST -H "Content-Type: application/json" --data '{"name": "Mysql", "config":{"connector.class":"io.confluent.connect.jdbc.JdbcSourceConnector","key.converter.schemas.enable":"true","connection.url":"jdbc:mysql://mysql:3306/test?user=root&password=secret","tasks.max":"1","value.converter.schemas.enable":"true","name":"Mysql","value.converter":"org.apache.kafka.connect.json.JsonConverter","key.converter":"org.apache.kafka.connect.json.JsonConverter", "topic.prefix":"mysql-","mode": "timestamp","timestamp.column.name": "update_ts","table.whitelist": "foobar"}}' http://kconnect-cs:8083/connectors | jq
+
+
+
+
+curl  http://kconnect-cs:8083/connector-plugins | jq
+
+
+curl  http://kconnect-cs:8083/connectors | jq
+
+

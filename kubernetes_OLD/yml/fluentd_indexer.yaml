@@ -1,0 +1,245 @@
+kind: ConfigMap
+metadata:
+  name: fluentd-indexer-cm
+  namespace: default
+apiVersion: v1
+data:
+  fluent.conf: |-
+
+    <match fluent.**>
+      @type null
+    </match>
+
+    #@include systemd.conf
+    #@include kubernetes.conf
+    @include kafka.conf
+    @include grok.conf
+    
+      <filter kafka.fluentd-springboot-logs>
+        @type concat
+        key log
+        multiline_start_regexp /(?<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3})  (?<level>INFO|ERROR|WARN|TRACE|DEBUG|FATAL)\s+\[(?<app>[^\,]+),(?<zipkintraceid>[^\,]*),(?<zipkinspanid>[^\,]*),(?<zipkinsent>[^\]]*)] (?<someid>[0-9]+) --- \[(?<thread>[^\]]+)] (?<classname>[^\ ]+)\s+\: (?<text>.*)/
+        flush_interval 3s
+      </filter>    
+    
+    
+    @include elasticsearch.conf
+    
+
+---
+kind: ConfigMap
+metadata:
+  name: fluentd-indexer-grok-cm
+  namespace: default
+apiVersion: v1
+data:
+  grok.conf: |-
+
+    <filter kafka.fluentd-springboot-logs>
+      @type parser
+      key_name log
+      reserve_data true
+      reserve_time true
+      <parse>
+        @type grok
+        grok_failure_key grokfailure
+        <grok>
+          #pattern %{DATE:logdate} %{TIME:logtime} %{SPACE}?%{LOGLEVEL:loglevel} \[%{DATA:appname},%{WORD:zipkintraceid}?,%{WORD:zipkinspanid}?,%{WORD:zipkinsend}?\] %{NUMBER:pid} --- \[%{DATA:thread}\] %{JAVACLASS:classname} %{GREEDYDATA:message}
+          pattern %{TIMESTAMP_ISO8601:logtimestamp} %{SPACE}?%{LOGLEVEL:loglevel} \[%{DATA:appname},%{WORD:zipkintraceid}?,%{WORD:zipkinspanid}?,%{WORD:zipkinsend}?\] %{NUMBER:pid} --- \[%{DATA:thread}\] %{JAVACLASS:classname} %{GREEDYDATA:message}
+        </grok>
+        #<grok>
+        #  pattern %{GREEDYDATA:message}
+        #</grok>
+        
+      </parse>
+    </filter>
+---
+kind: ConfigMap
+metadata:
+  name: fluentd-indexer-elasticsearch-cm
+  namespace: default
+apiVersion: v1
+data:
+  elasticsearch.conf: |-
+    <match kafka.fluentd-springboot-logs>
+       @type copy
+      <store>
+        @type stdout
+      </store>    
+      <store>    
+       @type elasticsearch
+       @id out_es
+       @log_level info
+       include_tag_key true
+       host "#{ENV['FLUENT_ELASTICSEARCH_HOST']}"
+       port "#{ENV['FLUENT_ELASTICSEARCH_PORT']}"
+       scheme "#{ENV['FLUENT_ELASTICSEARCH_SCHEME'] || 'http'}"
+       ssl_verify "#{ENV['FLUENT_ELASTICSEARCH_SSL_VERIFY'] || 'true'}"
+       reload_connections "#{ENV['FLUENT_ELASTICSEARCH_RELOAD_CONNECTIONS'] || 'true'}"
+       logstash_prefix "#{ENV['FLUENT_ELASTICSEARCH_LOGSTASH_PREFIX'] || 'logstash'}"
+       logstash_format true
+       type_name fluentd
+       #time key get from log record
+       time_key logtimestamp
+       <buffer>
+         flush_thread_count "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_FLUSH_THREAD_COUNT'] || '8'}"
+         flush_interval "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_FLUSH_INTERVAL'] || '5s'}"
+         chunk_limit_size "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_CHUNK_LIMIT_SIZE'] || '2M'}"
+         queue_limit_length "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_QUEUE_LIMIT_LENGTH'] || '32'}"
+         retry_max_interval "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_RETRY_MAX_INTERVAL'] || '30'}"
+         retry_forever true
+       </buffer>
+      </store>    
+       
+    </match>
+---
+kind: ConfigMap
+metadata:
+  name: fluentd-indexer-kafka-cm
+  namespace: default
+apiVersion: v1
+data:
+  kafka.conf: |-
+    <source>
+      @type kafka_group
+      tag springboot.*
+      brokers "#{ENV['FLUENT_KAFKA_BROKERS']}"
+      consumer_group fluent_group
+      topics "#{ENV['FLUENT_KAFKA_DEFAULT_TOPIC'] || nil}"
+      #format <input text type (text|json|ltsv|msgpack)> :default => json
+      #message_key <key (Optional, for text format only, default is message)>
+      add_prefix kafka #kafka.fluentd-springboot-logs = kafka + topicname
+      
+      #@label @INPUT
+      
+      #add_suffix <tag suffix (Optional)>
+      #retry_emit_limit <Wait retry_emit_limit x 1s when BuffereQueueLimitError happens. The default is nil and it means waiting until BufferQueueLimitError is resolved>
+      #use_record_time <If true, replace event time with contents of 'time' field of fetched record>
+      #time_format <string (Optional when use_record_time is used)>
+      # ruby-kafka consumer options
+      #max_bytes               (integer) :default => 1048576
+      #max_wait_time           (integer) :default => nil (Use default of ruby-kafka)
+      #min_bytes               (integer) :default => nil (Use default of ruby-kafka)
+      #offset_commit_interval  (integer) :default => nil (Use default of ruby-kafka)
+      #offset_commit_threshold (integer) :default => nil (Use default of ruby-kafka)
+      #fetcher_max_queue_size  (integer) :default => nil (Use default of ruby-kafka)
+      #start_from_beginning    (bool)    :default => true
+    </source>
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fluentd-indexer
+  namespace: default
+  labels:
+    k8s-app: fluentd-indexer
+    version: v1
+    kubernetes.io/cluster-service: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: fluentd-indexer
+  template:
+    metadata:
+      labels:
+        k8s-app: fluentd-indexer
+        app: fluentd-indexer
+        version: v1
+        kubernetes.io/cluster-service: "true"
+    spec:
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      containers:
+      - name: fluentd-indexer
+        #image: fluent/fluentd-kubernetes-daemonset:v1.2-debian-kafka
+        #image: fluent/fluentd-kubernetes-daemonset:v1.4-debian-kafka-1
+        #image: fluent/fluentd:v1.5-1
+        image: marcinkasinski/fluentd
+        #securityContext:
+        #  privileged: true
+        #  runAsUser: 0        
+        #command: ["/bin/sh"]
+        #args: ["-c", "echo MK;apk add --no-cache --update --virtual .build-deps;build-base ruby-dev ;gem install fluent-plugin-elasticsearch fluent-plugin-concat fluent-plugin-grok-parser;  /fluentd/entrypoint.sh"]
+        #args: ["-c", "echo MK1;gem search -rd fluent-plugin;echo MK2;gem install fluent-plugin-elasticsearch fluent-plugin-concat fluent-plugin-grok-parser;  /fluentd/entrypoint.sh"]
+        #args: ["-c", "echo MK1;gem env;gem search -rd fluent-plugin;gem install fluent-plugin-elasticsearch fluent-plugin-concat fluent-plugin-grok-parser;  /bin/entrypoint.sh fluentd"]
+        #args: ["-c", "echo MK1;gem env;gem install fluent-plugin-elasticsearch;gem install fluent-plugin-concat;gem install fluent-plugin-grok-parser;gem query --local;/bin/entrypoint.sh fluentd"]
+        env:
+          - name: FLUENTD_OPT
+            value: ""
+          - name: FLUENT_KAFKA_COMPRESSION_CODEC
+            value: "gzip"
+          - name: FLUENT_KAFKA_MAX_SEND_LIMIT_BYTES
+            value: "1000000"
+          - name: FLUENT_KAFKA_DEFAULT_TOPIC
+            value: "fluentd-springboot-logs"
+          - name: FLUENT_KAFKA_BROKERS
+            value: "kafka-0.k-hs.default.svc.cluster.local:9092,kafka-1.k-hs.default.svc.cluster.local:9092,kafka-2.k-hs.default.svc.cluster.local:9092"
+
+          - name: FLUENT_UID
+            value: "0"
+          - name:  FLUENT_ELASTICSEARCH_HOST
+            value: "es.default.svc.cluster.local"
+          - name:  FLUENT_ELASTICSEARCH_PORT
+            value: "9200"
+          - name: FLUENT_ELASTICSEARCH_SCHEME
+            value: "http"
+          - name: FLUENT_ELASTICSEARCH_LOGSTASH_PREFIX
+            value: "fluent"
+          - name: FLUENT_ELASTICSEARCH_BUFFER_FLUSH_THREAD_COUNT
+            value: "8"
+          - name: FLUENT_ELASTICSEARCH_BUFFER_FLUSH_INTERVAL
+            value: "5s"
+          - name: FLUENT_ELASTICSEARCH_BUFFER_CHUNK_LIMIT_SIZE
+            #value: "2M"
+            value: "6M"
+          - name: FLUENT_ELASTICSEARCH_BUFFER_QUEUE_LIMIT_LENGTH
+            value: "32"
+          - name: FLUENT_ELASTICSEARCH_BUFFER_RETRY_MAX_INTERVAL
+            value: "30"
+
+        resources:
+          limits:
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        volumeMounts:
+        - name: config-fluentd-indexer-kafka-cm
+          mountPath: /fluentd/etc/kafka.conf
+          subPath: kafka.conf        
+        - name: config-fluentd-indexer-grok-cm
+          mountPath: /fluentd/etc/grok.conf
+          subPath: grok.conf
+        - name: config-fluentd-indexer-elasticsearch-cm
+          mountPath: /fluentd/etc/elasticsearch.conf
+          subPath: elasticsearch.conf
+        - name: config-fluentd-indexer-cm
+          mountPath: /fluentd/etc/fluent.conf
+          subPath: fluent.conf
+        - name: varlog
+          mountPath: /var/log
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: config-fluentd-indexer-grok-cm
+        configMap:
+          name: fluentd-indexer-grok-cm
+      - name: config-fluentd-indexer-kafka-cm
+        configMap:
+          name: fluentd-indexer-kafka-cm
+      - name: config-fluentd-indexer-elasticsearch-cm
+        configMap:
+          name: fluentd-indexer-elasticsearch-cm
+      - name: config-fluentd-indexer-cm
+        configMap:
+          name: fluentd-indexer-cm
+      - name: varlog
+        hostPath:
+          path: /var/log
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers

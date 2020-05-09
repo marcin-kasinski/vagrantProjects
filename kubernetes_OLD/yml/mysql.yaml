@@ -1,0 +1,112 @@
+kind: ConfigMap
+metadata:
+  name: mysql-conf-cm
+  namespace: default
+apiVersion: v1
+data:
+  my.cnf: |-
+    !includedir /etc/mysql/conf.d/
+    !includedir /etc/mysql/mysql.conf.d/
+    bind-address = 0.0.0.0
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfsmysql
+spec:
+  capacity:
+    storage: 1Mi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    # FIXME: use the right IP
+    server: k8smaster.local
+    path: "/var/nfs/mysql"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfsmysql
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 1Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment
+  labels:
+    app: mysql  
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql    
+  template:
+    metadata:
+      labels:
+        app: mysql
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/scheme: "http"
+        #prometheus.io/path: "/actuator/prometheus"
+        prometheus.io/port: "9104"        
+    spec:
+      initContainers:
+      #- name: init-mysql
+      #  image: openjdk:8
+      #  command: ['sh', '-c', 'echo "bind-address   = $POD_IP" >/etc/mysql/mysql.conf.d/mysqld.cnf']    
+      containers:
+      - name: mysql-prometheus-exporter
+        image: prom/mysqld-exporter
+        ports:
+        - name: mysqlexporter
+          containerPort: 9104
+        env:
+        - name: DATA_SOURCE_NAME
+          value: "root:secret@(mysql:3306)/"      
+      - name: mysql
+        image: mysql:5.7
+        ports:
+        - name: mysql-port
+          containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "secret"
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        volumeMounts:
+        #- name: nfsmysql
+        #  mountPath: /var/lib/mysql
+        #- name: mysql-conf-cm-my-cnf
+        #  mountPath: /etc/mysql/my.cnf
+        #  subPath: my.cnf
+      volumes:
+      #- name: nfsmysql
+      #  persistentVolumeClaim:
+      #    claimName: nfsmysql
+      - name: mysql-conf-cm-my-cnf
+        configMap:
+          name: mysql-conf-cm	
+          
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  type: NodePort
+  ports:
+  - port: 3306
+    nodePort: 30306
+    targetPort: 3306
+    protocol: TCP
+    name: http
+  selector:
+    app: mysql

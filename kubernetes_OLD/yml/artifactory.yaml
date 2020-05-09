@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: artifactory
+  labels:
+    app: artifactory  
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: artifactory
+  template:
+    metadata:
+      labels:
+        app: artifactory
+    spec:
+      containers:
+      - name: artifactory
+        image: docker.bintray.io/jfrog/artifactory-oss
+        ports:
+        - name: artifactory
+          containerPort: 8081
+        env:
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: artifactory
+spec:
+  type: NodePort
+  ports:
+  - port: 8081
+    #nodePort: 30808
+    targetPort: 8081
+    protocol: TCP
+    name: http
+  selector:
+    app: artifactory
+---
+# An Ingress with 2 hosts and 3 endpoints
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: artifactory-ingress
+spec:
+  rules:
+  - host: artifactory
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: artifactory
+          servicePort: 8081

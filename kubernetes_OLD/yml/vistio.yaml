@@ -1,0 +1,41 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: standard
+provisioner: kubernetes.io/no-provisioner
+mountOptions:
+  - debug
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: vistio-ingress
+  namespace: default
+  annotations:
+spec:
+  rules:
+  - host: vistio
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: vistio-web
+          servicePort: 8080
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: vistio-api-ingress
+  namespace: default
+  annotations:
+spec:
+  rules:
+  - host: vistio-api
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: vistio-api
+          servicePort: 9091
+---

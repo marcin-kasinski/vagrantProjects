@@ -1,0 +1,17 @@
+{
+   "name":"Mysql",
+   "config":{
+      "connector.class":"io.confluent.connect.jdbc.JdbcSourceConnector",
+      "key.converter.schemas.enable":"true",
+      "connection.url":"jdbc:mysql://mysql:3306/test?user=root&password=secret",
+      "tasks.max":"1",
+      "value.converter.schemas.enable":"true",
+      "name":"Mysql",
+      "value.converter":"org.apache.kafka.connect.json.JsonConverter",
+      "key.converter":"org.apache.kafka.connect.json.JsonConverter",
+      "topic.prefix":"mysql-",
+      "mode":"timestamp",
+      "timestamp.column.name":"update_ts",
+      "table.whitelist":"foobar"
+   }
+}

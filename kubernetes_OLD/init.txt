@@ -1,0 +1,28 @@
+		
+	cd /tools/vagrantprojects/kubernetes/
+	
+	#vagrant plugin install vagrant-disksize
+	vagrant halt
+	vagrant box update
+	vboxmanage unregistervm k8smaster --delete
+	vboxmanage unregistervm k8smaster2 --delete
+	vboxmanage unregistervm k8smaster3 --delete
+	vboxmanage unregistervm k8snode1 --delete
+	vboxmanage unregistervm k8snode2 --delete
+	vboxmanage unregistervm k8snode3 --delete
+	vboxmanage list vms
+	
+	rm /tools/vagrantprojects/k8smaster_additiona_disc.vdi
+	rm /tools/vagrantprojects/k8smaster2_additiona_disc.vdi
+	rm /tools/vagrantprojects/k8smaster3_additiona_disc.vdi
+	rm /tools/vagrantprojects/k8snode1_additiona_disc.vdi
+	rm /tools/vagrantprojects/k8snode2_additiona_disc.vdi
+	rm /tools/vagrantprojects/k8snode3_additiona_disc.vdi
+
+	vagrant up k8smaster2 --provision &
+	vagrant up k8smaster3 --provision &
+	vagrant up k8snode1 --provision &
+#	vagrant up k8snode2 --provision &	
+#	vagrant up k8snode3 --provision &	
+	vagrant up k8smaster --provision
+	

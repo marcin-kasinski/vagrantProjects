@@ -1,0 +1,64 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: concourse-ingress
+  annotations:
+    ingress.kubernetes.io/enable-cors: "true"
+    ingress.kubernetes.io/rewrite-target: /  
+spec:
+  rules:
+  - host: concourse
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: concourse-web
+          servicePort: 8080
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: task-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 10Gi
+  volumeMode: Filesystem	
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/tmp1"
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: task-pv-volume-workdir
+  labels:
+    type: local
+spec:
+  storageClassName: "standard"
+  capacity:
+    storage: 20Gi
+  volumeMode: Filesystem	
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/tmp2"
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: task-pv-volume-workdir2
+  labels:
+    type: local
+spec:
+  storageClassName: "standard"
+  capacity:
+    storage: 20Gi
+  volumeMode: Filesystem	
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/tmp3"

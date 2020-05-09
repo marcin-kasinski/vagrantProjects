@@ -1,0 +1,936 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_PROMETHEUS",
+      "label": "Prometheus",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "5.2.3"
+    },
+    {
+      "type": "panel",
+      "id": "marcuscalidus-svg-panel",
+      "name": "SVG",
+      "version": "0.1.1"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "5.0.0"
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "aliasColors": {},
+      "angle": -2,
+      "animate": {},
+      "cacheTimeout": null,
+      "categories": [
+        "arrows",
+        "facilities",
+        "indicators",
+        "industrial",
+        "letters",
+        "meters",
+        "numbers",
+        "pipes",
+        "shapes",
+        "valves"
+      ],
+      "datasource": "Prometheus",
+      "doInit": {},
+      "draw": {},
+      "format": "short",
+      "gridPos": {
+        "h": 17,
+        "w": 18,
+        "x": 0,
+        "y": 0
+      },
+      "handleMetric": {},
+      "id": 2,
+      "interval": null,
+      "isVentilating": true,
+      "js_code": "var svg = Snap(svgnode); \n\n\nvar metricA=ctrl.series[0].stats.current;\nvar metricB=ctrl.series[1].stats.current;\nvar metricC=ctrl.series[2].stats.current;\n\n$(svgnode).find(\"#metricA\").text(metricA);\n$(svgnode).find(\"#metricB\").text(metricB);\n$(svgnode).find(\"#metricC\").text(metricC);\n\n\nSnap.plugin(function (Snap, Element, Paper, glob) {\n    var elproto = Element.prototype;\n    elproto.toBack = function () {\n        this.prependTo(this.paper);\n    };\n    elproto.toFront = function () {\n        this.appendTo(this.paper);\n    };\n});\n\n\n\nfunction place_text(id, x ,y, text)\n{\n       $(svgnode).find(id).attr(\"x\",x);\n       $(svgnode).find(id).attr(\"y\",y);\n       if (x != undefined) \n\t   $(svgnode).find(id).text(text);\n}\n\n\nfunction clear_clicked()\n{\n  var bars = document.getElementsByClassName('element-empty');\n    for (var i = 0; i < bars.length; i++) {\n\n    \tbars[i].classList.remove('element-highlight', 'element-highlight', 'element-click');\n\n\t\t$(svgnode).find(\"#text-\"+bars[i].id).attr({\"class\": \"textstyle\"});     \n\t\t$(svgnode).find(\"#metricA-\"+bars[i].id).attr({\"class\": \"textstyle\"});     \n    }//for\n    \n}\n    function mouseOverEffect() {\n        \n        \n        var classname=this.classList[1]; \n        if (classname==\"element-click\") return;\n        \n        //alert(\"czesc \"+classname);\n       //alert(\"gid= \"+this.id);\n     //   var polygon_id=get_polygon_id_by_group_id(this.id);\n     //alert(polygon_id);\n      this.classList.add(\"element-highlight\");\n\n      $(svgnode).find(\"#text-\"+this.id).attr({\"class\": \"textstyle-highlight\"});     \n      $(svgnode).find(\"#metricA-\"+this.id).attr({\"class\": \"textstyle-highlight\"});     \n\n    }\n    \n    function mouseOutEffect() {\n        \n        var classname=this.classList[1]; \n        if (classname==\"element-click\") return;\n      this.classList.remove(\"element-highlight\");\n\n      $(svgnode).find(\"#text-\"+this.id).attr({\"class\": \"textstyle\"});\n      $(svgnode).find(\"#metricA-\"+this.id).attr({\"class\": \"textstyle\"});\n\n    }\n\n    function mouseClickEffect() {\n        clear_clicked();\n      this.classList.add(\"element-click\");\n\n      $(svgnode).find(\"#text-\"+this.id).attr({\"class\": \"textstyle-highlight\"});  \n      $(svgnode).find(\"#metricA-\"+this.id).attr({\"class\": \"textstyle-highlight\"});  \n    }\n\n\n    var bars = document.getElementsByClassName('element-empty');\n    for (var i = 0; i < bars.length; i++) {\n        bars[i].addEventListener('mouseover', mouseOverEffect);\n       bars[i].addEventListener('mouseout', mouseOutEffect);\n      bars[i].addEventListener('click', mouseClickEffect);\n        \n       var bbox = bars[i].getBBox();   \n\n\t   place_text(\"#text-\"+bars[i].id, bbox.x + (bbox.width / 2) ,bbox.y + (bbox.height / 2),bars[i].id);\n\t   place_text(\"#metricA-\"+bars[i].id, bbox.x + (bbox.width / 2) ,bbox.y + (bbox.height / 2)+14,\"34\");\n\t   \n       //var finding_text=\"#text-\"+bars[i].id;\n       //$(svgnode).find(finding_text).attr(\"x\",bbox.x + (bbox.width / 2));\n      //$(svgnode).find(finding_text).attr(\"y\",bbox.y + (bbox.height / 2));\n       //$(svgnode).find(finding_text).text(bars[i].id);\n    \n    }//for\n\n",
+      "js_init_code": "",
+      "links": [],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "repositories": {
+        "rtmaster": {
+          "description": "simple examples",
+          "items": [
+            {
+              "category": "arrows",
+              "description": "Arrow facing up",
+              "name": "arrow-up",
+              "path": "rtmaster/arrows/arrow-up.svg"
+            },
+            {
+              "category": "arrows",
+              "description": "Arrow facing down",
+              "name": "arrow-down",
+              "path": "rtmaster/arrows/arrow-down.svg"
+            },
+            {
+              "category": "arrows",
+              "description": "Arrow facing right",
+              "name": "arrow-right",
+              "path": "rtmaster/arrows/arrow-right.svg"
+            },
+            {
+              "category": "arrows",
+              "description": "Arrow facing left",
+              "name": "arrow-left",
+              "path": "rtmaster/arrows/arrow-left.svg"
+            },
+            {
+              "category": "arrows",
+              "description": "Arrow facing up right",
+              "name": "arrow-up-right",
+              "path": "rtmaster/arrows/arrow-up-right.svg"
+            },
+            {
+              "category": "arrows",
+              "description": "Arrow facing up left",
+              "name": "arrow-up-left",
+              "path": "rtmaster/arrows/arrow-up-left.svg"
+            },
+            {
+              "category": "arrows",
+              "description": "Arrow facing down left",
+              "name": "arrow-down-left",
+              "path": "rtmaster/arrows/arrow-down-left.svg"
+            },
+            {
+              "category": "arrows",
+              "description": "Arrow facing down right",
+              "name": "arrow-down-right",
+              "path": "rtmaster/arrows/arrow-down-right.svg"
+            },
+            {
+              "category": "arrows",
+              "description": "Arrow facing left right",
+              "name": "arrow-left-right",
+              "path": "rtmaster/arrows/arrow-left-right.svg"
+            },
+            {
+              "category": "arrows",
+              "description": "Arrow facing up down",
+              "name": "arrow-up-down",
+              "path": "rtmaster/arrows/arrow-up-down.svg"
+            },
+            {
+              "category": "arrows",
+              "description": "Arrow facing up down left right",
+              "name": "arrow-up-down-left-right",
+              "path": "rtmaster/arrows/arrow-up-down-left-right.svg"
+            },
+            {
+              "category": "facilities",
+              "description": "Factory",
+              "name": "factory",
+              "path": "rtmaster/facilities/factory.svg"
+            },
+            {
+              "category": "facilities",
+              "description": "Jackup",
+              "name": "jackup",
+              "path": "rtmaster/facilities/jackup.svg"
+            },
+            {
+              "category": "facilities",
+              "description": "Plant",
+              "name": "plant",
+              "path": "rtmaster/facilities/plant.svg"
+            },
+            {
+              "category": "facilities",
+              "description": "Semisub",
+              "name": "semisub",
+              "path": "rtmaster/facilities/semisub.svg"
+            },
+            {
+              "category": "facilities",
+              "description": "Ship",
+              "name": "ship",
+              "path": "rtmaster/facilities/ship.svg"
+            },
+            {
+              "category": "facilities",
+              "description": "Truck",
+              "name": "truck",
+              "path": "rtmaster/facilities/truck.svg"
+            },
+            {
+              "category": "indicators",
+              "description": "Light Bulb",
+              "name": "light-bulb",
+              "path": "rtmaster/indicators/light-bulb.svg"
+            },
+            {
+              "category": "indicators",
+              "description": "Green Light Indicator",
+              "name": "light-green",
+              "path": "rtmaster/indicators/light-green.svg"
+            },
+            {
+              "category": "indicators",
+              "description": "Orange Light Indicator",
+              "name": "light-orange",
+              "path": "rtmaster/indicators/light-orange.svg"
+            },
+            {
+              "category": "indicators",
+              "description": "Red Light Indicator",
+              "name": "light-red",
+              "path": "rtmaster/indicators/light-red.svg"
+            },
+            {
+              "category": "industrial",
+              "description": "Compressor",
+              "name": "compressor",
+              "path": "rtmaster/industrial/compressor.svg"
+            },
+            {
+              "category": "industrial",
+              "description": "Derrick",
+              "name": "derrick",
+              "path": "rtmaster/industrial/derrick.svg"
+            },
+            {
+              "category": "industrial",
+              "description": "Heat Exchanger",
+              "name": "heatexchanger",
+              "path": "rtmaster/industrial/heatexchanger.svg"
+            },
+            {
+              "category": "industrial",
+              "description": "Motor",
+              "name": "motor",
+              "path": "rtmaster/industrial/motor.svg"
+            },
+            {
+              "category": "industrial",
+              "description": "Pump",
+              "name": "pump",
+              "path": "rtmaster/industrial/pump.svg"
+            },
+            {
+              "category": "industrial",
+              "description": "Horizontal Tank",
+              "name": "tank-horizontal",
+              "path": "rtmaster/industrial/tank-horizontal.svg"
+            },
+            {
+              "category": "industrial",
+              "description": "Vertical Tank",
+              "name": "tank-vertical",
+              "path": "rtmaster/industrial/tank-vertical.svg"
+            },
+            {
+              "category": "industrial",
+              "description": "Turbine",
+              "name": "turbine",
+              "path": "rtmaster/industrial/turbine.svg"
+            },
+            {
+              "category": "industrial",
+              "description": "Horizontal Vessel",
+              "name": "vessel-horizontal",
+              "path": "rtmaster/industrial/vessel-horizontal.svg"
+            },
+            {
+              "category": "industrial",
+              "description": "Vertical Vessel",
+              "name": "vessel-vertical",
+              "path": "rtmaster/industrial/vessel-vertical.svg"
+            },
+            {
+              "category": "letters",
+              "description": "A",
+              "name": "A",
+              "path": "rtmaster/letters/letter-a.svg"
+            },
+            {
+              "category": "letters",
+              "description": "B",
+              "name": "B",
+              "path": "rtmaster/letters/letter-b.svg"
+            },
+            {
+              "category": "letters",
+              "description": "C",
+              "name": "C",
+              "path": "rtmaster/letters/letter-c.svg"
+            },
+            {
+              "category": "letters",
+              "description": "D",
+              "name": "D",
+              "path": "rtmaster/letters/letter-d.svg"
+            },
+            {
+              "category": "letters",
+              "description": "E",
+              "name": "E",
+              "path": "rtmaster/letters/letter-e.svg"
+            },
+            {
+              "category": "letters",
+              "description": "F",
+              "name": "F",
+              "path": "rtmaster/letters/letter-f.svg"
+            },
+            {
+              "category": "letters",
+              "description": "G",
+              "name": "G",
+              "path": "rtmaster/letters/letter-g.svg"
+            },
+            {
+              "category": "letters",
+              "description": "H",
+              "name": "H",
+              "path": "rtmaster/letters/letter-h.svg"
+            },
+            {
+              "category": "letters",
+              "description": "I",
+              "name": "I",
+              "path": "rtmaster/letters/letter-i.svg"
+            },
+            {
+              "category": "letters",
+              "description": "J",
+              "name": "J",
+              "path": "rtmaster/letters/letter-j.svg"
+            },
+            {
+              "category": "letters",
+              "description": "K",
+              "name": "K",
+              "path": "rtmaster/letters/letter-k.svg"
+            },
+            {
+              "category": "letters",
+              "description": "L",
+              "name": "L",
+              "path": "rtmaster/letters/letter-l.svg"
+            },
+            {
+              "category": "letters",
+              "description": "M",
+              "name": "M",
+              "path": "rtmaster/letters/letter-m.svg"
+            },
+            {
+              "category": "letters",
+              "description": "N",
+              "name": "N",
+              "path": "rtmaster/letters/letter-n.svg"
+            },
+            {
+              "category": "letters",
+              "description": "O",
+              "name": "O",
+              "path": "rtmaster/letters/letter-o.svg"
+            },
+            {
+              "category": "letters",
+              "description": "P",
+              "name": "P",
+              "path": "rtmaster/letters/letter-p.svg"
+            },
+            {
+              "category": "letters",
+              "description": "Q",
+              "name": "Q",
+              "path": "rtmaster/letters/letter-q.svg"
+            },
+            {
+              "category": "letters",
+              "description": "R",
+              "name": "R",
+              "path": "rtmaster/letters-letter-r.svg"
+            },
+            {
+              "category": "letters",
+              "description": "S",
+              "name": "S",
+              "path": "rtmaster/letters/letter-s.svg"
+            },
+            {
+              "category": "letters",
+              "description": "T",
+              "name": "T",
+              "path": "rtmaster/letters/letter-t.svg"
+            },
+            {
+              "category": "letters",
+              "description": "U",
+              "name": "U",
+              "path": "rtmaster/letters/letter-u.svg"
+            },
+            {
+              "category": "letters",
+              "description": "V",
+              "name": "V",
+              "path": "rtmaster/letters/letter-v.svg"
+            },
+            {
+              "category": "letters",
+              "description": "W",
+              "name": "W",
+              "path": "rtmaster/letters/letter-w.svg"
+            },
+            {
+              "category": "letters",
+              "description": "X",
+              "name": "X",
+              "path": "rtmaster/letters/letter-x.svg"
+            },
+            {
+              "category": "letters",
+              "description": "Y",
+              "name": "Y",
+              "path": "rtmaster/letters/letter-y.svg"
+            },
+            {
+              "category": "letters",
+              "description": "Z",
+              "name": "Z",
+              "path": "rtmaster/letters/letter-z.svg"
+            },
+            {
+              "category": "meters",
+              "description": "Laboratory Flask",
+              "name": "flask",
+              "path": "rtmaster/meters/flask.svg"
+            },
+            {
+              "category": "meters",
+              "description": "Flowmeter",
+              "name": "flowmeter",
+              "path": "rtmaster/meters/flowmeter.svg"
+            },
+            {
+              "category": "meters",
+              "description": "Gauge",
+              "name": "gauge",
+              "path": "rtmaster/meters/gauge.svg"
+            },
+            {
+              "category": "numbers",
+              "description": "0",
+              "name": "0",
+              "path": "rtmaster/numbers/number-0.svg"
+            },
+            {
+              "category": "numbers",
+              "description": "1",
+              "name": "1",
+              "path": "rtmaster/numbers/number-1.svg"
+            },
+            {
+              "category": "numbers",
+              "description": "2",
+              "name": "2",
+              "path": "rtmaster/numbers/number-2.svg"
+            },
+            {
+              "category": "numbers",
+              "description": "3",
+              "name": "3",
+              "path": "rtmaster/numbers/number-3.svg"
+            },
+            {
+              "category": "numbers",
+              "description": "4",
+              "name": "4",
+              "path": "rtmaster/numbers/number-4.svg"
+            },
+            {
+              "category": "numbers",
+              "description": "5",
+              "name": "5",
+              "path": "rtmaster/numbers/number-5.svg"
+            },
+            {
+              "category": "numbers",
+              "description": "6",
+              "name": "6",
+              "path": "rtmaster/numbers/number-6.svg"
+            },
+            {
+              "category": "numbers",
+              "description": "7",
+              "name": "7",
+              "path": "rtmaster/numbers/number-7.svg"
+            },
+            {
+              "category": "numbers",
+              "description": "8",
+              "name": "8",
+              "path": "rtmaster/numbers/number-8.svg"
+            },
+            {
+              "category": "numbers",
+              "description": "9",
+              "name": "9",
+              "path": "rtmaster/numbers/number-9.svg"
+            },
+            {
+              "category": "pipes",
+              "description": "Pipe curve down",
+              "name": "pipe-curve-down",
+              "path": "rtmaster/pipes/pipe-curve-down.svg"
+            },
+            {
+              "category": "pipes",
+              "description": "Pipe curve down left",
+              "name": "pipe-curve-down-left",
+              "path": "rtmaster/pipes/pipe-curve-down-left.svg"
+            },
+            {
+              "category": "pipes",
+              "description": "Pipe curve down right",
+              "name": "pipe-curve-down-right",
+              "path": "rtmaster/pipes/pipe-curve-down-right.svg"
+            },
+            {
+              "category": "pipes",
+              "description": "Pipe curve left",
+              "name": "pipe-curve-left",
+              "path": "rtmaster/pipes/pipe-curve-left.svg"
+            },
+            {
+              "category": "pipes",
+              "description": "Pipe curve right",
+              "name": "pipe-curve-right",
+              "path": "rtmaster/pipes/pipe-curve-right.svg"
+            },
+            {
+              "category": "pipes",
+              "description": "Pipe curve up",
+              "name": "pipe-curve-up",
+              "path": "rtmaster/pipes/pipe-curve-up.svg"
+            },
+            {
+              "category": "pipes",
+              "description": "Pipe curve up left",
+              "name": "pipe-curve-up-left",
+              "path": "rtmaster/pipes/pipe-curve-up-left.svg"
+            },
+            {
+              "category": "pipes",
+              "description": "Pipe curve up right",
+              "name": "pipe-curve-up-right",
+              "path": "rtmaster/pipes/pipe-curve-up-right.svg"
+            },
+            {
+              "category": "pipes",
+              "description": "Pipe diagonal left",
+              "name": "pipe-diagonal-left",
+              "path": "rtmaster/pipes/pipe-diagonal-left.svg"
+            },
+            {
+              "category": "pipes",
+              "description": "Pipe diagonal right",
+              "name": "pipe-diagonal-right",
+              "path": "rtmaster/pipes/pipe-diagonal-right.svg"
+            },
+            {
+              "category": "pipes",
+              "description": "Pipe flange horizontal",
+              "name": "pipe-flange-horizontal",
+              "path": "rtmaster/pipes/pipe-flange-horizontal.svg"
+            },
+            {
+              "category": "pipes",
+              "description": "Pipe flange intersection",
+              "name": "pipe-flange-intersection",
+              "path": "rtmaster/pipes/pipe-flange-intersection.svg"
+            },
+            {
+              "category": "pipes",
+              "description": "Pipe flange vertical",
+              "name": "pipe-flange-vertical",
+              "path": "rtmaster/pipes/pipe-flange-vertical.svg"
+            },
+            {
+              "category": "pipes",
+              "description": "Pipe horizontal",
+              "name": "pipe-horizontal",
+              "path": "rtmaster/pipes/pipe-horizontal.svg"
+            },
+            {
+              "category": "pipes",
+              "description": "Pipe tee down",
+              "name": "pipe-tee-down",
+              "path": "rtmaster/pipes/pipe-tee-down.svg"
+            },
+            {
+              "category": "pipes",
+              "description": "Pipe tee left",
+              "name": "pipe-tee-left",
+              "path": "rtmaster/pipes/pipe-tee-left.svg"
+            },
+            {
+              "category": "pipes",
+              "description": "Pipe tee right",
+              "name": "pipe-tee-right",
+              "path": "rtmaster/pipes/pipe-tee-right.svg"
+            },
+            {
+              "category": "pipes",
+              "description": "Pipe tee up",
+              "name": "pipe-tee-up",
+              "path": "rtmaster/pipes/pipe-tee-up"
+            },
+            {
+              "category": "pipes",
+              "description": "Pipe vertical",
+              "name": "pipe-vertical",
+              "path": "rtmaster/pipes/pipe-vertical.svg"
+            },
+            {
+              "category": "shapes",
+              "description": "Circle",
+              "name": "circle",
+              "path": "rtmaster/shapes/circle.svg"
+            },
+            {
+              "category": "shapes",
+              "description": "Gear",
+              "name": "gear",
+              "path": "rtmaster/shapes/gear.svg"
+            },
+            {
+              "category": "shapes",
+              "description": "Line horizontal",
+              "name": "line-horizontal",
+              "path": "rtmaster/shapes/line-horizontal.svg"
+            },
+            {
+              "category": "shapes",
+              "description": "Line horizontal arrow left",
+              "name": "line-horizontal-arrow-left",
+              "path": "rtmaster/shapes/line-horizontal-arrow-left.svg"
+            },
+            {
+              "category": "shapes",
+              "description": "Line horizontal arrow right",
+              "name": "line-horizontal-arrow-right",
+              "path": "rtmaster/shapes/line-horizontal-arrow-right.svg"
+            },
+            {
+              "category": "shapes",
+              "description": "Line vertical",
+              "name": "line-vertical",
+              "path": "rtmaster/shapes/line-vertical.svg"
+            },
+            {
+              "category": "shapes",
+              "description": "Line vertical arrow down",
+              "name": "line-vertical-arrow-down",
+              "path": "rtmaster/shapes/line-vertical-arrow-down.svg"
+            },
+            {
+              "category": "shapes",
+              "description": "Line vertical arrow up",
+              "name": "line-vertical-arrow-up",
+              "path": "rtmaster/shapes/line-vertical-arrow-up.svg"
+            },
+            {
+              "category": "shapes",
+              "description": "Square",
+              "name": "square",
+              "path": "rtmaster/shapes/square.svg"
+            },
+            {
+              "category": "shapes",
+              "description": "Triangle down",
+              "name": "triangle-down",
+              "path": "rtmaster/shapes/triangle-down.svg"
+            },
+            {
+              "category": "shapes",
+              "description": "Triangle left",
+              "name": "triangle-left",
+              "path": "rtmaster/shapes/triangle-left.svg"
+            },
+            {
+              "category": "shapes",
+              "description": "Triangle right",
+              "name": "triangle-right",
+              "path": "rtmaster/shapes/triangle-right.svg"
+            },
+            {
+              "category": "shapes",
+              "description": "Triangle-up",
+              "name": "triangle-up",
+              "path": "rtmaster/shapes/triangle-up.svg"
+            },
+            {
+              "category": "valves",
+              "description": "Valve Horizontal",
+              "name": "valve-horizontal",
+              "path": "rtmaster/valves/valve-horizontal.svg"
+            },
+            {
+              "category": "valves",
+              "description": "Valve left right",
+              "name": "valve-left-right",
+              "path": "rtmaster/valves/valve-left-right.svg"
+            },
+            {
+              "category": "valves",
+              "description": "Valve round down",
+              "name": "valve-round-down",
+              "path": "rtmaster/valves/valve-round-down.svg"
+            },
+            {
+              "category": "valves",
+              "description": "Valve round left",
+              "name": "valve-round-left",
+              "path": "rtmaster/valves/valve-round-left.svg"
+            },
+            {
+              "category": "valves",
+              "description": "Valve round right",
+              "name": "valve-round-right",
+              "path": "rtmaster/valves/valve-round-right.svg"
+            },
+            {
+              "category": "valves",
+              "description": "Valve round up",
+              "name": "valve-round-up",
+              "path": "rtmaster/valves/valve-round-up.svg"
+            },
+            {
+              "category": "valves",
+              "description": "Valve square down",
+              "name": "valve-square-down",
+              "path": "rtmaster/valves/valve-square-down.svg"
+            },
+            {
+              "category": "valves",
+              "description": "Valve square left",
+              "name": "valve-square-left",
+              "path": "rtmaster/valves/valve-square-left.svg"
+            },
+            {
+              "category": "valves",
+              "description": "Valve square right",
+              "name": "valve-square-right",
+              "path": "rtmaster/valves/valve-square-right.svg"
+            },
+            {
+              "category": "valves",
+              "description": "Valve square up",
+              "name": "valve-square-up",
+              "path": "rtmaster/valves/valve-square-up.svg"
+            },
+            {
+              "category": "valves",
+              "description": "Valve vertical",
+              "name": "valve-vertical",
+              "path": "rtmaster/valves/valve-vertical"
+            }
+          ],
+          "license": "Apache 2.0",
+          "url": "https://github.com/rtmaster"
+        }
+      },
+      "selectedCategory": "shapes",
+      "selectedRepository": "rtmaster",
+      "selectedSVG": null,
+      "startAnimation": {},
+      "stopAnimation": {},
+      "svgBuilderData": {
+        "elements": [],
+        "height": "100%",
+        "viewport": {
+          "height": 1000,
+          "width": 1000,
+          "x": 0,
+          "y": 0
+        },
+        "width": "100%"
+      },
+      "svg_data": "<svg id=\"Poland_-_Provinces\" data-name=\"Poland - Provinces\" xmlns=\"http://www.w3.org/2000/svg\" width=\"565.33\" height=\"533.13\" viewBox=\"0 0 565.33 533.13\">\n  <defs>\n    <style>\n       \n     \n     g {\n\n  pointer-events: all;\n}\n       \n      .element-empty {\n        fill: #d8d8d8;\n        stroke: #e9e9e9;\n        stroke-linecap: round;\n        stroke-linejoin: round;\n        stroke-width: 1px;\n        fill-rule: evenodd;\n      }\n      \n      .element-highlight {\n        fill: #55B9FF;\n        stroke: #3E81D8;\n        stroke-linecap: round;\n        stroke-linejoin: round;\n        stroke-width: 2px;\n        fill-rule: evenodd;\n      }\n      \n      \n      .element-click {\n        fill: #dd1645;\n        stroke: #b31741;\n        stroke-linecap: round;\n        stroke-linejoin: round;\n        stroke-width: 2px;\n        fill-rule: evenodd;\n      }\n      \n      \n      \n       .textstyle { font: 10px Arial; fill: #000000;  text-anchor: middle; pointer-events: none}\n       .textstyle-highlight { font: 10px Arial; fill: #FFFFFF;  text-anchor: middle; pointer-events: none}\n      \n      \n      \n    </style>\n  </defs>\n  <title>PL-EPS-01-0002</title>\n  <g>\n  <polygon id=\"zachodniopomorskie\" class=\"element-empty\" points=\"166.23 98.78 165.17 96.53 163.88 94.67 162.31 93.26 160.19 88.97 158.85 87.36 156.47 85.63 156.45 80.41 156.01 75.16 152.46 64.31 160.25 62.38 161.14 61.01 160.92 58.63 159.87 57.16 159.25 55.77 159.66 54.07 161.14 52.54 161.73 49.97 161.33 45.38 159.6 41.84 155 35.16 151.11 27.3 151 27.09 151 27.09 150.62 27.24 138.94 28.97 135.13 31.36 133.19 33.31 132.04 35.61 132.87 34.81 133.6 34.51 133.92 34.91 133.57 36.2 132.85 37.03 131.95 37.38 131.39 37.14 131.69 36.2 131.69 35.61 125.22 43.96 122.85 48.06 123.67 47.23 124.16 46.63 125.27 46.67 125.93 48.06 125.21 48.9 123.25 49.82 122.47 50.76 121.59 51.12 120.57 51.33 120.06 51.52 120.55 50.8 121.8 49.49 122.5 48.06 119.05 52.14 116.73 53.66 114.81 54.61 117.85 53.65 119.14 53.72 119.03 55.26 119.22 55.4 119.32 55.37 119.38 55.45 119.41 55.92 116.74 55.92 116.74 56.63 117.13 56.63 117.13 57.22 112.2 58.09 110.99 57.22 113.76 55.98 114.46 55.26 108.28 57.34 99.27 58.47 88.43 63.4 77.4 66.38 67.33 69.08 51.78 75.67 39.03 79.02 24.24 85.61 20.23 88.58 18.06 89.74 15.84 90.2 10.31 89.74 8.6 89.09 7.99 88.58 7.07 88.16 6.12 90.72 5.66 91.03 5.12 91.19 6.1 92.4 6.55 93.88 6.55 93.88 6.68 93.86 7.99 94.46 10.68 98.37 11.61 98.99 12.27 99.1 13.15 99.56 13.68 99.64 14.4 99.49 14.45 99.3 13.68 98.99 13.68 98.35 14.48 98.27 15.24 98.02 16.76 97.05 17.27 97.43 17.98 97.1 18.56 96.26 18.67 95.11 18.2 94.5 17.29 94.09 15.62 93.76 16.1 93.14 16.47 92.53 16.85 92.06 17.34 91.87 18.01 92.05 18.48 92.31 18.92 92.17 19.47 91.22 19.57 91.58 19.59 91.66 19.64 91.68 19.82 91.87 19.11 93.72 19.98 94.69 26.18 95.34 27.51 96.09 28.28 97.7 27.93 98.04 27.42 98.72 27.14 98.99 27.43 99.48 27.75 99.83 28.14 100.08 28.63 100.29 28.28 99.64 29.62 98.29 30.05 97.54 30.19 96.4 30.57 96.4 30.39 98.19 30 99.88 29.8 101.78 30.19 104.17 29.32 104.21 28.71 104.57 28.16 104.73 27.52 104.17 26.15 108.27 25.78 110.35 27.52 114.54 28.16 114.88 29.59 115.01 30.19 115.19 30.14 115.74 30.15 116.11 30.19 116.47 29.42 117.08 28.95 117.65 28.7 118.53 28.63 120.04 28.34 120.32 27.69 119.48 25.86 115.94 25.01 114.72 23.96 113.9 20.96 112.82 18.5 112.4 17.88 111.88 16.76 110.67 15.24 109.94 14.45 109.33 13.79 107.5 13.1 106.98 12.32 106.59 11.77 106.1 11.46 106.8 12 107.12 12.18 107.44 12 107.77 11.46 108.09 12.44 108.78 12.37 109.55 11.63 110.24 10.62 110.67 10.08 110.74 10.08 110.74 10.07 110.75 10.14 113.4 9.91 114.87 10.76 116.71 11.93 120.37 12.03 121.3 11.88 124.75 11.92 126.83 12.33 128.77 13.69 130.88 14.27 132.84 15.44 134.82 16.02 139.68 17.2 145.14 17.57 146.9 17.66 147.69 17.69 149.38 17.87 150.3 18.21 150.9 19.06 151.62 19.28 152.15 20.01 152.82 18.55 155.7 18.14 156.32 17.55 156.63 17 157.47 16.6 158.61 16.45 159.85 16.65 161.36 16.98 162.68 17.1 164.03 15.42 169.3 15.27 170.08 14.52 171.76 12.8 173.56 9.51 176.2 6.11 177.98 3.4 180 3.4 180.58 3.74 181.51 4.42 184.8 4.55 185.96 4.32 187.71 3.74 188.83 2.25 190.12 2.89 191.43 3.87 192.19 5.04 192.56 6.28 192.65 7.4 193.15 9.22 195.31 10.75 196.13 16.69 200.52 17.55 201.54 19.47 205.33 20.05 205.89 21.11 206.39 22.72 208.59 26.06 209.92 29.31 213.58 30.67 208.66 31.9 206.82 36.65 206.06 39.48 204.86 43.86 198.68 47.41 190.87 52.88 187.84 62.16 190.93 65.12 190.51 68.55 186.51 70.68 182.47 69.15 182.21 68.04 180.7 71.2 180.53 80.67 177.27 92.19 177.31 95.01 175.24 100.03 168.81 102.96 166.48 106 166.06 108.81 166.68 110.28 171.24 109.26 175.65 112.35 176.68 115.77 178.73 119.26 178.25 122.69 176.91 128.08 171.8 132.61 164.68 140.7 159.94 144.82 158.66 146.44 157.12 147.75 154.78 149.47 152.65 149.12 149.96 147.37 147.72 145.3 146.63 141.08 145.55 137.57 142.14 136.71 138.8 136.65 135.06 137.91 133.27 148.2 133.54 149.88 133.21 151.31 127.22 152.39 124.13 153.86 121.56 155.86 120.67 157.99 120.61 160.08 121.28 159.1 111.05 161.44 108.65 163.1 105.7 162.48 103.7 161.51 102.09 160.39 101.55 160.33 99.69 163.13 98.37 166.23 98.78\"/>\n  <polygon id=\"świętokrzyskie\" class=\"element-empty\" points=\"433.93 374.17 433.75 372.97 433.47 371.07 432.05 365.65 431.95 364.82 431.82 364.51 431.56 364.35 431.31 364.12 431.18 363.61 431.25 363.06 431.39 362.8 431.54 362.63 431.6 362.35 432.01 358.51 431.84 356.78 430.8 356.01 430.8 355.4 431.2 355.32 431.69 355.09 432.13 354.71 432.36 354.19 432.14 352.99 414.26 356.71 405.01 353.81 400.71 353.44 396.89 350.95 396.53 349.6 396.29 348.12 394.62 346.23 394.15 343.23 392.46 342.65 390.71 344.31 389.07 346.61 387.22 347.66 379.45 348.91 372.69 347.5 371.25 346.41 370.07 344.52 368.77 343.03 359.57 337.37 357.91 333.16 354.82 332.05 353.22 333.25 351.17 338.33 349.31 339.19 347.45 339.48 345.68 340.35 341.8 344.04 340 344.56 333.82 343.69 332.08 344.33 330.71 346.14 329.32 351.51 331.87 355.39 333.6 356.77 334.14 359.74 333.7 362.64 332.43 364.15 325.05 358.73 323.07 359.09 322.35 361.95 322.31 364.78 322.54 367.58 321.59 370.24 319.65 371.54 318.03 373.05 316.73 375.23 321.52 376.16 322.22 376.54 322.42 377.53 322.44 378.62 322.17 379.32 318.34 379.95 316.24 383.94 317.77 385.77 321.98 386.98 323.91 388.46 325.47 391.94 328.13 395.18 325.88 395.52 322.03 398.77 320.91 401.21 322.87 402.23 326.67 402.8 328.24 403.42 333.51 403.43 335.7 404.61 337.59 406.59 342.28 408.07 346.58 410.95 349.13 416.01 350.08 420.04 351.04 422.08 353.58 425.65 354.63 427.89 358.74 430.36 366.08 430.56 367.76 428.77 367.98 427.85 368.67 426.77 370.47 425.9 371.25 425.14 371.41 424.68 371.48 423.75 371.67 423.32 371.9 423.16 372.4 423.13 372.59 423.02 373.77 421.83 374.12 420.33 374.49 419.79 376.63 421.83 377.55 421.4 378.31 420.6 379.05 420.12 379.91 420.69 380.67 420.19 382.2 420.04 382.72 419.74 383.27 419.01 383.74 418.6 384.31 418.38 388.46 418.24 389.31 418.01 389.93 417.48 390.45 416.89 390.98 416.45 393.28 415.34 393.84 415.2 394.67 415.53 395.16 416.18 395.71 416.66 396.7 416.45 396.7 416.31 397.67 414.93 398.07 414.63 398.37 414.61 398.58 414.44 398.64 413.7 398.94 413.24 399.59 412.91 400.25 412.31 400.55 411.07 401.07 411.51 401.45 411.53 402.08 411.07 402.14 410.8 402.08 410.37 402.05 409.99 402.27 409.81 403.07 409.88 403.26 409.81 406.69 406.82 407.74 407.29 409.16 406.98 410.59 406.14 411.65 405.02 411.11 403.63 410.89 403.22 416.23 400.82 419.82 399.89 420.84 399.02 422.56 396.95 423.26 395.58 423.55 393.89 423.95 392.51 426.6 389.35 428.2 386.67 429.16 385.98 430.63 385.74 431.63 385.2 432.48 383.9 433.14 382.32 433.54 380.92 434 377.44 433.93 374.17\"/>\n  <polygon id=\"śląskie\" class=\"element-empty\" points=\"328.61 405.32 328.24 403.42 326.67 402.8 322.87 402.23 320.91 401.21 322.03 398.77 325.88 395.52 328.13 395.18 325.47 391.94 323.91 388.46 321.98 386.98 317.77 385.77 316.24 383.94 318.34 379.95 322.17 379.32 322.44 378.62 322.42 377.53 322.22 376.54 321.52 376.16 316.73 375.23 310.66 372.13 305.06 372.43 303.17 371.86 297.95 363.53 294.59 360.43 290.83 359.73 288.9 361.41 284.44 361.43 280.82 360.68 273.51 356.72 271.8 354.97 269.83 354.58 268.06 355.81 266.24 356.67 258.34 356.93 255.54 358.31 253.61 365.13 252.91 365.97 252.49 367.34 252.84 369.35 253.59 370.99 253.19 374.13 248.82 376.95 247.32 380.11 246.33 385.64 245 389.24 246.08 392.59 247.56 394.61 249.37 396 251.16 397.93 251.79 401.09 243.67 401.01 242.04 401.4 241.3 403.39 241.92 404.94 241.81 406.51 240.58 407.09 239.38 407.33 238.87 409.12 239.82 420.36 239.77 424.84 239.17 427.38 233.76 429.92 230.41 432.47 223.36 433.94 220.04 440.46 219.96 441.91 219.96 441.92 220.75 442.12 224.01 444.26 223.65 445.86 224.38 446.71 227.95 447.39 228.8 447.86 230.56 449.38 231.22 449.68 232.53 449.95 233.19 450.44 233.43 450.92 233.82 452.27 234.13 452.85 235.24 453.76 236.05 453.6 237.61 452.24 237.55 452.09 237.47 451.99 237.38 451.94 237.25 451.94 239.51 451.66 241.67 452.43 245.82 454.73 247.12 454.73 249.32 453.32 250.15 453.82 250.49 455.39 250.35 456.72 250.6 457.79 252.08 458.59 250.55 460.37 250.57 462.7 251.54 465.33 252.86 468.05 253.42 470.56 253.77 471.21 254.51 471.73 256.24 471.88 257.03 472.13 257.76 472.72 258.86 474.02 259.56 474.45 260.38 474.38 261.25 474 262.12 473.85 262.96 474.47 263.19 475.15 263.57 478.12 263.83 478.95 264.49 480.45 264.73 481.23 265.54 484.91 265.7 486.69 265.46 488.13 271 488.64 272.61 489.63 272.12 491.08 272.18 492.3 272.45 493.47 272.6 494.74 272.36 497.57 272.68 498.53 273.77 498.74 275.18 498.63 277.34 497.37 278.56 497.08 279.08 497.26 280.19 498.07 280.72 498.34 281.3 498.38 282.7 498.1 284.43 497.41 284.83 496.72 284.97 495.65 285.37 493.98 285.53 493.94 286.22 493.93 286.46 493.74 286.6 493.17 286.49 492.76 286.31 492.5 286.21 492.4 287.11 489.61 287.87 488.39 288.68 487.61 289.6 487.16 290.67 486.93 292.39 486.95 292.97 486.85 293.76 486.53 294.18 486.17 299.03 480.81 299.24 480.38 299.56 480.24 299.87 480.37 299.87 480.36 299.58 479.36 298.27 478.47 297.56 476.91 298.03 475.11 298.98 473.18 299.17 470.91 295.39 470.24 293.3 469.29 291.49 467.59 290.64 464.93 289.51 462.85 286.66 461.73 284.99 458.73 284.87 455.83 283.67 454.32 282.19 454.16 281.06 452.69 281.7 449.78 282.94 447.23 284.17 445.42 297.42 430.51 294.82 426.89 291.85 423.92 293.61 422.55 297.34 423.08 299.77 419.61 301.32 416.48 302.82 414.24 305.92 416.03 307.35 416.02 308.77 415.7 313.72 411.84 316.79 411.36 319.92 411.61 321.69 411.33 328.75 406.89 328.61 405.32\"/>\n  <polygon id=\"mazowieckie\" class=\"element-empty\" points=\"502.37 242.05 501.46 242.34 500.53 241.76 500.7 241.34 500.98 240.38 501.26 239.89 499.69 237.98 498.67 237.38 497.48 238.01 496.96 235.94 495.67 234.68 494.03 234.16 489.67 234.76 480.97 232.96 478.02 233.12 476.66 232.78 476 231.71 475.04 232.12 473.91 231.25 472.97 229.9 472.57 228.92 472.91 225.89 472.76 225.45 471.98 225.32 471.51 224.9 471.24 224.12 471.04 222.95 471.09 222.13 471.34 221.41 471.53 220.65 471.39 219.75 471 219.21 469.76 218.15 468.6 216.54 465.48 213.2 465.65 211.2 465.47 207.76 464.8 204.5 464.45 199.69 463.58 195.35 460.34 196.27 457.19 197.85 455.44 196.63 454.04 194.65 454.93 189.55 452.22 187.5 449.43 190.52 445.19 191.15 441.21 189.07 439.73 186.37 438.96 182.97 438.14 180.66 436.78 179.25 434.64 178.07 433.22 175.52 432.99 173.16 433.89 171.48 431.33 169.49 428.25 169.04 425.29 167.42 423.23 163.44 420.12 155.6 418.72 144.86 417.82 141.17 416.54 138.13 415.8 134.88 409.04 135.4 407.66 136.15 406.06 139.32 403.78 140.94 401.24 141.33 396.28 140.86 392.04 145.92 387.01 147.53 381.67 147.51 377.57 149.88 374.02 150.62 370.02 150.57 368 152.22 366.15 154.43 358.33 158.96 356.29 159.57 354.14 159.34 352.41 160.69 351.46 163.84 350.01 165.54 348.32 166.39 344.12 167.17 326.47 164.44 325.98 163.85 325.62 163.03 324.75 162.43 323.79 162.22 321.57 162.91 320.13 165.78 318.51 167.13 316.58 167.62 313.9 169.79 311.04 171.14 311.37 172.9 311.42 174.73 311.87 177.47 311.71 179.3 311.41 181.11 310.88 182.69 309.81 182.56 308.78 181.82 307.7 181.37 306.51 182.51 305.47 184.1 303.13 186.07 300.4 185.71 301.27 189.51 300.99 192.92 299.87 194.16 299.4 196.03 300.02 197.96 300.95 199.71 302.56 203.6 302.61 206.65 300.21 207.3 296.45 218.27 294.97 221.31 294.67 224.83 295.82 226.01 296.05 227.71 291.92 234.54 291.69 236.08 291.32 237.64 296.71 241.36 302.59 242.61 305.46 243.96 310.63 248.14 322.24 245.73 324.02 243.91 326.1 243.72 327.62 245.66 328.97 248.01 330.72 248.92 332.7 249.51 334.24 250.58 334.95 252.91 335.14 256.11 336.28 258.64 337.08 259.07 337.94 258.86 341.79 260.41 343.97 261.88 344.74 262.86 344.16 267.41 342.3 268.5 342.76 270.43 344.26 272.15 345.59 274.15 345.45 275.86 345.94 277.33 347.95 277.98 353.88 277.3 357.59 279.01 361.64 282.16 364.93 286.57 365.29 288.06 364.79 289.09 364.23 289.92 363.94 291.07 364.46 293.64 367.47 296.79 368.32 299.08 368.18 301.23 367.46 302.71 363.4 302.14 360.05 300.33 355.69 300.33 354.24 305.39 355.9 309.39 356.45 312.16 356.66 315.02 357.08 316.47 359.14 317.46 359.87 318.28 359.86 321.16 358.93 323.63 355.34 326.98 354.63 329.42 354.82 332.05 357.91 333.16 359.57 337.37 368.77 343.03 370.07 344.52 371.25 346.41 372.69 347.5 379.45 348.91 387.22 347.66 389.07 346.61 390.71 344.31 392.46 342.65 394.15 343.23 394.62 346.23 396.29 348.12 396.53 349.6 396.89 350.95 400.71 353.44 405.01 353.81 414.26 356.71 432.14 352.99 430.77 349.56 430.33 346.71 429.81 345.11 429.69 344.41 429.78 343.39 429.99 342.61 430.46 341.31 431.47 335.76 432.15 334.33 432.68 333.88 433.29 333.79 433.19 331.92 433.87 329.21 434.21 326.64 431.98 323.97 432.09 321.79 433.4 320.73 434.75 318.84 434.81 315.17 433.09 315 433.09 314.38 433.94 313.38 433.75 312.27 432.74 310.7 432.62 309.43 432.67 308.41 432.47 307.61 431.6 307.02 431.07 306.97 429.69 307.58 428.71 307.68 425.83 307.07 424.28 306.35 423.45 305.37 422.75 304.17 422.67 303.24 423.25 300.94 425.27 300.4 427.27 301.22 431.34 301.86 435.3 300.45 436.69 299.13 437.07 297.08 434.25 292.74 436.41 289.7 439.49 287.83 437.53 284.83 436.17 281.47 435.94 279.07 434.84 276.7 433.94 274.16 433.59 271.87 437.56 268.91 441.81 267.68 449.9 267.73 457.55 266.21 460.39 266.74 462.35 266.11 467.69 262.1 469.83 261.85 475.98 262.44 479.08 259.9 479.35 258.54 479.71 257.39 480.63 256.4 481.65 255.72 483.94 256.25 490.49 259.63 492.66 258.81 494.51 256.44 496.11 252.7 501.42 244.84 503.21 241.47 502.37 242.05\"/>\n  <polygon id=\"warmińsko-mazurskie\" class=\"element-empty\" points=\"487.81 44.8 486.39 47.43 485.34 48.29 481.49 49.56 470.98 49.01 457.95 48.31 442.4 47.48 426.85 46.66 402.63 45.36 382.63 44.3 366.49 43.44 350.35 42.58 328.7 41.42 317.16 40.8 316.94 40.92 316.32 40.86 316.42 41.29 316.57 42.33 316.67 42.77 315.79 42.95 315.35 43.9 315.05 44.95 314.57 45.45 313.76 45.57 313.01 45.88 309.39 48.55 307.19 48.86 306.27 49.24 301.92 52 301.21 52.17 300.5 52.63 299.08 53.96 297.67 56.27 297.31 56.63 296.93 57.2 295.94 59.81 295.19 60.55 295.23 59.15 295.45 57.99 295.85 57.13 296.38 56.63 296.38 55.92 295.07 56.09 290.09 55.44 288.74 56.99 288.35 60.25 289.58 63.92 290.73 65.96 291.32 68.35 290.68 70.1 289.81 71.64 287.37 74.12 286.48 75.45 286.63 77.32 287.64 81.41 289.51 84.5 292.21 86.1 295.08 86.48 296.54 88.47 295.45 92.21 297.44 93.18 302.97 92.73 305.77 93.49 305.55 95.03 305.55 96.62 304.87 97.87 303.85 98.91 302.97 101.61 302.3 102.65 302.19 104.18 299.03 105.58 294.52 105.28 292.18 106.76 290.2 108.92 281.95 124.32 286.79 133.77 288.17 137.81 289.87 141.02 290.74 142.28 292.05 142.84 293.11 142.89 297.39 144.31 303.37 147.91 309.75 149.59 312.86 151.78 315.75 159.1 316.58 167.62 318.51 167.13 320.13 165.78 321.57 162.91 323.79 162.22 324.75 162.43 325.62 163.03 325.98 163.85 326.47 164.44 344.12 167.17 348.32 166.39 350.01 165.54 351.46 163.84 352.41 160.69 354.14 159.34 356.29 159.57 358.33 158.96 366.15 154.43 368 152.22 370.02 150.57 374.02 150.62 377.57 149.88 381.67 147.51 387.01 147.53 392.04 145.92 396.28 140.86 401.24 141.33 403.78 140.94 406.06 139.32 407.66 136.15 409.04 135.4 415.8 134.88 419.86 133.09 427.86 133.56 431.37 132.31 433.01 131.01 434.78 130.26 438.95 129.63 448.6 123 454.03 116.84 469.6 107.15 472.81 103.75 474.76 98.23 477.03 93.88 477.23 89.45 471.3 81.13 468.46 78.34 467.87 75.7 467.56 72.86 461.92 65.29 467.17 57.8 479.64 56.04 483.35 53.52 486.54 50.17 487.95 45.53 487.81 44.8\"/>\n  <polygon id=\"pomorskie\" class=\"element-empty\" points=\"317.16 40.8 312.81 40.57 310.04 39.61 308.85 38.64 307.9 39.06 304.46 42.66 302.69 43.48 300.49 43.99 295.87 46.24 274.9 49.38 273.37 48.91 272.71 48.55 272.23 48.06 270.49 49.03 268.41 48.87 258.98 45.81 258.04 44.49 257.7 43.66 256.9 43.13 255.97 42.84 255.22 42.76 254.34 42.46 252.64 41.15 251.76 40.86 250.98 39.25 250.61 35.65 250.57 31.84 250.79 29.63 250.35 28.7 248.94 24.31 248.24 23.23 247.79 21.95 248.12 20.35 247.19 21.55 246.13 21.77 245.49 20.97 245.83 19.08 245.18 18.4 245.16 17.76 245.38 17.12 245.41 16.38 244.59 14.6 243.92 13.41 243.62 13.05 242.28 12.45 241.98 12.09 241.98 10.68 242.09 10.04 242.88 7.27 243.24 6.78 243.92 6.47 244.4 6.69 246.21 8.1 246.74 8.85 250.02 10.44 253.36 12.74 254.94 13.29 255.48 14.2 255.97 14.41 257.93 14.81 258.45 15.06 261.11 19.58 262.03 20.76 262.71 22.57 263.73 23.29 264.07 23.99 264.35 24.69 264.59 25.02 265.58 24.54 265.52 23.23 264.95 21.73 264.39 20.67 260.91 16.14 241.82 4.69 240.64 4.42 239.9 4.03 237.87 2.25 236.6 1.78 227.41 1.78 212.49 3.16 203 6.42 181.86 10.44 165 18.36 159.65 24.26 157.53 25.02 155.16 25.43 151 27.09 151 27.09 151.11 27.3 155 35.16 159.6 41.84 161.33 45.38 161.73 49.97 161.14 52.54 159.66 54.07 159.25 55.77 159.87 57.16 160.92 58.63 161.14 61.01 160.25 62.38 152.46 64.31 156.01 75.16 156.45 80.41 156.47 85.63 158.85 87.36 160.19 88.97 162.31 93.26 163.88 94.67 165.17 96.53 166.23 98.78 163.13 98.37 160.33 99.69 160.39 101.55 161.51 102.09 162.48 103.7 163.1 105.7 161.44 108.65 159.1 111.05 160.08 121.28 162.77 124.6 165.08 128.69 168.35 130.69 179.73 131.16 182.72 132.8 185.2 135.79 186.77 134.83 188.45 128.92 189.81 125.94 191.37 123.78 193.43 123.56 201.19 125.59 204.67 124.18 204.7 122.19 204.92 120.84 205.24 119.62 207.03 117.94 210.87 116.51 213.14 112.32 214.65 111.14 221.75 112.53 231.22 111.11 233.18 111.28 234.83 113.4 236.66 115.15 246.72 116.83 251.48 119.67 253.56 118.29 256.78 117.14 261.34 117.79 262.44 118.41 263.2 119.32 264.1 119.91 267.78 123.72 269.51 124.83 272.56 126.04 278.93 125.66 281.95 124.32 290.2 108.92 292.18 106.76 294.52 105.28 299.03 105.58 302.19 104.18 302.3 102.65 302.97 101.61 303.85 98.91 304.87 97.87 305.55 96.62 305.55 95.03 305.77 93.49 302.97 92.73 297.44 93.18 295.45 92.21 296.54 88.47 295.08 86.48 292.21 86.1 289.51 84.5 287.64 81.41 286.63 77.32 286.48 75.45 287.37 74.12 289.81 71.64 290.68 70.1 291.32 68.35 290.73 65.96 289.58 63.92 288.35 60.25 288.74 56.99 290.09 55.44 295.07 56.09 296.38 55.92 296.38 56.63 295.85 57.13 295.45 57.99 295.23 59.15 295.19 60.55 295.94 59.81 296.93 57.2 297.31 56.63 297.67 56.27 299.08 53.96 300.5 52.63 301.21 52.17 301.92 52 306.27 49.24 307.19 48.86 309.39 48.55 313.01 45.88 313.76 45.57 314.57 45.45 315.05 44.95 315.35 43.9 315.79 42.95 316.67 42.77 316.57 42.33 316.42 41.29 316.32 40.86 316.94 40.92 317.16 40.8\"/>\n  <polygon id=\"podlaskie\" class=\"element-empty\" points=\"549.79 197.34 549.33 186.12 549.18 185.41 548.96 184.95 548.76 184.39 548.71 183.4 548.87 182.67 549.49 181.42 549.65 180.84 549.63 180.1 549.16 177.52 549.15 176.92 549.28 175.81 549.19 175.09 548.55 173.72 546.86 171.54 546.38 169.96 546.45 168.15 546.99 166.86 547.67 165.74 548.17 164.4 548.3 162.14 547.71 161.02 546.75 160.27 545.75 159.17 545.09 157.73 544.65 156.37 544.1 155.05 543.1 153.7 542.11 151.04 539.88 142.19 538.75 139.23 536.12 133.73 531.38 119.1 530.04 112.53 529.92 106.73 529.91 106.73 529.91 106.72 528.55 104.72 527.96 102.78 527.45 97.75 526.88 95.36 526.14 93.18 525.56 90.86 525.49 88.08 525.72 87.52 525.76 87 525.6 86.53 525.27 86.1 524.67 85.61 524.22 84.92 523.98 84.06 524.02 83.04 524.29 82.62 524.59 82.24 525.27 81.68 526.1 80.22 526.08 78.07 525.27 73.63 524.84 71.59 524.23 69.46 523.45 67.55 522.52 66.18 522.01 65.87 520.81 65.54 520.23 65.15 519.72 64.41 518.7 62.46 518.16 61.62 517.13 60.73 516.01 59.78 511.51 58.07 509.38 56.76 505.91 53.84 504.89 53.35 503.77 53.6 502.43 54.17 501.15 54.17 500.14 52.76 500.15 51.75 500.47 50.66 500.68 49.75 500.32 49.22 498.4 48.99 497.78 48.56 497.42 47.95 497.18 47.2 496.86 46.45 496.26 45.85 495.69 45.71 494.42 45.98 493.81 45.9 490.46 44.17 489.27 44 487.88 44.66 487.81 44.8 487.95 45.53 486.54 50.17 483.35 53.52 479.64 56.04 467.17 57.8 461.92 65.29 467.56 72.86 467.87 75.7 468.46 78.34 471.3 81.13 477.23 89.45 477.03 93.88 474.76 98.23 472.81 103.75 469.6 107.15 454.03 116.84 448.6 123 438.95 129.63 434.78 130.26 433.01 131.01 431.37 132.31 427.86 133.56 419.86 133.09 415.8 134.88 416.54 138.13 417.82 141.17 418.72 144.86 420.12 155.6 423.23 163.44 425.29 167.42 428.25 169.04 431.33 169.49 433.89 171.48 432.99 173.16 433.22 175.52 434.64 178.07 436.78 179.25 438.14 180.66 438.96 182.97 439.73 186.37 441.21 189.07 445.19 191.15 449.43 190.52 452.22 187.5 454.93 189.55 454.04 194.65 455.44 196.63 457.19 197.85 460.34 196.27 463.58 195.35 464.45 199.69 464.8 204.5 465.47 207.76 465.65 211.2 465.48 213.2 468.6 216.54 469.76 218.15 471 219.21 471.39 219.75 471.53 220.65 471.34 221.41 471.09 222.13 471.04 222.95 471.24 224.12 471.51 224.9 471.98 225.32 472.76 225.45 472.91 225.89 472.57 228.92 472.97 229.9 473.91 231.25 475.04 232.12 476 231.71 476.66 232.78 478.02 233.12 480.97 232.96 489.67 234.76 494.03 234.16 495.67 234.68 496.96 235.94 497.48 238.01 498.67 237.38 499.69 237.98 501.26 239.89 500.98 240.38 500.7 241.34 500.53 241.76 501.46 242.34 502.37 242.05 503.21 241.47 503.97 241.14 504.99 241.39 506.75 242.45 507.75 242.44 508.19 242.13 508.19 242.13 507.78 241.78 507.61 241.74 510.2 236.42 511.23 234.82 513.47 232.06 520.27 221.56 525.2 217.45 530.15 214.55 539.49 211.88 546.92 206.81 549.14 204.06 549.91 200.11 549.79 197.34\"/>\n  <polygon id=\"podkarpackie\" class=\"element-empty\" points=\"535.13 417.21 529.53 413.93 527.72 411.21 524.2 408.95 520.09 408.49 516.9 408.8 515.42 409.44 510.82 414.67 507.2 417.6 502.98 418.5 490.42 418.09 482.77 415.91 482.22 414.63 484.12 414.15 485 413.64 483.5 412.61 475.71 414.15 473.75 413.24 472.3 411 471.89 408.82 472.83 407 474.21 405.16 475.96 404.57 477.7 404.79 479.23 403.9 478.59 401.76 477.26 399.28 477.13 398.07 477.18 396.87 476.67 396.06 467.87 391.32 454.84 388 453.81 386.2 456.35 381.39 457.13 379.15 455.34 377.58 453.36 376.34 451.22 375.52 449.02 375.62 445.32 378.22 441.14 378.01 433.75 372.97 433.93 374.17 434 377.44 433.54 380.92 433.14 382.32 432.48 383.9 431.63 385.2 430.63 385.74 429.16 385.98 428.2 386.67 426.6 389.35 423.95 392.51 423.55 393.89 423.26 395.58 422.56 396.95 420.84 399.02 419.82 399.89 416.23 400.82 410.89 403.22 411.11 403.63 411.65 405.02 410.59 406.14 409.16 406.98 407.74 407.29 406.69 406.82 403.26 409.81 403.07 409.88 402.44 417.25 400.74 421.38 398.65 424.99 398.31 429.89 399.81 443.05 399.36 446.9 399.31 450.25 399.81 451.26 400.26 452.44 401.45 453.87 403.05 454 405.13 455.12 405.88 457.6 400.33 461.91 399.37 464.05 401.02 465.57 407.03 468.15 410.39 471.79 412.33 477.81 412.52 480.87 412.21 483.87 413.24 490.14 415.24 495.85 415.31 496.1 415.32 496.13 416.17 495.78 420.17 495.33 421.21 495.6 421.78 495.98 422.82 497 423.39 497.39 423.81 497.45 424.67 497.26 425.23 497.42 426.17 498.39 428.05 501.29 428.91 501.99 429.49 501.6 430.28 500.65 431.25 499.77 432.37 499.56 433.4 500.14 435.45 502.04 438.46 503.55 440.47 505.45 442.08 508.05 442.78 511.08 443.15 513.8 444.74 514.96 448.69 515.72 450.51 516.89 451.16 517.18 451.72 517.22 453.06 517.05 453.52 517.14 454.13 517.83 454.14 518.43 453.98 518.98 454.11 519.52 454.53 519.88 457.15 520.68 460.24 520.56 461.43 521.03 464.26 523.89 466.31 524.52 470.68 524.71 472.62 525.66 473.8 524.53 474.92 524.88 477.01 527.2 478.39 528.14 479.59 528.29 480.79 528.17 482.81 528.32 484.07 527.94 484.68 528.01 485.24 528.55 486.27 530 486.89 530.2 487.89 530.72 489.13 531.84 490.26 532.33 490.91 530.97 490.81 530.69 490.73 530.51 489.83 528.95 489.58 528.15 489.65 526.99 490.16 525.32 490.16 524.59 489.48 523.73 486.97 522.32 485.94 521.56 484.31 519.4 482.5 518.12 482.71 518.07 482.78 518.03 481.9 517.41 481.16 518.34 480.9 518.52 480.56 518.06 480.86 517.02 481.75 515.17 482.54 512.14 483.48 509.54 483.69 508.29 482.94 500.43 482.69 499.07 482.38 498.41 481.17 497.13 480.44 495.98 480.28 495.5 480.08 494.52 479.73 490.87 479.35 489.61 478.28 486.53 479.67 483.21 483.91 477.49 484.88 474.73 485.28 473.99 485.9 473.45 487.11 473.21 487.72 472.94 488.66 471.99 492.1 465.73 492.65 465.06 493.14 464.74 494.13 464.37 494.61 463.88 494.87 463.27 495.33 461.52 495.62 460.8 497.96 458.39 504.02 449.48 506.24 447.02 508.29 445.41 509.97 442.8 522.74 428.9 525.27 426.94 528.31 424.59 528.32 424.59 528.32 424.59 528.33 424.59 529.95 423.28 534.35 418.48 535.13 417.35 535.16 417.23 535.13 417.21\"/>\n  <polygon id=\"opolskie\" class=\"element-empty\" points=\"253.61 365.13 255.54 358.31 251.34 354.91 250.04 352.38 248.54 350.54 247.88 350.92 247.36 351.83 246.63 352.48 242.68 352.58 230.18 349.36 228.54 348.03 227.28 345.77 220.9 349.6 214.28 352.03 210.72 351.83 207.78 349.46 207.47 347.28 206.72 345.37 204.88 344.42 202.94 344.52 201.09 345.66 199.14 346.14 197.22 346 195.4 346.61 193.95 348.18 190.7 355.68 190.11 357.85 189.75 360.16 188.85 362.85 187.08 364.04 184.42 367.49 182.42 372.13 177.77 379.05 173.75 386.71 172.47 391.67 170.45 395.13 167.07 395.68 164.14 397.94 160.11 408.01 159.87 409.05 159.87 409.05 160.7 409.55 161.99 409.39 167.73 411.01 168.35 411.38 169.65 412.48 170.36 412.86 171.13 412.87 172.83 412.52 173.49 412.72 173.37 412.96 173.56 413.91 173.9 415.04 174.24 415.8 174.79 416.4 176.76 417.65 178.09 418.04 180.71 417.96 181.86 418.45 180.84 418.87 180.99 419.2 181.19 419.49 181.42 419.74 181.67 419.97 181.6 421.11 181.71 422.21 182.1 423.11 182.84 423.68 183.45 422.08 184.69 421.98 185.91 422.97 186.43 424.6 186.71 424.79 187.01 424.86 187.3 424.79 187.59 424.6 189.23 422.6 191.9 422.36 196.89 423.24 198.19 422.9 199.15 422.12 200.8 419.82 201.12 419.1 201.26 418.5 201.63 418.27 202.57 418.62 202.88 418.92 203.91 420.31 204.05 420.51 204.08 420.74 204.04 421 203.91 421.28 203.31 422.92 203.2 423.72 203.32 424.6 203.91 425.18 204.78 426.8 204.26 428.12 203.13 429.11 200.75 430.54 199.26 431.12 196.56 431.23 195.95 431.54 195.54 432.42 195.65 433.05 198.37 436.5 199.24 436.89 199.81 436.79 200.28 436.52 200.87 436.38 201.61 436.57 203.13 437.33 203.91 437.5 203.94 437.58 203.95 437.67 203.94 437.73 203.91 437.8 203.39 438.24 203.21 438.72 203.39 439.22 203.91 439.74 204.53 440.49 204.91 441.45 205.22 442.52 205.66 443.56 206.29 444.44 209.91 448.05 211.95 448.48 213.98 447.86 215.63 446.38 216.64 446.12 218.88 446.05 220.7 445.51 220.99 445.13 220.89 444.26 220.5 443.66 220.02 443.64 219.57 443.78 219.28 443.66 219.03 441.69 219.96 441.92 219.96 441.91 220.04 440.46 223.36 433.94 230.41 432.47 233.76 429.92 239.17 427.38 239.77 424.84 239.82 420.36 238.87 409.12 239.38 407.33 240.58 407.09 241.81 406.51 241.92 404.94 241.3 403.39 242.04 401.4 243.67 401.01 251.79 401.09 251.16 397.93 249.37 396 247.56 394.61 246.08 392.59 245 389.24 246.33 385.64 247.32 380.11 248.82 376.95 253.19 374.13 253.59 370.99 252.84 369.35 252.49 367.34 252.91 365.97 253.61 365.13\"/>\n  <polygon id=\"lubiskie\" class=\"element-empty\" points=\"126.11 284.07 122.46 280.04 118.37 282.82 115.84 281.99 113.43 280.34 112.61 277.92 112.86 274.8 113.37 273.05 113.28 271.23 112.36 270.65 111.39 271.07 109.31 271.03 107.33 269.04 106.04 266.68 105.04 263.85 101.96 262.2 100.43 260.61 99.12 258.67 98.68 255.8 98.72 252.72 99.36 250.04 99.48 248.66 99.77 247.34 101.59 241.96 101.47 236.33 100.35 233.62 97.98 229.4 99.17 228.56 100.67 228.57 100.68 225.81 100.24 222.46 99.56 219.25 97.58 213.82 97.37 208.68 97.61 206.73 97.67 204.66 98.06 203.8 98.91 203.9 104.2 202.22 105.28 201.52 105.81 200.07 104.61 195.52 102.9 193.92 108.33 186.92 108.15 181 109.26 175.65 110.28 171.24 108.81 166.68 106 166.06 102.96 166.48 100.03 168.81 95.01 175.24 92.19 177.31 80.67 177.27 71.2 180.53 68.04 180.7 69.15 182.21 70.68 182.47 68.55 186.51 65.12 190.51 62.16 190.93 52.88 187.84 47.41 190.87 43.86 198.68 39.48 204.86 36.65 206.06 31.9 206.82 30.67 208.66 29.31 213.58 29.63 213.94 31.37 215.38 29.8 218.68 29.37 220.81 30.41 221.77 30.67 222.75 29.74 224.9 28.39 227.05 25.5 229.62 25.81 233.25 27.14 237.25 28.31 239.91 27.98 241.57 29.23 242.98 31.12 243.96 32.71 244.33 34.28 245.02 35.15 246.62 35.13 248.49 34.04 249.94 34.04 250.5 34.84 251.77 34.63 253.07 34.03 254.73 33.69 257.09 34.25 258.4 37.88 261.13 36.85 262.41 36.43 263.19 36.25 264 36.14 264.83 35.91 265.69 34.7 267.89 34.4 268.77 34.2 274.31 33.73 276.08 32.87 277.72 31.84 279.1 28.64 282.38 27.9 283.94 28.07 285.86 28.99 287.27 30 287.97 30.77 289.01 30.99 291.39 31.57 293.69 32.83 295.17 35.54 297.44 36.27 298.99 36.81 301.28 36.91 303.65 36.25 305.45 35.16 307.18 34.71 308.92 34.83 309.57 35.01 310.52 36.25 311.81 39.9 313.05 41.08 313.89 41.08 313.9 42.35 314.63 44.98 315.41 46.24 316.02 47.11 316.7 48.15 317.8 48.73 319.03 48.25 320.15 48.46 322.51 49.51 321.89 58.45 317.22 60.06 317.19 63.35 320.04 64.98 320.17 67.81 315.29 69.67 313.06 73.76 311.63 81.62 315.98 85.57 314.99 91.76 306.8 97.26 296.03 98.46 295.14 100.42 294.49 102.11 292.78 102.93 290.45 104.02 288.93 112.5 290.51 114 292.13 114.18 295.25 117.28 299.22 121.71 298.23 125.11 295.24 127.85 290.8 126.11 284.07\"/>\n  <polygon id=\"lubelskie\" class=\"element-empty\" points=\"553.84 372.4 555.38 372.2 556.86 373.03 558 372.53 559.86 372.51 561.55 372.15 562.24 370.61 561.52 369.51 556.86 366.93 553.09 363.43 552.25 362.04 551.94 360.87 551.88 360.07 551.73 359.34 551.11 358.4 550.43 357.93 549.72 357.64 549.31 357.28 549.54 356.58 549.54 356.03 548.89 352.31 548.4 351.12 546.93 348.84 546.11 347.07 546.32 346.26 547.24 345.77 546.62 344.69 543.96 341.97 541.12 340.17 539.86 338.63 536.76 331.83 535.81 331.21 534.73 331.19 533.85 330.73 533.49 328.83 533.79 327.64 534.55 326.32 535.55 325.27 536.57 324.87 536.22 323.65 536.29 322.73 536.69 322.11 537.34 321.81 536.88 320.73 534.61 317.37 534.52 316.81 535.39 315.01 534.6 314.47 533.59 314.1 532.71 313.49 532.34 312.23 532.23 311.67 532.01 310.47 531.25 310.01 530.36 309.67 529.67 308.27 530.05 308.3 530.43 308.27 529.21 306.15 528.72 304.9 528.52 303.61 528.82 301.18 528.74 300.3 528.11 299.61 528.11 298.94 528.61 298.87 528.95 298.66 529.67 297.77 529.39 297.38 529.05 296.75 528.87 296.17 529.09 295.92 529.61 295.68 529.48 295.11 529.1 294.48 528.9 294.01 529.22 291.93 529.44 290.97 529.67 290.32 530.62 289.22 531.79 288.5 532.86 287.43 533.49 285.33 532.46 283.93 531.58 282.3 532.2 281.55 532.43 279.58 533.11 279.21 533.08 278.79 533.04 278.68 532.94 278.68 532.72 278.59 533.08 277.56 533.12 274.63 533.49 272.96 534.54 270.45 535.28 269.29 536.15 268.63 535.51 267.08 534.72 263.65 534.26 262.52 534.2 261.47 533.98 260.42 533.3 259.94 532.77 259.71 532.43 259.13 532.15 258.39 531.78 257.69 530.73 257.05 528.08 257.13 526.99 256.78 525.44 253.67 525.66 253.35 525.82 252.26 525.61 251.57 524.67 252.48 524.3 252.05 523.75 251.59 523.53 251.18 522.76 252.12 522.23 252.01 521.73 251.49 521.03 251.18 520.22 251.49 520.06 251.34 520.47 250.5 520.47 249.94 519.3 249.81 515.83 248.5 515.09 247.76 514.23 248.1 510.21 247.01 508.95 246.2 509.4 244.58 509.22 243.38 508.61 242.48 508.19 242.13 508.19 242.13 507.75 242.44 506.75 242.45 504.99 241.39 503.97 241.14 503.21 241.47 501.42 244.84 496.11 252.7 494.51 256.44 492.66 258.81 490.49 259.63 483.94 256.25 481.65 255.72 480.63 256.4 479.71 257.39 479.35 258.54 479.08 259.9 475.98 262.44 469.83 261.85 467.69 262.1 462.35 266.11 460.39 266.74 457.55 266.21 449.9 267.73 441.81 267.68 437.56 268.91 433.59 271.87 433.94 274.16 434.84 276.7 435.94 279.07 436.17 281.47 437.53 284.83 439.49 287.83 436.41 289.7 434.25 292.74 437.07 297.08 436.69 299.13 435.3 300.45 431.34 301.86 427.27 301.22 425.27 300.4 423.25 300.94 422.67 303.24 422.75 304.17 423.45 305.37 424.28 306.35 425.83 307.07 428.71 307.68 429.69 307.58 431.07 306.97 431.6 307.02 432.47 307.61 432.67 308.41 432.62 309.43 432.74 310.7 433.75 312.27 433.94 313.38 433.09 314.38 433.09 315 434.81 315.17 434.75 318.84 433.4 320.73 432.09 321.79 431.98 323.97 434.21 326.64 433.87 329.21 433.19 331.92 433.29 333.79 432.68 333.88 432.15 334.33 431.47 335.76 430.46 341.31 429.99 342.61 429.78 343.39 429.69 344.41 429.81 345.11 430.33 346.71 430.77 349.56 432.14 352.99 432.36 354.19 432.13 354.71 431.69 355.09 431.2 355.32 430.8 355.4 430.8 356.01 431.84 356.78 432.01 358.51 431.6 362.35 431.54 362.63 431.39 362.8 431.25 363.06 431.18 363.61 431.31 364.12 431.56 364.35 431.82 364.51 431.95 364.82 432.05 365.65 433.47 371.07 433.75 372.97 441.14 378.01 445.32 378.22 449.02 375.62 451.22 375.52 453.36 376.34 455.34 377.58 457.13 379.15 456.35 381.39 453.81 386.2 454.84 388 467.87 391.32 476.67 396.06 477.18 396.87 477.13 398.07 477.26 399.28 478.59 401.76 479.23 403.9 477.7 404.79 475.96 404.57 474.21 405.16 472.83 407 471.89 408.82 472.3 411 473.75 413.24 475.71 414.15 483.5 412.61 485 413.64 484.12 414.15 482.22 414.63 482.77 415.91 490.42 418.09 502.98 418.5 507.2 417.6 510.82 414.67 515.42 409.44 516.9 408.8 520.09 408.49 524.2 408.95 527.72 411.21 529.53 413.93 535.13 417.21 535.16 417.23 535.87 414.9 536.48 413.61 537.24 412.87 538.2 412.37 540.13 411.76 550.26 411.63 553.2 410.41 554.42 407.52 554.67 406.57 554.77 405.44 554.68 403.74 554.84 402.69 558.43 400.8 559.49 399.67 560.19 398.66 560.26 398.46 559.97 398.22 559.57 397.05 559.01 392.87 560.3 390.62 560.29 390.59 558.87 387.16 558.43 385.31 558.77 383.3 557.27 382.93 555.74 381.97 554.96 380.62 555.69 379.07 555.69 378.52 554.13 378.33 552.8 377.71 551.98 376.59 551.87 374.9 552.56 373.38 553.84 372.4\"/>\n  <polygon id=\"dolnośląskie\" class=\"element-empty\" points=\"201.58 330.92 203.16 327.16 201.14 325.53 199.01 324.94 195.59 325.63 192.28 324.86 190.98 321.58 190.68 317.7 191.42 315.79 192.78 314.89 193.56 312.67 194.11 310.09 188.56 306.48 182.38 304.79 175.81 304.76 173.48 305.24 171.36 310.06 159.81 312.1 153.37 309.8 150.32 306.42 144.9 303.39 142.48 299.1 142.29 296.17 141.31 293.9 135 290.46 132.73 289.86 127.85 290.8 125.11 295.24 121.71 298.23 117.28 299.22 114.18 295.25 114 292.13 112.5 290.51 104.02 288.93 102.93 290.45 102.11 292.78 100.42 294.49 98.46 295.14 97.26 296.03 91.76 306.8 85.57 314.99 81.62 315.98 73.76 311.63 69.67 313.06 67.81 315.29 64.98 320.17 63.35 320.04 60.06 317.19 58.45 317.22 49.51 321.89 48.46 322.51 48.8 326.31 48.8 326.39 49.04 328 49.19 328.61 50.23 330.44 51.49 331.93 52.31 333.68 52.02 336.27 52.22 336.55 52.45 336.8 51.49 338.69 50.74 341.07 50.28 343.57 50.22 345.82 50.1 346.96 49.73 347.56 49.3 347.97 49 348.58 48.9 349.46 48.89 351.17 48.72 352.19 46.22 358.54 43.41 365.26 41.42 367.48 40.63 368.79 40.62 370.44 41.81 370.48 43.83 369.91 50.22 370.38 50.33 369.62 50.26 366.54 50.2 366.29 50.16 365.95 50.22 365.45 50.37 365.15 50.92 364.53 51.09 364.08 51.03 361.5 50.18 360.26 49.27 359.54 49.04 358.54 49.04 358.54 49.3 358.23 49.58 358 49.9 357.85 50.22 357.78 51.02 357.19 51.28 356.78 51.44 356.05 52.5 357.02 55.33 357.65 55.81 358.53 56.47 359.18 57.25 359.57 57.88 359.44 58.07 358.54 58.07 358.53 58.57 357.37 59.29 356.86 59.94 357.19 60.2 358.54 60.73 359.84 63.91 359.89 65.4 360.63 66.3 362.09 66.24 362.94 65.75 363.87 65.36 365.5 65.53 366.76 66.05 368.32 66.71 369.79 67.3 370.75 68.42 371.65 69.43 372.1 70.28 372.8 70.95 374.46 70.97 375.32 70.81 376.21 70.76 377.05 71.12 377.78 71.82 378 71.91 378.03 72.53 377.38 73.06 376.43 73.58 375.79 75.91 375.59 80.4 377.17 87.09 379.52 87.73 379.94 88.47 381.08 88.88 381.48 89.47 381.67 94.11 380.54 95.5 380.67 95.62 381.27 95.8 381.81 98.62 386.63 98.98 386.76 100.53 386.71 103.84 385.47 104.76 385.6 105.52 386.33 106.24 387.71 106.73 388.91 107.03 390.12 106.91 391.17 106.1 391.82 105.99 392.11 105.95 392.39 105.99 392.67 106.1 392.94 108.48 392.5 111.94 389.13 114.3 389.38 116.07 390.73 116.92 391.13 117.86 390.92 118.54 390.06 118.94 388.93 119.36 388.05 120.08 387.89 122.11 387.93 123.93 388.4 125.65 389.38 130.41 394.43 130.91 396.11 129.16 396.83 129.37 397.5 129.37 397.79 129.22 398.03 128.97 398.54 128.89 398.99 128.81 399.67 128.82 400.18 128.97 400.13 128.49 400.81 127.34 401.95 126.82 402.69 125.86 402.9 124.07 402.4 123.19 402.69 122.76 403.82 121.92 404.54 120.94 405.13 120.08 405.85 119.77 405.97 119.26 406.3 118.92 406.33 119.19 407.31 119.29 407.57 118.18 407.32 117.74 408.71 118.26 410.28 120.08 410.6 120.8 412.86 121.06 413.37 121.78 413.95 122.19 413.86 122.59 413.51 123.24 413.3 125.79 413.3 126.32 413.46 126.71 414.28 126.75 415.09 126.71 415.89 126.85 416.65 127.85 417.98 130.34 418.89 131.58 419.77 132.38 420.9 133.8 423.5 134.61 424.6 135.32 425.88 137.01 427.65 137.62 429.31 138.26 432.28 138.78 433.37 139.76 434.66 141.69 436.44 144.03 437.66 146.3 437.49 148.02 435.14 149.27 434.24 149.95 433.27 150.55 432.09 151.56 430.56 152.81 429.49 153.92 429.32 155.04 429.4 155.72 429.23 156.35 429.07 156.87 428.6 157.8 427.3 158.47 426.84 158.97 426.82 160 427.19 160.5 427.15 160.64 426.83 160.63 425.78 160.78 425.54 161.6 425.55 161.94 425.78 162.2 426.31 162.79 427.2 163.47 427.46 163.83 426.71 163.72 425.56 162.99 424.6 162.91 422.47 162.32 420.91 161.3 419.79 159.94 418.98 158.9 417.9 158.35 416.21 157.93 414.34 157.29 412.74 155.5 410.09 155.5 408.87 157.02 407.94 158.29 408.1 159.87 409.05 159.87 409.05 160.11 408.01 164.14 397.94 167.07 395.68 170.45 395.13 172.47 391.67 173.75 386.71 177.77 379.05 182.42 372.13 184.42 367.49 187.08 364.04 188.85 362.85 189.75 360.16 190.11 357.85 190.7 355.68 193.95 348.18 195.4 346.61 197.22 346 199.14 346.14 201.09 345.66 202.94 344.52 202.21 340.08 201.58 330.92\"/>\n  <polygon id=\"łódzkie\" class=\"element-empty\" points=\"367.47 296.79 364.46 293.64 363.94 291.07 364.23 289.92 364.79 289.09 365.29 288.06 364.93 286.57 361.64 282.16 357.59 279.01 353.88 277.3 347.95 277.98 345.94 277.33 345.45 275.86 345.59 274.15 344.26 272.15 342.76 270.43 342.3 268.5 344.16 267.41 344.74 262.86 343.97 261.88 341.79 260.41 337.94 258.86 337.08 259.07 336.28 258.64 335.14 256.11 334.95 252.91 334.24 250.58 332.7 249.51 330.72 248.92 328.97 248.01 327.62 245.66 326.1 243.72 324.02 243.91 322.24 245.73 310.63 248.14 305.46 243.96 302.59 242.61 296.71 241.36 291.32 237.64 290.23 237.6 289.16 237.79 288.47 238.83 287.95 239.87 285.84 240.5 278.94 240.64 277.97 241.18 277.56 242.04 277.03 242.74 277.12 245.68 278.2 247.97 279.02 248.21 279.17 249.09 275.71 252.43 270.14 254.81 269.56 257.36 269.04 263.06 266.21 266.4 262.47 267.28 260.54 267.06 258.77 267.21 258 270.01 257.61 273.1 258.24 276.29 259.29 279.21 259.06 282.06 256.38 286.81 255.74 287.5 247.65 286.62 244.45 288.13 243 290.11 240.4 296.33 238.96 301.82 238.69 307.79 239.24 312.71 239.33 317.49 237.77 321.75 235.12 323.66 232.07 322.16 229.28 323 228.35 325.81 226.95 328.04 222.86 328.94 221.96 330.93 222.11 333.82 223.16 336.3 226.36 339.17 226.93 341.61 227.28 345.77 228.54 348.03 230.18 349.36 242.68 352.58 246.63 352.48 247.36 351.83 247.88 350.92 248.54 350.54 250.04 352.38 251.34 354.91 255.54 358.31 258.34 356.93 266.24 356.67 268.06 355.81 269.83 354.58 271.8 354.97 273.51 356.72 280.82 360.68 284.44 361.43 288.9 361.41 290.83 359.73 294.59 360.43 297.95 363.53 303.17 371.86 305.06 372.43 310.66 372.13 316.73 375.23 318.03 373.05 319.65 371.54 321.59 370.24 322.54 367.58 322.31 364.78 322.35 361.95 323.07 359.09 325.05 358.73 332.43 364.15 333.7 362.64 334.14 359.74 333.6 356.77 331.87 355.39 329.32 351.51 330.71 346.14 332.08 344.33 333.82 343.69 340 344.56 341.8 344.04 345.68 340.35 347.45 339.48 349.31 339.19 351.17 338.33 353.22 333.25 354.82 332.05 354.63 329.42 355.34 326.98 358.93 323.63 359.86 321.16 359.87 318.28 359.14 317.46 357.08 316.47 356.66 315.02 356.45 312.16 355.9 309.39 354.24 305.39 355.69 300.33 360.05 300.33 363.4 302.14 367.46 302.71 368.18 301.23 368.32 299.08 367.47 296.79\"/>\n  <polygon id=\"małopolskie\" class=\"element-empty\" points=\"415.31 496.1 415.24 495.85 413.24 490.14 412.21 483.87 412.52 480.87 412.33 477.81 410.39 471.79 407.03 468.15 401.02 465.57 399.37 464.05 400.33 461.91 405.88 457.6 405.13 455.12 403.05 454 401.45 453.87 400.26 452.44 399.81 451.26 399.31 450.25 399.36 446.9 399.81 443.05 398.31 429.89 398.65 424.99 400.74 421.38 402.44 417.25 403.07 409.88 402.27 409.81 402.05 409.99 402.08 410.37 402.14 410.8 402.08 411.07 401.45 411.53 401.07 411.51 400.55 411.07 400.25 412.31 399.59 412.91 398.94 413.24 398.64 413.7 398.58 414.44 398.37 414.61 398.07 414.63 397.67 414.93 396.7 416.31 396.7 416.45 395.71 416.66 395.16 416.18 394.67 415.53 393.84 415.2 393.28 415.34 390.98 416.45 390.45 416.89 389.93 417.48 389.31 418.01 388.46 418.24 384.31 418.38 383.74 418.6 383.27 419.01 382.72 419.74 382.2 420.04 380.67 420.19 379.91 420.69 379.05 420.12 378.31 420.6 377.55 421.4 376.63 421.83 374.49 419.79 374.12 420.33 373.77 421.83 372.59 423.02 372.4 423.13 371.9 423.16 371.67 423.32 371.48 423.75 371.41 424.68 371.25 425.14 370.47 425.9 368.67 426.77 367.98 427.85 367.76 428.77 366.08 430.56 358.74 430.36 354.63 427.89 353.58 425.65 351.04 422.08 350.08 420.04 349.13 416.01 346.58 410.95 342.28 408.07 337.59 406.59 335.7 404.61 333.51 403.43 328.24 403.42 328.61 405.32 328.75 406.89 321.69 411.33 319.92 411.61 316.79 411.36 313.72 411.84 308.77 415.7 307.35 416.02 305.92 416.03 302.82 414.24 301.32 416.48 299.77 419.61 297.34 423.08 293.61 422.55 291.85 423.92 294.82 426.89 297.42 430.51 284.17 445.42 282.94 447.23 281.7 449.78 281.06 452.69 282.19 454.16 283.67 454.32 284.87 455.83 284.99 458.73 286.66 461.73 289.51 462.85 290.64 464.93 291.49 467.59 293.3 469.29 295.39 470.24 299.17 470.91 298.98 473.18 298.03 475.11 297.56 476.91 298.27 478.47 299.58 479.36 299.87 480.36 299.87 480.37 300.35 480.56 301.29 482.23 301.71 482.68 303.02 483.55 303.7 485.28 304.71 489.62 305.61 492.36 305.9 492.98 306.86 493.72 308.03 494.03 310.26 494.05 310 494.6 309.92 495.06 309.95 496.41 309.83 497.42 309.83 497.44 313.04 498.54 314.26 498.68 315.39 498.56 317.26 497.81 317.77 498.19 317.78 498.2 318.3 499.82 318.58 501.25 318.91 505.4 318.82 505.75 318.4 506.39 318.36 506.75 318.36 506.75 318.56 507.04 319.32 507.61 319.33 507.61 319.42 507.81 319.43 507.84 319.86 508.29 319.88 508.31 319.98 508.68 319.85 509.16 319.52 509.35 319.17 509.45 318.92 509.66 316.8 513.12 316.58 514.24 316.58 514.24 317.3 515.24 318.71 515.76 321.29 515.95 322.53 515.49 323.31 514.68 324.4 513.55 325.42 512.8 327.21 512.6 328.76 513.41 331.64 516.13 333.5 517.04 334.59 516.19 335.17 514.05 335.48 511.06 336.18 510.22 336.56 509.27 336.88 508.25 337.95 505.85 338.27 505.42 338.41 505.56 339.64 505.7 340.19 505.19 341.4 503.73 342.25 503.25 346.57 502.87 346.85 502.49 347.25 501.3 347.53 500.08 347.65 499.29 347.86 498.76 348.43 498.32 349.09 498.31 351.38 499.18 354.27 499.07 354.26 497.59 355.13 497.39 359.86 499.81 361.08 500.11 362.4 499.63 363.04 499.03 363.93 497.93 364.5 497.6 365.02 497.57 366.23 497.75 368.34 497.41 369.21 497.56 374.18 503.51 375.06 504.16 376.31 504.35 377.27 504.29 378.14 504.43 379.19 505.21 380.1 506.16 381.01 506.82 382.04 507.01 383.35 506.54 384.56 505.49 386.38 502.81 387.53 501.69 388.41 501.5 389.59 501.49 390.62 501.28 391.08 500.5 390.4 499.2 389.11 498.41 388.43 497.63 389.56 496.36 390.41 495.95 392.68 495.49 393.55 495.57 394.56 496.27 395.36 497.16 396.21 497.75 397.41 497.55 398.37 496.65 400.12 494.06 401.13 493.36 401.9 493.54 405.03 495.22 410.48 496.76 411.4 496.75 413.48 496.3 414.3 496.54 415.32 496.13 415.31 496.1\"/>\n  <polygon id=\"kujawsko-pomorskie\" class=\"element-empty\" points=\"316.58 167.62 315.75 159.1 312.86 151.78 309.75 149.59 303.37 147.91 297.39 144.31 293.11 142.89 292.05 142.84 290.74 142.28 289.87 141.02 288.17 137.81 286.79 133.77 281.95 124.32 278.93 125.66 272.56 126.04 269.51 124.83 267.78 123.72 264.1 119.91 263.2 119.32 262.44 118.41 261.34 117.79 256.78 117.14 253.56 118.29 251.48 119.67 246.72 116.83 236.66 115.15 234.83 113.4 233.18 111.28 231.22 111.11 221.75 112.53 214.65 111.14 213.14 112.32 210.87 116.51 207.03 117.94 205.24 119.62 204.92 120.84 204.7 122.19 204.67 124.18 201.19 125.59 193.43 123.56 191.37 123.78 189.81 125.94 188.45 128.92 186.77 134.83 185.2 135.79 183.65 139.24 179.63 144.55 180.27 147.35 185.02 151.07 187.71 157.15 182.6 161.47 183.09 165.41 184.82 168.75 184.03 174.54 181.52 180.34 186.06 181.99 190.3 185.17 193.04 191.21 191.84 197.75 191.18 199.02 190.28 199.34 189.28 199.28 188.34 200 187.96 202.38 189.97 204.32 190.85 206.49 191.97 208.28 194.24 208.72 196.48 207.97 197.46 207.07 199.2 208.54 199.69 209.78 199.93 211.31 200.37 211.86 201 212.23 204.56 213.44 208.45 213.65 212.66 215.94 218.38 221.19 220.38 222.23 222.44 222.37 224.33 223.14 225.95 225.16 227.76 226.87 233.42 228.37 235.33 227.51 238.58 223.68 239.66 223.97 240.46 224.53 240.89 226.21 241.58 227.69 242.64 229.28 243.99 229.7 244.83 229.2 245.37 228.18 246.4 227.74 247.47 227.63 249.41 228.54 251.09 230.52 260.34 238.12 261.87 241.58 263.88 241.42 269.74 238.94 271.72 238.66 277.03 242.74 277.56 242.04 277.97 241.18 278.94 240.64 285.84 240.5 287.95 239.87 288.47 238.83 289.16 237.79 290.23 237.6 291.32 237.64 291.69 236.08 291.92 234.54 296.05 227.71 295.82 226.01 294.67 224.83 294.97 221.31 296.45 218.27 300.21 207.3 302.61 206.65 302.56 203.6 300.95 199.71 300.02 197.96 299.4 196.03 299.87 194.16 300.99 192.92 301.27 189.51 300.4 185.71 303.13 186.07 305.47 184.1 306.51 182.51 307.7 181.37 308.78 181.82 309.81 182.56 310.88 182.69 311.41 181.11 311.71 179.3 311.87 177.47 311.42 174.73 311.37 172.9 311.04 171.14 313.9 169.79 316.58 167.62\"/>\n  <polygon id=\"wielkopolskie\" class=\"element-empty\" points=\"279.02 248.21 278.2 247.97 277.12 245.68 277.03 242.74 271.72 238.66 269.74 238.94 263.88 241.42 261.87 241.58 260.34 238.12 251.09 230.52 249.41 228.54 247.47 227.63 246.4 227.74 245.37 228.18 244.83 229.2 243.99 229.7 242.64 229.28 241.58 227.69 240.89 226.21 240.46 224.53 239.66 223.97 238.58 223.68 235.33 227.51 233.42 228.37 227.76 226.87 225.95 225.16 224.33 223.14 222.44 222.37 220.38 222.23 218.38 221.19 212.66 215.94 208.45 213.65 204.56 213.44 201 212.23 200.37 211.86 199.93 211.31 199.69 209.78 199.2 208.54 197.46 207.07 196.48 207.97 194.24 208.72 191.97 208.28 190.85 206.49 189.97 204.32 187.96 202.38 188.34 200 189.28 199.28 190.28 199.34 191.18 199.02 191.84 197.75 193.04 191.21 190.3 185.17 186.06 181.99 181.52 180.34 184.03 174.54 184.82 168.75 183.09 165.41 182.6 161.47 187.71 157.15 185.02 151.07 180.27 147.35 179.63 144.55 183.65 139.24 185.2 135.79 182.72 132.8 179.73 131.16 168.35 130.69 165.08 128.69 162.77 124.6 160.08 121.28 157.99 120.61 155.86 120.67 153.86 121.56 152.39 124.13 151.31 127.22 149.88 133.21 148.2 133.54 137.91 133.27 136.65 135.06 136.71 138.8 137.57 142.14 141.08 145.55 145.3 146.63 147.37 147.72 149.12 149.96 149.47 152.65 147.75 154.78 146.44 157.12 144.82 158.66 140.7 159.94 132.61 164.68 128.08 171.8 122.69 176.91 119.26 178.25 115.77 178.73 112.35 176.68 109.26 175.65 108.15 181 108.33 186.92 102.9 193.92 104.61 195.52 105.81 200.07 105.28 201.52 104.2 202.22 98.91 203.9 98.06 203.8 97.67 204.66 97.61 206.73 97.37 208.68 97.58 213.82 99.56 219.25 100.24 222.46 100.68 225.81 100.67 228.57 99.17 228.56 97.98 229.4 100.35 233.62 101.47 236.33 101.59 241.96 99.77 247.34 99.48 248.66 99.36 250.04 98.72 252.72 98.68 255.8 99.12 258.67 100.43 260.61 101.96 262.2 105.04 263.85 106.04 266.68 107.33 269.04 109.31 271.03 111.39 271.07 112.36 270.65 113.28 271.23 113.37 273.05 112.86 274.8 112.61 277.92 113.43 280.34 115.84 281.99 118.37 282.82 122.46 280.04 126.11 284.07 127.85 290.8 132.73 289.86 135 290.46 141.31 293.9 142.29 296.17 142.48 299.1 144.9 303.39 150.32 306.42 153.37 309.8 159.81 312.1 171.36 310.06 173.48 305.24 175.81 304.76 182.38 304.79 188.56 306.48 194.11 310.09 193.56 312.67 192.78 314.89 191.42 315.79 190.68 317.7 190.98 321.58 192.28 324.86 195.59 325.63 199.01 324.94 201.14 325.53 203.16 327.16 201.58 330.92 202.21 340.08 202.94 344.52 204.88 344.42 206.72 345.37 207.47 347.28 207.78 349.46 210.72 351.83 214.28 352.03 220.9 349.6 227.28 345.77 226.93 341.61 226.36 339.17 223.16 336.3 222.11 333.82 221.96 330.93 222.86 328.94 226.95 328.04 228.35 325.81 229.28 323 232.07 322.16 235.12 323.66 237.77 321.75 239.33 317.49 239.24 312.71 238.69 307.79 238.96 301.82 240.4 296.33 243 290.11 244.45 288.13 247.65 286.62 255.74 287.5 256.38 286.81 259.06 282.06 259.29 279.21 258.24 276.29 257.61 273.1 258 270.01 258.77 267.21 260.54 267.06 262.47 267.28 266.21 266.4 269.04 263.06 269.56 257.36 270.14 254.81 275.71 252.43 279.17 249.09 279.02 248.21\"/>\n</g>\n\n\n<text id=\"text-zachodniopomorskie\" class=\"textstyle\"/>\n<text id=\"text-świętokrzyskie\" class=\"textstyle\"/>\n<text id=\"text-śląskie\" class=\"textstyle\"/>\n<text id=\"text-mazowieckie\" class=\"textstyle\"/>\n<text id=\"text-warmińsko-mazurskie\" class=\"textstyle\"/>\n<text id=\"text-pomorskie\" class=\"textstyle\"/>\n<text id=\"text-podlaskie\" class=\"textstyle\"/>\n<text id=\"text-podkarpackie\" class=\"textstyle\"/>\n<text id=\"text-opolskie\" class=\"textstyle\"/>\n<text id=\"text-lubiskie\" class=\"textstyle\"/>\n<text id=\"text-lubelskie\" class=\"textstyle\"/>\n<text id=\"text-dolnośląskie\" class=\"textstyle\"/>\n<text id=\"text-łódzkie\" class=\"textstyle\"/>\n<text id=\"text-małopolskie\" class=\"textstyle\"/>\n<text id=\"text-kujawsko-pomorskie\" class=\"textstyle\"/>\n<text id=\"text-wielkopolskie\" class=\"textstyle\"/>\n\n\n<g>\n<text id=\"metricA-zachodniopomorskie\" class=\"textstyle\"/>\n<text id=\"metricA-świętokrzyskie\" class=\"textstyle\"/>\n<text id=\"metricA-śląskie\" class=\"textstyle\"/>\n<text id=\"metricA-mazowieckie\" class=\"textstyle\"/>\n<text id=\"metricA-warmińsko-mazurskie\" class=\"textstyle\"/>\n<text id=\"metricA-pomorskie\" class=\"textstyle\"/>\n<text id=\"metricA-podlaskie\" class=\"textstyle\"/>\n<text id=\"metricA-podkarpackie\" class=\"textstyle\"/>\n<text id=\"metricA-opolskie\" class=\"textstyle\"/>\n<text id=\"metricA-lubiskie\" class=\"textstyle\"/>\n<text id=\"metricA-lubelskie\" class=\"textstyle\"/>\n<text id=\"metricA-dolnośląskie\" class=\"textstyle\"/>\n<text id=\"metricA-łódzkie\" class=\"textstyle\"/>\n<text id=\"metricA-małopolskie\" class=\"textstyle\"/>\n<text id=\"metricA-kujawsko-pomorskie\" class=\"textstyle\"/>\n<text id=\"metricA-wielkopolskie\" class=\"textstyle\"/>\n</g>\n\n<g>\n<text id=\"metricA\" x=\"100\" y=\"30\"  class=\"textstyle\">?</text>\n<text id=\"metricB\" x=\"100\" y=\"70\" class=\"textstyle\">?</text>\n<text id=\"metricC\" x=\"100\" y=\"110\" class=\"textstyle\">?</text>\n</g>\n \n\n</svg>\n",
+      "svglist": [
+        {
+          "category": "shapes",
+          "description": "Circle",
+          "name": "circle",
+          "path": "rtmaster/shapes/circle.svg"
+        },
+        {
+          "category": "shapes",
+          "description": "Gear",
+          "name": "gear",
+          "path": "rtmaster/shapes/gear.svg"
+        },
+        {
+          "category": "shapes",
+          "description": "Line horizontal",
+          "name": "line-horizontal",
+          "path": "rtmaster/shapes/line-horizontal.svg"
+        },
+        {
+          "category": "shapes",
+          "description": "Line horizontal arrow left",
+          "name": "line-horizontal-arrow-left",
+          "path": "rtmaster/shapes/line-horizontal-arrow-left.svg"
+        },
+        {
+          "category": "shapes",
+          "description": "Line horizontal arrow right",
+          "name": "line-horizontal-arrow-right",
+          "path": "rtmaster/shapes/line-horizontal-arrow-right.svg"
+        },
+        {
+          "category": "shapes",
+          "description": "Line vertical",
+          "name": "line-vertical",
+          "path": "rtmaster/shapes/line-vertical.svg"
+        },
+        {
+          "category": "shapes",
+          "description": "Line vertical arrow down",
+          "name": "line-vertical-arrow-down",
+          "path": "rtmaster/shapes/line-vertical-arrow-down.svg"
+        },
+        {
+          "category": "shapes",
+          "description": "Line vertical arrow up",
+          "name": "line-vertical-arrow-up",
+          "path": "rtmaster/shapes/line-vertical-arrow-up.svg"
+        },
+        {
+          "category": "shapes",
+          "description": "Square",
+          "name": "square",
+          "path": "rtmaster/shapes/square.svg"
+        },
+        {
+          "category": "shapes",
+          "description": "Triangle down",
+          "name": "triangle-down",
+          "path": "rtmaster/shapes/triangle-down.svg"
+        },
+        {
+          "category": "shapes",
+          "description": "Triangle left",
+          "name": "triangle-left",
+          "path": "rtmaster/shapes/triangle-left.svg"
+        },
+        {
+          "category": "shapes",
+          "description": "Triangle right",
+          "name": "triangle-right",
+          "path": "rtmaster/shapes/triangle-right.svg"
+        },
+        {
+          "category": "shapes",
+          "description": "Triangle-up",
+          "name": "triangle-up",
+          "path": "rtmaster/shapes/triangle-up.svg"
+        }
+      ],
+      "targets": [
+        {
+          "expr": "count(kafka_server_replicamanager_leadercount)",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "refId": "A"
+        },
+        {
+          "expr": "sum(kafka_controller_kafkacontroller_activecontrollercount)",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "refId": "B"
+        },
+        {
+          "expr": "sum(kafka_server_replicamanager_partitioncount)",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "refId": "C"
+        }
+      ],
+      "title": "Panel Title",
+      "type": "marcuscalidus-svg-panel",
+      "useSVGBuilder": false
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 16,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "",
+  "title": "Polska",
+  "uid": "Polska",
+  "version": 5
+}

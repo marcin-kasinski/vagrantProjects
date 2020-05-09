@@ -1,0 +1,368 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: istiostatus
+  namespace: istio-system
+spec:
+  type: NodePort
+  ports:
+  - port: 15000
+    nodePort: 30000
+    targetPort: 15000
+    protocol: TCP
+    name: http
+  selector:
+    app: istio-ingressgateway
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: istiostatus
+  namespace: istio-system
+  annotations:
+spec:
+  rules:
+  - host: istiostatus
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: istiostatus
+          servicePort: 15000
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kiali
+  namespace: istio-system
+  annotations:
+spec:
+  rules:
+  - host: kiali
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kiali
+          servicePort: 20001
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: springbootzipkin.apps.svc.cluster.local
+  namespace: apps
+spec:
+  hosts:
+  - springbootzipkin.apps.svc.cluster.local
+  ports:
+  - number: 9411
+    name: tcp
+    protocol: TCP
+  resolution: DNS
+  location: MESH_INTERNAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: zipkinjaeger.default.svc.cluster.local
+spec:
+  hosts:
+  - zipkinjaeger.default.svc.cluster.local
+  ports:
+  - number: 9411
+    name: tcp
+    protocol: TCP
+  resolution: DNS
+  location: MESH_INTERNAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: mongodb-router-cs.default.svc.cluster.local
+spec:
+  hosts:
+  - mongodb-router-cs.default.svc.cluster.local
+  ports:
+  - number: 27017
+    name: tcp
+    protocol: TCP
+  resolution: DNS
+  location: MESH_INTERNAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: rabbitmq.default.svc.cluster.local
+spec:
+  hosts:
+  - rabbitmq.default.svc.cluster.local
+  ports:
+  - number: 5672
+    name: tcp
+    protocol: TCP
+  resolution: DNS
+  location: MESH_INTERNAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: mysql.default.svc.cluster.local
+spec:
+  hosts:
+  - mysql.default.svc.cluster.local
+  ports:
+  - number: 3306
+    name: tcp
+    protocol: TCP
+  resolution: DNS
+  location: MESH_INTERNAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: api.rubygems.org
+spec:
+  hosts:
+  - api.rubygems.org
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+  resolution: DNS
+  location: MESH_EXTERNAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: api.rubygems.org
+spec:
+  hosts:
+  - api.rubygems.org
+  tls:
+  - match:
+    - port: 443
+      sni_hosts:
+      - api.rubygems.org
+    route:
+    - destination:
+        host: api.rubygems.org
+        port:
+          number: 443
+      weight: 100
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: grafana.com
+spec:
+  hosts:
+  - grafana.com
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+  resolution: DNS
+  location: MESH_EXTERNAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: grafana.com
+spec:
+  hosts:
+  - grafana.com
+  tls:
+  - match:
+    - port: 443
+      sni_hosts:
+      - grafana.com
+    route:
+    - destination:
+        host: grafana.com
+        port:
+          number: 443
+      weight: 100      
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: codeload.github.com
+spec:
+  hosts:
+  - codeload.github.com
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+  resolution: DNS
+  location: MESH_EXTERNAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: codeload.github.com
+spec:
+  hosts:
+  - codeload.github.com
+  tls:
+  - match:
+    - port: 443
+      sni_hosts:
+      - codeload.github.com
+    route:
+    - destination:
+        host: codeload.github.com
+        port:
+          number: 443
+      weight: 100
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: servicegraph-ingress
+  namespace: istio-system
+  annotations:
+spec:
+  rules:
+  - host: servicegraph
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: servicegraph
+          servicePort: 8088
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: grafana-ingress
+  namespace: istio-system
+  annotations:
+spec:
+  rules:
+  - host: grafanaistio
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: grafana
+          servicePort: 3000
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: tracing-ingress
+  namespace: istio-system
+  annotations:
+spec:
+  rules:
+  - host: tracingistio
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: tracing
+          servicePort: 80
+
+
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: jaeger-ingress
+  namespace: istio-system
+spec:
+  rules:
+  - host: jaeger
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: jaeger-query
+          servicePort: 16686
+
+
+---
+
+
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: itzone-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: itzone-gateway
+  namespace: apps
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: ambassador
+spec:
+  hosts:
+  - "ambassador"
+  gateways:
+  - itzone-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /kiali
+    - uri:
+        prefix: /springbootmicroservice-cs
+    - uri:
+        prefix: /ambassador
+    route:
+    - destination:
+        host: ambassador
+        port:
+          number: 80
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: springbootzipkin
+spec:
+  hosts:
+  - "springbootzipkin"
+  gateways:
+  - itzone-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /springbootzipkin
+    - uri:
+        prefix: /zipkin
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: ambassador
+        port:
+          number: 80
+---

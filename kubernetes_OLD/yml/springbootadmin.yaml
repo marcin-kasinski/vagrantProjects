@@ -1,0 +1,186 @@
+kind: ConfigMap
+metadata:
+  name: springbootadmin-bootstrap-yml-cm
+apiVersion: v1
+data:
+  bootstrap.yml: |-
+    logging.level.root: INFO
+    spring:
+      application:
+        name: springbootadmin
+      cloud:
+        kubernetes:
+          reload:
+            enabled: true
+            mode: polling
+            period: 5000
+          #discovery:
+            #filter: "metadata.labels['spring-boot']"
+      boot:
+        admin:
+          context-path: /admin
+          discovery:
+            converter:
+              management-context-path: actuator
+            ignored-services: a, b, c
+          probed-endpoints: [ "health", "env", "metrics", "httptrace:trace", "threaddump:dump", "jolokia", "info", "logfile", "refresh", "flyway", "liquibase", "heapdump", "loggers", "auditevents" ]
+          #probed-endpoints: [ "health", "env"]
+          monitor:
+            status-lifetime: 5000ms
+            period: 5000ms
+            read-timeout: 5000ms
+        kubernetes:
+          discovery:
+            enabled: true
+            catalog-services-watch:
+              enabled: true
+              catalogServicesWatchDelay: 10000
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: "*"             
+
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: springbootadmin
+rules:
+- apiGroups: [""]
+  resources:
+  - nodes
+  - nodes/proxy
+  - services
+  - endpoints
+  - pods
+  verbs: ["get", "list", "watch"]
+- apiGroups:
+  - extensions
+  resources:
+  - ingresses
+  verbs: ["get", "list", "watch"]
+- nonResourceURLs: ["/metrics"]
+  verbs: ["get"]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: springbootadmin
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: springbootadmin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: springbootadmin
+subjects:
+- kind: ServiceAccount
+  name: springbootadmin
+  namespace: apps
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springbootadmin
+  labels:
+    app: springbootadmin
+spec:
+#  serviceName: "springbootadmin-hs"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: springbootadmin
+  template:
+    metadata:
+      labels:
+        app: springbootadmin
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/scheme: "http"
+        prometheus.io/path: "/actuator/prometheus"
+        prometheus.io/port: "8080"  
+    spec:
+      serviceAccountName: springbootadmin
+      containers:
+      - name: springbootadmin
+        image: marcinkasinski/springbootadmin
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 8080
+        env:
+        - name: SPRING_PROFILE
+          value: "prd"          
+        #- name: "EXTRA_JAVA_ARGS"
+        #  value: "-Djavax.net.debug=all -Dssl.debug=true"
+          #value: "-Djavax.net.debug=ssl:handshake"
+        #- name: JAVA_OPTS
+        #  value: "-Dlogging.level.zipkin=DEBUG -Dlogging.level.zipkin2=DEBUG"          
+        volumeMounts:
+        - name: config-springbootadmin-bootstrap-yml-cm
+          mountPath: /usr/src/myapp/config/bootstrap.yml
+          subPath: bootstrap.yml
+      volumes:
+        - name: config-springbootadmin-bootstrap-yml-cm
+          configMap:
+            name: springbootadmin-bootstrap-yml-cm
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: springbootadmin
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    #nodePort: 30070
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  selector:
+    app: springbootadmin
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: springbootadmin-ingress
+  annotations:
+    ingress.kubernetes.io/enable-cors: "true"
+    ingress.kubernetes.io/rewrite-target: /  
+spec:
+  rules:
+  - host: springbootadmin
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: springbootadmin
+          servicePort: 8080
+---
+#curl -H "Host: springbootadmin.apps.svc.cluster.local:30999" localhost:30999/
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: springbootadmin
+spec:
+  hosts:
+  - "springbootadmin.apps.svc.cluster.local:30999"
+  - "springbootadmin:30999"
+  - "springbootadmin.com:30999"
+  gateways:
+  - itzone-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: springbootadmin # interpreted as springbootadmin.apps.svc.cluster.local
+        #host: ambassador.default.svc.cluster.local # interpreted as springbootadmin.apps.svc.cluster.local
+        port:
+          number: 8080
+          #number: 80
+---          

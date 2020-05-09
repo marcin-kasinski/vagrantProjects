@@ -1,0 +1,8 @@
+CLIENT_JVMFLAGS="-Djava.security.auth.login.config=/opt/zookeeper/conf/zookeeper_server_jaas.conf" /opt/zookeeper/bin/zkCli.sh \
+ -server zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181
+
+
+ls /
+
+
+getAcl /

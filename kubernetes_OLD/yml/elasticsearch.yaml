@@ -1,0 +1,239 @@
+# RBAC authn and authz
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: es
+  namespace: default
+  labels:
+    k8s-app: es
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: es
+  labels:
+    k8s-app: es
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - "services"
+  - "namespaces"
+  - "endpoints"
+  verbs:
+  - "get"
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  namespace: default
+  name: es
+  labels:
+    k8s-app: es
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
+subjects:
+- kind: ServiceAccount
+  name: es
+  namespace: default
+  apiGroup: ""
+roleRef:
+  kind: ClusterRole
+  name: es
+  apiGroup: ""
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: es
+  labels:
+    app: elasticsearch
+spec:
+  serviceName: es-hs
+  replicas: 3
+  updateStrategy:
+    type: RollingUpdate
+  podManagementPolicy: Parallel
+  selector:
+    matchLabels:
+      app: es
+  template:
+    metadata:
+      labels:
+        app: es
+        kubernetes.io/name: "es"
+        tier: backend
+
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/scheme: "http"
+        #prometheus.io/path: "/actuator/prometheus"
+        prometheus.io/port: "9114"
+
+
+
+    spec:
+      containers:
+      - name: es-exporter
+        image: justwatch/elasticsearch_exporter:1.1.0
+        command:
+        - /bin/elasticsearch_exporter
+        - --es.uri=http://es:9200
+        - --es.all
+        securityContext:
+          capabilities:
+            drop:
+            - SETPCAP
+            - MKNOD
+            - AUDIT_WRITE
+            - CHOWN
+            - NET_RAW
+            - DAC_OVERRIDE
+            - FOWNER
+            - FSETID
+            - KILL
+            - SETGID
+            - SETUID
+            - NET_BIND_SERVICE
+            - SYS_CHROOT
+            - SETFCAP
+          readOnlyRootFilesystem: true
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 9114
+          initialDelaySeconds: 30
+          timeoutSeconds: 10
+        ports:
+        - containerPort: 9108
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 9114
+          initialDelaySeconds: 10
+          timeoutSeconds: 10
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 25m
+            memory: 64Mi
+      - name: es
+        #image: docker.elastic.co/elasticsearch/elasticsearch:6.4.2
+        #image: docker.elastic.co/elasticsearch/elasticsearch:6.6.0
+        #image: docker.elastic.co/elasticsearch/elasticsearch:7.2.0
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
+        resources:
+          # need more cpu upon initialization, therefore burstable class
+          limits:
+            cpu: 1000m
+            memory: 2.5Gi
+          requests:
+            memory: 2.5Gi
+            cpu: 100m
+        ports:
+        - containerPort: 9200
+          name: web
+          protocol: TCP
+        - containerPort: 9300
+          name: transport
+          protocol: TCP
+        env:
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: "node.name"
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: "cluster.name"
+          value: myesdb
+        - name: "cluster.initial_master_nodes"
+          value: "es-0,es-1,es-2"
+        - name: network.host
+          value: "0.0.0.0"
+        - name: bootstrap.memory_lock
+          value: "false"
+        - name: "discovery.zen.ping.unicast.hosts"
+          value: "es-hs"          
+        - name: NUMBER_OF_MASTERS
+          value: "2"
+        - name: "node.master"
+          value: "true"
+        - name: NODE_INGEST
+          value: "false"
+        - name: "node.data"
+          value: "true"
+        - name: HTTP_ENABLE
+          value: "false"
+        - name: ES_JAVA_OPTS
+          value: -Xms256m -Xmx256m
+        - name: PROCESSORS
+          valueFrom:
+            resourceFieldRef:
+              resource: limits.cpu
+      # Elasticsearch requires vm.max_map_count to be at least 262144.
+      # If your OS already sets up this number to a higher value, feel free
+      # to remove this init container.
+      initContainers:
+      - image: alpine:3.6
+        command: ["/sbin/sysctl", "-w", "vm.max_map_count=262144"]
+        name: es-init
+        securityContext:
+          privileged: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: es
+  namespace: default
+  labels:
+    app: es
+spec:
+  type: NodePort
+  ports:
+  - port: 9200
+    protocol: TCP
+    name: web
+  - port: 9300
+    protocol: TCP
+    name: transport
+  selector:
+    app: es
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: es-hs
+  labels:
+    app: es
+spec:
+  ports:
+  - port: 9200
+    name: web
+  - port: 9300
+    name: transport
+  clusterIP: None
+  selector:
+    app: es
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: es-ingress
+spec:
+  rules:
+  - host: elasticsearch
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: es
+          servicePort: 9200
+  

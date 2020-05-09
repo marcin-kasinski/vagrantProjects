@@ -1,0 +1,46 @@
+dn: ou=groups,dc=itzone,dc=pl
+objectclass: top
+objectclass: organizationalUnit
+ou: groups
+
+dn: ou=users,dc=itzone,dc=pl
+objectclass: top
+objectclass: organizationalUnit
+ou: users
+
+# billy, itzone.pl
+dn: cn=billy,ou=users,dc=itzone,dc=pl
+uid: billy
+cn: billy
+sn: Smith
+objectClass: top
+objectclass: person
+objectclass: organizationalPerson
+objectClass: inetOrgPerson
+userPassword: admin
+
+# reader, itzone.pl
+dn: cn=reader,ou=users,dc=itzone,dc=pl
+uid: reader
+cn: reader
+sn: Smith
+objectClass: top
+objectclass: person
+objectclass: organizationalPerson
+objectClass: inetOrgPerson
+userPassword: admin
+
+dn: cn=developers,ou=groups,dc=itzone,dc=pl
+objectclass: top
+objectclass: groupOfUniqueNames
+cn: developers
+uniqueMember: cn=billy,ou=users,dc=itzone,dc=pl
+uniqueMember: cn=admin,dc=itzone,dc=pl
+
+dn: cn=readers,ou=groups,dc=itzone,dc=pl
+objectclass: top
+objectclass: groupOfUniqueNames
+cn: readers
+uniqueMember: cn=reader,ou=users,dc=itzone,dc=pl
+uniqueMember: cn=admin,dc=itzone,dc=pl
+

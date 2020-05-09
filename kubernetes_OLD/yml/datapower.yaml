@@ -1,0 +1,214 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: datapower-webui
+spec:
+  type: NodePort
+  ports:
+  - port: 9090
+    targetPort: 9090
+    protocol: TCP
+    name: https
+  selector:
+    app: datapower
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: datapower-https-4141
+spec:
+  type: NodePort
+  ports:
+  - port: 4141
+    targetPort: 4141
+    protocol: TCP
+    name: https
+  selector:
+    app: datapower
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: datapower-http-5151
+spec:
+  type: NodePort
+  ports:
+  - port: 5151
+    targetPort: 5151
+    protocol: TCP
+    name: http
+  selector:
+    app: datapower
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: datapower-http-6161
+spec:
+  type: NodePort
+  ports:
+  - port: 6161
+    targetPort: 6161
+    protocol: TCP
+    name: http
+  selector:
+    app: datapower
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: datapower-http-7171
+spec:
+  type: NodePort
+  ports:
+  - port: 7171
+    targetPort: 7171
+    protocol: TCP
+    name: http
+  selector:
+    app: datapower
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: datapower-http-8181
+spec:
+  type: NodePort
+  ports:
+  - port: 8181
+    targetPort: 8181
+    protocol: TCP
+    name: http
+  selector:
+    app: datapower
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: datapower-http-9191
+spec:
+  type: NodePort
+  ports:
+  - port: 9191
+    targetPort: 9191
+    protocol: TCP
+    name: http
+  selector:
+    app: datapower
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: datapower-https-8888
+spec:
+  type: NodePort
+  ports:
+  - port: 8888
+    targetPort: 8888
+    protocol: TCP
+    name: https
+  selector:
+    app: datapower
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: datapower-ingress
+  annotations:
+    nginx.org/ssl-services: "datapower"
+    ingress.kubernetes.io/ssl-redirect: "true"  
+spec:
+  rules:
+  - host: datapower
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: datapower
+          servicePort: 9090
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: datapower-ingress-5151
+  annotations:
+    nginx.org/ssl-services: "datapower"
+    ingress.kubernetes.io/ssl-redirect: "true"  
+spec:
+  rules:
+  - host: datapower5151
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: datapower-http-5151
+          servicePort: 5151
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: datapower-ingress-6161
+  annotations:
+    nginx.org/ssl-services: "datapower"
+    ingress.kubernetes.io/ssl-redirect: "true"  
+spec:
+  rules:
+  - host: datapower6161
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: datapower-http-6161
+          servicePort: 6161
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: datapower-ingress-7171
+  annotations:
+    nginx.org/ssl-services: "datapower"
+    ingress.kubernetes.io/ssl-redirect: "true"  
+spec:
+  rules:
+  - host: datapower7171
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: datapower-http-7171
+          servicePort: 7171
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: datapower-ingress-8181
+  annotations:
+    nginx.org/ssl-services: "datapower"
+    ingress.kubernetes.io/ssl-redirect: "true"  
+spec:
+  rules:
+  - host: datapower8181
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: datapower-http-8181
+          servicePort: 8181
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: datapower-ingress-9191
+  annotations:
+    nginx.org/ssl-services: "datapower"
+    ingress.kubernetes.io/ssl-redirect: "true"  
+spec:
+  rules:
+  - host: datapower9191
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: datapower-http-9191
+          servicePort: 9191

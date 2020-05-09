@@ -1,0 +1,312 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+
+
+Vagrant.require_version ">= 1.6.0"
+
+
+$initscript = <<SCRIPT
+
+
+		IP=$1
+		SCRIPT=$2
+		echo $IP
+		echo $SCRIPT
+
+
+echo "Executing"
+		#win2linux
+		sed -i -e 's/\r//g' /vagrant/scripts/k
+		sed -i -e 's/\r//g' /vagrant/scripts/*.sh
+
+		chmod u+x /vagrant/scripts/k
+		chmod u+x /vagrant/scripts/*.sh
+		/vagrant/scripts/init.sh $IP
+
+SCRIPT
+
+$runscript = <<SCRIPT
+
+
+		IP=$1
+		SCRIPT=$2
+		echo $IP
+		echo $SCRIPT
+
+		/vagrant/scripts/$SCRIPT $IP
+
+
+SCRIPT
+
+
+
+
+
+
+
+
+boxes = [
+    {
+        :name => "k8smaster",
+        :initscript => "master.sh",
+        :interface => "enp3s0",
+        :mac=> "5CA1AB1E0001",
+        :ip => "192.168.1.11",
+        :lvm_enable => true,
+        :lvm_size => 30000,
+        :lvm_filename => "/tools/vagrantprojects/k8smaster_additiona_disc.vdi",
+#        :mem => "13312",
+        :mem => "15360",
+        :cpu => "2"
+    },
+    {
+        :name => "k8smaster2",
+        :initscript => "mastersecond.sh",
+        :interface => "enp3s0",
+        :mac=> "5CA1AB1E0002",
+        :ip => "192.168.1.12",
+        :lvm_enable => true,
+        :lvm_size => 30000,
+        :lvm_filename => "/tools/vagrantprojects/k8smaster2_additiona_disc.vdi",
+#        :mem => "13312",
+        :mem => "15360",
+        :cpu => "2"
+    },
+    {
+        :name => "k8smaster3",
+        :initscript => "mastersecond.sh",
+        :interface => "enp3s0",
+        :mac=> "5CA1AB1E0003",
+        :ip => "192.168.1.13",
+        :lvm_enable => true,
+        :lvm_size => 30000,
+        :lvm_filename => "/tools/vagrantprojects/k8smaster3_additiona_disc.vdi",
+#        :mem => "13312",
+        :mem => "15360",
+        :cpu => "2"
+    },
+    {
+        :name => "k8snode1",
+        :initscript => "node.sh",
+        :interface => "enp3s0",
+        :mac=> "5CA1AB1E0004",
+        :ip => "192.168.1.14",
+        :lvm_enable => true,
+        :lvm_size => 30000,
+        :lvm_filename => "/tools/vagrantprojects/k8snode1_additiona_disc.vdi",
+#        :mem => "13312",
+        :mem => "15360",
+        :cpu => "2"
+    },
+    {
+        :name => "k8snode2",
+        :initscript => "node.sh",
+        :interface => "enp3s0",
+        :mac=> "5CA1AB1E0005",
+        :ip => "192.168.1.15",
+        :lvm_enable => true,
+        :lvm_size => 30000,
+        :lvm_filename => "/tools/vagrantprojects/k8snode2_additiona_disc.vdi",
+#        :mem => "13312",
+        :mem => "15360",
+        :cpu => "2"
+    },
+    {
+        :name => "k8snode3",
+        :initscript => "node.sh",
+        :interface => "enp3s0",
+        :mac=> "5CA1AB1E0006",
+        :ip => "192.168.1.16",
+        :lvm_enable => true,
+        :lvm_size => 30000,
+        :lvm_filename => "/tools/vagrantprojects/k8snode3_additiona_disc.vdi",
+#        :mem => "13312",
+        :mem => "15360",
+        :cpu => "2"
+    }
+]
+
+Vagrant.configure(2) do |config|
+
+ 
+  config.vm.boot_timeout = 1800
+
+#  #config.vm.box = "ubuntu/xenial64"
+#  config.vm.box = "ubuntu/bionic64"
+#  config.vm.box = "ubuntu/trusty64"
+#  config.vm.box = "bento/ubuntu-16.04"
+  config.vm.box = "centos/8"
+
+  config.disksize.size = '30GB'
+  
+  #config.vm.box_version = "20181109.0.0"
+
+  boxes.each do |opts|
+      config.vm.define opts[:name] do |config|
+        config.vm.hostname = opts[:name]
+        #config.vm.network :forwarded_port, host: 2222, guest: 22
+        #config.ssh.username = "ubuntu"
+        #config.ssh.password = "379a8188cba8c5e64b9a429f"
+        
+        #config.ssh.forward_agent    = true
+        #config.ssh.insert_key       = false
+        #config.ssh.private_key_path =  ["/tools/vagrantprojects/private_key"]
+        
+        #config.vm.provision "file", source: "/tools/vagrantprojects/public_key", destination: "/home/vagrant/.ssh/authorized_keys"
+        
+        
+        config.vm.provider "virtualbox" do |v|
+          v.customize ["modifyvm", :id, "--memory", opts[:mem]]
+          v.customize ["modifyvm", :id, "--cpus", opts[:cpu]]
+          v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+          v.name = opts[:name]
+        end
+
+        #config.vm.network "public_network", bridge: opts[:interface], type: "dhcp" , mac: opts[:mac]        
+        config.vm.network "public_network", bridge: opts[:interface] , mac: opts[:mac], ip: opts[:ip]
+        #config.vm.network "private_network" ,  bridge: opts[:interface], ip: opts[:ip]
+
+		# configure a persistent storage for mysql data
+        config.persistent_storage.enabled = opts[:lvm_enable]
+        #config.persistent_storage.location = "/tools/vagrantprojects/openstackmaster.vdi"
+        config.persistent_storage.location = opts[:lvm_filename]
+        #config.persistent_storage.size = 30000 # 30GB
+        config.persistent_storage.size = opts[:lvm_size]
+        #config.persistent_storage.mountname = 'mysql'
+        config.persistent_storage.filesystem = 'ext4'
+        #config.persistent_storage.mountpoint = '/var/lib/mysql'
+        config.persistent_storage.volgroupname = 'MKmyvolgroup'
+        config.persistent_storage.partition = false
+        # sdb dla piko sdc dla ubuntu
+		config.persistent_storage.diskdevice = '/dev/sdc'
+
+        
+      end
+  end
+
+
+
+
+
+
+  boxes.each do |opts|
+    config.vm.define opts[:name] do |config|    
+    
+    
+    
+          config.vm.provision :shell, privileged: false do |s|
+          #ssh_pub_key = File.readlines("/tools/vagrantprojects/public_key").first.strip
+          ssh_pub_key = File.readlines("/tools/vagrantprojects/public_key").first.strip
+          ssh_private_key_global = File.read("/tools/vagrantprojects/private_key")
+          ssh_private_key = File.read("/tools/vagrantprojects/private_key_cephuser")
+          s.inline = <<-SHELL
+          echo "showing public key "
+          echo #{ssh_pub_key} 
+          echo #{ssh_pub_key} >> /home/vagrant/.ssh/authorized_keys
+          
+          echo #{ssh_pub_key} >> /tmp/ssh_pub_key
+          echo "#{ssh_private_key}"
+          echo "#{ssh_private_key}" >> /home/vagrant/.ssh/private_key_cephuser
+
+          echo "#{ssh_private_key_global}"
+          echo "#{ssh_private_key_global}" >> /home/vagrant/.ssh/private_key
+
+          sudo bash -c "echo #{ssh_pub_key} >> /root/.ssh/authorized_keys"
+          
+          sudo ls -l /home/vagrant/.ssh
+          SHELL
+          end
+    
+      config.vm.provision "shell" do |s|
+        s.inline = $initscript
+#        s.args = opts[:ip]
+        s.args = [opts[:ip] , opts[:initscript]]
+        
+      end
+
+
+
+
+
+
+ # default router
+  config.vm.provision "shell",
+    run: "always",
+    inline: "sudo route add default gw 192.168.1.1"
+
+  # default router ipv6
+  config.vm.provision "shell",
+    run: "always",
+    inline: "#sudo route -A inet6 add default gw fe80::5ea1:abff:fe1e:1 dev enp0s8"
+
+  # delete default gw on enp0s3 
+  config.vm.provision "shell",
+    run: "always",
+    inline: "sudo route del default gw 10.0.2.2"
+
+
+
+    end
+  end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  boxes.each do |opts|
+    config.vm.define opts[:name] do |config|    
+      config.vm.provision "shell", privileged: true do |s|
+        s.inline = $runscript
+#        s.args = opts[:ip]
+        s.args = [opts[:ip] , opts[:initscript]]
+        
+      end
+
+
+    end
+  end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+end

@@ -1,0 +1,15 @@
+# An Ingress with 2 hosts and 3 endpoints
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: influxdb-ingress
+  namespace: kube-system
+spec:
+  rules:
+  - host: monitoring-influxdb
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: monitoring-influxdb
+          servicePort: 8086
