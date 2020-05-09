@@ -80,22 +80,89 @@ docker run -e DISPLAY=192.168.1.239:0 --name mq-explorer -v /tmp/.X11-unix:/tmp/
 
 }
 
+configureFirewall()
+{
+
+#nginx
+sudo firewall-cmd --permanent --zone=public --add-service=https --add-service=http
+
+sudo firewall-cmd --permanent --add-port=6443/tcp
+sudo firewall-cmd --permanent --add-port=2379-2380/tcp
+sudo firewall-cmd --permanent --add-port=10250/tcp
+sudo firewall-cmd --permanent --add-port=10251/tcp
+sudo firewall-cmd --permanent --add-port=10252/tcp
+sudo firewall-cmd --permanent --add-port=10255/tcp
+sudo firewall-cmd --reload
+
+systemctl status firewalld
+
+}
+
+installKubernetes()
+{
+
+echo "Installing Kubernetes START"
+
+# get kubernetes stable version
+#export K8S_VERSION=$(curl -sSL https://dl.k8s.io/release/stable.txt)
+
+#remove 'v' character
+#K8S_VERSION=${K8S_VERSION//v}
+#echo $K8S_VERSION
+
+#static
+#K8S_VERSION=1.12.3
+
+#sudo yum-config-manager --add-repo https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64 --nogpgcheck
+
+#cp /vagrant/conf/kubernetes.repo /etc/yum.repos.d/kubernetes.repo
+
+#sleep 5
+
+cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+EOF
+
+
+yum repolist --nogpgcheck
+echo "Installing START"
+yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes  --nogpgcheck
+#pause 5
+
+echo "Installing END"
+
+systemctl enable --now kubelet
+
+kubeadm version
+
+echo "Installing Kubernetes END"
+
+}
+
+
+installnginx()
+{
+
+sudo yum install -y nginx
+sudo systemctl enable nginx
+sudo systemctl start nginx
+
+}
+
 installDocker()
 {
-apt update
-sudo apt install apt-transport-https ca-certificates curl software-properties-common
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-#sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
 
-### Add Docker apt repository.
-add-apt-repository \
-  "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) \
-  stable"
-
-apt update
-apt-cache policy docker-ce
-apt install docker-ce docker-ce-cli -y
+sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+sudo yum install -y docker-ce docker-ce-cli containerd.io --nobest
+sudo systemctl start docker
+sudo systemctl enable docker
 sudo usermod -aG docker vagrant
 
 
@@ -198,8 +265,12 @@ retval=$REPLY
 
 setupkeepalived()
 {
-apt-get -y install keepalived
+yum -y install keepalived --nogpgcheck
 cp /vagrant/conf/keepalived.conf /etc/keepalived/keepalived.conf
+
+sed -i -e 's/{NETWORK_INTERFACE}/'"$NETWORK_INTERFACE"'/g' /etc/keepalived/keepalived.conf
+
+
 systemctl start keepalived
 systemctl enable keepalived
 ss -tulp| grep 6443
@@ -234,6 +305,18 @@ echo "copycertsonsecondmasternodes END"
 
 }
 
+
+configure_routing()
+{
+
+route del default gw 10.0.2.2
+route add default gw 192.168.1.1 eth1
+
+route
+
+}
+
+
 init_kubernetesHA()
 {
 
@@ -251,18 +334,19 @@ cat ./kubeadm-config.yaml
 #IP=$( ifconfig enp0s8 | grep "inet " | cut -d: -f2 | awk '{ print $1}' )
 
 # for ubuntu 18
-IP=$(ifconfig enp0s8 | sed -n '/inet /s/.*inet  *\([^[:space:]]\+\).*/\1/p' )
+IP=$(ip a s | grep eth1 | grep '/24' | sed -n '/inet /s/.*inet  *\([^[:space:]]\+\).*/\1/p' )
 
 echo  "IP $IP"
+echo  "KUBERNETES_FIRST_MASTER_IP $KUBERNETES_FIRST_MASTER_IP"
 
 #for weave networking
+CIDR="10.32.0.0/12"
+#for flannel networking
+#CIDR="10.244.0.0/16"
+
 #kubeadm init --pod-network-cidr 10.32.0.0/12 --apiserver-advertise-address $IP  2>&1 | tee kubeadm_join
 #kubeadm init --config=kubeadm-config.yaml  --experimental-upload-certs  2>&1 | tee kubeadm_join
-kubeadm init --control-plane-endpoint $KUBERNETES_MASTER_LOAD_BALANCER_DNS:6443 --upload-certs 2>&1 | tee kubeadm_join
-
-
-
-sudo apt install -y nginx
+kubeadm init --pod-network-cidr $CIDR --apiserver-advertise-address $KUBERNETES_FIRST_MASTER_IP --control-plane-endpoint $KUBERNETES_MASTER_LOAD_BALANCER_DNS:6443 --upload-certs 2>&1 | tee kubeadm_join
 
 cat kubeadm_join
 #cat kubeadm_join |  grep "kubeadm join"  >join_command
@@ -273,7 +357,7 @@ echo `date` "generating join_command_for_control_pane"
 
 cat kubeadm_join |sed -e 's/\\/ /g' | grep -B 3 -A 1 "\-\-control-plane">join_command_for_control_pane
 
-cp join_command_for_control_pane /var/www/html/join_command_for_control_pane
+cp join_command_for_control_pane /usr/share/nginx/html/join_command_for_control_pane
 
 echo `date` "join_command_for_control_pane copied"
 
@@ -281,7 +365,7 @@ echo "sudo $JOIN_COMMAND" > join_command_sudo
 
 cat join_command_sudo
 
-sudo -H -u root bash -c 'cat join_command_sudo > /var/www/html/join_command_sudo' 
+sudo -H -u root bash -c 'cat join_command_sudo > /usr/share/nginx/html/join_command_sudo' 
 
 echo "curl k8smaster/join_command_sudo"	
 
@@ -322,7 +406,7 @@ waitforurlOK http://k8smaster3/master_second_init_completed
 #copycertstosecondmaster k8smaster3
 #echo `date` "master3 files copied"
 
-#sudo -H -u root bash -c 'echo "OK" > /var/www/html/certsforslavemasterscopied' 
+#sudo -H -u root bash -c 'echo "OK" > /usr/share/nginx/html/certsforslavemasterscopied' 
 
 #echo `date` "certsforslavemasterscopied created"
 
@@ -356,7 +440,7 @@ kubectl create clusterrolebinding kubernetes-dashboard-rolebinding --clusterrole
 
 kubectl create namespace apps
 
-echo "OK" > /var/www/html/master_init_completed
+echo "OK" > /usr/share/nginx/html/master_init_completed
 
 waitforurlOK http://k8smaster2/master_second_joined_completed
 waitforurlOK http://k8smaster3/master_second_joined_completed
@@ -364,7 +448,7 @@ waitforurlOK http://k8smaster3/master_second_joined_completed
 echo `date` taint pods on master nodes
 kubectl taint nodes --all node-role.kubernetes.io/master-
 
-echo "OK" > /var/www/html/all_masters_completed
+echo "OK" > /usr/share/nginx/html/all_masters_completed
 
 }
 
@@ -817,7 +901,7 @@ setupIstio()
 #downloadIstio "1.2.0-rc.1"
 #downloadIstio "1.2.4"
 #downloadIstio "1.4.3"
-downloadIstio "1.5.0"
+downloadIstio "1.5.2"
 
 #downloadIstio1_1_2
 
@@ -1108,6 +1192,7 @@ fn list contexts
 
 remove_LVM_logical_volume(){
 
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>remove_LVM_logical_volume"
 #list partitions
 lsblk
 
@@ -1135,6 +1220,9 @@ installHelm()
 
 #install from script
 curl https://raw.githubusercontent.com/helm/helm/master/scripts/get > get_helm.sh
+
+
+
 chmod 700 get_helm.sh
 ./get_helm.sh
 
@@ -1150,7 +1238,8 @@ waitForIPPort $IP_TILLER 44134
 setupJava()
 {
 #sudo apt install -y openjdk-9-jre-headless
-apt install -y default-jdk
+yum install -y java-1.8.0-openjdk --nogpgcheck
+
 java -version
 }
 
@@ -1364,6 +1453,21 @@ done
 
 }
 
+createflannel()
+{
+#kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+curl https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml | sed -e 's/- --kube-subnet-mgr/- --kube-subnet-mgr\n        - --iface=eth1/g' | kubectl apply -f -
+
+#kubectl patch node k8smaster -p '{"spec":{"podCIDR":"10.96.0.0/12"}}'
+#kubectl patch node k8smaster2 -p '{"spec":{"podCIDR":"10.96.1.0/12"}}'
+#kubectl patch node k8smaster3 -p '{"spec":{"podCIDR":"10.96.2.0/12"}}'
+#kubectl patch node k8snode1 -p '{"spec":{"podCIDR":"10.96.3.0/12"}}'
+
+kubectl get po -n kube-system
+
+}
+
 createWeave()
 {
 kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
@@ -1411,8 +1515,8 @@ cat join_command_sudo
 
 
 
-sudo apt install -y nginx
-sudo -H -u root bash -c 'cat join_command_sudo > /var/www/html/join_command_sudo' 
+sudo yum install -y nginx
+sudo -H -u root bash -c 'cat join_command_sudo > /usr/share/nginx/html/join_command_sudo' 
 
 echo "curl k8smaster/join_command_sudo"	
 

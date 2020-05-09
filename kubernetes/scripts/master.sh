@@ -1,9 +1,16 @@
 #!/bin/bash
+
 source /vagrant/scripts/libs.sh
 
-KUBERNETES_MASTER_LOAD_BALANCER_DNS="192.168.1.11"
+echo "master.sh START"
+
+export PATH="$PATH:/usr/local/bin/"
+
+
+KUBERNETES_FIRST_MASTER_IP="192.168.1.11"
 KUBERNETES_MASTER_LOAD_BALANCER_DNS="192.168.1.20"
 MASTER_NODES="k8smaster k8smaster2 k8smaster3"
+NETWORK_INTERFACE="eth1"
 
 #sudo apt install -y default-jdk
 
@@ -19,12 +26,16 @@ cd ~
 
 setupkeepalived | tee ~/setupkeepalived.log
 
+configure_routing 2>&1 | tee ~/configure_routing.log
+
 init_kubernetesHA 2>&1 | tee ~/init_kubernetesHA.log
 #init_kubernetes 2>&1 | tee ~/init_kubernetes.log
 checkmasters | tee ~/checkmasters.log
 
 
 createWeave 2>&1 | tee ~/createWeave.log
+#createflannel 2>&1 | tee ~/createflannel.log
+
 installHelm 2>&1 | tee ~/installHelm.log
 
 #/vagrant/scripts/test.sh
@@ -73,14 +84,14 @@ curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/ku
 #curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/influxdb-ingress.yaml | kubectl apply -f -
 #curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/graphite.yaml | kubectl apply -f -
 
-createMonitoring 2>&1 | tee ~/createMonitoring.log # metric server and prometheus adapter
-createMongo 2>&1 | tee ~/createMongo.log
-createRedis 2>&1 | tee ~/createRedis.log
-
 #configureGrafana 2>&1  | tee ~/configureGrafana.log
 
-setupMongodb 2>&1 | tee ~/setupMongodb.log
-setupRedis 2>&1 | tee ~/setupRedis.log
+createMonitoring 2>&1 | tee ~/createMonitoring.log # metric server and prometheus adapter
+#createMongo 2>&1 | tee ~/createMongo.log
+#createRedis 2>&1 | tee ~/createRedis.log
+
+#setupMongodb 2>&1 | tee ~/setupMongodb.log
+#setupRedis 2>&1 | tee ~/setupRedis.log
 
 #showCustomService
 

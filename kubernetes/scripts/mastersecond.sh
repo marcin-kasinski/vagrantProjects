@@ -1,13 +1,10 @@
 #!/bin/bash
 source /vagrant/scripts/libs.sh
 
-
-
 joinsecondaryMaster()
 {
 
-apt install -y nginx
-echo "OK" > /var/www/html/master_second_init_completed
+echo "OK" > /usr/share/nginx/html/master_second_init_completed
 echo `date` "master_second_init_completed created"
 
 #echo "Master second init end"
@@ -39,7 +36,7 @@ sudo chown vagrant:vagrant /home/vagrant/.kube/config
 # wait for init kubernetes HA executed
 waitforurlOK http://k8smaster/master_init_completed
 
-echo "OK" > /var/www/html/master_second_joined_completed
+echo "OK" > /usr/share/nginx/html/master_second_joined_completed
 
 waitforurlOK http://k8smaster/all_masters_completed
 }
@@ -55,6 +52,7 @@ cd ~
 
 
 #configure_nfs 2>&1 | tee ~/configure_nfs.log
+configure_routing 2>&1 | tee ~/configure_routing.log
 
 joinsecondaryMaster | tee ~/joinsecondaryMaster.log
 setupkeepalived | tee ~/setupkeepalived.log

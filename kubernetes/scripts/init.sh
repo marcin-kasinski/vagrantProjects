@@ -27,51 +27,33 @@ sudo sh -c "echo '192.168.1.12 springbootmicroserviceingress' >> /etc/hosts"
 #set timezone
 timedatectl set-timezone Europe/Warsaw
 
+sudo yum install -y lvm2 nc net-tools tc
+
+#configure_routing 2>&1 | tee ~/configure_routing.log
+
 remove_LVM_logical_volume
 
 sudo swapoff -a  
 sudo sed -i -r '/swap/ s/^(.*)$/#\1/g' /etc/fstab
-sudo sed -i -r '/cdrom/ s/^(.*)$/#\1/g' /etc/apt/sources.list
-sudo apt -y update
+#sudo sed -i -r '/cdrom/ s/^(.*)$/#\1/g' /etc/apt/sources.list
+#sudo apt -y update
 
-sudo apt-get install -y ceph-common
+#sudo apt-get install -y ceph-common
+
+# Set SELinux in permissive mode (effectively disabling it)
+setenforce 0
+sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
+
+
+installnginx 2>&1 | tee ~/installnginx.log
 
 installDocker 2>&1 | tee ~/installDocker.log
 
-sudo apt install -y curl jq
+sudo yum install -y curl jq
 
-sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+installKubernetes 2>&1 | tee ~/installKubernetes.log
 
-UBUNTU_CODENAME=`cat /etc/os-release | grep UBUNTU_CODENAME | cut -d "=" -f 2`
-echo "UBUNTU_CODENAME $UBUNTU_CODENAME"
-
-sudo echo "deb http://apt.kubernetes.io/ kubernetes-xenial main"> ~/kubernetes.list 
-#sudo echo "deb http://apt.kubernetes.io/ kubernetes-$UBUNTU_CODENAME main"> ~/kubernetes.list 
-sudo mv ~/kubernetes.list /etc/apt/sources.list.d/kubernetes.list
-sudo apt update
-
-sudo systemctl enable docker.service
-sudo service docker start
-
-# get kubernetes stable version
-export K8S_VERSION=$(curl -sSL https://dl.k8s.io/release/stable.txt)
-
-#remove 'v' character
-K8S_VERSION=${K8S_VERSION//v}
-echo $K8S_VERSION
-
-#static
-K8S_VERSION=1.12.3
-
-#sudo apt install -y kubelet=${K8S_VERSION}-00 kubeadm=${K8S_VERSION}-00  kubectl=${K8S_VERSION}-00   kubernetes-cni 
-sudo apt install -y kubelet kubeadm kubectl		
-
-#list releases
-#apt-cache policy kubernetes-cni
-#return code
-rc=$?
-
-#kubectl get nodes
+configureFirewall 2>&1 | tee ~/configureFirewall.log
 
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
 
@@ -79,3 +61,6 @@ echo ">>>>>>>>>>>>>>>>>>>>>>>>>>machine provisioned "$1
 #sudo apt-get install -y nfs-common
 
 #getConfFromCephServer
+
+route
+echo init.sh END
