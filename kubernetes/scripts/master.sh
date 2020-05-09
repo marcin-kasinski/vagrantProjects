@@ -36,6 +36,8 @@ checkmasters | tee ~/checkmasters.log
 createWeave 2>&1 | tee ~/createWeave.log
 #createflannel 2>&1 | tee ~/createflannel.log
 
+createMonitoring 2>&1 | tee ~/createMonitoring.log # metric server and prometheus adapter
+
 installHelm 2>&1 | tee ~/installHelm.log
 
 #/vagrant/scripts/test.sh
@@ -86,7 +88,7 @@ curl https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/ku
 
 #configureGrafana 2>&1  | tee ~/configureGrafana.log
 
-createMonitoring 2>&1 | tee ~/createMonitoring.log # metric server and prometheus adapter
+
 #createMongo 2>&1 | tee ~/createMongo.log
 #createRedis 2>&1 | tee ~/createRedis.log
 

@@ -2227,18 +2227,24 @@ kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboar
 createMonitoring()
 {
 
-curl "https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/master/deploy/1.8%2B/auth-delegator.yaml?$(date +%s)"  | kubectl apply -f -
-curl "https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/master/deploy/1.8%2B/auth-reader.yaml?$(date +%s)"  | kubectl apply -f -
-curl "https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/master/deploy/1.8%2B/metrics-apiservice.yaml?$(date +%s)"  | kubectl apply -f -
-curl "https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/master/deploy/1.8%2B/metrics-server-service.yaml?$(date +%s)"  | kubectl apply -f -
-curl "https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/master/deploy/1.8%2B/resource-reader.yaml?$(date +%s)"  | kubectl apply -f -
-curl "https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/master/deploy/1.8%2B/metrics-server-deployment.yaml?$(date +%s)" | sed -e 's/imagePullPolicy: Always/\
-        command:\
-        - \/metrics-server\
-        - --kubelet-insecure-tls\
-        - --kubelet-preferred-address-types=InternalIP\
-        - --v=5\
-        imagePullPolicy: Always	/g'   | kubectl apply -f -
+#curl "https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/master/deploy/1.8%2B/auth-delegator.yaml?$(date +%s)"  | kubectl apply -f -
+#curl "https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/master/deploy/1.8%2B/auth-reader.yaml?$(date +%s)"  | kubectl apply -f -
+#curl "https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/master/deploy/1.8%2B/metrics-apiservice.yaml?$(date +%s)"  | kubectl apply -f -
+#curl "https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/master/deploy/1.8%2B/metrics-server-service.yaml?$(date +%s)"  | kubectl apply -f -
+#curl "https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/master/deploy/1.8%2B/resource-reader.yaml?$(date +%s)"  | kubectl apply -f -
+#curl "https://raw.githubusercontent.com/kubernetes-incubator/metrics-server/master/deploy/1.8%2B/metrics-server-deployment.yaml?$(date +%s)" | sed -e 's/imagePullPolicy: Always/\
+#        command:\
+#        - \/metrics-server\
+#        - --kubelet-insecure-tls\
+#        - --kubelet-preferred-address-types=InternalIP\
+#        - --v=5\
+#        imagePullPolicy: Always	/g'   | kubectl apply -f -
+
+
+curl -L https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.6/components.yaml| sed -e 's/args:/args:\n          - --kubelet-preferred-address-types=InternalIP\n          - --kubelet-insecure-tls/g' | kubectl apply -f -
+
+kubectl get deployment -n kube-system metrics-server -o jsonpath='{.spec.template.spec.containers[0].args}'
+
 
 #kubectl apply -f /vagrant/yml/monitoring/namespaces.yaml
 
