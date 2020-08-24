@@ -22,9 +22,10 @@ data:
     authorizer.class.name=kafka.security.auth.SimpleAclAuthorizer
     allow.everyone.if.no.acl.found=false
     #super.users=User:admin;User:CN=kafka-0.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL;User:CN=kafka-1.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL;User:CN=kafka-2.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL
-    super.users=User:admin
+    super.users=User:admin;User:kafka-0.k-hs.default.svc.cluster.local;User:kafka-1.k-hs.default.svc.cluster.local;User:kafka-2.k-hs.default.svc.cluster.local
     
     #SSL
+    ssl.principal.mapping.rules=RULE:^CN=(.*?),.*$/$1/,DEFAULT
     ssl.truststore.location=/opt/kafka/config/truststore-{HOSTNAME}.jks
     ssl.truststore.password=secret
     ssl.keystore.location=/opt/kafka/config/keystore-{HOSTNAME}.jks
