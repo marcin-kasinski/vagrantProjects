@@ -7,9 +7,9 @@ data:
   template_server.properties: |-
     
     #advertised.listeners=PLAINTEXT://{HOSTNAME_FQDN}:9092,SASL_PLAINTEXT://{HOSTNAME_FQDN}:9093,SSL://{HOSTNAME_FQDN}:9094
-    advertised.listeners=PLAINTEXT://{HOSTNAME_FQDN}:9092,SSL://{HOSTNAME_FQDN}:9094
+    advertised.listeners=PLAINTEXT://{HOSTNAME_FQDN}:9092,SSL://{HOSTNAME_FQDN}:9094,EXTERNAL://192.168.1.11:30092,EXTERNAL://192.168.1.11:30192,EXTERNAL://192.168.1.11:30292
     #listeners=PLAINTEXT://0.0.0.0:9092,SASL_PLAINTEXT://0.0.0.0:9093,SSL://0.0.0.0:9094
-    listeners=PLAINTEXT://0.0.0.0:9092,SSL://0.0.0.0:9094
+    listeners=PLAINTEXT://0.0.0.0:9092,SSL://0.0.0.0:9094,EXTERNAL://:30092,EXTERNAL://:30192,EXTERNAL://:30292
     zookeeper.connect=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181
     security.inter.broker.protocol=SSL
     delete.topic.enable=true
