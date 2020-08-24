@@ -155,7 +155,7 @@ kind: Service
 metadata:
   name: k-cs-0
   labels:
-    statefulset.kubernetes.io/pod-name: kafka-0
+    app: kafka
 spec:
   type: NodePort
   ports:
@@ -172,7 +172,7 @@ spec:
       nodePort: 30094
       targetPort: 9094
   selector:
-    app: kafka
+    statefulset.kubernetes.io/pod-name: kafka-0
 
 ---
 apiVersion: v1
