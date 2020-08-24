@@ -155,7 +155,6 @@ kind: Service
 metadata:
   name: k-cs-0
   labels:
-    app: kafka
     statefulset.kubernetes.io/pod-name: kafka-0
 spec:
   type: NodePort
