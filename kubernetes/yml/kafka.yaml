@@ -31,6 +31,10 @@ data:
     ssl.keystore.password=secret
     ssl.key.password=secret
     ssl.client.auth=required
+
+    #zookeeper
+    zookeeper.client.secure=false
+
 ---
 kind: ConfigMap
 metadata:
@@ -224,8 +228,8 @@ spec:
         #  value: "PLAINTEXT://0.0.0.0:9092,SASL_PLAINTEXT://0.0.0.0:9093,SSL://0.0.0.0:9094"
         #  value: "PLAINTEXT://0.0.0.0:9092"
         #- name: "KAFKA_PARAM_ZOOKEEPER_CONNECT"
-        #  value: "zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka"
-        #  value: "zk-{NODEINDEX}.zk-hs.default.svc.cluster.local:2181/kafka"
+        #  value: "zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181"
+        #  value: "zk-{NODEINDEX}.zk-hs.default.svc.cluster.local:2181"
         #!!!!!!!!!!!!!!!!!!!!!!DEV ONLY!!!!!!!!!!!!!!!!!!!!
         #- name: "KAFKA_PARAM_offsets_topic_replication_factor"
         #  value: "1"
