@@ -194,7 +194,7 @@ spec:
       targetPort: 9093
     - name: client4
       port: 9094
-      nodePort: 300194
+      nodePort: 30194
       targetPort: 9094
   selector:
     statefulset.kubernetes.io/pod-name: kafka-1
