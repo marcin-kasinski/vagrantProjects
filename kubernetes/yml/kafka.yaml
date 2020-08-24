@@ -178,6 +178,56 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: k-cs-1
+  labels:
+    app: kafka
+spec:
+  type: NodePort
+  ports:
+    - name: client2
+      port: 9092
+      nodePort: 30192
+      targetPort: 9092
+    - name: client3
+      port: 9093
+      nodePort: 30193
+      targetPort: 9093
+    - name: client4
+      port: 9094
+      nodePort: 300194
+      targetPort: 9094
+  selector:
+    statefulset.kubernetes.io/pod-name: kafka-1
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: k-cs-2
+  labels:
+    app: kafka
+spec:
+  type: NodePort
+  ports:
+    - name: client2
+      port: 9092
+      nodePort: 30292
+      targetPort: 9092
+    - name: client3
+      port: 9093
+      nodePort: 30293
+      targetPort: 9093
+    - name: client4
+      port: 9094
+      nodePort: 30294
+      targetPort: 9094
+  selector:
+    statefulset.kubernetes.io/pod-name: kafka-2
+
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: k-hs
   labels:
     app: kafka
