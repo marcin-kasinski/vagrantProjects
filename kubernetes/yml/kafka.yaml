@@ -148,6 +148,33 @@ spec:
     targetPort: 9094    
   selector:
     app: kafka
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: k-cs-0
+  labels:
+    app: kafka
+    statefulset.kubernetes.io/pod-name: kafka-0
+spec:
+  type: NodePort
+  ports:
+    - name: client2
+      port: 9092
+      nodePort: 30092
+      targetPort: 9092
+    - name: client3
+      port: 9093
+      nodePort: 30093
+      targetPort: 9093
+    - name: client4
+      port: 9094
+      nodePort: 30094
+      targetPort: 9094
+  selector:
+    app: kafka
+
 ---
 apiVersion: v1
 kind: Service
