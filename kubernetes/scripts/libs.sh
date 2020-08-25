@@ -2034,19 +2034,19 @@ waitForIPPort $IP 9092
 #curl http://ftp.ps.pl/pub/apache/kafka/1.0.0/kafka_2.11-1.0.0.tgz | tar xvz
 #/tmp/kafka_2.11-1.0.0/bin/kafka-topics.sh --list --zookeeper $KAFKAPODIP:2181
 
-zookeeper=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181/kafka
+zookeeper=zk-0.zk-hs.default.svc.cluster.local:2181,zk-1.zk-hs.default.svc.cluster.local:2181,zk-2.zk-hs.default.svc.cluster.local:2181
 
 kubectl exec kafka-0 -- bash -c "KAFKA_OPTS="" /opt/kafka/bin/kafka-topics.sh --create --zookeeper $zookeeper --partitions 6 --replication-factor 3 --topic fluentd-springboot-logs"
 kubectl exec kafka-0 -- bash -c "KAFKA_OPTS="" /opt/kafka/bin/kafka-topics.sh --create --zookeeper $zookeeper --partitions 6 --replication-factor 3 --topic fluentd-kubernetes-logs"
 kubectl exec kafka-0 -- bash -c "KAFKA_OPTS="" /opt/kafka/bin/kafka-topics.sh --create --zookeeper $zookeeper --partitions 6 --replication-factor 3 --topic my-topic"
 
-setKafkaClusterACL "CN=kafka-0.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL" "kafka-cluster" "--operation ClusterAction"
-setKafkaClusterACL "CN=kafka-1.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL" "kafka-cluster" "--operation ClusterAction"
-setKafkaClusterACL "CN=kafka-2.k-hs.default.svc.cluster.local,OU=it,O=itzone,C=PL" "kafka-cluster" "--operation ClusterAction"
+setKafkaClusterACL "kafka-0.k-hs.default.svc.cluster.local" "kafka-cluster" "--operation ClusterAction"
+setKafkaClusterACL "kafka-1.k-hs.default.svc.cluster.local" "kafka-cluster" "--operation ClusterAction"
+setKafkaClusterACL "kafka-2.k-hs.default.svc.cluster.local" "kafka-cluster" "--operation ClusterAction"
 
-setKafkaTopicACL "CN=springbootkafkalistener-0.springbootkafkalistener-hs.apps.svc.cluster.local,OU=it,O=itzone,C=PL" "my-topic" "--operation Create --operation Describe --operation Read"
-setKafkaGroupACL "CN=springbootkafkalistener-0.springbootkafkalistener-hs.apps.svc.cluster.local,OU=it,O=itzone,C=PL" "order" "--operation Describe --operation Read"
-setKafkaTopicACL "CN=springbootkafkalistener-0.springbootkafkalistener-hs.apps.svc.cluster.local,OU=it,O=itzone,C=PL" "__consumer_offsets" "--operation Describe"
+setKafkaTopicACL "springbootkafkalistener-0.springbootkafkalistener-hs.apps.svc.cluster.local" "my-topic" "--operation Create --operation Describe --operation Read"
+setKafkaGroupACL "springbootkafkalistener-0.springbootkafkalistener-hs.apps.svc.cluster.local" "order" "--operation Describe --operation Read"
+setKafkaTopicACL "springbootkafkalistener-0.springbootkafkalistener-hs.apps.svc.cluster.local" "__consumer_offsets" "--operation Describe"
 
 setKafkaClusterACL "ANONYMOUS" "kafka-cluster" "--operation Create"
 
@@ -2059,8 +2059,8 @@ setKafkaTopicACL "ANONYMOUS" "logs" "--operation Create --operation Describe --o
 setKafkaTopicACL "ANONYMOUS" "fluentd-springboot-logs" "--operation Create --operation Describe --operation Read --operation Write"
 setKafkaTopicACL "ANONYMOUS" "fluentd-kubernetes-logs" "--operation Create --operation Describe --operation Read --operation Write"
 
-setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.apps.svc.cluster.local,OU=it,O=itzone,C=PL "my-topic" "--operation Describe --operation Create --operation Write"
-setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.apps.svc.cluster.local,OU=it,O=itzone,C=PL "__consumer_offsets" "--operation Describe"
+setKafkaTopicACL springbootweb-0.springbootweb-hs.apps.svc.cluster.local "my-topic" "--operation Describe --operation Create --operation Write"
+setKafkaTopicACL springbootweb-0.springbootweb-hs.apps.svc.cluster.local "__consumer_offsets" "--operation Describe"
 #setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.apps.svc.cluster.local,OU=it,O=itzone,C=PL "logs" "--operation Describe --operation Create --operation Write"
 #setKafkaTopicACL CN=springbootweb-0.springbootweb-hs.apps.svc.cluster.local,OU=it,O=itzone,C=PL "fluentd-logs" "--operation Describe --operation Create --operation Write"
 
