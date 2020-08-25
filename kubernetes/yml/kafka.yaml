@@ -35,7 +35,7 @@ data:
 
     #zookeeper
     zookeeper.client.secure=false
-    zookeeper.ssl.endpoint.identification.algorithm=
+    #zookeeper.ssl.endpoint.identification.algorithm=
 
 ---
 kind: ConfigMap
