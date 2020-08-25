@@ -44,12 +44,13 @@ sudo sed -i -r '/swap/ s/^(.*)$/#\1/g' /etc/fstab
 setenforce 0
 sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 
-
 installnginx 2>&1 | tee ~/installnginx.log
 
 installDocker 2>&1 | tee ~/installDocker.log
 
 sudo yum install -y curl jq
+
+sudo yum install -y mysql git
 
 installKubernetes 2>&1 | tee ~/installKubernetes.log
 
