@@ -109,6 +109,8 @@ spec:
         env:
         - name: "LOG_LEVEL"
           value: "DEBUG"
+
+
         #- name: "EXTRA_JAVA_ARGS"
         #  value: "-Dsun.security.krb5.debug=true"
         #- name: "JAAS_FILE_LOCATION"
@@ -124,6 +126,25 @@ spec:
         #ustawia na wartość default 
         - name: "ZOOKEEPER_PARAM_maxClientCnxns"
           value: "60"
+
+
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+
+
+        - name: "SERVER_JVMFLAGS"
+          value: "-Dzookeeper.serverCnxnFactory=org.apache.zookeeper.server.NettyServerCnxnFactory -Dzookeeper.ssl.keyStore.location=/root/zookeeper/ssl/$(MY_POD_NAME).jks -Dzookeeper.ssl.keyStore.password=testpass -Dzookeeper.ssl.trustStore.location=/root/zookeeper/ssl/$(MY_POD_NAME).jks -Dzookeeper.ssl.trustStore.password=testpass -javaagent:/opt/jmx_prometheus_javaagent/jmx_prometheus_javaagent.jar=${PROMETHEUS_JMX_AGENT_PORT}:/opt/jmx_prometheus_javaagent/jmx_prometheus_javaagent_zookeeper.yaml"
+        #- name: "ZOOKEEPER_PARAM_zookeeper_serverCnxnFactory"
+        #  value: "org.apache.zookeeper.server.NettyServerCnxnFactory"
+        #- name: "ZOOKEEPER_PARAM_zookeeper_clientCnxnSocket"
+        #  value: "org.apache.zookeeper.ClientCnxnSocketNetty"
+        #- name: "ZOOKEEPER_PARAM_zookeeper_client_secure"
+        #  value: "true"
+        #- name: "ZOOKEEPER_PARAM_secureClientPort"
+        #  value: "2281"
+
         #- name: "ZOOKEEPER_PARAM_authProvider_1"
         #  value: "org.apache.zookeeper.server.auth.SASLAuthenticationProvider"
         #- name: "ZOOKEEPER_PARAM_jaasLoginRenew"
