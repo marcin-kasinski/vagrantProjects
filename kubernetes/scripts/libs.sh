@@ -1323,6 +1323,11 @@ sudo rm /tmp/key* && sudo rm /tmp/tr* && sudo rm /tmp/ce* && sudo rm /tmp/ca*
 
 createCA
 # kafka certs in default namespace
+
+createServerCert zk-0.zk-hs.default.svc.cluster.local default
+createServerCert zk-1.zk-hs.default.svc.cluster.local default
+createServerCert zk-2.zk-hs.default.svc.cluster.local default
+
 createServerCert kafka-0.k-hs.default.svc.cluster.local default
 createServerCert kafka-1.k-hs.default.svc.cluster.local default
 createServerCert kafka-2.k-hs.default.svc.cluster.local default
@@ -1568,7 +1573,11 @@ systemctl list-units --type=service --no-pager
 
 createKafka()
 {
-curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/zookeeper.yaml?$(date +%s)"  | kubectl apply -f -
+#curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/zookeeper.yaml?$(date +%s)"  | kubectl apply -f -
+
+kubectl apply -f /vagrant/yml/zookeeper.yaml
+
+
 #curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/zoonavigator.yaml?$(date +%s)"  | kubectl apply -f -
 curl "https://raw.githubusercontent.com/marcin-kasinski/vagrantProjects/master/kubernetes/yml/kafka.yaml?$(date +%s)" | sed -e 's/  replicas: 1/  replicas: 3/g' | kubectl apply -f -
 
